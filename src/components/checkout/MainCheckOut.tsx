@@ -6,8 +6,7 @@ import { getProductById } from "../../api/productApi";
 interface Product {
   id: number;
   title: string;
-  price: number;
-  image: string;
+  images?: string[];
 }
 
 interface CartItem {
@@ -67,25 +66,19 @@ const MainCheckOut: React.FC = () => {
       setLoading(true);
       try {
         const results: (Product & { quantity: number })[] = [];
-        console.log("🛒 Selected Items:", selectedItems);
 
         for (const item of selectedItems) {
           const cartItemRes = await getCartItem(item.id);
           const cartItem: CartItem = cartItemRes.data || cartItemRes;
-          console.log("📦 Cart Item:", cartItem);
 
           const productRes = await getProductById(cartItem.productId);
           const product: Product = productRes.data || productRes;
-          console.log("🧾 Product Info:", product);
 
           const fullItem = { ...product, quantity: item.quantity };
           results.push(fullItem);
-
-          console.log("✅ Combined Item:", fullItem);
         }
 
         setProducts(results);
-        console.log("🎉 Final Product List for Checkout:", results);
       } catch (err) {
         console.error("❌ Error fetching checkout data:", err);
       } finally {
@@ -504,7 +497,11 @@ const MainCheckOut: React.FC = () => {
                               {index + 1}
                             </div>
                             <img
-                              src={p.image}
+                              src={
+                                Array.isArray(p.images)
+                                  ? p.images[0]
+                                  : p.image || "/placeholder.png"
+                              }
                               alt={p.title}
                               className="w-24 h-24 rounded-xl object-cover shadow-md ring-2 ring-white"
                             />
@@ -562,7 +559,7 @@ const MainCheckOut: React.FC = () => {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8 bg-white rounded-3xl shadow-xl overflow-hidden border border-orange-100">
+            <div className="sticky top-30 bg-white rounded-3xl shadow-xl overflow-hidden border border-orange-100">
               <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-8 py-6">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   <svg
