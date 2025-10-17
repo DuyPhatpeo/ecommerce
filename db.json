@@ -1,0 +1,281 @@
+{
+  "cart": [
+    {
+      "id": "c6cc",
+      "productId": "111",
+      "quantity": 2
+    },
+    {
+      "id": "edf6",
+      "productId": "7",
+      "quantity": 2
+    },
+    {
+      "id": "d016",
+      "productId": "6",
+      "quantity": 1
+    },
+    {
+      "id": "4375",
+      "productId": "5",
+      "quantity": 1
+    },
+    {
+      "id": "84be",
+      "productId": "8",
+      "quantity": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "111",
+      "status": "latest",
+      "category": "running",
+      "brand": "Nike",
+      "title": "NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT",
+      "price": 150,
+      "oldPrice": 210,
+      "stock": 20,
+      "rating": 4.5,
+      "reviewsCount": 128,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=90",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Air Max 270 React",
+        "material": "Mesh, synthetic fabric, rubber sole",
+        "color": "Red / White",
+        "weight": "0.9 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Nike Air Max 270 React mang đến sự thoải mái tối ưu và phong cách hiện đại, với đệm Air Max êm ái và thiết kế nổi bật."
+    },
+    {
+      "id": "2",
+      "status": "latest",
+      "category": "running",
+      "brand": "Adidas",
+      "title": "ADIDAS ULTRABOOST 21",
+      "price": 180,
+      "oldPrice": 250,
+      "stock": 12,
+      "rating": 4.6,
+      "reviewsCount": 89,
+      "images": [
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=70",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Ultraboost 21",
+        "material": "Primeknit textile upper, rubber sole",
+        "color": "White / Black",
+        "weight": "0.95 kg",
+        "origin": "Indonesia"
+      },
+      "description": "Adidas Ultraboost 21 mang lại trải nghiệm chạy vượt trội với phần đệm Boost nhạy bén và thiết kế Primeknit ôm chân."
+    },
+    {
+      "id": "3",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Vans",
+      "title": "VANS OLD SKOOL CLASSIC",
+      "price": 120,
+      "oldPrice": 160,
+      "stock": 15,
+      "rating": 4.4,
+      "reviewsCount": 75,
+      "images": [
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=70",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Old Skool Classic",
+        "material": "Canvas upper, rubber sole",
+        "color": "Black / White",
+        "weight": "0.85 kg",
+        "origin": "China"
+      },
+      "description": "Vans Old Skool Classic phù hợp phong cách đường phố, với thiết kế cổ điển và phần đế cao su bền bỉ."
+    },
+    {
+      "id": "4",
+      "status": "latest",
+      "category": "casual",
+      "brand": "New Balance",
+      "title": "NEW BALANCE 574 CORE",
+      "price": 170,
+      "oldPrice": 230,
+      "stock": 0,
+      "rating": 4.3,
+      "reviewsCount": 60,
+      "images": [
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=70",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90"
+      ],
+      "specs": {
+        "model": "574 Core",
+        "material": "Suede and mesh upper, EVA foam sole",
+        "color": "Gray",
+        "weight": "0.92 kg",
+        "origin": "USA"
+      },
+      "description": "New Balance 574 Core mang phong cách cổ điển, với đệm êm ái, thích hợp cho hoạt động hàng ngày."
+    },
+    {
+      "id": "5",
+      "status": "latest",
+      "category": "sport",
+      "brand": "Puma",
+      "title": "PUMA RS-X REINVENTION",
+      "price": 190,
+      "oldPrice": 240,
+      "stock": 10,
+      "rating": 4.5,
+      "reviewsCount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=70",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90"
+      ],
+      "specs": {
+        "model": "RS-X Reinvention",
+        "material": "Mesh, suede, and rubber sole",
+        "color": "Blue / White",
+        "weight": "0.88 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Puma RS-X Reinvention mang phong cách hiện đại, kết hợp thiết kế thể thao năng động và sự thoải mái tối đa."
+    },
+    {
+      "id": "6",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Reebok",
+      "title": "REEBOK CLASSIC LEATHER",
+      "price": 175,
+      "oldPrice": 220,
+      "stock": 9,
+      "rating": 4.4,
+      "reviewsCount": 45,
+      "images": [
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=70",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Classic Leather",
+        "material": "Leather upper, rubber sole",
+        "color": "White",
+        "weight": "0.9 kg",
+        "origin": "Thailand"
+      },
+      "description": "Reebok Classic Leather đem đến sự cổ điển và thoải mái, lý tưởng cho phong cách hàng ngày."
+    },
+    {
+      "id": "7",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Converse",
+      "title": "CONVERSE CHUCK 70 HIGH",
+      "price": 160,
+      "oldPrice": 200,
+      "stock": 11,
+      "rating": 4.3,
+      "reviewsCount": 70,
+      "images": [
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=70",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Chuck 70 High",
+        "material": "Canvas upper, rubber sole",
+        "color": "Beige / Black",
+        "weight": "0.8 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Converse Chuck 70 High là biểu tượng cổ điển, phù hợp phong cách streetwear và thoải mái cả ngày."
+    },
+    {
+      "id": "8",
+      "status": "latest",
+      "category": "running",
+      "brand": "Under Armour",
+      "title": "UNDER ARMOUR HOVR PHANTOM",
+      "price": 210,
+      "oldPrice": 260,
+      "stock": 0,
+      "rating": 4.6,
+      "reviewsCount": 58,
+      "images": [
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=70",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=90"
+      ],
+      "specs": {
+        "model": "HOVR Phantom",
+        "material": "Knit textile upper, rubber sole",
+        "color": "Gray / Orange",
+        "weight": "0.93 kg",
+        "origin": "China"
+      },
+      "description": "Under Armour HOVR Phantom mang lại trải nghiệm chạy êm ái và hiệu suất tối đa với công nghệ HOVR tiên tiến."
+    },
+    {
+      "id": "9",
+      "status": "coming",
+      "category": "running",
+      "brand": "Nike",
+      "title": "NIKE ZOOMX INVINCIBLE",
+      "price": 195,
+      "oldPrice": 250,
+      "stock": 5,
+      "rating": 4.7,
+      "reviewsCount": 40,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=90"
+      ],
+      "specs": {
+        "model": "ZoomX Invincible",
+        "material": "Flyknit upper, foam sole",
+        "color": "Black / White",
+        "weight": "0.89 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Nike ZoomX Invincible giúp tối ưu hiệu suất chạy, với đệm ZoomX nhạy bén và thiết kế nhẹ nhàng."
+    },
+    {
+      "id": "10",
+      "status": "coming",
+      "category": "training",
+      "brand": "Reebok",
+      "title": "REEBOK NANO X1",
+      "price": 180,
+      "oldPrice": 230,
+      "stock": 10,
+      "rating": 4.5,
+      "reviewsCount": 55,
+      "images": [
+        "https://images.unsplash.com/photo-1614676475066-26f31c49b6dc?w=600&q=80",
+        "https://images.unsplash.com/photo-1614676475066-26f31c49b6dc?w=600&q=70",
+        "https://images.unsplash.com/photo-1614676475066-26f31c49b6dc?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Nano X1",
+        "material": "Flexweave knit upper, rubber outsole",
+        "color": "White / Red",
+        "weight": "0.9 kg",
+        "origin": "Thailand"
+      },
+      "description": "Reebok Nano X1 được thiết kế cho tập luyện tối đa, với độ bền cao, linh hoạt và đệm êm ái."
+    }
+  ]
+}

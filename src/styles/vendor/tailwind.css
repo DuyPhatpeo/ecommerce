@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "../abstract/variables.css";
+
+@config "../../../tailwind.config.cjs";
