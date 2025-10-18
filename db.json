@@ -1,28 +1,38 @@
 {
   "cart": [
     {
-      "id": "c6cc",
+      "id": "211e",
       "productId": "111",
-      "quantity": 2
+      "quantity": 1
     },
     {
-      "id": "edf6",
-      "productId": "7",
-      "quantity": 2
+      "id": "2947",
+      "productId": "2",
+      "quantity": 1
     },
     {
-      "id": "d016",
-      "productId": "6",
-      "quantity": 2
+      "id": "fd26",
+      "productId": "3",
+      "quantity": 1
     },
     {
-      "id": "4375",
-      "productId": "5",
-      "quantity": 2
-    },
-    {
-      "id": "84be",
+      "id": "e664",
       "productId": "8",
+      "quantity": 1
+    },
+    {
+      "id": "76f0",
+      "productId": "7",
+      "quantity": 1
+    },
+    {
+      "id": "b3b4",
+      "productId": "6",
+      "quantity": 1
+    },
+    {
+      "id": "63f9",
+      "productId": "5",
       "quantity": 1
     }
   ],
