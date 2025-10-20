@@ -81,23 +81,23 @@ const Header = () => {
         className={`relative mx-auto transition-all duration-500 ease-in-out ${
           isScrolled
             ? "w-full mt-0 bg-white shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
-            : "md:w-[65%] md:mt-6 w-full mt-0 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
+            : "lg:w-[65%] lg:mt-6 w-full mt-0 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
         }`}
       >
-        <div className="flex justify-between items-center relative max-w-[1200px] mx-auto h-[80px] px-6">
+        <div className="flex justify-between items-center relative max-w-[1200px] mx-auto h-[70px] sm:h-[80px] px-4 sm:px-6">
           {/* Logo */}
           <div className="flex items-center mr-auto">
             <Link to="/">
               <img
                 src="/logo.png"
                 alt="Logo"
-                className="h-12 w-auto object-contain cursor-pointer"
+                className="h-8 sm:h-10 md:h-12 w-auto object-contain cursor-pointer"
               />
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center justify-center gap-10 text-[13px] font-semibold tracking-wide relative">
+          <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-10 text-[13px] font-semibold tracking-wide relative">
             {menuItems.map((item, i) => (
               <div
                 key={i}
@@ -139,12 +139,12 @@ const Header = () => {
           </nav>
 
           {/* Icons */}
-          <div className="flex items-center gap-5 text-gray-800 pl-3 relative">
+          <div className="flex items-center gap-3 sm:gap-5 text-gray-800 pl-2 sm:pl-3 relative">
             {/* Cart */}
             <Link to="/cart" className="relative">
               <ShoppingBag
-                size={20}
-                className="cursor-pointer hover:text-orange-500 transition-colors"
+                size={18}
+                className="sm:w-5 sm:h-5 cursor-pointer hover:text-orange-500 transition-colors"
               />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
@@ -156,23 +156,23 @@ const Header = () => {
             {/* Search */}
             <button onClick={() => setSearchOpen((prev) => !prev)}>
               <Search
-                size={20}
-                className="cursor-pointer hover:text-orange-500 transition-colors"
+                size={18}
+                className="sm:w-5 sm:h-5 cursor-pointer hover:text-orange-500 transition-colors"
               />
             </button>
 
             {/* Mobile toggle */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               {mobileOpen ? (
                 <X
-                  size={22}
-                  className="cursor-pointer hover:text-orange-500 transition-colors"
+                  size={20}
+                  className="sm:w-[22px] sm:h-[22px] cursor-pointer hover:text-orange-500 transition-colors"
                   onClick={() => setMobileOpen(false)}
                 />
               ) : (
                 <Menu
-                  size={22}
-                  className="cursor-pointer hover:text-orange-500 transition-colors"
+                  size={20}
+                  className="sm:w-[22px] sm:h-[22px] cursor-pointer hover:text-orange-500 transition-colors"
                   onClick={() => setMobileOpen(true)}
                 />
               )}
@@ -188,15 +188,15 @@ const Header = () => {
         >
           <div className="flex justify-center bg-orange-50 py-4 shadow-md relative rounded-b-lg">
             <div className="relative w-full px-4 md:w-3/5">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400" />
+              <Search className="absolute left-6 md:left-4 top-1/2 -translate-y-1/2 text-orange-400" />
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full pl-12 pr-12 py-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-gray-500"
+                className="w-full pl-12 pr-12 py-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-gray-500 text-sm sm:text-base"
               />
               <button
                 onClick={() => setSearchOpen(false)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
+                className="absolute right-6 md:right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
               >
                 <X size={20} />
               </button>
@@ -206,14 +206,14 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 shadow-md">
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-md max-h-[calc(100vh-70px)] sm:max-h-[calc(100vh-80px)] overflow-y-auto">
             {menuItems.map((item, i) => (
               <div key={i} className="border-b border-gray-100">
                 {item.subMenu ? (
                   <>
                     <button
                       onClick={() => toggleSubMenu(item.label)}
-                      className="w-full text-left px-5 py-3 text-[14px] font-semibold text-gray-800 hover:text-orange-500 flex justify-between items-center"
+                      className="w-full text-left px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] font-semibold text-gray-800 hover:text-orange-500 flex justify-between items-center"
                     >
                       <span>{item.label}</span>
                       {activeMenu === item.label ? (
@@ -230,7 +230,7 @@ const Header = () => {
                             key={j}
                             to={sub.path}
                             onClick={() => setMobileOpen(false)}
-                            className="block px-8 py-2 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white"
+                            className="block px-6 sm:px-8 py-2 text-[12px] sm:text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white"
                           >
                             {sub.label}
                           </Link>
@@ -244,7 +244,7 @@ const Header = () => {
                       navigate(item.path);
                       setMobileOpen(false);
                     }}
-                    className="w-full text-left px-5 py-3 text-[14px] font-semibold text-gray-800 hover:text-orange-500"
+                    className="w-full text-left px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] font-semibold text-gray-800 hover:text-orange-500"
                   >
                     {item.label}
                   </button>
