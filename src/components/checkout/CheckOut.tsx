@@ -21,6 +21,18 @@ interface CheckoutData {
   selectedItems: { id: number; quantity: number }[];
 }
 
+interface CustomerInfo {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  district: string;
+  ward: string;
+  note: string;
+  paymentMethod: string;
+}
+
 const CheckOut: React.FC = () => {
   const location = useLocation();
   const {
@@ -35,8 +47,9 @@ const CheckOut: React.FC = () => {
     []
   );
   const [loading, setLoading] = useState(false);
-  const [orderData, setOrderData] = useState<any>(null);
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
+  // 🔸 Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -59,8 +72,21 @@ const CheckOut: React.FC = () => {
     if (selectedItems.length > 0) fetchProducts();
   }, [selectedItems]);
 
-  const handleConfirmOrder = (customerInfo: any) => {
-    const order = {
+  // 🔸 Handle place order
+  const handlePlaceOrder = () => {
+    if (!customerInfo) {
+      alert("⚠️ Please fill out your customer information first!");
+      return;
+    }
+
+    // Basic validation
+    const { fullName, email, phone, address, city } = customerInfo;
+    if (!fullName || !email || !phone || !address || !city) {
+      alert("❌ Please complete all required fields before placing order.");
+      return;
+    }
+
+    const orderData = {
       products,
       customerInfo,
       subtotal,
@@ -68,9 +94,9 @@ const CheckOut: React.FC = () => {
       shipping,
       total,
     };
-    setOrderData(order);
-    console.log("🛒 Confirm Order Data:", order);
-    alert("Order placed successfully! Check console for data.");
+
+    console.log("🛒 Final Order Submitted:", orderData);
+    alert("✅ Order placed successfully! Check console for details.");
   };
 
   return (
@@ -88,7 +114,8 @@ const CheckOut: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <CheckoutForm onConfirm={handleConfirmOrder} />
+            {/* ✅ Form chỉ emit data khi thay đổi */}
+            <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
 
@@ -98,10 +125,8 @@ const CheckOut: React.FC = () => {
               tax={tax}
               shipping={shipping}
               total={total}
-              onPlaceOrder={() => {
-                if (!orderData)
-                  alert("Please fill out your information first!");
-              }}
+              customerInfo={customerInfo}
+              onPlaceOrder={handlePlaceOrder}
             />
           </div>
         </div>

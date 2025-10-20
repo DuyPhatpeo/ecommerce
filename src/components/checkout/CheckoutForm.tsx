@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface CustomerInfo {
   fullName: string;
@@ -13,21 +13,29 @@ interface CustomerInfo {
 }
 
 interface Props {
-  onConfirm: (info: CustomerInfo) => void;
+  onChange: (info: CustomerInfo) => void;
 }
 
-const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
-  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
-    fullName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    district: "",
-    ward: "",
-    note: "",
-    paymentMethod: "cod",
+const CheckoutForm: React.FC<Props> = ({ onChange }) => {
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>(() => {
+    // Lấy dữ liệu từ localStorage nếu có
+    const saved = localStorage.getItem("checkoutInfo");
+    return saved
+      ? JSON.parse(saved)
+      : {
+          fullName: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          district: "",
+          ward: "",
+          note: "",
+          paymentMethod: "cod",
+        };
   });
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -36,33 +44,67 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
   ) => {
     const { name, value } = e.target;
     setCustomerInfo((prev) => ({ ...prev, [name]: value }));
+
+    // Xóa lỗi khi người dùng sửa
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const handleSubmit = () => {
-    if (
-      !customerInfo.fullName ||
-      !customerInfo.email ||
-      !customerInfo.phone ||
-      !customerInfo.address ||
-      !customerInfo.city
-    ) {
-      alert("Please fill in all required fields!");
-      return;
-    }
-    onConfirm(customerInfo);
+  // Validate cơ bản
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!customerInfo.fullName.trim())
+      newErrors.fullName = "Please enter your full name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email))
+      newErrors.email = "Invalid email address.";
+    if (!/^\+?\d{9,13}$/.test(customerInfo.phone))
+      newErrors.phone = "Invalid phone number.";
+    return newErrors;
+  };
+
+  // Emit form data to parent + lưu localStorage
+  useEffect(() => {
+    onChange(customerInfo);
+    localStorage.setItem("checkoutInfo", JSON.stringify(customerInfo));
+  }, [customerInfo]);
+
+  const handleReset = () => {
+    setCustomerInfo({
+      fullName: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      district: "",
+      ward: "",
+      note: "",
+      paymentMethod: "cod",
+    });
+    setErrors({});
+    localStorage.removeItem("checkoutInfo");
+  };
+
+  const handleBlur = () => {
+    const newErrors = validate();
+    setErrors(newErrors);
   };
 
   return (
     <div className="space-y-6">
       {/* Customer Info */}
       <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-orange-100">
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6">
+        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-white">
             Customer Information
           </h2>
-          <p className="text-orange-100 text-sm mt-1">
-            Please provide your contact details
-          </p>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-white text-sm underline hover:text-gray-100"
+          >
+            Clear form
+          </button>
         </div>
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
@@ -74,10 +116,19 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
               name="fullName"
               value={customerInfo.fullName}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 rounded-xl border-2 outline-none ${
+                errors.fullName
+                  ? "border-red-400 focus:border-red-400"
+                  : "border-gray-200 focus:border-orange-400"
+              }`}
               placeholder="Enter your full name"
             />
+            {errors.fullName && (
+              <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+            )}
           </div>
+
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Email <span className="text-orange-500">*</span>
@@ -87,10 +138,19 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
               name="email"
               value={customerInfo.email}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 rounded-xl border-2 outline-none ${
+                errors.email
+                  ? "border-red-400 focus:border-red-400"
+                  : "border-gray-200 focus:border-orange-400"
+              }`}
               placeholder="example@email.com"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
+
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Phone Number <span className="text-orange-500">*</span>
@@ -100,9 +160,17 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
               name="phone"
               value={customerInfo.phone}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 rounded-xl border-2 outline-none ${
+                errors.phone
+                  ? "border-red-400 focus:border-red-400"
+                  : "border-gray-200 focus:border-orange-400"
+              }`}
               placeholder="+84 900 000 000"
             />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            )}
           </div>
         </div>
       </div>
@@ -166,7 +234,11 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
           ].map((method) => (
             <label
               key={method.value}
-              className="flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-orange-400 transition-all"
+              className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                customerInfo.paymentMethod === method.value
+                  ? "border-orange-400 bg-orange-50"
+                  : "border-gray-200 hover:border-orange-300"
+              }`}
             >
               <input
                 type="radio"
@@ -183,13 +255,6 @@ const CheckoutForm: React.FC<Props> = ({ onConfirm }) => {
           ))}
         </div>
       </div>
-
-      <button
-        onClick={handleSubmit}
-        className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-      >
-        Confirm Information
-      </button>
     </div>
   );
 };
