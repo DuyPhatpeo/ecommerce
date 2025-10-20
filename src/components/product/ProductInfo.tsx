@@ -264,6 +264,11 @@ const ProductInfo = ({
             <div className="text-2xl font-bold text-orange-600 leading-tight">
               {price.toFixed(2)} $
             </div>
+            {oldPrice && (
+              <div className="text-xs text-gray-400 line-through">
+                {oldPrice.toFixed(2)} $
+              </div>
+            )}
           </div>
 
           {/* Quantity Selector - Compact */}

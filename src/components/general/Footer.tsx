@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] text-gray-300 py-30 sm:py-20 lg:py-24 px-4 sm:px-6 md:px-10 lg:px-16">
+    <footer className="bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] text-gray-300 py-30   px-4 sm:px-6 md:px-10 lg:px-16">
       {/* Top Grid Section */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
         {/* About Us */}
