@@ -1,5 +1,5 @@
-import { useState, useCallback, memo } from "react";
-import { ShoppingBag, Heart, Star, X } from "lucide-react";
+import { useState, useCallback, memo, useMemo } from "react";
+import { ShoppingBag, Heart, Star, X, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { addToCart } from "../../api/cartApi";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ interface ProductInfoProps {
   rating?: number;
   images: string[];
   stock: number;
+  sku?: string;
 }
 
 /** ======= Quantity Selector ======= */
@@ -24,10 +25,12 @@ const QuantitySelector = memo(
     quantity,
     setQuantity,
     stock,
+    disabled = false,
   }: {
     quantity: number;
     setQuantity: (val: number) => void;
     stock: number;
+    disabled?: boolean;
   }) => {
     const handleChange = (val: number) => {
       if (val < 1) {
@@ -41,25 +44,44 @@ const QuantitySelector = memo(
       }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        handleChange(quantity + 1);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        handleChange(quantity - 1);
+      }
+    };
+
     return (
       <div className="mb-6 flex items-center gap-3">
         <Button
           type="button"
           label="-"
           onClick={() => handleChange(quantity - 1)}
-          className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 font-semibold"
+          disabled={disabled || quantity <= 1}
+          aria-label="Decrease quantity"
+          className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all"
         />
         <Input
           type="number"
           value={quantity}
           onChange={(e) => handleChange(parseInt(e.target.value) || 1)}
-          className="w-20 h-10 text-center font-semibold"
+          onKeyDown={handleKeyDown}
+          disabled={disabled}
+          min={1}
+          max={stock}
+          aria-label="Product quantity"
+          className="w-20 h-10 text-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         />
         <Button
           type="button"
           label="+"
           onClick={() => handleChange(quantity + 1)}
-          className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 font-semibold"
+          disabled={disabled || quantity >= stock}
+          aria-label="Increase quantity"
+          className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all"
         />
       </div>
     );
@@ -76,69 +98,94 @@ const ProductInfo = ({
   rating = 5,
   images,
   stock,
+  sku,
 }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
+
+  const isOutOfStock = stock === 0;
+  const isLowStock = stock > 0 && stock <= 5;
+
+  /** ======= Calculate Discount Percentage ======= */
+  const discountPercentage = useMemo(() => {
+    if (oldPrice && oldPrice > price) {
+      return Math.round(((oldPrice - price) / oldPrice) * 100);
+    }
+    return 0;
+  }, [oldPrice, price]);
 
   /** ======= Compact & Reusable Toast ======= */
   const showCartToast = useCallback(
     (imageUrl: string) => {
-      toast.custom(
-        (t) => (
-          <div
-            className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl relative transition-all ${
-              t.visible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2"
-            }`}
-          >
-            <img
-              src={imageUrl || "/placeholder.jpg"}
-              alt={title}
-              className="w-16 h-16 rounded-lg border object-cover"
-            />
+      try {
+        toast.custom(
+          (t) => (
+            <div
+              className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl relative transition-all ${
+                t.visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-2"
+              }`}
+              role="alert"
+              aria-live="assertive"
+            >
+              <img
+                src={imageUrl || "/placeholder.jpg"}
+                alt={title}
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.jpg";
+                }}
+                className="w-16 h-16 rounded-lg border object-cover"
+              />
 
-            <div className="flex-1 text-sm">
-              <p className="font-semibold text-gray-800 line-clamp-1">
-                {title}
-              </p>
-              <p className="text-gray-600">
-                Added{" "}
-                <span className="text-orange-500 font-semibold">
-                  {quantity}
-                </span>{" "}
-                item(s) to your cart
-              </p>
-              <p className="text-gray-700 font-medium">{price.toFixed(2)} $</p>
+              <div className="flex-1 text-sm">
+                <p className="font-semibold text-gray-800 line-clamp-1">
+                  {title}
+                </p>
+                <p className="text-gray-600">
+                  Added{" "}
+                  <span className="text-orange-500 font-semibold">
+                    {quantity}
+                  </span>{" "}
+                  item(s) to your cart
+                </p>
+                <p className="text-gray-700 font-medium">
+                  {price.toFixed(2)} $
+                </p>
+
+                <Button
+                  type="button"
+                  label="View cart"
+                  onClick={() => {
+                    toast.dismiss(t.id);
+                    navigate("/cart");
+                  }}
+                  className="mt-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg transition"
+                />
+              </div>
 
               <Button
-                type="button"
-                label="View cart"
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  navigate("/cart");
-                }}
-                className="mt-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg transition"
+                onClick={() => toast.dismiss(t.id)}
+                icon={<X size={16} />}
+                aria-label="Close notification"
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition"
               />
             </div>
-
-            <Button
-              onClick={() => toast.dismiss(t.id)}
-              icon={<X size={16} />}
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            />
-          </div>
-        ),
-        { duration: 3000 }
-      );
+          ),
+          { duration: 3000 }
+        );
+      } catch (error) {
+        toast.success("Added to cart successfully!");
+      }
     },
     [navigate, price, quantity, title]
   );
 
   /** ======= Handle Add to Cart ======= */
   const handleAddToCart = useCallback(async () => {
-    if (loading) return;
+    if (loading || isOutOfStock) return;
     if (quantity > stock) {
       toast.error(`Only ${stock} items left in stock!`);
       return;
@@ -148,25 +195,40 @@ const ProductInfo = ({
     try {
       await addToCart(id, quantity);
       showCartToast(images?.[0]);
-    } catch {
+    } catch (error) {
       toast.error("Failed to add product to cart!");
+      console.error("Add to cart error:", error);
     } finally {
       setLoading(false);
     }
-  }, [id, quantity, stock, images, loading, showCartToast]);
+  }, [id, quantity, stock, images, loading, showCartToast, isOutOfStock]);
+
+  /** ======= Handle Favorite Toggle ======= */
+  const handleToggleFavorite = useCallback(() => {
+    setIsFavorite((prev) => {
+      const newState = !prev;
+      toast.success(
+        newState ? "Added to favorites!" : "Removed from favorites!"
+      );
+      return newState;
+    });
+  }, []);
 
   /** ======= Handle Quantity for Mobile ======= */
-  const handleMobileQuantityChange = (val: number) => {
-    if (val < 1) {
-      setQuantity(1);
-      toast.error("Minimum quantity is 1!");
-    } else if (val > stock) {
-      setQuantity(stock);
-      toast.error(`Only ${stock} items left in stock!`);
-    } else {
-      setQuantity(val);
-    }
-  };
+  const handleMobileQuantityChange = useCallback(
+    (val: number) => {
+      if (val < 1) {
+        setQuantity(1);
+        toast.error("Minimum quantity is 1!");
+      } else if (val > stock) {
+        setQuantity(stock);
+        toast.error(`Only ${stock} items left in stock!`);
+      } else {
+        setQuantity(val);
+      }
+    },
+    [stock]
+  );
 
   return (
     <>
@@ -176,68 +238,147 @@ const ProductInfo = ({
         }`}
       >
         {/* ======= Title ======= */}
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">{title}</h2>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
 
         {/* ======= Rating ======= */}
         <div className="flex items-center gap-2 mb-6">
-          <div className="flex text-orange-400">
-            {Array.from({ length: rating }, (_, i) => (
-              <Star key={i} className="w-5 h-5 fill-current" />
+          <div
+            className="flex text-orange-400"
+            role="img"
+            aria-label={`Rating: ${rating} out of 5 stars`}
+          >
+            {Array.from({ length: 5 }, (_, i) => (
+              <Star
+                key={i}
+                className={`w-5 h-5 ${
+                  i < rating ? "fill-current" : "fill-none stroke-current"
+                }`}
+              />
             ))}
           </div>
           <span className="text-gray-600">(128 reviews)</span>
         </div>
 
+        {/* ======= Out of Stock Alert ======= */}
+        {isOutOfStock && (
+          <div
+            className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3"
+            role="alert"
+          >
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-red-700 font-semibold mb-1">Out of Stock</p>
+              <p className="text-sm text-gray-600">
+                This item is currently unavailable. Check back soon!
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ======= Low Stock Warning ======= */}
+        {isLowStock && !isOutOfStock && (
+          <div
+            className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3"
+            role="alert"
+          >
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-amber-700 font-semibold mb-1">
+                Low Stock Alert
+              </p>
+              <p className="text-sm text-gray-600">
+                Only {stock} items left! Order soon.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* ======= Price ======= */}
-        <div className="bg-orange-50 rounded-xl p-6 mb-6">
-          <div className="text-4xl font-bold text-orange-600 mb-1">
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
+          {discountPercentage > 0 && (
+            <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              -{discountPercentage}%
+            </div>
+          )}
+          <div className="text-4xl font-bold text-orange-600 mb-1 transition-all duration-300">
             {price.toFixed(2)} $
           </div>
           {oldPrice && (
-            <div className="text-gray-500 line-through">
+            <div className="text-gray-500 line-through text-lg">
               {oldPrice.toFixed(2)} $
             </div>
           )}
-          <div className="text-sm text-gray-500 mt-2">
-            Stock: <span className="font-semibold text-gray-800">{stock}</span>{" "}
-            item(s) left
+          <div className="text-sm text-gray-600 mt-3" aria-live="polite">
+            Stock:{" "}
+            <span
+              className={`font-semibold ${
+                isOutOfStock
+                  ? "text-red-600"
+                  : isLowStock
+                  ? "text-amber-600"
+                  : "text-gray-800"
+              }`}
+            >
+              {stock}
+            </span>{" "}
+            item(s) {isOutOfStock ? "unavailable" : "available"}
           </div>
         </div>
 
         {/* ======= Quantity (Desktop only) ======= */}
-        <div className="hidden md:block">
-          <QuantitySelector
-            quantity={quantity}
-            setQuantity={setQuantity}
-            stock={stock}
-          />
-        </div>
+        {!isOutOfStock && (
+          <div className="hidden md:block">
+            <QuantitySelector
+              quantity={quantity}
+              setQuantity={setQuantity}
+              stock={stock}
+              disabled={loading}
+            />
+          </div>
+        )}
 
         {/* ======= Add to cart (Desktop only) ======= */}
         <div className="hidden md:flex gap-3 mb-6">
           <Button
             type="button"
             onClick={handleAddToCart}
-            disabled={loading}
+            disabled={loading || isOutOfStock}
             icon={<ShoppingBag className="w-5 h-5" />}
+            aria-label={isOutOfStock ? "Product out of stock" : "Add to cart"}
             label={
               loading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   Adding...
                 </span>
+              ) : isOutOfStock ? (
+                "Out of Stock"
               ) : (
                 "Add to cart"
               )
             }
             className={`flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2 ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
+              loading || isOutOfStock ? "opacity-70 cursor-not-allowed" : ""
             }`}
           />
           <Button
             type="button"
-            icon={<Heart className="w-6 h-6" />}
-            className="w-14 h-14 border-2 border-gray-300 rounded-xl hover:border-red-500 hover:text-red-500 flex items-center justify-center"
+            onClick={handleToggleFavorite}
+            icon={
+              <Heart
+                className={`w-6 h-6 transition-all ${
+                  isFavorite ? "fill-red-500 text-red-500" : ""
+                }`}
+              />
+            }
+            aria-label={
+              isFavorite ? "Remove from favorites" : "Add to favorites"
+            }
+            className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center transition-all ${
+              isFavorite
+                ? "border-red-500 bg-red-50"
+                : "border-gray-300 hover:border-red-500 hover:text-red-500"
+            }`}
           />
         </div>
 
@@ -245,12 +386,71 @@ const ProductInfo = ({
         <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
           <div className="flex justify-between">
             <span>Category:</span>
-            <span className="font-semibold">{category}</span>
+            <span className="font-semibold text-gray-900">{category}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Brand:</span>
-            <span className="font-semibold">{brand}</span>
+            <span className="font-semibold text-gray-900">{brand}</span>
+          </div>
+
+          {sku && (
+            <div className="flex justify-between">
+              <span>SKU:</span>
+              <span className="font-semibold text-gray-900">{sku}</span>
+            </div>
+          )}
+        </div>
+
+        {/* ======= Additional Info ======= */}
+        <div className="mt-6 bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
+          <div className="flex items-center gap-2 text-gray-700">
+            <svg
+              className="w-5 h-5 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            Free shipping on orders over $50
+          </div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <svg
+              className="w-5 h-5 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            30-day return policy
+          </div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <svg
+              className="w-5 h-5 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            1-year warranty included
           </div>
         </div>
       </div>
@@ -261,7 +461,7 @@ const ProductInfo = ({
           {/* Price Info */}
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 mb-0.5">Product Price</div>
-            <div className="text-2xl font-bold text-orange-600 leading-tight">
+            <div className="text-2xl font-bold text-orange-600 leading-tight transition-all duration-300">
               {price.toFixed(2)} $
             </div>
             {oldPrice && (
@@ -272,31 +472,39 @@ const ProductInfo = ({
           </div>
 
           {/* Quantity Selector - Compact */}
-          <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2 py-1.5">
-            <Button
-              type="button"
-              label="-"
-              onClick={() => handleMobileQuantityChange(quantity - 1)}
-              disabled={loading}
-              className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            />
-            <span className="w-9 text-center font-bold text-gray-800 text-base">
-              {quantity}
-            </span>
-            <Button
-              type="button"
-              label="+"
-              onClick={() => handleMobileQuantityChange(quantity + 1)}
-              disabled={loading}
-              className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            />
-          </div>
+          {!isOutOfStock && (
+            <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2 py-1.5">
+              <Button
+                type="button"
+                label="-"
+                onClick={() => handleMobileQuantityChange(quantity - 1)}
+                disabled={loading || quantity <= 1}
+                aria-label="Decrease quantity"
+                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              />
+              <span
+                className="w-9 text-center font-bold text-gray-800 text-base"
+                aria-label={`Quantity: ${quantity}`}
+              >
+                {quantity}
+              </span>
+              <Button
+                type="button"
+                label="+"
+                onClick={() => handleMobileQuantityChange(quantity + 1)}
+                disabled={loading || quantity >= stock}
+                aria-label="Increase quantity"
+                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              />
+            </div>
+          )}
 
           {/* Add to Cart Button */}
           <Button
             type="button"
             onClick={handleAddToCart}
-            disabled={loading}
+            disabled={loading || isOutOfStock}
+            aria-label={isOutOfStock ? "Product out of stock" : "Add to cart"}
             icon={
               loading ? (
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -304,9 +512,13 @@ const ProductInfo = ({
                 <ShoppingBag className="w-5 h-5" />
               )
             }
-            label={!loading && <span className="ml-1.5">Add</span>}
+            label={
+              !loading && (
+                <span className="ml-1.5">{isOutOfStock ? "Out" : "Add"}</span>
+              )
+            }
             className={`bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 min-w-[100px] transition-all ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
+              loading || isOutOfStock ? "opacity-70 cursor-not-allowed" : ""
             }`}
           />
         </div>
