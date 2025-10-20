@@ -122,10 +122,10 @@ const Footer: React.FC = () => {
             </h3>
             <p className="text-sm text-gray-400 mb-4">Let's be social</p>
 
-            <div className="overflow-hidden mb-1 ">
+            <div className="overflow-hidden mb-2 ">
               <iframe
-                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fsweetsoftvn&tabs=&width=340&height=130&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false"
-                width="100%"
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fsweetsoftvn&tabs=&width=250&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
+                width="250"
                 height="130"
                 style={{ border: "none", overflow: "hidden" }}
                 scrolling="no"
