@@ -16,11 +16,13 @@ interface Product {
 }
 
 interface CheckoutData {
-  subtotal: number;
-  tax: number;
-  shipping: number;
-  total: number;
-  selectedItems: { id: number; quantity: number }[];
+  subtotal?: number;
+  tax?: number;
+  shipping?: number;
+  total?: number;
+  selectedItems?: { id: number; quantity: number }[];
+  productId?: number;
+  quantity?: number;
 }
 
 interface CustomerInfo {
@@ -38,13 +40,7 @@ interface CustomerInfo {
 const CheckOut: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    selectedItems = [],
-    subtotal = 0,
-    tax = 0,
-    shipping = 0,
-    total = 0,
-  } = (location.state as CheckoutData) || {};
+  const state = (location.state as CheckoutData) || {};
 
   const [products, setProducts] = useState<(Product & { quantity: number })[]>(
     []
@@ -53,44 +49,68 @@ const CheckOut: React.FC = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
-  // 🔸 Fetch products
+  const subtotal = state.subtotal || 0;
+  const tax = state.tax || 0;
+  const shipping = state.shipping || 0;
+  const total = state.total || 0;
+
+  // 🔸 Fetch product(s)
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const results: (Product & { quantity: number })[] = [];
-        for (const item of selectedItems) {
-          const cartItemRes = await getCartItem(item.id);
-          const cartItem = cartItemRes.data || cartItemRes;
-          const productRes = await getProductById(cartItem.productId);
-          const product = productRes.data || productRes;
-          results.push({ ...product, quantity: item.quantity });
+
+        // 🛒 CASE 1: Checkout từ Cart
+        if (state.selectedItems && state.selectedItems.length > 0) {
+          for (const item of state.selectedItems) {
+            const cartItemRes = await getCartItem(item.id);
+            const cartItem = cartItemRes.data || cartItemRes;
+            const productRes = await getProductById(cartItem.productId);
+            const product = productRes.data || productRes;
+            results.push({ ...product, quantity: item.quantity });
+          }
         }
+
+        // 🧡 CASE 2: Checkout trực tiếp từ Product detail
+        else if (state.productId && state.quantity) {
+          const productRes = await getProductById(state.productId);
+          const product = productRes.data || productRes;
+          results.push({ ...product, quantity: state.quantity });
+        }
+
+        if (results.length === 0) {
+          toast.error("Không có sản phẩm nào để thanh toán!");
+          navigate("/");
+          return;
+        }
+
         setProducts(results);
-      } catch (err) {
-        console.error("❌ Error fetching checkout data:", err);
-        toast.error("Failed to load products for checkout.");
+      } catch {
+        toast.error("Không thể tải dữ liệu sản phẩm.");
       } finally {
         setLoading(false);
       }
     };
-    if (selectedItems.length > 0) fetchProducts();
-  }, [selectedItems]);
+
+    fetchProducts();
+  }, [state, navigate]);
 
   // 🔸 Handle place order
   const handlePlaceOrder = async () => {
     if (!customerInfo) {
-      toast.error("⚠️ Please fill out your customer information first!");
+      toast.error("⚠️ Vui lòng điền thông tin khách hàng trước!");
       return;
     }
 
     const { fullName, email, phone, address, city } = customerInfo;
     if (!fullName || !email || !phone || !address || !city) {
-      toast.error(
-        "❌ Please complete all required fields before placing order."
-      );
+      toast.error("❌ Vui lòng nhập đầy đủ thông tin bắt buộc!");
       return;
     }
+
+    const calculatedSubtotal =
+      subtotal || products.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
     const orderData = {
       customer: customerInfo,
@@ -100,27 +120,23 @@ const CheckOut: React.FC = () => {
         quantity: p.quantity,
         price: p.price,
       })),
-      subtotal,
+      subtotal: calculatedSubtotal,
       tax,
       shipping,
-      total,
+      total: total || calculatedSubtotal + tax + shipping,
       createdAt: new Date().toISOString(),
     };
 
     try {
       setPlacingOrder(true);
-      toast.loading("Processing your order...");
+      const loadingToast = toast.loading("Đang xử lý đơn hàng...");
       const response = await createOrder(orderData);
-      toast.dismiss();
-      toast.success("🎉 Order placed successfully!");
-      console.log("✅ Order created:", response);
-
-      // Clear or redirect
+      toast.dismiss(loadingToast);
+      toast.success("🎉 Đặt hàng thành công!");
       navigate("/order-success", { state: { order: response } });
-    } catch (error) {
-      console.error("❌ Failed to place order:", error);
+    } catch {
       toast.dismiss();
-      toast.error("Failed to place order. Please try again.");
+      toast.error("Đặt hàng thất bại, vui lòng thử lại.");
     } finally {
       setPlacingOrder(false);
     }
@@ -140,17 +156,25 @@ const CheckOut: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form + Product list */}
           <div className="lg:col-span-2 space-y-6">
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
 
+          {/* Summary */}
           <div className="lg:col-span-1">
             <CheckoutSummary
-              subtotal={subtotal}
+              subtotal={
+                subtotal ||
+                products.reduce((sum, p) => sum + p.price * p.quantity, 0)
+              }
               tax={tax}
               shipping={shipping}
-              total={total}
+              total={
+                total ||
+                products.reduce((sum, p) => sum + p.price * p.quantity, 0)
+              }
               customerInfo={customerInfo}
               onPlaceOrder={handlePlaceOrder}
             />

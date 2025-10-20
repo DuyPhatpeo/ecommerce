@@ -56,13 +56,18 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
               >
                 <img
                   src={
-                    Array.isArray(p.images) ? p.images[0] : "/placeholder.png"
+                    Array.isArray(p.images) && p.images.length > 0
+                      ? p.images[0]
+                      : "/placeholder.png"
                   }
                   alt={p.title}
-                  className="w-24 h-24 rounded-xl object-cover"
+                  className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
                 />
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-800">
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className="font-semibold text-lg text-gray-800 truncate"
+                    title={p.title}
+                  >
                     {p.title}
                   </h3>
                   <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
