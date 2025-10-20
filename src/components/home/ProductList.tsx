@@ -140,10 +140,10 @@ const ProductList: React.FC = () => {
         </div>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Grid - 2 cột trên mobile */}
       <div className="max-w-7xl mx-auto relative">
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center transition-all duration-500 ${
+          className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 justify-items-center transition-all duration-500 ${
             isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
         >
