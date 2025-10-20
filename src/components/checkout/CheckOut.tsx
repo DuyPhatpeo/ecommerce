@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getCartItem } from "../../api/cartApi";
 import { getProductById } from "../../api/productApi";
+import { createOrder } from "../../api/orderApi";
 import CheckoutForm from "./CheckoutForm";
 import CheckoutProductList from "./CheckoutProductList";
 import CheckoutSummary from "./CheckoutSummary";
+import toast from "react-hot-toast";
 
 interface Product {
   id: number;
@@ -35,6 +37,7 @@ interface CustomerInfo {
 
 const CheckOut: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     selectedItems = [],
     subtotal = 0,
@@ -47,6 +50,7 @@ const CheckOut: React.FC = () => {
     []
   );
   const [loading, setLoading] = useState(false);
+  const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
   // 🔸 Fetch products
@@ -65,6 +69,7 @@ const CheckOut: React.FC = () => {
         setProducts(results);
       } catch (err) {
         console.error("❌ Error fetching checkout data:", err);
+        toast.error("Failed to load products for checkout.");
       } finally {
         setLoading(false);
       }
@@ -73,30 +78,52 @@ const CheckOut: React.FC = () => {
   }, [selectedItems]);
 
   // 🔸 Handle place order
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!customerInfo) {
-      alert("⚠️ Please fill out your customer information first!");
+      toast.error("⚠️ Please fill out your customer information first!");
       return;
     }
 
-    // Basic validation
     const { fullName, email, phone, address, city } = customerInfo;
     if (!fullName || !email || !phone || !address || !city) {
-      alert("❌ Please complete all required fields before placing order.");
+      toast.error(
+        "❌ Please complete all required fields before placing order."
+      );
       return;
     }
 
     const orderData = {
-      products,
-      customerInfo,
+      customer: customerInfo,
+      items: products.map((p) => ({
+        productId: p.id,
+        title: p.title,
+        quantity: p.quantity,
+        price: p.price,
+      })),
       subtotal,
       tax,
       shipping,
       total,
+      createdAt: new Date().toISOString(),
     };
 
-    console.log("🛒 Final Order Submitted:", orderData);
-    alert("✅ Order placed successfully! Check console for details.");
+    try {
+      setPlacingOrder(true);
+      toast.loading("Processing your order...");
+      const response = await createOrder(orderData);
+      toast.dismiss();
+      toast.success("🎉 Order placed successfully!");
+      console.log("✅ Order created:", response);
+
+      // Clear or redirect
+      navigate("/order-success", { state: { order: response } });
+    } catch (error) {
+      console.error("❌ Failed to place order:", error);
+      toast.dismiss();
+      toast.error("Failed to place order. Please try again.");
+    } finally {
+      setPlacingOrder(false);
+    }
   };
 
   return (
@@ -114,7 +141,6 @@ const CheckOut: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* ✅ Form chỉ emit data khi thay đổi */}
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
@@ -128,6 +154,11 @@ const CheckOut: React.FC = () => {
               customerInfo={customerInfo}
               onPlaceOrder={handlePlaceOrder}
             />
+            {placingOrder && (
+              <p className="text-center text-orange-500 mt-3 animate-pulse">
+                Processing your order...
+              </p>
+            )}
           </div>
         </div>
       </div>

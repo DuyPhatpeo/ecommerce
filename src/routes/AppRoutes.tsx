@@ -5,6 +5,7 @@ const HomePage = lazy(() => import("../pages/HomPage"));
 const ProductDetailPage = lazy(() => import("../pages/ProductDetailPage"));
 const ShoppingCartPage = lazy(() => import("../pages/ShopingCartPage"));
 const CheckOutPage = lazy(() => import("../pages/CheckOutPage"));
+const OrderSuccessPage = lazy(() => import("../pages/OrderSuccessPage"));
 
 const AppRoutes = () => {
   return (
@@ -14,6 +15,7 @@ const AppRoutes = () => {
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/checkout" element={<CheckOutPage />} />
+        <Route path="/order-success" element={<OrderSuccessPage />} />
 
         {/* Bắt route không tồn tại */}
         <Route
