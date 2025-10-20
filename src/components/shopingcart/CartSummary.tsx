@@ -4,6 +4,9 @@ import {
   Tag,
   AlertCircle,
   ShoppingCart,
+  Truck,
+  DollarSign,
+  ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +18,7 @@ interface ProductType {
 }
 
 interface CartItemType {
-  id: number; // cart item id
+  id: number;
   productId: number;
   quantity: number;
   product: ProductType;
@@ -56,9 +59,6 @@ export default function CartSummary({
   const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;
 
-  // Tính số tiền tiết kiệm nếu có giảm giá (có thể mở rộng sau)
-  const originalTotal = total; // Placeholder cho tính năng discount sau này
-
   const formatPrice = (price: number) =>
     price.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
@@ -71,7 +71,6 @@ export default function CartSummary({
       quantity: item.quantity,
     }));
 
-    // Lưu vào localStorage để backup (phòng trường hợp navigate lỗi)
     localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
 
     navigate("/checkout", {
@@ -102,7 +101,7 @@ export default function CartSummary({
           </div>
         </div>
 
-        {/* Warning for invalid items */}
+        {/* Invalid items alert */}
         {invalidSelectedItems.length > 0 && (
           <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4">
             <div className="flex items-start gap-3">
@@ -121,11 +120,11 @@ export default function CartSummary({
           </div>
         )}
 
-        {/* Price Breakdown */}
+        {/* Price breakdown */}
         <div className="space-y-4 mb-6">
           <div className="flex justify-between items-center">
             <span className="text-gray-600 flex items-center gap-2">
-              <Tag className="w-4 h-4" /> Subtotal
+              <Tag className="w-4 h-4 text-orange-500" /> Subtotal
             </span>
             <span className="font-semibold text-gray-800">
               {formatPrice(subtotal)}
@@ -133,14 +132,18 @@ export default function CartSummary({
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Tax (10%)</span>
+            <span className="text-gray-600 flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+            </span>
             <span className="font-semibold text-gray-800">
               {formatPrice(tax)}
             </span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Shipping Fee</span>
+            <span className="text-gray-600 flex items-center gap-2">
+              <Truck className="w-4 h-4 text-blue-500" /> Shipping Fee
+            </span>
             <span className="font-semibold">
               {shipping === 0 ? (
                 <span className="text-green-600 font-bold">FREE</span>
@@ -164,7 +167,6 @@ export default function CartSummary({
                   <strong className="font-bold">FREE SHIPPING</strong>!
                 </p>
               </div>
-              {/* Progress bar */}
               <div className="w-full bg-blue-100 rounded-full h-2 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full transition-all duration-500 rounded-full"
@@ -182,7 +184,10 @@ export default function CartSummary({
 
           {/* Total */}
           <div className="flex justify-between items-center pt-2">
-            <span className="text-xl font-bold text-gray-900">Total</span>
+            <span className="text-xl font-bold flex items-center gap-2 text-gray-900">
+              <CreditCard className="w-5 h-5 text-orange-600" />
+              Total
+            </span>
             <div className="text-right">
               <div className="text-3xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                 {formatPrice(total)}
@@ -206,24 +211,11 @@ export default function CartSummary({
               : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
           }`}
         >
-          <CreditCard className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
           <span>Proceed to Checkout</span>
-          <svg
-            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
         </button>
 
-        {/* Empty state message */}
+        {/* Empty message */}
         {validSelectedItems.length === 0 && selectedItems.length === 0 && (
           <p className="text-center text-gray-500 text-sm mt-4">
             Select items to proceed to checkout
@@ -233,17 +225,7 @@ export default function CartSummary({
         {/* Security badge */}
         <div className="mt-6 pt-6 border-t border-gray-100">
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-            <svg
-              className="w-5 h-5 text-green-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ShieldCheck className="w-5 h-5 text-green-500" />
             <span>Secure checkout guaranteed</span>
           </div>
         </div>
