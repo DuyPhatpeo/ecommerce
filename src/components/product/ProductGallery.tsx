@@ -38,24 +38,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   // Khóa scroll khi mở zoom
   useEffect(() => {
-    if (isZoomed) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    document.body.style.overflow = isZoomed ? "hidden" : "auto";
+    return () => (document.body.style.overflow = "auto");
   }, [isZoomed]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (isZoomed) {
-        if (e.key === "Escape") setIsZoomed(false);
-        if (e.key === "ArrowRight") nextImage();
-        if (e.key === "ArrowLeft") prevImage();
-      }
+      if (!isZoomed) return;
+      if (e.key === "Escape") setIsZoomed(false);
+      if (e.key === "ArrowRight") nextImage();
+      if (e.key === "ArrowLeft") prevImage();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -134,7 +127,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
       {/* Thumbnail */}
       <div className="flex justify-center px-6 mt-2">
-        <div className="grid grid-cols-4 gap-3 max-w-md">
+        <div
+          className={`grid gap-3 max-w-md ${
+            images.length === 1
+              ? "grid-cols-1 justify-items-center"
+              : images.length === 2
+              ? "grid-cols-2 justify-items-center"
+              : images.length === 3
+              ? "grid-cols-3 justify-items-center"
+              : "grid-cols-4"
+          }`}
+        >
           {images.slice(0, visibleThumbs).map((img, idx) => {
             const remaining = images.length - visibleThumbs;
             const showOverlay = idx === visibleThumbs - 1 && remaining > 0;
@@ -172,7 +175,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
       {/* Zoom Modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 bg-black/90 z-100 flex items-center justify-center cursor-zoom-out select-none"
+          className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center cursor-zoom-out select-none"
           onClick={() => setIsZoomed(false)}
         >
           <button
