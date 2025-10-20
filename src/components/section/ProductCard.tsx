@@ -31,7 +31,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-center gap-4 p-4 max-w-sm w-full bg-white shadow-lg rounded-xl border relative transition-all duration-300 ${
+            className={`flex items-center gap-4 p-4 max-w-sm w-full bg-white shadow-lg rounded-xl  relative transition-all duration-300 ${
               t.visible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2"
@@ -41,7 +41,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-16 h-16 rounded-lg border object-cover"
+                className="w-16 h-16 rounded-lg  object-cover"
               />
             ) : (
               <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
@@ -94,7 +94,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       await addToCart(id, 1);
       showCartToast(img, title, price);
     } catch {
-      toast.error("❌ Không thể thêm sản phẩm vào giỏ hàng!");
+      toast.error("Không thể thêm sản phẩm vào giỏ hàng!");
     } finally {
       setLoading(false);
     }
