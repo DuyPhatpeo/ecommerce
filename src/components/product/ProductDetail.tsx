@@ -26,7 +26,7 @@ interface Product {
   description?: string;
   specs?: Record<string, string>;
   reviews?: Review[];
-  stock: number; // ✅ thêm stock để khớp với ProductInfo
+  stock: number;
 }
 
 export default function ProductDetail() {

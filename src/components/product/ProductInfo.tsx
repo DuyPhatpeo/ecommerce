@@ -32,10 +32,10 @@ const QuantitySelector = memo(
     const handleChange = (val: number) => {
       if (val < 1) {
         setQuantity(1);
-        toast.error("❌ Số lượng tối thiểu là 1!");
+        toast.error("❌ Minimum quantity is 1!");
       } else if (val > stock) {
         setQuantity(stock);
-        toast.error(`⚠️ Chỉ còn ${stock} sản phẩm trong kho!`);
+        toast.error(`⚠️ Only ${stock} items left in stock!`);
       } else {
         setQuantity(val);
       }
@@ -81,13 +81,13 @@ const ProductInfo = ({
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  /** ======= Toast gọn gàng & tái sử dụng ======= */
+  /** ======= Compact & Reusable Toast ======= */
   const showCartToast = useCallback(
     (imageUrl: string) => {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl border relative transition-all ${
+            className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl relative transition-all ${
               t.visible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2"
@@ -104,17 +104,17 @@ const ProductInfo = ({
                 {title}
               </p>
               <p className="text-gray-600">
-                Đã thêm{" "}
+                Added{" "}
                 <span className="text-orange-500 font-semibold">
                   {quantity}
                 </span>{" "}
-                sản phẩm vào giỏ hàng
+                item(s) to your cart
               </p>
               <p className="text-gray-700 font-medium">{price.toFixed(2)} $</p>
 
               <Button
                 type="button"
-                label="Xem giỏ hàng"
+                label="View cart"
                 onClick={() => {
                   toast.dismiss(t.id);
                   navigate("/cart");
@@ -136,11 +136,11 @@ const ProductInfo = ({
     [navigate, price, quantity, title]
   );
 
-  /** ======= Xử lý thêm giỏ hàng ======= */
+  /** ======= Handle Add to Cart ======= */
   const handleAddToCart = useCallback(async () => {
     if (loading) return;
     if (quantity > stock) {
-      toast.error(`Chỉ còn ${stock} sản phẩm trong kho!`);
+      toast.error(`Only ${stock} items left in stock!`);
       return;
     }
 
@@ -149,93 +149,162 @@ const ProductInfo = ({
       await addToCart(id, quantity);
       showCartToast(images?.[0]);
     } catch {
-      toast.error("❌ Không thể thêm sản phẩm vào giỏ hàng!");
+      toast.error("❌ Failed to add product to cart!");
     } finally {
       setLoading(false);
     }
   }, [id, quantity, stock, images, loading, showCartToast]);
 
+  /** ======= Handle Quantity for Mobile ======= */
+  const handleMobileQuantityChange = (val: number) => {
+    if (val < 1) {
+      setQuantity(1);
+      toast.error("❌ Minimum quantity is 1!");
+    } else if (val > stock) {
+      setQuantity(stock);
+      toast.error(`⚠️ Only ${stock} items left in stock!`);
+    } else {
+      setQuantity(val);
+    }
+  };
+
   return (
-    <div
-      className={`flex flex-col ${
-        loading ? "pointer-events-none opacity-80" : ""
-      }`}
-    >
-      {/* ======= Title ======= */}
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">{title}</h2>
+    <>
+      <div
+        className={`flex flex-col pb-24 md:pb-0 ${
+          loading ? "pointer-events-none opacity-80" : ""
+        }`}
+      >
+        {/* ======= Title ======= */}
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">{title}</h2>
 
-      {/* ======= Rating ======= */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="flex text-orange-400">
-          {Array.from({ length: rating }, (_, i) => (
-            <Star key={i} className="w-5 h-5 fill-current" />
-          ))}
+        {/* ======= Rating ======= */}
+        <div className="flex items-center gap-2 mb-6">
+          <div className="flex text-orange-400">
+            {Array.from({ length: rating }, (_, i) => (
+              <Star key={i} className="w-5 h-5 fill-current" />
+            ))}
+          </div>
+          <span className="text-gray-600">(128 reviews)</span>
         </div>
-        <span className="text-gray-600">(128 reviews)</span>
+
+        {/* ======= Price ======= */}
+        <div className="bg-orange-50 rounded-xl p-6 mb-6">
+          <div className="text-4xl font-bold text-orange-600 mb-1">
+            {price.toFixed(2)} $
+          </div>
+          {oldPrice && (
+            <div className="text-gray-500 line-through">{oldPrice} $</div>
+          )}
+          <div className="text-sm text-gray-500 mt-2">
+            Stock: <span className="font-semibold text-gray-800">{stock}</span>{" "}
+            item(s) left
+          </div>
+        </div>
+
+        {/* ======= Quantity (Desktop only) ======= */}
+        <div className="hidden md:block">
+          <QuantitySelector
+            quantity={quantity}
+            setQuantity={setQuantity}
+            stock={stock}
+          />
+        </div>
+
+        {/* ======= Add to cart (Desktop only) ======= */}
+        <div className="hidden md:flex gap-3 mb-6">
+          <Button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={loading}
+            icon={<ShoppingBag className="w-5 h-5" />}
+            label={
+              loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Adding...
+                </span>
+              ) : (
+                "Add to cart"
+              )
+            }
+            className={`flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2 ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          />
+          <Button
+            type="button"
+            icon={<Heart className="w-6 h-6" />}
+            className="w-14 h-14 border-2 border-gray-300 rounded-xl hover:border-red-500 hover:text-red-500 flex items-center justify-center"
+          />
+        </div>
+
+        {/* ======= Info ======= */}
+        <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
+          <div className="flex justify-between">
+            <span>Category:</span>
+            <span className="font-semibold">{category}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Brand:</span>
+            <span className="font-semibold">{brand}</span>
+          </div>
+        </div>
       </div>
 
-      {/* ======= Price ======= */}
-      <div className="bg-orange-50 rounded-xl p-6 mb-6">
-        <div className="text-4xl font-bold text-orange-600 mb-1">
-          {price.toFixed(2)} $
-        </div>
-        {oldPrice && (
-          <div className="text-gray-500 line-through">{oldPrice} $</div>
-        )}
-        <div className="text-sm text-gray-500 mt-2">
-          Còn lại: <span className="font-semibold text-gray-800">{stock}</span>{" "}
-          sản phẩm
-        </div>
-      </div>
+      {/* ======= Mobile Taskbar (Sticky Bottom) ======= */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 p-4 safe-area-bottom">
+        <div className="flex items-center gap-3">
+          {/* Price Info */}
+          <div className="flex-1 min-w-0">
+            <div className="text-xs text-gray-500 mb-0.5">Product Price</div>
+            <div className="text-2xl font-bold text-orange-600 leading-tight">
+              {price.toFixed(2)} $
+            </div>
+          </div>
 
-      {/* ======= Quantity ======= */}
-      <QuantitySelector
-        quantity={quantity}
-        setQuantity={setQuantity}
-        stock={stock}
-      />
+          {/* Quantity Selector - Compact */}
+          <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2 py-1.5">
+            <Button
+              type="button"
+              label="-"
+              onClick={() => handleMobileQuantityChange(quantity - 1)}
+              disabled={loading}
+              className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            />
+            <span className="w-9 text-center font-bold text-gray-800 text-base">
+              {quantity}
+            </span>
+            <Button
+              type="button"
+              label="+"
+              onClick={() => handleMobileQuantityChange(quantity + 1)}
+              disabled={loading}
+              className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            />
+          </div>
 
-      {/* ======= Add to cart ======= */}
-      <div className="flex gap-3 mb-6">
-        <Button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={loading}
-          icon={<ShoppingBag className="w-5 h-5" />}
-          label={
-            loading ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                Đang thêm...
-              </span>
-            ) : (
-              "Thêm vào giỏ hàng"
-            )
-          }
-          className={`flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2 ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-        />
-        <Button
-          type="button"
-          icon={<Heart className="w-6 h-6" />}
-          className="w-14 h-14 border-2 border-gray-300 rounded-xl hover:border-red-500 hover:text-red-500 flex items-center justify-center"
-        />
-      </div>
-
-      {/* ======= Info ======= */}
-      <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
-        <div className="flex justify-between">
-          <span>Category:</span>
-          <span className="font-semibold">{category}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Brand:</span>
-          <span className="font-semibold">{brand}</span>
+          {/* Add to Cart Button */}
+          <Button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={loading}
+            icon={
+              loading ? (
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              ) : (
+                <ShoppingBag className="w-5 h-5" />
+              )
+            }
+            label={!loading && <span className="ml-1.5">Add</span>}
+            className={`bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 min-w-[100px] transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
