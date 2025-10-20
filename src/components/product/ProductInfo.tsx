@@ -394,7 +394,6 @@ const ProductInfo = ({
       </div>
 
       {/* ======= Mobile/Tablet Taskbar ======= */}
-      {/* ======= Mobile/Tablet Taskbar ======= */}
       <div className="block lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 p-4 safe-area-bottom">
         <div className="flex items-center gap-3">
           {/* Price Info */}
@@ -454,7 +453,7 @@ const ProductInfo = ({
               loading || isOutOfStock ? "opacity-70 cursor-not-allowed" : ""
             }`}
           />
-          {/* ❤️ Favorite */}
+          {/* ❤️ Favorite
           <Button
             type="button"
             onClick={handleToggleFavorite}
@@ -471,7 +470,7 @@ const ProductInfo = ({
                 ? "border-red-500 bg-red-50"
                 : "border-gray-300 hover:border-red-400 hover:text-red-500"
             }`}
-          />
+          /> */}
         </div>
       </div>
     </>

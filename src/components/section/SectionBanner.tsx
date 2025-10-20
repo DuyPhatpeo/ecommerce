@@ -41,7 +41,8 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
         <h1
           className="font-bold mb-3 
           text-2xl sm:text-3xl md:text-5xl lg:text-6xl 
-          leading-tight"
+          leading-tight
+          overflow-hidden text-ellipsis line-clamp-2"
         >
           {title}
         </h1>
@@ -49,7 +50,8 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
         {subtitle && (
           <p
             className="text-sm sm:text-base md:text-lg lg:text-xl 
-            opacity-90 max-w-xl sm:max-w-2xl"
+            opacity-90 max-w-xl sm:max-w-2xl
+            overflow-hidden text-ellipsis line-clamp-3"
           >
             {subtitle}
           </p>
