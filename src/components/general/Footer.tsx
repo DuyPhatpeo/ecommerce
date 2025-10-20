@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[#1d1d1d] text-gray-300 py-20 px-8 sm:px-12 md:px-20">
+    <footer className="bg-[#1d1d1d] text-gray-300 py-30 px-8 sm:px-12 md:px-20">
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
         {/* About Us */}
         <div>
