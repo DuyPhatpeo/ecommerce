@@ -11,6 +11,7 @@ interface Product {
   oldPrice?: number;
   status?: string;
   images?: string[];
+  stock?: number;
 }
 
 interface Section {
@@ -156,6 +157,7 @@ const ProductList: React.FC = () => {
                 title: product.title,
                 price: product.price,
                 oldPrice: product.oldPrice,
+                stock: product.stock,
               }}
             />
           ))}

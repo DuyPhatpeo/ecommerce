@@ -11,6 +11,7 @@ interface Product {
   img: string;
   price: number;
   oldPrice?: number;
+  stock?: number; // Added stock property
 }
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
@@ -19,13 +20,17 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { id, title, img, price, oldPrice } = data;
+  const { id, title, img, price, oldPrice, stock = 0 } = data;
+
+  // Check if out of stock
+  const isOutOfStock = stock === 0;
+
   const discountPercent =
     oldPrice && oldPrice > price
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
-  /** ✅ Toast khi thêm sản phẩm */
+  /** ✅ Toast when item is added to cart */
   const showCartToast = useCallback(
     (imageUrl: string, title: string, price: number) => {
       toast.custom(
@@ -54,16 +59,16 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                 {title}
               </p>
               <p className="text-sm text-gray-600">
-                Đã thêm <span className="font-semibold text-orange-500">1</span>{" "}
-                sản phẩm vào giỏ hàng
+                Added <span className="font-semibold text-orange-500">1</span>{" "}
+                item to your cart
               </p>
               <p className="text-sm text-gray-700 font-medium">
-                {price.toFixed(2)} $
+                ${price.toFixed(2)}
               </p>
 
               <Button
                 type="button"
-                label="Xem giỏ hàng"
+                label="View Cart"
                 onClick={() => {
                   toast.dismiss(t.id);
                   navigate("/cart");
@@ -86,39 +91,53 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     [navigate]
   );
 
-  /** ✅ Hàm thêm vào giỏ hàng */
+  /** ✅ Handle add to cart */
   const handleAddToCart = useCallback(async () => {
-    if (loading) return;
+    if (loading || isOutOfStock) return;
+
     setLoading(true);
     try {
       await addToCart(id, 1);
       showCartToast(img, title, price);
     } catch {
-      toast.error("Không thể thêm sản phẩm vào giỏ hàng!");
+      toast.error("Failed to add item to cart!");
     } finally {
       setLoading(false);
     }
-  }, [id, img, title, price, loading, showCartToast]);
+  }, [id, img, title, price, loading, isOutOfStock, showCartToast]);
 
   const icons = [
     {
       id: "cart",
       icon: <ShoppingBag size={16} />,
-      label: "Add to Bag",
+      label: isOutOfStock ? "Out of Stock" : "Add to Cart",
       action: handleAddToCart,
+      disabled: isOutOfStock,
     },
-    { id: "wishlist", icon: <Heart size={16} />, label: "Add to Wishlist" },
-    { id: "share", icon: <Share2 size={16} />, label: "Share" },
+    {
+      id: "wishlist",
+      icon: <Heart size={16} />,
+      label: "Add to Wishlist",
+      disabled: false,
+    },
+    {
+      id: "share",
+      icon: <Share2 size={16} />,
+      label: "Share",
+      disabled: false,
+    },
   ];
 
   return (
     <div
-      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 
-                 w-full overflow-hidden border border-gray-100"
+      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 
+                 w-full overflow-hidden border border-gray-100 ${
+                   isOutOfStock ? "opacity-90" : ""
+                 }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Hình ảnh */}
+      {/* Image */}
       <Link to={`/product/${id}`} className="block">
         <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] overflow-hidden rounded-t-2xl bg-gray-50">
           <img
@@ -126,17 +145,35 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             alt={title}
             className={`w-full h-full object-cover transition-all duration-700 ${
               isHovered ? "scale-110 rotate-1" : "scale-100 rotate-0"
-            }`}
+            } ${isOutOfStock ? "grayscale-[30%]" : ""}`}
           />
 
-          {/* Badge giảm giá */}
-          {discountPercent > 0 && (
+          {/* Out of stock overlay */}
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
+                <p className="text-gray-800 font-bold text-sm sm:text-base">
+                  OUT OF STOCK
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Discount badge */}
+          {!isOutOfStock && discountPercent > 0 && (
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
               -{discountPercent}%
             </div>
           )}
 
-          {/* Icon hành động */}
+          {/* Low stock badge */}
+          {!isOutOfStock && stock > 0 && stock <= 5 && (
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-yellow-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
+              Only {stock} left
+            </div>
+          )}
+
+          {/* Action icons */}
           <div
             className={`absolute top-3 sm:top-4 right-3 sm:right-4 flex flex-col gap-2 transition-all duration-500 ${
               isHovered
@@ -156,10 +193,19 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                   icon={item.icon}
                   onClick={(e) => {
                     e.preventDefault();
+                    if (item.disabled) {
+                      if (item.id === "cart") {
+                        toast.error("This product is currently out of stock!");
+                      }
+                      return;
+                    }
                     item.id === "cart" && item.action && item.action();
                   }}
+                  disabled={item.disabled}
                   className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-300 shadow-md ${
-                    hoveredIcon === item.id
+                    item.disabled
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : hoveredIcon === item.id
                       ? "bg-orange-500 text-white scale-110 shadow-orange-500/50"
                       : "bg-white/90 text-gray-700 hover:bg-orange-500 hover:text-white"
                   }`}
@@ -170,19 +216,26 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         </div>
       </Link>
 
-      {/* Thông tin */}
+      {/* Info */}
       <div className="p-4 sm:p-5">
         <h3
-          className="text-gray-800 font-semibold text-base sm:text-lg md:text-xl leading-tight line-clamp-2 
-                     min-h-[38px] sm:min-h-[44px] mb-2 sm:mb-3 group-hover:text-orange-600 
-                     transition-colors duration-300 text-left"
+          className={`font-semibold text-base sm:text-lg md:text-xl leading-tight line-clamp-2 
+                     min-h-[38px] sm:min-h-[44px] mb-2 sm:mb-3 transition-colors duration-300 text-left ${
+                       isOutOfStock
+                         ? "text-gray-500"
+                         : "text-gray-800 group-hover:text-orange-600"
+                     }`}
           title={title}
         >
           {title || "Untitled Product"}
         </h3>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-orange-600 font-bold text-base sm:text-lg">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <span
+            className={`font-bold text-base sm:text-lg ${
+              isOutOfStock ? "text-gray-400" : "text-orange-600"
+            }`}
+          >
             ${price.toFixed(2)}
           </span>
           {oldPrice && (
@@ -190,9 +243,26 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               ${oldPrice.toFixed(2)}
             </span>
           )}
-          {discountPercent > 0 && (
+          {!isOutOfStock && discountPercent > 0 && (
             <span className="ml-auto text-green-600 text-[11px] sm:text-xs font-semibold bg-green-50 px-2 py-1 rounded-full">
               Save ${(oldPrice! - price!).toFixed(2)}
+            </span>
+          )}
+        </div>
+
+        {/* Stock status */}
+        <div className="flex items-center justify-between">
+          {isOutOfStock ? (
+            <span className="text-red-500 text-xs sm:text-sm font-semibold">
+              ⚠️ Out of stock
+            </span>
+          ) : stock <= 5 ? (
+            <span className="text-yellow-600 text-xs sm:text-sm font-semibold">
+              ⚡ Almost sold out – {stock} left
+            </span>
+          ) : (
+            <span className="text-green-600 text-xs sm:text-sm font-semibold">
+              ✓ In stock
             </span>
           )}
         </div>
