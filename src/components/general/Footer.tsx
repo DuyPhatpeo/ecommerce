@@ -120,7 +120,6 @@ const Footer: React.FC = () => {
               Follow
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]"></span>
             </h3>
-            <p className="text-sm text-gray-400 mb-4">Let's be social</p>
 
             <div className="overflow-hidden mb-2 ">
               <iframe

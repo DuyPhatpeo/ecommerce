@@ -18,6 +18,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const visibleThumbs = 4;
 
+  // Change image with fade effect
   const changeImage = useCallback((newIndex: number) => {
     setFade(false);
     setTimeout(() => {
@@ -36,7 +37,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     changeImage(selectedImage === 0 ? images.length - 1 : selectedImage - 1);
   }, [selectedImage, images.length, changeImage]);
 
-  // Khóa scroll khi mở zoom
+  // Lock scroll when modal open
   useEffect(() => {
     document.body.style.overflow = isZoomed ? "hidden" : "auto";
     return () => (document.body.style.overflow = "auto");
@@ -54,7 +55,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [isZoomed, nextImage, prevImage]);
 
-  // Handle zoom & drag
+  // Zoom & drag handlers
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     setZoom((z) => Math.max(1, Math.min(3, z - e.deltaY * 0.0015)));
@@ -77,7 +78,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   return (
     <div className="space-y-5">
-      {/* Ảnh chính */}
+      {/* Main image */}
       <div
         className="relative aspect-[4/5] bg-gray-50 border border-gray-200 rounded-xl overflow-hidden shadow-sm cursor-zoom-in"
         onClick={() => setIsZoomed(true)}
@@ -95,7 +96,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
           />
         </div>
 
-        {/* Nút điều hướng */}
+        {/* Navigation buttons */}
         {images.length > 1 && (
           <>
             <Button
@@ -119,13 +120,13 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
           </>
         )}
 
-        {/* Nút Zoom */}
+        {/* Zoom icon */}
         <div className="absolute bottom-3 right-3 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all">
           <ZoomIn className="w-5 h-5 text-gray-600" />
         </div>
       </div>
 
-      {/* Thumbnail */}
+      {/* Thumbnails */}
       <div className="flex justify-center px-6 mt-2">
         <div
           className={`grid gap-3 max-w-md ${
@@ -145,7 +146,10 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             return (
               <button
                 key={idx}
-                onClick={() => !showOverlay && changeImage(idx)}
+                onClick={() => {
+                  changeImage(idx);
+                  setIsZoomed(true); // mở modal ngay khi click
+                }}
                 aria-label={`Select image ${idx + 1}`}
                 className={`relative rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                   selectedImage === idx
