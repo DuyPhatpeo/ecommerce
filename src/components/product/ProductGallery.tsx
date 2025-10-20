@@ -16,6 +16,8 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const [dragging, setDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
+  const visibleThumbs = 4;
+
   const changeImage = useCallback((newIndex: number) => {
     setFade(false);
     setTimeout(() => {
@@ -33,6 +35,18 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const prevImage = useCallback(() => {
     changeImage(selectedImage === 0 ? images.length - 1 : selectedImage - 1);
   }, [selectedImage, images.length, changeImage]);
+
+  // Khóa scroll khi mở zoom
+  useEffect(() => {
+    if (isZoomed) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isZoomed]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -120,43 +134,45 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
       {/* Thumbnail */}
       <div className="flex justify-center px-6 mt-2">
-        <div
-          className={`grid gap-3 max-w-md ${
-            images.length <= 2
-              ? "grid-cols-2"
-              : images.length === 3
-              ? "grid-cols-3"
-              : "grid-cols-4"
-          }`}
-        >
-          {images.map((img, idx) => (
-            <button
-              key={idx}
-              onClick={() => changeImage(idx)}
-              aria-label={`Select image ${idx + 1}`}
-              className={`rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                selectedImage === idx
-                  ? "border-orange-500 scale-105 shadow-md"
-                  : "border-gray-200 hover:border-orange-300"
-              }`}
-            >
-              <div className="aspect-[4/5] w-full bg-gray-50 flex items-center justify-center">
-                <img
-                  src={img}
-                  alt={`${title} ${idx + 1}`}
-                  loading="lazy"
-                  className="w-full h-full object-cover object-center select-none"
-                />
-              </div>
-            </button>
-          ))}
+        <div className="grid grid-cols-4 gap-3 max-w-md">
+          {images.slice(0, visibleThumbs).map((img, idx) => {
+            const remaining = images.length - visibleThumbs;
+            const showOverlay = idx === visibleThumbs - 1 && remaining > 0;
+
+            return (
+              <button
+                key={idx}
+                onClick={() => !showOverlay && changeImage(idx)}
+                aria-label={`Select image ${idx + 1}`}
+                className={`relative rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                  selectedImage === idx
+                    ? "border-orange-500 scale-105 shadow-md"
+                    : "border-gray-200 hover:border-orange-300"
+                }`}
+              >
+                <div className="aspect-[4/5] w-full bg-gray-50 flex items-center justify-center">
+                  <img
+                    src={img}
+                    alt={`${title} ${idx + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center select-none"
+                  />
+                  {showOverlay && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold text-lg">
+                      +{remaining}
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Zoom Modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center cursor-zoom-out select-none"
+          className="fixed inset-0 bg-black/90 z-100 flex items-center justify-center cursor-zoom-out select-none"
           onClick={() => setIsZoomed(false)}
         >
           <button
