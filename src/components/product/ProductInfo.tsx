@@ -32,10 +32,10 @@ const QuantitySelector = memo(
     const handleChange = (val: number) => {
       if (val < 1) {
         setQuantity(1);
-        toast.error("❌ Minimum quantity is 1!");
+        toast.error("Minimum quantity is 1!");
       } else if (val > stock) {
         setQuantity(stock);
-        toast.error(`⚠️ Only ${stock} items left in stock!`);
+        toast.error(`Only ${stock} items left in stock!`);
       } else {
         setQuantity(val);
       }
@@ -149,7 +149,7 @@ const ProductInfo = ({
       await addToCart(id, quantity);
       showCartToast(images?.[0]);
     } catch {
-      toast.error("❌ Failed to add product to cart!");
+      toast.error("Failed to add product to cart!");
     } finally {
       setLoading(false);
     }
@@ -159,10 +159,10 @@ const ProductInfo = ({
   const handleMobileQuantityChange = (val: number) => {
     if (val < 1) {
       setQuantity(1);
-      toast.error("❌ Minimum quantity is 1!");
+      toast.error("Minimum quantity is 1!");
     } else if (val > stock) {
       setQuantity(stock);
-      toast.error(`⚠️ Only ${stock} items left in stock!`);
+      toast.error(`Only ${stock} items left in stock!`);
     } else {
       setQuantity(val);
     }
@@ -194,7 +194,9 @@ const ProductInfo = ({
             {price.toFixed(2)} $
           </div>
           {oldPrice && (
-            <div className="text-gray-500 line-through">{oldPrice} $</div>
+            <div className="text-gray-500 line-through">
+              {oldPrice.toFixed(2)} $
+            </div>
           )}
           <div className="text-sm text-gray-500 mt-2">
             Stock: <span className="font-semibold text-gray-800">{stock}</span>{" "}
