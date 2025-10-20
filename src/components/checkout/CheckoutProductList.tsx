@@ -1,9 +1,9 @@
 import React from "react";
+import { ShoppingBag } from "lucide-react";
 
 interface Product {
   id: number;
   title: string;
-  price: number;
   images?: string[];
   quantity: number;
 }
@@ -16,25 +16,40 @@ interface Props {
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
   return (
     <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-orange-100">
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6">
-        <h2 className="text-2xl font-bold text-white">Order Items</h2>
-        <p className="text-orange-100 mt-1">
-          {products.length} {products.length === 1 ? "item" : "items"} in your
-          order
-        </p>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
+        <ShoppingBag className="w-6 h-6 text-white" />
+        <div>
+          <h2 className="text-2xl font-bold text-white">Order Items</h2>
+          <p className="text-orange-100 mt-1 text-sm">
+            {products.length} {products.length === 1 ? "item" : "items"} in your
+            order
+          </p>
+        </div>
       </div>
 
+      {/* Body */}
       <div className="p-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
-            <p className="text-gray-500 mt-4 font-medium">
-              Loading your items...
-            </p>
+          // Loading skeleton
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="animate-pulse bg-orange-50 rounded-2xl p-6 flex items-center gap-6"
+              >
+                <div className="w-24 h-24 bg-orange-100 rounded-xl" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-4 bg-orange-100 rounded w-1/2" />
+                  <div className="h-4 bg-orange-100 rounded w-1/3" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : products.length > 0 ? (
+          // Product list
           <div className="space-y-6">
-            {products.map((p, i) => (
+            {products.map((p) => (
               <div
                 key={p.id}
                 className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
@@ -47,13 +62,10 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
                   className="w-24 h-24 rounded-xl object-cover"
                 />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{p.title}</h3>
-                  <div className="text-gray-600">
-                    ${p.price.toLocaleString()} × {p.quantity}
-                  </div>
-                </div>
-                <div className="text-xl font-bold text-orange-600">
-                  ${(p.price * p.quantity).toLocaleString()}
+                  <h3 className="font-semibold text-lg text-gray-800">
+                    {p.title}
+                  </h3>
+                  <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
                 </div>
               </div>
             ))}
