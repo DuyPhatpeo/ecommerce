@@ -17,13 +17,13 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
 }) => {
   return (
     <div
-      className={`relative ${height} w-full flex items-center justify-start overflow-hidden`}
+      className={`relative w-full flex items-center justify-start overflow-hidden 
+      ${height} sm:h-[300px] md:h-[380px] lg:h-[450px] xl:h-[500px]`}
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        marginTop: 0,
       }}
     >
       {/* Overlay */}
@@ -32,10 +32,27 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
       ></div>
 
       {/* Content */}
-      <div className="relative z-10 text-white px-10 md:px-20 py-16 md:py-24">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">{title}</h1>
+      <div
+        className="relative z-10 text-white 
+        px-4 sm:px-6 md:px-10 lg:px-20 
+        pt-[4rem] sm:pt-[5rem] md:pt-[6rem] lg:pt-[7rem]
+        pb-12 sm:pb-14 md:pb-20 lg:pb-28"
+      >
+        <h1
+          className="font-bold mb-3 
+          text-2xl sm:text-3xl md:text-5xl lg:text-6xl 
+          leading-tight"
+        >
+          {title}
+        </h1>
+
         {subtitle && (
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl">{subtitle}</p>
+          <p
+            className="text-sm sm:text-base md:text-lg lg:text-xl 
+            opacity-90 max-w-xl sm:max-w-2xl"
+          >
+            {subtitle}
+          </p>
         )}
       </div>
     </div>

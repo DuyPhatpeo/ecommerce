@@ -19,7 +19,7 @@ interface ProductInfoProps {
   sku?: string;
 }
 
-/** ======= Quantity Selector ======= */
+/** ======= Quantity Selector (Desktop) ======= */
 const QuantitySelector = memo(
   ({
     quantity,
@@ -108,15 +108,14 @@ const ProductInfo = ({
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  /** ======= Calculate Discount Percentage ======= */
+  /** ======= Discount ======= */
   const discountPercentage = useMemo(() => {
-    if (oldPrice && oldPrice > price) {
+    if (oldPrice && oldPrice > price)
       return Math.round(((oldPrice - price) / oldPrice) * 100);
-    }
     return 0;
   }, [oldPrice, price]);
 
-  /** ======= Compact & Reusable Toast ======= */
+  /** ======= Toast ======= */
   const showCartToast = useCallback(
     (imageUrl: string) => {
       try {
@@ -129,7 +128,6 @@ const ProductInfo = ({
                   : "opacity-0 -translate-y-2"
               }`}
               role="alert"
-              aria-live="assertive"
             >
               <img
                 src={imageUrl || "/placeholder.jpg"}
@@ -139,7 +137,6 @@ const ProductInfo = ({
                 }}
                 className="w-16 h-16 rounded-lg border object-cover"
               />
-
               <div className="flex-1 text-sm">
                 <p className="font-semibold text-gray-800 line-clamp-1">
                   {title}
@@ -154,7 +151,6 @@ const ProductInfo = ({
                 <p className="text-gray-700 font-medium">
                   {price.toFixed(2)} $
                 </p>
-
                 <Button
                   type="button"
                   label="View cart"
@@ -165,7 +161,6 @@ const ProductInfo = ({
                   className="mt-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg transition"
                 />
               </div>
-
               <Button
                 onClick={() => toast.dismiss(t.id)}
                 icon={<X size={16} />}
@@ -176,34 +171,32 @@ const ProductInfo = ({
           ),
           { duration: 3000 }
         );
-      } catch (error) {
+      } catch {
         toast.success("Added to cart successfully!");
       }
     },
     [navigate, price, quantity, title]
   );
 
-  /** ======= Handle Add to Cart ======= */
+  /** ======= Add to Cart ======= */
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
     if (quantity > stock) {
       toast.error(`Only ${stock} items left in stock!`);
       return;
     }
-
     setLoading(true);
     try {
       await addToCart(id, quantity);
       showCartToast(images?.[0]);
-    } catch (error) {
+    } catch {
       toast.error("Failed to add product to cart!");
-      console.error("Add to cart error:", error);
     } finally {
       setLoading(false);
     }
   }, [id, quantity, stock, images, loading, showCartToast, isOutOfStock]);
 
-  /** ======= Handle Favorite Toggle ======= */
+  /** ======= Favorite ======= */
   const handleToggleFavorite = useCallback(() => {
     setIsFavorite((prev) => {
       const newState = !prev;
@@ -214,7 +207,7 @@ const ProductInfo = ({
     });
   }, []);
 
-  /** ======= Handle Quantity for Mobile ======= */
+  /** ======= Quantity (Mobile/Tablet) ======= */
   const handleMobileQuantityChange = useCallback(
     (val: number) => {
       if (val < 1) {
@@ -232,15 +225,16 @@ const ProductInfo = ({
 
   return (
     <>
+      {/* ======= Main Content ======= */}
       <div
         className={`flex flex-col pb-24 md:pb-0 ${
           loading ? "pointer-events-none opacity-80" : ""
         }`}
       >
-        {/* ======= Title ======= */}
+        {/* Title */}
         <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
 
-        {/* ======= Rating ======= */}
+        {/* Rating */}
         <div className="flex items-center gap-2 mb-6">
           <div
             className="flex text-orange-400"
@@ -259,13 +253,10 @@ const ProductInfo = ({
           <span className="text-gray-600">(128 reviews)</span>
         </div>
 
-        {/* ======= Out of Stock Alert ======= */}
+        {/* Stock Alerts */}
         {isOutOfStock && (
-          <div
-            className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3"
-            role="alert"
-          >
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600" />
             <div>
               <p className="text-red-700 font-semibold mb-1">Out of Stock</p>
               <p className="text-sm text-gray-600">
@@ -275,13 +266,9 @@ const ProductInfo = ({
           </div>
         )}
 
-        {/* ======= Low Stock Warning ======= */}
         {isLowStock && !isOutOfStock && (
-          <div
-            className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3"
-            role="alert"
-          >
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600" />
             <div>
               <p className="text-amber-700 font-semibold mb-1">
                 Low Stock Alert
@@ -293,14 +280,14 @@ const ProductInfo = ({
           </div>
         )}
 
-        {/* ======= Price ======= */}
+        {/* Price */}
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
           {discountPercentage > 0 && (
             <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               -{discountPercentage}%
             </div>
           )}
-          <div className="text-4xl font-bold text-orange-600 mb-1 transition-all duration-300">
+          <div className="text-4xl font-bold text-orange-600 mb-1">
             {price.toFixed(2)} $
           </div>
           {oldPrice && (
@@ -308,7 +295,7 @@ const ProductInfo = ({
               {oldPrice.toFixed(2)} $
             </div>
           )}
-          <div className="text-sm text-gray-600 mt-3" aria-live="polite">
+          <div className="text-sm text-gray-600 mt-3">
             Stock:{" "}
             <span
               className={`font-semibold ${
@@ -321,13 +308,13 @@ const ProductInfo = ({
             >
               {stock}
             </span>{" "}
-            item(s) {isOutOfStock ? "unavailable" : "available"}
+            item(s)
           </div>
         </div>
 
-        {/* ======= Quantity (Desktop only) ======= */}
+        {/* Quantity + Add (Desktop only) */}
         {!isOutOfStock && (
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <QuantitySelector
               quantity={quantity}
               setQuantity={setQuantity}
@@ -336,15 +323,12 @@ const ProductInfo = ({
             />
           </div>
         )}
-
-        {/* ======= Add to cart (Desktop only) ======= */}
-        <div className="hidden md:flex gap-3 mb-6">
+        <div className="hidden lg:flex gap-3 mb-6">
           <Button
             type="button"
             onClick={handleAddToCart}
             disabled={loading || isOutOfStock}
             icon={<ShoppingBag className="w-5 h-5" />}
-            aria-label={isOutOfStock ? "Product out of stock" : "Add to cart"}
             label={
               loading ? (
                 <span className="flex items-center gap-2">
@@ -357,24 +341,19 @@ const ProductInfo = ({
                 "Add to cart"
               )
             }
-            className={`flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2 ${
-              loading || isOutOfStock ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all"
           />
           <Button
             type="button"
             onClick={handleToggleFavorite}
             icon={
               <Heart
-                className={`w-6 h-6 transition-all ${
+                className={`w-6 h-6 ${
                   isFavorite ? "fill-red-500 text-red-500" : ""
                 }`}
               />
             }
-            aria-label={
-              isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-            className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center transition-all ${
+            className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center ${
               isFavorite
                 ? "border-red-500 bg-red-50"
                 : "border-gray-300 hover:border-red-500 hover:text-red-500"
@@ -382,18 +361,16 @@ const ProductInfo = ({
           />
         </div>
 
-        {/* ======= Info ======= */}
+        {/* Info */}
         <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
           <div className="flex justify-between">
             <span>Category:</span>
             <span className="font-semibold text-gray-900">{category}</span>
           </div>
-
           <div className="flex justify-between">
             <span>Brand:</span>
             <span className="font-semibold text-gray-900">{brand}</span>
           </div>
-
           {sku && (
             <div className="flex justify-between">
               <span>SKU:</span>
@@ -402,66 +379,28 @@ const ProductInfo = ({
           )}
         </div>
 
-        {/* ======= Additional Info ======= */}
+        {/* Extra Info */}
         <div className="mt-6 bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
           <div className="flex items-center gap-2 text-gray-700">
-            <svg
-              className="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Free shipping on orders over $50
+            ✅ Free shipping on orders over $50
           </div>
           <div className="flex items-center gap-2 text-gray-700">
-            <svg
-              className="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            30-day return policy
+            ✅ 30-day return policy
           </div>
           <div className="flex items-center gap-2 text-gray-700">
-            <svg
-              className="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            1-year warranty included
+            ✅ 1-year warranty included
           </div>
         </div>
       </div>
 
-      {/* ======= Mobile Taskbar (Sticky Bottom) ======= */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 p-4 safe-area-bottom">
+      {/* ======= Mobile/Tablet Taskbar ======= */}
+      {/* ======= Mobile/Tablet Taskbar ======= */}
+      <div className="block lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 p-4 safe-area-bottom">
         <div className="flex items-center gap-3">
           {/* Price Info */}
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 mb-0.5">Product Price</div>
-            <div className="text-2xl font-bold text-orange-600 leading-tight transition-all duration-300">
+            <div className="text-2xl font-bold text-orange-600 leading-tight">
               {price.toFixed(2)} $
             </div>
             {oldPrice && (
@@ -471,7 +410,7 @@ const ProductInfo = ({
             )}
           </div>
 
-          {/* Quantity Selector - Compact */}
+          {/* Quantity Selector */}
           {!isOutOfStock && (
             <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2 py-1.5">
               <Button
@@ -479,13 +418,9 @@ const ProductInfo = ({
                 label="-"
                 onClick={() => handleMobileQuantityChange(quantity - 1)}
                 disabled={loading || quantity <= 1}
-                aria-label="Decrease quantity"
-                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
               />
-              <span
-                className="w-9 text-center font-bold text-gray-800 text-base"
-                aria-label={`Quantity: ${quantity}`}
-              >
+              <span className="w-9 text-center font-bold text-gray-800 text-base">
                 {quantity}
               </span>
               <Button
@@ -493,18 +428,16 @@ const ProductInfo = ({
                 label="+"
                 onClick={() => handleMobileQuantityChange(quantity + 1)}
                 disabled={loading || quantity >= stock}
-                aria-label="Increase quantity"
-                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:bg-orange-50 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-8 h-8 rounded-md bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-500 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           )}
 
-          {/* Add to Cart Button */}
+          {/* 🛒 Add to Cart */}
           <Button
             type="button"
             onClick={handleAddToCart}
             disabled={loading || isOutOfStock}
-            aria-label={isOutOfStock ? "Product out of stock" : "Add to cart"}
             icon={
               loading ? (
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -519,6 +452,24 @@ const ProductInfo = ({
             }
             className={`bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 min-w-[100px] transition-all ${
               loading || isOutOfStock ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          />
+          {/* ❤️ Favorite */}
+          <Button
+            type="button"
+            onClick={handleToggleFavorite}
+            icon={
+              <Heart
+                className={`w-6 h-6 ${
+                  isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                }`}
+              />
+            }
+            aria-label="Toggle favorite"
+            className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center ${
+              isFavorite
+                ? "border-red-500 bg-red-50"
+                : "border-gray-300 hover:border-red-400 hover:text-red-500"
             }`}
           />
         </div>

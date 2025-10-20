@@ -20,6 +20,11 @@ const Header = () => {
   const navigate = useNavigate();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // ✅ refs
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const searchBoxRef = useRef<HTMLDivElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+
   const menuItems = [
     { label: "HOME", path: "/" },
     {
@@ -42,27 +47,26 @@ const Header = () => {
   const fetchCartCount = async () => {
     try {
       const { data } = await getCart();
-
       const total = Array.isArray(data) ? data.length : 0;
-
       setCartCount(total);
     } catch (error) {
       console.error("Lỗi khi lấy giỏ hàng:", error);
     }
   };
 
-  // ✅ Gọi khi mount hoặc route thay đổi
+  // ✅ Cập nhật giỏ hàng mỗi khi chuyển trang
   useEffect(() => {
     fetchCartCount();
   }, [location.pathname]);
 
-  // Scroll effect header
+  // ✅ Hiệu ứng header khi cuộn
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ✅ Hover menu desktop
   const handleMouseEnter = (label: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(label);
@@ -70,10 +74,33 @@ const Header = () => {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
   };
-
   const toggleSubMenu = (label: string) => {
     setActiveMenu((prev) => (prev === label ? null : label));
   };
+
+  // ✅ Focus input khi mở thanh tìm kiếm
+  useEffect(() => {
+    if (searchOpen && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [searchOpen]);
+
+  // ✅ Đóng search & menu khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const outsideSearch =
+        searchBoxRef.current && !searchBoxRef.current.contains(target);
+      const outsideMobile =
+        mobileMenuRef.current && !mobileMenuRef.current.contains(target);
+
+      if (searchOpen && outsideSearch) setSearchOpen(false);
+      if (mobileOpen && outsideMobile) setMobileOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [searchOpen, mobileOpen]);
 
   return (
     <header className="fixed left-0 top-0 w-full z-50">
@@ -91,7 +118,7 @@ const Header = () => {
               <img
                 src="/logo.png"
                 alt="Logo"
-                className="h-8 sm:h-10 md:h-12 w-auto object-contain cursor-pointer"
+                className="h-10 sm:h-11 md:h-12 w-auto object-contain cursor-pointer"
               />
             </Link>
           </div>
@@ -116,7 +143,6 @@ const Header = () => {
                   {item.label}
                 </Link>
 
-                {/* Submenu */}
                 {item.subMenu && activeMenu === item.label && (
                   <div
                     className="absolute left-1/2 -translate-x-1/2 top-[50px] w-[220px] bg-white shadow-lg border border-gray-100 z-40 rounded"
@@ -180,23 +206,27 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* ✅ Search bar */}
         <div
+          ref={searchBoxRef}
           className={`overflow-hidden transition-all duration-300 ${
             searchOpen ? "max-h-28 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="flex justify-center bg-orange-50 py-4 shadow-md relative rounded-b-lg">
             <div className="relative w-full px-4 md:w-3/5">
-              <Search className="absolute left-6 md:left-4 top-1/2 -translate-y-1/2 text-orange-400" />
+              {/* 🔍 icon trái */}
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-400" />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search products..."
                 className="w-full pl-12 pr-12 py-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-gray-500 text-sm sm:text-base"
               />
+              {/* ❌ icon phải */}
               <button
                 onClick={() => setSearchOpen(false)}
-                className="absolute right-6 md:right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
               >
                 <X size={20} />
               </button>
@@ -204,9 +234,12 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ✅ Mobile Menu */}
         {mobileOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-md max-h-[calc(100vh-70px)] sm:max-h-[calc(100vh-80px)] overflow-y-auto">
+          <div
+            ref={mobileMenuRef}
+            className="lg:hidden bg-white border-t border-gray-100 shadow-md max-h-[calc(100vh-70px)] sm:max-h-[calc(100vh-80px)] overflow-y-auto"
+          >
             {menuItems.map((item, i) => (
               <div key={i} className="border-b border-gray-100">
                 {item.subMenu ? (
