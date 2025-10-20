@@ -7,9 +7,9 @@ const Promo: React.FC = () => {
       <div className="w-full lg:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row justify-between items-stretch gap-6 lg:gap-8">
           {/* LEFT GROUP */}
-          <div className="flex flex-col gap-6 w-full lg:w-auto">
+          <div className="flex flex-col gap-6 w-full lg:w-auto md:items-center">
             {/* Top row */}
-            <div className="flex flex-col sm:flex-row justify-center sm:justify-start gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row justify-center sm:justify-start md:justify-center gap-4 sm:gap-6">
               <div className="flex justify-center items-center overflow-hidden w-full sm:w-auto h-48 bg-gray-50">
                 <img
                   src="/c1.jpg"
@@ -28,7 +28,7 @@ const Promo: React.FC = () => {
             </div>
 
             {/* Bottom row */}
-            <div className="flex flex-col sm:flex-row justify-center sm:justify-start gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row justify-center sm:justify-start md:justify-center gap-4 sm:gap-6">
               <div className="flex justify-center items-center overflow-hidden w-full sm:w-auto h-48 bg-gray-50">
                 <img
                   src="/c3.jpg"
