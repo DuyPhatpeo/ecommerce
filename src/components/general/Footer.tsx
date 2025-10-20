@@ -7,7 +7,7 @@ import {
   Send,
   Heart,
 } from "lucide-react";
-import Button from "../ui/Button"; // ✅ import Button
+import Button from "../ui/Button";
 
 const Footer: React.FC = () => {
   const instaImages = [
@@ -22,13 +22,12 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[#1d1d1d] text-gray-300 py-30 px-8 sm:px-12 md:px-20">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+    <footer className="bg-[#1d1d1d] text-gray-300 py-30 px-6 sm:px-10 md:px-20">
+      {/* Top Grid Section */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12">
         {/* About Us */}
         <div>
-          <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-            About
-          </h3>
+          <h3 className="text-white font-semibold text-lg mb-4">About</h3>
           <p className="text-sm leading-relaxed text-gray-400">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
             eiusmod tempor incididunt ut labore dolore magna aliqua.
@@ -37,9 +36,7 @@ const Footer: React.FC = () => {
 
         {/* Newsletter */}
         <div>
-          <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-            Newsletter
-          </h3>
+          <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
           <p className="text-sm text-gray-400 mb-4">
             Stay updated with our latest
           </p>
@@ -59,16 +56,14 @@ const Footer: React.FC = () => {
 
         {/* Instagram Feed */}
         <div>
-          <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-            Instagram
-          </h3>
-          <div className="grid grid-cols-4 gap-3">
+          <h3 className="text-white font-semibold text-lg mb-4">Instagram</h3>
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 gap-2 sm:gap-3">
             {instaImages.map((src, index) => (
               <img
                 key={index}
                 src={src}
                 alt={`insta-${index}`}
-                className="w-full h-16 object-cover rounded-md hover:scale-105 transition-transform duration-300"
+                className="w-full h-16 sm:h-20 object-cover rounded-md hover:scale-105 transition-transform duration-300"
               />
             ))}
           </div>
@@ -76,11 +71,9 @@ const Footer: React.FC = () => {
 
         {/* Follow Us */}
         <div>
-          <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-            Follow
-          </h3>
+          <h3 className="text-white font-semibold text-lg mb-4">Follow</h3>
           <p className="text-sm text-gray-400 mb-4">Let’s be social</p>
-          <div className="flex space-x-3">
+          <div className="flex flex-wrap gap-3">
             {[Facebook, Twitter, Dribbble, Instagram].map((Icon, i) => (
               <Button
                 key={i}
@@ -94,8 +87,8 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Line */}
-      <div className="mt-14 text-center text-sm text-gray-500 border-t border-gray-700 pt-6 flex items-center justify-center gap-1">
+      {/* Bottom Line - Always one line */}
+      <div className="mt-12 text-center text-xs sm:text-sm text-gray-500 border-t border-gray-700 pt-6 flex flex-row items-center justify-center gap-1 flex-wrap sm:flex-nowrap whitespace-nowrap">
         <span>Copyright ©2025 All rights reserved | Made with</span>
         <Heart
           size={16}
@@ -104,7 +97,7 @@ const Footer: React.FC = () => {
         />
         <span>by</span>
         <a href="#" className="text-[#ff9f00] hover:underline ml-1">
-          Colorlib
+          Dino
         </a>
       </div>
     </footer>
