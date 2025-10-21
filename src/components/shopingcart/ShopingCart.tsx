@@ -144,7 +144,7 @@ export default function ShoppingCart() {
           <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                <ShoppingBag className="w-10 h-10 text-black" />
+                <ShoppingBag className="w-10 h-10 text-white" />
               </div>
               <div>
                 <h1 className="text-4xl font-bold text-white mb-1">
