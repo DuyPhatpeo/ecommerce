@@ -18,7 +18,7 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
   return (
     <div
       className={`relative w-full flex items-center justify-start overflow-hidden 
-      ${height} sm:h-[300px] md:h-[380px] lg:h-[450px] xl:h-[500px]`}
+      ${height} sm:h-[300px] md:h-[380px] lg:h-[450px] xl:h-[400px]`}
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : undefined,
         backgroundSize: "cover",
