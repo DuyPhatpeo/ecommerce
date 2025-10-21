@@ -158,14 +158,16 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </div>
           )}
 
+          {/* 🔥 Discount badge (top-left) */}
           {!isOutOfStock && discountPercent > 0 && (
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
               -{discountPercent}%
             </div>
           )}
 
+          {/* ⚡ Low stock badge (below discount, also left side) */}
           {!isOutOfStock && stock > 0 && stock <= 5 && (
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-yellow-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
+            <div className="absolute top-10 left-3 sm:top-12 sm:left-4 bg-yellow-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md hover:shadow-yellow-400/50 transition-shadow duration-300">
               Only {stock} left
             </div>
           )}

@@ -1,5 +1,6 @@
 import React from "react";
 import SectionBanner from "../section/SectionBanner";
+import Shop from "./Shop";
 
 const MainShop = () => {
   return (
@@ -9,6 +10,7 @@ const MainShop = () => {
         title="Shop"
         subtitle="Step into a world of fashion that speaks your personality."
       />
+      <Shop />
     </>
   );
 };

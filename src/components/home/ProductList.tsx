@@ -161,7 +161,7 @@ const ProductList: React.FC = () => {
               key={product.id}
               data={{
                 id: product.id,
-                img: product.images?.[0] || "/placeholder.jpg",
+                img: product.images?.[0] || "no-image.png",
                 title: product.title,
                 price: product.price,
                 oldPrice: product.oldPrice,
