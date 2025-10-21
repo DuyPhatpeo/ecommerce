@@ -302,18 +302,44 @@ const ProductInfo = ({
           {/* Nút mua – chỉ hiển thị desktop */}
           <div className="hidden lg:flex flex-1 gap-3">
             <Button
-              onClick={handleAddToCart}
+              onClick={() => {
+                if (isOutOfStock) {
+                  toast.error("This product is currently out of stock!");
+                  return;
+                }
+                handleAddToCart();
+              }}
               disabled={loading || isOutOfStock}
               icon={<ShoppingBag className="w-5 h-5" />}
-              label={loading ? "Adding..." : "Add to cart"}
-              className="flex-1 bg-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all"
+              label={
+                isOutOfStock
+                  ? "Out of Stock"
+                  : loading
+                  ? "Adding..."
+                  : "Add to cart"
+              }
+              className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+                isOutOfStock
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-orange-600 text-white hover:scale-105"
+              }`}
             />
             <Button
-              onClick={handleBuyNow}
+              onClick={() => {
+                if (isOutOfStock) {
+                  toast.error("This product is currently out of stock!");
+                  return;
+                }
+                handleBuyNow();
+              }}
               disabled={isOutOfStock}
               icon={<CreditCard className="w-5 h-5" />}
-              label="Buy Now"
-              className="flex-1 bg-black text-white py-4 rounded-xl font-semibold hover:bg-gray-800 hover:scale-105 transition-all"
+              label={isOutOfStock ? "Unavailable" : "Buy Now"}
+              className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+                isOutOfStock
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-black text-white hover:bg-gray-800 hover:scale-105"
+              }`}
             />
           </div>
 
@@ -354,13 +380,14 @@ const ProductInfo = ({
         </div>
       </div>
 
+      {/* Mobile sticky bottom bar */}
       <div className="block lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 border-t border-orange-100">
         <div className="flex items-center justify-between gap-3 p-3">
           {/* Quantity Selector */}
           <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2">
             <button
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              disabled={quantity <= 1}
+              disabled={quantity <= 1 || isOutOfStock}
               className="text-xl text-gray-700 hover:text-orange-500 disabled:opacity-50"
             >
               −
@@ -370,6 +397,7 @@ const ProductInfo = ({
               min={1}
               max={stock}
               value={quantity}
+              disabled={isOutOfStock}
               onChange={(e) =>
                 setQuantity(
                   Math.min(Math.max(1, parseInt(e.target.value) || 1), stock)
@@ -379,7 +407,7 @@ const ProductInfo = ({
             />
             <button
               onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
-              disabled={quantity >= stock}
+              disabled={quantity >= stock || isOutOfStock}
               className="text-xl text-gray-700 hover:text-orange-500 disabled:opacity-50"
             >
               +
@@ -389,28 +417,50 @@ const ProductInfo = ({
           {/* Buttons */}
           <div className="flex items-center gap-2 flex-1">
             <Button
-              onClick={handleAddToCart}
+              onClick={() => {
+                if (isOutOfStock) {
+                  toast.error("This product is currently out of stock!");
+                  return;
+                }
+                handleAddToCart();
+              }}
               disabled={loading || isOutOfStock}
               label={
                 <div className="flex items-center justify-center gap-2">
                   <ShoppingBag className="w-5 h-5" />
                   <span className="text-sm">
-                    {loading ? "Adding..." : "Add"}
+                    {isOutOfStock ? "Out" : loading ? "Adding..." : "Add"}
                   </span>
                 </div>
               }
-              className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 active:scale-95 transition-all"
+              className={`flex-1 py-3 rounded-xl font-semibold active:scale-95 transition-all ${
+                isOutOfStock
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-orange-500 text-white hover:bg-orange-600"
+              }`}
             />
             <Button
-              onClick={handleBuyNow}
+              onClick={() => {
+                if (isOutOfStock) {
+                  toast.error("This product is currently out of stock!");
+                  return;
+                }
+                handleBuyNow();
+              }}
               disabled={isOutOfStock}
               label={
                 <div className="flex items-center justify-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  <span className="text-sm">Buy</span>
+                  <span className="text-sm">
+                    {isOutOfStock ? "Out" : "Buy"}
+                  </span>
                 </div>
               }
-              className="flex-1 bg-black text-white py-3 rounded-xl font-semibold hover:bg-gray-800 active:scale-95 transition-all"
+              className={`flex-1 py-3 rounded-xl font-semibold active:scale-95 transition-all ${
+                isOutOfStock
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-black text-white hover:bg-gray-800"
+              }`}
             />
           </div>
         </div>
