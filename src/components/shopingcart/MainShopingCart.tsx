@@ -1,4 +1,3 @@
-import React from "react";
 import SectionBanner from "../section/SectionBanner";
 import ShoppingCart from "./ShopingCart";
 

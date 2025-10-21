@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCartItem } from "../../api/cartApi";
 import { getProductById } from "../../api/productApi";
@@ -54,6 +54,19 @@ const CheckOut: React.FC = () => {
   const shipping = state.shipping || 0;
   const total = state.total || 0;
 
+  // Default empty customer info to satisfy CheckoutSummary type
+  const defaultCustomerInfo: CustomerInfo = {
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    district: "",
+    ward: "",
+    note: "",
+    paymentMethod: "cod",
+  };
+
   // 🔸 Fetch product(s)
   useEffect(() => {
     const fetchProducts = async () => {
@@ -94,6 +107,7 @@ const CheckOut: React.FC = () => {
     };
 
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, navigate]);
 
   // 🔸 Handle place order
@@ -175,7 +189,8 @@ const CheckOut: React.FC = () => {
                 total ||
                 products.reduce((sum, p) => sum + p.price * p.quantity, 0)
               }
-              customerInfo={customerInfo}
+              // pass default when customerInfo is null to satisfy typing and avoid runtime crashes
+              customerInfo={customerInfo ?? defaultCustomerInfo}
               onPlaceOrder={handlePlaceOrder}
             />
             {placingOrder && (

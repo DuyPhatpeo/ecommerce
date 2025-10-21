@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import Button from "../ui/Button";
@@ -27,9 +27,11 @@ const ProductList: React.FC = () => {
 
   // ✅ Lấy dữ liệu sản phẩm
   useEffect(() => {
-    getProducts()
-      .then((data) => {
-        // Chỉ lấy 8 sản phẩm cho mỗi loại
+    const fetchData = async () => {
+      try {
+        const data: Product[] = await getProducts();
+        if (!Array.isArray(data)) throw new Error("Invalid product data");
+
         const latest = data.filter((p) => p.status === "latest").slice(0, 8);
         const coming = data.filter((p) => p.status === "coming").slice(0, 8);
 
@@ -45,25 +47,31 @@ const ProductList: React.FC = () => {
             products: coming,
           },
         ]);
-      })
-      .catch(console.error);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setSections([]);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  // ⏭ Chuyển slide
-  const handleNext = () => {
+  // ⏭ Chuyển slide có debounce animation
+  const handleNext = useCallback(() => {
     if (isAnimating || sections.length === 0) return;
     setIsAnimating(true);
     setCurrent((prev) => (prev === sections.length - 1 ? 0 : prev + 1));
     setTimeout(() => setIsAnimating(false), 600);
-  };
+  }, [isAnimating, sections.length]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (isAnimating || sections.length === 0) return;
     setIsAnimating(true);
     setCurrent((prev) => (prev === 0 ? sections.length - 1 : prev - 1));
     setTimeout(() => setIsAnimating(false), 600);
-  };
+  }, [isAnimating, sections.length]);
 
+  // ⏳ Trạng thái loading
   if (sections.length === 0) {
     return (
       <div className="w-full py-20 text-center text-gray-500">
@@ -141,10 +149,10 @@ const ProductList: React.FC = () => {
         </div>
       </div>
 
-      {/* Product Grid - 2 cột trên mobile */}
+      {/* Product Grid */}
       <div className="max-w-7xl mx-auto relative">
         <div
-          className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 justify-items-center transition-all duration-500 ${
+          className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 justify-items-center transition-all duration-500 ease-in-out ${
             isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
           }`}
         >
@@ -153,7 +161,7 @@ const ProductList: React.FC = () => {
               key={product.id}
               data={{
                 id: product.id,
-                img: product.images?.[0],
+                img: product.images?.[0] || "/placeholder.jpg",
                 title: product.title,
                 price: product.price,
                 oldPrice: product.oldPrice,
@@ -165,33 +173,22 @@ const ProductList: React.FC = () => {
 
         {/* Stats Bar */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-              500+
+          {[
+            { value: "500+", label: "Products Available" },
+            { value: "50K+", label: "Happy Customers" },
+            { value: "4.9★", label: "Average Rating" },
+            { value: "Free", label: "Shipping & Returns" },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                {stat.value}
+              </div>
+              <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
             </div>
-            <div className="text-sm text-gray-600 mt-1">Products Available</div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-              50K+
-            </div>
-            <div className="text-sm text-gray-600 mt-1">Happy Customers</div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-              4.9★
-            </div>
-            <div className="text-sm text-gray-600 mt-1">Average Rating</div>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-              Free
-            </div>
-            <div className="text-sm text-gray-600 mt-1">Shipping & Returns</div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

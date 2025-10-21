@@ -30,38 +30,35 @@ const Banner: React.FC = () => {
 
   const nextSlide = () => {
     setDirection(1);
-    setCurrent((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+    setCurrent((prev) => (prev + 1) % banners.length);
   };
 
   const prevSlide = () => {
     setDirection(-1);
-    setCurrent((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
+    setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
   const bgImage = "/banner-bg.jpg";
 
   const variants = {
     enter: (dir: number) => ({
-      x: dir > 0 ? 150 : -150,
+      x: dir > 0 ? 100 : -100,
       opacity: 0,
-      scale: 0.98,
     }),
     center: {
       x: 0,
       opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6, ease: [0.42, 0, 1, 1] },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
     exit: (dir: number) => ({
-      x: dir > 0 ? -150 : 150,
+      x: dir > 0 ? -100 : 100,
       opacity: 0,
-      scale: 0.98,
-      transition: { duration: 0.4, ease: [0.42, 0, 0.58, 1] },
+      transition: { duration: 0.4, ease: "easeIn" },
     }),
   };
 
   return (
-    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-white">
+    <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-white">
       {/* Background */}
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-cover transition-all duration-700 ease-in-out"
@@ -69,22 +66,22 @@ const Banner: React.FC = () => {
       />
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12">
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 overflow-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
-            key={current}
+            key={banners[current].title}
             custom={direction}
             variants={variants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex flex-col lg:flex-row items-center justify-between w-full"
+            className="flex flex-col lg:flex-row items-center justify-between gap-10"
           >
             {/* LEFT CONTENT */}
             <div className="max-w-xl text-center lg:text-left">
               <motion.h1
-                className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight"
+                className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -102,7 +99,7 @@ const Banner: React.FC = () => {
               </motion.p>
 
               <motion.div
-                className="mt-10 flex items-center justify-center lg:justify-start gap-4"
+                className="mt-10 flex items-center justify-center lg:justify-start"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
@@ -111,46 +108,43 @@ const Banner: React.FC = () => {
                   type="button"
                   icon={<Plus size={22} className="text-white" />}
                   label="ADD TO BAG"
-                  className="bg-gradient-to-r from-orange-400 to-orange-500 px-6 py-3 rounded-full shadow-lg text-white font-semibold hover:scale-110 transition-transform duration-300 flex items-center gap-2"
+                  className="bg-gradient-to-r from-orange-400 to-orange-500 px-6 py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
                 />
               </motion.div>
             </div>
 
-            {/* RIGHT CONTENT (Product Image) */}
+            {/* RIGHT IMAGE */}
             <motion.div
-              className="relative w-full lg:w-1/2 flex justify-center mt-14 lg:mt-0 overflow-visible z-20"
+              className="relative w-full lg:w-1/2 flex justify-center"
               initial={{ opacity: 0, rotate: -10, y: 40 }}
-              animate={{ opacity: 1, rotate: -6, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+              animate={{ opacity: 1, rotate: -5, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.7 }}
             >
               <motion.img
                 src={banners[current].productImage}
                 alt={banners[current].title}
-                className="max-w-[700px] w-full drop-shadow-2xl transition-transform duration-700 ease-in-out"
-                whileHover={{ scale: 1.1, rotate: 0, zIndex: 50 }}
-                style={{ position: "relative" }}
+                className="max-w-[600px] w-full drop-shadow-2xl transition-transform duration-700 ease-in-out"
+                whileHover={{ scale: 1.1, rotate: 0 }}
               />
             </motion.div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* NAVIGATION BUTTONS */}
-      <div className="absolute bottom-6 right-6 flex items-center gap-6 z-30">
-        <Button
-          type="button"
-          icon={<ArrowLeft size={24} />}
-          label="Prev"
+      {/* Navigation Buttons */}
+      <div className="absolute bottom-6 right-6 flex items-center gap-4 z-30">
+        <button
           onClick={prevSlide}
-          className="flex flex-col items-center text-gray-700 hover:text-orange-500 transition duration-300 font-semibold"
-        />
-        <Button
-          type="button"
-          icon={<ArrowRight size={24} />}
-          label="Next"
+          className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <button
           onClick={nextSlide}
-          className="flex flex-col items-center text-gray-700 hover:text-orange-500 transition duration-300 font-semibold"
-        />
+          className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
+        >
+          <ArrowRight size={22} />
+        </button>
       </div>
     </section>
   );
