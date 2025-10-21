@@ -429,11 +429,7 @@ const ProductInfo = ({
                 <div className="flex items-center justify-center gap-2">
                   <ShoppingBag className="w-5 h-5" />
                   <span className="text-sm">
-                    {isOutOfStock
-                      ? "Out"
-                      : loading
-                      ? "Adding..."
-                      : "Add to Card"}
+                    {isOutOfStock ? "Out" : loading ? "Adding..." : "Add Card"}
                   </span>
                 </div>
               }
