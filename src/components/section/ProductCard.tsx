@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Heart, ShoppingBag, Share2, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
 import { addToCart } from "../../api/cartApi";
@@ -11,7 +11,7 @@ interface Product {
   img: string;
   price: number;
   oldPrice?: number;
-  stock?: number; // Added stock property
+  stock?: number;
 }
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
@@ -21,22 +21,18 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const navigate = useNavigate();
 
   const { id, title, img, price, oldPrice, stock = 0 } = data;
-
-  // Check if out of stock
   const isOutOfStock = stock === 0;
-
   const discountPercent =
     oldPrice && oldPrice > price
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
-  /** ✅ Toast when item is added to cart */
   const showCartToast = useCallback(
     (imageUrl: string, title: string, price: number) => {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-center gap-4 p-4 max-w-sm w-full bg-white shadow-lg rounded-xl  relative transition-all duration-300 ${
+            className={`flex items-center gap-4 p-4 max-w-sm w-full bg-white shadow-lg rounded-xl relative transition-all duration-300 ${
               t.visible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2"
@@ -46,7 +42,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-16 h-16 rounded-lg  object-cover"
+                className="w-16 h-16 rounded-lg object-cover"
               />
             ) : (
               <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
@@ -91,10 +87,8 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     [navigate]
   );
 
-  /** ✅ Handle add to cart */
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
-
     setLoading(true);
     try {
       await addToCart(id, 1);
@@ -130,15 +124,21 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
   return (
     <div
-      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 
-                 w-full overflow-hidden border border-gray-100 ${
-                   isOutOfStock ? "opacity-90" : ""
-                 }`}
+      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 w-full overflow-hidden border border-gray-100 ${
+        isOutOfStock ? "opacity-90" : ""
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image */}
-      <Link to={`/product/${id}`} className="block">
+      <NavLink
+        to={`/product/${id}`}
+        className={({ isActive }) =>
+          `block transition-all duration-300 ${
+            isActive ? "ring-2 ring-orange-400 rounded-xl" : ""
+          }`
+        }
+      >
         <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] overflow-hidden rounded-t-2xl bg-gray-50">
           <img
             src={img}
@@ -148,7 +148,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             } ${isOutOfStock ? "grayscale-[30%]" : ""}`}
           />
 
-          {/* Out of stock overlay */}
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
@@ -159,14 +158,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </div>
           )}
 
-          {/* Discount badge */}
           {!isOutOfStock && discountPercent > 0 && (
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
               -{discountPercent}%
             </div>
           )}
 
-          {/* Low stock badge */}
           {!isOutOfStock && stock > 0 && stock <= 5 && (
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-yellow-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg animate-pulse">
               Only {stock} left
@@ -214,20 +211,19 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             ))}
           </div>
         </div>
-      </Link>
+      </NavLink>
 
       {/* Info */}
       <div className="p-4 sm:p-5">
         <h3
-          className={`font-semibold text-base sm:text-lg md:text-xl leading-tight line-clamp-2 
-                     min-h-[38px] sm:min-h-[44px] mb-2 sm:mb-3 transition-colors duration-300 text-left ${
-                       isOutOfStock
-                         ? "text-gray-500"
-                         : "text-gray-800 group-hover:text-orange-600"
-                     }`}
+          className={`font-semibold text-base sm:text-lg md:text-xl leading-tight line-clamp-2 min-h-[38px] sm:min-h-[44px] mb-2 sm:mb-3 transition-colors duration-300 text-left ${
+            isOutOfStock
+              ? "text-gray-500"
+              : "text-gray-800 group-hover:text-orange-600"
+          }`}
           title={title}
         >
-          {title || "Untitled Product"}
+          <NavLink to={`/product/${id}`}>{title || "Untitled Product"}</NavLink>
         </h3>
 
         <div className="flex items-center gap-2 sm:gap-3 mb-2">
@@ -250,7 +246,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
         </div>
 
-        {/* Stock status */}
         <div className="flex items-center justify-between">
           {isOutOfStock ? (
             <span className="text-red-500 text-xs sm:text-sm font-semibold">

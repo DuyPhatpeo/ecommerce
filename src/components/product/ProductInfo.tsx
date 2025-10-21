@@ -298,22 +298,26 @@ const ProductInfo = ({
           </div>
         )}
 
-        {/* Desktop Buttons */}
-        <div className="hidden lg:flex gap-3 mb-6">
-          <Button
-            onClick={handleAddToCart}
-            disabled={loading || isOutOfStock}
-            icon={<ShoppingBag className="w-5 h-5" />}
-            label={loading ? "Adding..." : "Add to cart"}
-            className="flex-1 bg-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all"
-          />
-          <Button
-            onClick={handleBuyNow}
-            disabled={isOutOfStock}
-            icon={<CreditCard className="w-5 h-5" />}
-            label="Buy Now"
-            className="flex-1 bg-black text-white py-4 rounded-xl font-semibold hover:bg-gray-800 hover:scale-105 transition-all"
-          />
+        <div className="flex gap-3 mb-6 items-center">
+          {/* Nút mua – chỉ hiển thị desktop */}
+          <div className="hidden lg:flex flex-1 gap-3">
+            <Button
+              onClick={handleAddToCart}
+              disabled={loading || isOutOfStock}
+              icon={<ShoppingBag className="w-5 h-5" />}
+              label={loading ? "Adding..." : "Add to cart"}
+              className="flex-1 bg-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all"
+            />
+            <Button
+              onClick={handleBuyNow}
+              disabled={isOutOfStock}
+              icon={<CreditCard className="w-5 h-5" />}
+              label="Buy Now"
+              className="flex-1 bg-black text-white py-4 rounded-xl font-semibold hover:bg-gray-800 hover:scale-105 transition-all"
+            />
+          </div>
+
+          {/* Favorite button luôn hiện, sát lề phải */}
           <Button
             onClick={handleToggleFavorite}
             icon={
