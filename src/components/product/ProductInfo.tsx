@@ -213,19 +213,20 @@ const ProductInfo = ({
       },
     });
 
-    toast.success("🧾 Redirecting to checkout...");
+    toast.success("Redirecting to checkout...");
   }, [id, price, quantity, isOutOfStock, navigate]);
 
   /** Favorite */
   const handleToggleFavorite = useCallback(() => {
     setIsFavorite((prev) => {
       const newState = !prev;
-      toast.success(
-        newState ? "Added to favorites!" : "Removed from favorites!"
-      );
       return newState;
     });
-  }, []);
+
+    toast.success(
+      isFavorite ? "Removed from favorites!" : "Added to favorites!"
+    );
+  }, [isFavorite]);
 
   return (
     <>
