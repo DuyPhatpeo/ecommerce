@@ -75,10 +75,17 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-orange-600 text-lg">
-                    {(p.price * p.quantity).toLocaleString("vi-VN")}₫
+                    $
+                    {(p.price * p.quantity).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                    })}
                   </p>
                   <p className="text-sm text-gray-400">
-                    ({p.price.toLocaleString("vi-VN")}₫/item)
+                    ($
+                    {p.price.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                    })}{" "}
+                    / item)
                   </p>
                 </div>
               </div>
