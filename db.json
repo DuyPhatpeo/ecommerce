@@ -254,6 +254,33 @@
       "shipping": 30000,
       "total": 30165,
       "createdAt": "2025-10-20T11:24:22.481Z"
+    },
+    {
+      "id": "e83f",
+      "customer": {
+        "fullName": "Trần Duy Phát",
+        "email": "tranduyphat2810@gmail.com",
+        "phone": "0866482834",
+        "address": "123 abc",
+        "city": "Nha Trang",
+        "district": "dá",
+        "ward": "da",
+        "note": "",
+        "paymentMethod": "banking"
+      },
+      "items": [
+        {
+          "productId": "111",
+          "title": "NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT ",
+          "quantity": 2,
+          "price": 150
+        }
+      ],
+      "subtotal": 300,
+      "tax": 30,
+      "shipping": 30000,
+      "total": 30330,
+      "createdAt": "2025-10-21T00:37:59.275Z"
     }
   ],
   "cart": [

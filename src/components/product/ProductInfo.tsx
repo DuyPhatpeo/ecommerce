@@ -303,7 +303,7 @@ const ProductInfo = ({
           <Button
             onClick={handleAddToCart}
             disabled={loading || isOutOfStock}
-            icon={<CreditCard className="w-5 h-5" />}
+            icon={<ShoppingBag className="w-5 h-5" />}
             label={loading ? "Adding..." : "Add to cart"}
             className="flex-1 bg-orange-600 text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all"
           />
