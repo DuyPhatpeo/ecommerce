@@ -40,9 +40,10 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   // Lock scroll when modal open
   useEffect(() => {
     document.body.style.overflow = isZoomed ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isZoomed]);
-
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {

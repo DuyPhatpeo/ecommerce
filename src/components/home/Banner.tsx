@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import Button from "../ui/Button";
 
 const Banner: React.FC = () => {
@@ -48,12 +48,12 @@ const Banner: React.FC = () => {
     center: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: easeOut },
     },
     exit: (dir: number) => ({
       x: dir > 0 ? -100 : 100,
       opacity: 0,
-      transition: { duration: 0.4, ease: "easeIn" },
+      transition: { duration: 0.4, ease: easeIn },
     }),
   };
 
@@ -66,7 +66,7 @@ const Banner: React.FC = () => {
       />
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
 
-      {/* Content Container */}
+      {/* Content */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 overflow-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
