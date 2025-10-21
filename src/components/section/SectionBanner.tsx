@@ -13,12 +13,12 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
   subtitle,
   bgImage,
   bgColor = "bg-orange-500",
-  height = "h-[350px]",
+  height = "h-[250px]",
 }) => {
   return (
     <div
       className={`relative w-full flex items-center justify-start overflow-hidden 
-      ${height} sm:h-[300px] md:h-[380px] lg:h-[450px] xl:h-[500px]`}
+      ${height} sm:h-[250px] md:h-[380px] lg:h-[350px] xl:h-[400px]`}
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : undefined,
         backgroundSize: "cover",
