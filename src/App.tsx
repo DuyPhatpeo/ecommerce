@@ -9,7 +9,7 @@ import ScrollToTop from "./components/general/ScrollToTop";
 const App: React.FC = () => {
   return (
     <Router>
-      {/* <ScrollToTop /> */}
+      <ScrollToTop />
       <AppRoutes />
       <Toaster position="top-right" reverseOrder={false} />
     </Router>
