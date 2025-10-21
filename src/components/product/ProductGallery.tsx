@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, memo } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
 import Button from "../ui/Button";
 
 interface ProductGalleryProps {
@@ -15,10 +15,28 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
 
-  const visibleThumbs = 4;
+  const [visibleThumbs, setVisibleThumbs] = useState(4);
   const [thumbIndex, setThumbIndex] = useState(0);
   const maxThumbIndex = Math.max(0, images.length - visibleThumbs);
+
+  /** ======================
+   *  RESPONSIVE THUMBNAILS
+   * ====================== */
+  useEffect(() => {
+    const updateVisibleThumbs = () => {
+      if (window.innerWidth < 640) {
+        setVisibleThumbs(3);
+      } else {
+        setVisibleThumbs(4);
+      }
+    };
+
+    updateVisibleThumbs();
+    window.addEventListener("resize", updateVisibleThumbs);
+    return () => window.removeEventListener("resize", updateVisibleThumbs);
+  }, []);
 
   /** ======================
    *  HANDLE MAIN IMAGE CHANGE
@@ -40,7 +58,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
         }
       }, 150);
     },
-    [images.length, thumbIndex]
+    [images.length, thumbIndex, visibleThumbs]
   );
 
   const nextImage = useCallback(() => {
@@ -77,7 +95,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
    * ====================== */
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
-    setZoom((z) => Math.max(1, Math.min(3, z - e.deltaY * 0.0015)));
+    setZoom((z) => Math.max(1, Math.min(4, z - e.deltaY * 0.001)));
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -96,6 +114,34 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const handleMouseUp = () => setDragging(false);
 
   /** ======================
+   *  TOUCH SUPPORT
+   * ====================== */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1 && zoom <= 1) {
+      setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.changedTouches.length === 1 && zoom <= 1) {
+      const touchEnd = {
+        x: e.changedTouches[0].clientX,
+        y: e.changedTouches[0].clientY,
+      };
+      const diffX = touchStart.x - touchEnd.x;
+      const diffY = Math.abs(touchStart.y - touchEnd.y);
+
+      if (Math.abs(diffX) > 50 && diffY < 100) {
+        if (diffX > 0) {
+          nextImage();
+        } else {
+          prevImage();
+        }
+      }
+    }
+  };
+
+  /** ======================
    *  THUMBNAILS SLIDE
    * ====================== */
   const handleNextThumbs = () =>
@@ -109,118 +155,138 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
    *  RENDER
    * ====================== */
   return (
-    <div className="space-y-4 sm:space-y-5">
+    <div className="space-y-3 sm:space-y-4">
       {/* Main image */}
-      <div
-        className="relative aspect-[4/5] bg-gray-50 border border-gray-200 rounded-xl overflow-hidden shadow-sm cursor-zoom-in sm:aspect-[3/4] md:aspect-[4/5]"
-        onClick={() => setIsZoomed(true)}
-      >
+      <div className="relative group">
         <div
-          className={`w-full h-full flex items-center justify-center transition-opacity duration-300 ${
-            fade ? "opacity-100" : "opacity-0"
-          }`}
+          className="relative aspect-[3/4] sm:aspect-[4/5] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-zoom-in"
+          onClick={() => setIsZoomed(true)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
-          <img
-            src={images[selectedImage]}
-            alt={title}
-            loading="lazy"
-            className="w-full h-full object-cover object-center select-none"
-          />
-        </div>
-
-        {images.length > 1 && (
-          <>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              icon={<ChevronLeft className="w-5 h-5" />}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-md"
+          <div
+            className={`w-full h-full flex items-center justify-center transition-opacity duration-300 ${
+              fade ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <img
+              src={images[selectedImage]}
+              alt={title}
+              loading="lazy"
+              className="w-full h-full object-cover object-center select-none"
             />
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              icon={<ChevronRight className="w-5 h-5" />}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-md"
-            />
-          </>
-        )}
+          </div>
 
-        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-white/80 hover:bg-white p-2 rounded-full shadow-md">
-          <ZoomIn className="w-5 h-5 text-gray-600" />
+          {images.length > 1 && (
+            <>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+                icon={<ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 z-10"
+              />
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+                icon={<ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 z-10"
+              />
+            </>
+          )}
+
+          {/* Image counter */}
+          {images.length > 1 && (
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+              {selectedImage + 1} / {images.length}
+            </div>
+          )}
+
+          {/* Zoom icon */}
+          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 bg-white/95 backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 z-10">
+            <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+          </div>
         </div>
       </div>
 
       {/* Thumbnails slider */}
       {images.length > 1 && (
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mt-2">
-          {thumbIndex > 0 && (
-            <button
-              onClick={handlePrevThumbs}
-              className="p-2 rounded-full bg-white border shadow hover:bg-gray-100"
-            >
-              <ChevronLeft className="w-4 h-4 text-gray-600" />
-            </button>
-          )}
+        <div className="relative px-8 sm:px-10">
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            {thumbIndex > 0 && (
+              <button
+                onClick={handlePrevThumbs}
+                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+              </button>
+            )}
 
-          <div
-            className={`flex justify-center gap-2 sm:gap-3 ${
-              visibleImages.length < visibleThumbs ? "mx-auto" : ""
-            }`}
-          >
-            {visibleImages.map((img, idx) => {
-              const actualIndex = thumbIndex + idx;
-              const isActive = selectedImage === actualIndex;
+            <div className="flex justify-center gap-2 sm:gap-3 overflow-hidden">
+              {visibleImages.map((img, idx) => {
+                const actualIndex = thumbIndex + idx;
+                const isActive = selectedImage === actualIndex;
 
-              return (
-                <button
-                  key={actualIndex}
-                  onClick={() => changeImage(actualIndex)}
-                  className={`relative rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                    isActive
-                      ? "border-orange-500 scale-105 opacity-100 shadow-md"
-                      : "border-gray-200 hover:border-orange-300 opacity-50 hover:opacity-90"
-                  }`}
-                >
-                  <div className="aspect-[4/5] w-16 sm:w-20 md:w-24 bg-gray-50 flex items-center justify-center">
-                    <img
-                      src={img}
-                      alt={`${title} ${actualIndex + 1}`}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-center select-none"
-                    />
-                  </div>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={actualIndex}
+                    onClick={() => changeImage(actualIndex)}
+                    className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 ${
+                      isActive
+                        ? "border-orange-500 shadow-lg ring-2 ring-orange-200"
+                        : "border-gray-200 hover:border-orange-300 opacity-60 hover:opacity-100 hover:scale-105"
+                    }`}
+                  >
+                    <div className="aspect-[3/4] w-14 sm:w-18 md:w-20 lg:w-24 bg-gradient-to-br from-gray-50 to-gray-100">
+                      <img
+                        src={img}
+                        alt={`${title} ${actualIndex + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover object-center select-none"
+                      />
+                    </div>
+                    {isActive && (
+                      <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {thumbIndex < maxThumbIndex && (
+              <button
+                onClick={handleNextThumbs}
+                className="absolute right-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+              </button>
+            )}
           </div>
-
-          {thumbIndex < maxThumbIndex && (
-            <button
-              onClick={handleNextThumbs}
-              className="p-2 rounded-full bg-white border shadow hover:bg-gray-100"
-            >
-              <ChevronRight className="w-4 h-4 text-gray-600" />
-            </button>
-          )}
         </div>
       )}
 
       {/* Zoom Modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center cursor-zoom-out select-none px-3 sm:px-5"
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[100] flex items-center justify-center cursor-zoom-out select-none"
           onClick={() => setIsZoomed(false)}
         >
           <button
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-white/20 hover:bg-white/40 p-2 rounded-full text-white"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-2.5 sm:p-3 rounded-full text-white transition-all duration-200 hover:scale-110 active:scale-95 z-10"
             onClick={() => setIsZoomed(false)}
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
+
+          {/* Image counter in modal */}
+          {images.length > 1 && (
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm sm:text-base font-medium z-10">
+              {selectedImage + 1} / {images.length}
+            </div>
+          )}
 
           {images.length > 1 && (
             <>
@@ -230,9 +296,9 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   prevImage();
                 }}
                 icon={
-                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 }
-                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 bg-transparent hover:bg-white/10"
+                className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 sm:p-4 rounded-full transition-all duration-200 hover:scale-110 active:scale-95 z-10"
               />
               <Button
                 onClick={(e) => {
@@ -240,20 +306,29 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   nextImage();
                 }}
                 icon={
-                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 }
-                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 bg-transparent hover:bg-white/10"
+                className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 sm:p-4 rounded-full transition-all duration-200 hover:scale-110 active:scale-95 z-10"
               />
             </>
           )}
 
+          {/* Zoom instructions */}
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs sm:text-sm z-10">
+            <span className="hidden sm:inline">
+              Scroll to zoom • Drag to pan •{" "}
+            </span>
+            <span>Press ESC to close</span>
+          </div>
+
           <div
+            onClick={(e) => e.stopPropagation()}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            className="max-w-full sm:max-w-5xl max-h-[80vh] sm:max-h-[90vh] overflow-hidden"
+            className="relative max-w-[90vw] sm:max-w-5xl max-h-[70vh] sm:max-h-[85vh]"
           >
             <img
               src={images[selectedImage]}
@@ -262,11 +337,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 transform: `scale(${zoom}) translate(${position.x / zoom}px, ${
                   position.y / zoom
                 }px)`,
-                transition: dragging ? "none" : "transform 0.15s ease",
-                cursor: zoom > 1 ? "grab" : "zoom-out",
+                transition: dragging ? "none" : "transform 0.15s ease-out",
+                cursor: zoom > 1 ? (dragging ? "grabbing" : "grab") : "zoom-in",
               }}
               draggable={false}
-              className="object-contain w-full h-full"
+              className="object-contain w-full h-full max-w-full max-h-[70vh] sm:max-h-[85vh]"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (zoom <= 1) {
+                  setZoom(2);
+                }
+              }}
             />
           </div>
         </div>
