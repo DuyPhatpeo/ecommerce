@@ -64,7 +64,7 @@ const OrderSuccess: React.FC = () => {
               Back to Home
             </button>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/cart")}
               className="flex items-center justify-center gap-2 border-2 border-orange-400 text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all"
             >
               <ShoppingBag className="w-5 h-5" />
