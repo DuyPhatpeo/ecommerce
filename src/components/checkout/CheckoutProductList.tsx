@@ -6,6 +6,7 @@ interface Product {
   title: string;
   images?: string[];
   quantity: number;
+  price: number;
 }
 
 interface Props {
@@ -71,6 +72,14 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
                     {p.title}
                   </h3>
                   <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-orange-600 text-lg">
+                    {(p.price * p.quantity).toLocaleString("vi-VN")}₫
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    ({p.price.toLocaleString("vi-VN")}₫/item)
+                  </p>
                 </div>
               </div>
             ))}
