@@ -16,23 +16,20 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const [dragging, setDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
-
   const [visibleThumbs, setVisibleThumbs] = useState(4);
   const [thumbIndex, setThumbIndex] = useState(0);
   const maxThumbIndex = Math.max(0, images.length - visibleThumbs);
+
+  // fallback ảnh nếu rỗng
+  const safeImages = images.length ? images : ["no-image.png"];
 
   /** ======================
    *  RESPONSIVE THUMBNAILS
    * ====================== */
   useEffect(() => {
     const updateVisibleThumbs = () => {
-      if (window.innerWidth < 640) {
-        setVisibleThumbs(3);
-      } else {
-        setVisibleThumbs(4);
-      }
+      setVisibleThumbs(window.innerWidth < 640 ? 3 : 4);
     };
-
     updateVisibleThumbs();
     window.addEventListener("resize", updateVisibleThumbs);
     return () => window.removeEventListener("resize", updateVisibleThumbs);
@@ -43,7 +40,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
    * ====================== */
   const changeImage = useCallback(
     (newIndex: number) => {
-      if (newIndex < 0 || newIndex >= images.length) return;
+      if (newIndex < 0 || newIndex >= safeImages.length) return;
       setFade(false);
       setTimeout(() => {
         setSelectedImage(newIndex);
@@ -58,16 +55,18 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
         }
       }, 150);
     },
-    [images.length, thumbIndex, visibleThumbs]
+    [safeImages.length, thumbIndex, visibleThumbs]
   );
 
   const nextImage = useCallback(() => {
-    changeImage((selectedImage + 1) % images.length);
-  }, [selectedImage, images.length, changeImage]);
+    changeImage((selectedImage + 1) % safeImages.length);
+  }, [selectedImage, safeImages.length, changeImage]);
 
   const prevImage = useCallback(() => {
-    changeImage(selectedImage === 0 ? images.length - 1 : selectedImage - 1);
-  }, [selectedImage, images.length, changeImage]);
+    changeImage(
+      selectedImage === 0 ? safeImages.length - 1 : selectedImage - 1
+    );
+  }, [selectedImage, safeImages.length, changeImage]);
 
   /** ======================
    *  SCROLL LOCK & KEYBOARD
@@ -132,11 +131,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
       const diffY = Math.abs(touchStart.y - touchEnd.y);
 
       if (Math.abs(diffX) > 50 && diffY < 100) {
-        if (diffX > 0) {
-          nextImage();
-        } else {
-          prevImage();
-        }
+        diffX > 0 ? nextImage() : prevImage();
       }
     }
   };
@@ -149,7 +144,10 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const handlePrevThumbs = () => setThumbIndex((prev) => Math.max(prev - 1, 0));
 
-  const visibleImages = images.slice(thumbIndex, thumbIndex + visibleThumbs);
+  const visibleImages = safeImages.slice(
+    thumbIndex,
+    thumbIndex + visibleThumbs
+  );
 
   /** ======================
    *  RENDER
@@ -170,58 +168,60 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             }`}
           >
             <img
-              src={images[selectedImage]}
+              src={safeImages[selectedImage] || "no-image.png"}
               alt={title}
+              onError={(e) => (e.currentTarget.src = "no-image.png")}
               loading="lazy"
               className="w-full h-full object-cover object-center select-none"
             />
           </div>
 
-          {images.length > 1 && (
+          {/* Prev/Next buttons */}
+          {safeImages.length > 1 && (
             <>
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage();
                 }}
-                icon={<ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 z-10"
+                icon={<ChevronLeft className="w-5 h-5" />}
+                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
               />
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   nextImage();
                 }}
-                icon={<ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 z-10"
+                icon={<ChevronRight className="w-5 h-5" />}
+                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
               />
             </>
           )}
 
           {/* Image counter */}
-          {images.length > 1 && (
-            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium">
-              {selectedImage + 1} / {images.length}
+          {safeImages.length > 1 && (
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-medium">
+              {selectedImage + 1} / {safeImages.length}
             </div>
           )}
 
           {/* Zoom icon */}
-          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 bg-white/95 backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 z-10">
-            <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
+          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 z-10">
+            <Maximize2 className="w-5 h-5 text-gray-800" />
           </div>
         </div>
       </div>
 
-      {/* Thumbnails slider */}
-      {images.length > 1 && (
+      {/* Thumbnails */}
+      {safeImages.length > 1 && (
         <div className="relative px-8 sm:px-10">
           <div className="flex items-center justify-center gap-2 sm:gap-3">
             {thumbIndex > 0 && (
               <button
                 onClick={handlePrevThumbs}
-                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
               >
-                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+                <ChevronLeft className="w-4 h-4 text-gray-700" />
               </button>
             )}
 
@@ -240,17 +240,15 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                         : "border-gray-200 hover:border-orange-300 opacity-60 hover:opacity-100 hover:scale-105"
                     }`}
                   >
-                    <div className="aspect-[3/4] w-14 sm:w-18 md:w-20 lg:w-24 bg-gradient-to-br from-gray-50 to-gray-100">
+                    <div className="aspect-[3/4] w-16 sm:w-20 bg-gray-100">
                       <img
-                        src={img}
+                        src={img || "no-image.png"}
                         alt={`${title} ${actualIndex + 1}`}
+                        onError={(e) => (e.currentTarget.src = "no-image.png")}
                         loading="lazy"
-                        className="w-full h-full object-cover object-center select-none"
+                        className="w-full h-full object-cover"
                       />
                     </div>
-                    {isActive && (
-                      <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
-                    )}
                   </button>
                 );
               })}
@@ -259,67 +257,27 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             {thumbIndex < maxThumbIndex && (
               <button
                 onClick={handleNextThumbs}
-                className="absolute right-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                className="absolute right-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
               >
-                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+                <ChevronRight className="w-4 h-4 text-gray-700" />
               </button>
             )}
           </div>
         </div>
       )}
 
-      {/* Zoom Modal */}
+      {/* Zoom modal */}
       {isZoomed && (
         <div
-          className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[100] flex items-center justify-center cursor-zoom-out select-none"
+          className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center cursor-zoom-out"
           onClick={() => setIsZoomed(false)}
         >
           <button
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-2.5 sm:p-3 rounded-full text-white transition-all duration-200 hover:scale-110 active:scale-95 z-10"
+            className="absolute top-5 right-5 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
             onClick={() => setIsZoomed(false)}
           >
-            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+            <X className="w-6 h-6" />
           </button>
-
-          {/* Image counter in modal */}
-          {images.length > 1 && (
-            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm sm:text-base font-medium z-10">
-              {selectedImage + 1} / {images.length}
-            </div>
-          )}
-
-          {images.length > 1 && (
-            <>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  prevImage();
-                }}
-                icon={
-                  <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                }
-                className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 sm:p-4 rounded-full transition-all duration-200 hover:scale-110 active:scale-95 z-10"
-              />
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  nextImage();
-                }}
-                icon={
-                  <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                }
-                className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 sm:p-4 rounded-full transition-all duration-200 hover:scale-110 active:scale-95 z-10"
-              />
-            </>
-          )}
-
-          {/* Zoom instructions */}
-          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs sm:text-sm z-10">
-            <span className="hidden sm:inline">
-              Scroll to zoom • Drag to pan •{" "}
-            </span>
-            <span>Press ESC to close</span>
-          </div>
 
           <div
             onClick={(e) => e.stopPropagation()}
@@ -328,10 +286,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            className="relative max-w-[90vw] sm:max-w-5xl max-h-[70vh] sm:max-h-[85vh]"
+            className="relative max-w-[90vw] sm:max-w-5xl max-h-[85vh]"
           >
             <img
-              src={images[selectedImage]}
+              src={safeImages[selectedImage] || "no-image.png"}
+              onError={(e) => (e.currentTarget.src = "no-image.png")}
               alt={title}
               style={{
                 transform: `scale(${zoom}) translate(${position.x / zoom}px, ${
@@ -341,12 +300,10 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 cursor: zoom > 1 ? (dragging ? "grabbing" : "grab") : "zoom-in",
               }}
               draggable={false}
-              className="object-contain w-full h-full max-w-full max-h-[70vh] sm:max-h-[85vh]"
+              className="object-contain w-full h-full max-h-[85vh]"
               onClick={(e) => {
                 e.stopPropagation();
-                if (zoom <= 1) {
-                  setZoom(2);
-                }
+                if (zoom <= 1) setZoom(2);
               }}
             />
           </div>
