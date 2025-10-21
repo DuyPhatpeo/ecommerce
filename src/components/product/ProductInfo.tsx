@@ -334,7 +334,7 @@ const ProductInfo = ({
               }}
               disabled={isOutOfStock}
               icon={<CreditCard className="w-5 h-5" />}
-              label={isOutOfStock ? "Unavailable" : "Buy Now"}
+              label={isOutOfStock ? "Out of Stock" : "Buy Now"}
               className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
                 isOutOfStock
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -429,7 +429,11 @@ const ProductInfo = ({
                 <div className="flex items-center justify-center gap-2">
                   <ShoppingBag className="w-5 h-5" />
                   <span className="text-sm">
-                    {isOutOfStock ? "Out" : loading ? "Adding..." : "Add"}
+                    {isOutOfStock
+                      ? "Out"
+                      : loading
+                      ? "Adding..."
+                      : "Add to Card"}
                   </span>
                 </div>
               }
@@ -452,7 +456,7 @@ const ProductInfo = ({
                 <div className="flex items-center justify-center gap-2">
                   <CreditCard className="w-5 h-5" />
                   <span className="text-sm">
-                    {isOutOfStock ? "Out" : "Buy"}
+                    {isOutOfStock ? "Out" : "Buy Now"}
                   </span>
                 </div>
               }
