@@ -95,9 +95,9 @@ const ShopFilter: React.FC<Props> = ({
 
   return (
     <aside
-      className={`fixed lg:static inset-y-0 right-0 w-[85%] sm:w-2/3 lg:w-64 bg-white z-50 lg:z-0 transform ${
+      className={`fixed lg:static inset-y-0 right-0 w-full lg:w-64 bg-white z-50 lg:z-0 transform ${
         showFilters ? "translate-x-0" : "translate-x-full"
-      } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-l-2xl lg:rounded-xl border border-orange-100 flex flex-col`}
+      } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-none lg:rounded-xl border border-orange-100 flex flex-col`}
     >
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
