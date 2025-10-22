@@ -20,6 +20,9 @@ interface Props {
   clearFilters: () => void;
   priceRange: { min: number; max: number };
   setPriceRange: (v: { min: number; max: number }) => void;
+  brandFilter: string[];
+  setBrandFilter: (v: string[]) => void;
+  brandOptions: string[];
 }
 
 const ShopFilter: React.FC<Props> = ({
@@ -34,6 +37,9 @@ const ShopFilter: React.FC<Props> = ({
   clearFilters,
   priceRange,
   setPriceRange,
+  brandFilter,
+  setBrandFilter,
+  brandOptions,
 }) => {
   const MIN = 0;
   const MAX = 1000;
@@ -42,10 +48,12 @@ const ShopFilter: React.FC<Props> = ({
 
   const [open, setOpen] = useState<string | null>("category");
 
+  // --- Section toggle ---
   const toggleSection = (name: string) => {
     setOpen(open === name ? null : name);
   };
 
+  // --- Category ---
   const handleCategoryChange = (cat: string) => {
     if (categoryFilter.includes(cat)) {
       setCategoryFilter(categoryFilter.filter((c) => c !== cat));
@@ -54,6 +62,16 @@ const ShopFilter: React.FC<Props> = ({
     }
   };
 
+  // --- Brand ---
+  const handleBrandChange = (brand: string) => {
+    if (brandFilter.includes(brand)) {
+      setBrandFilter(brandFilter.filter((b) => b !== brand));
+    } else {
+      setBrandFilter([...brandFilter, brand]);
+    }
+  };
+
+  // --- Price ---
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMin = Number(e.target.value);
     if (priceRange.max - newMin >= minGap) {
@@ -68,8 +86,10 @@ const ShopFilter: React.FC<Props> = ({
     }
   };
 
+  // --- Active filters ---
   const activeFilters = [
     ...categoryFilter.map((c) => ({ label: c, type: "category" })),
+    ...brandFilter.map((b) => ({ label: b, type: "brand" })),
     ...(stockFilter !== "all"
       ? [
           {
@@ -86,6 +106,8 @@ const ShopFilter: React.FC<Props> = ({
   const handleRemoveFilter = (f: { label: string; type: string }) => {
     if (f.type === "category") {
       setCategoryFilter(categoryFilter.filter((c) => c !== f.label));
+    } else if (f.type === "brand") {
+      setBrandFilter(brandFilter.filter((b) => b !== f.label));
     } else if (f.type === "stock") {
       setStockFilter("all");
     } else if (f.type === "price") {
@@ -147,7 +169,7 @@ const ShopFilter: React.FC<Props> = ({
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[75vh] custom-scrollbar">
-        {/* --- PRICE RANGE moved up and always visible --- */}
+        {/* --- PRICE RANGE --- */}
         <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
           <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
             <DollarSign size={14} className="text-orange-600" /> Price Range
@@ -227,6 +249,45 @@ const ShopFilter: React.FC<Props> = ({
                   />
                   <span className="group-hover:translate-x-0.5 transition-transform">
                     {cat}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* --- Brand --- */}
+        <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
+          <button
+            onClick={() => toggleSection("brand")}
+            className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
+          >
+            <span className="flex items-center gap-2">
+              <Tags size={14} className="text-orange-600" /> Brand
+            </span>
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                open === "brand" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {open === "brand" && (
+            <div className="p-3 space-y-1.5">
+              {brandOptions.map((brand) => (
+                <label
+                  key={brand}
+                  className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition-colors group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={brandFilter.includes(brand)}
+                    onChange={() => handleBrandChange(brand)}
+                    className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-200 cursor-pointer accent-orange-500"
+                  />
+                  <span className="capitalize group-hover:translate-x-0.5 transition-transform">
+                    {brand}
                   </span>
                 </label>
               ))}

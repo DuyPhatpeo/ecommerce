@@ -13,6 +13,7 @@ interface Product {
   images?: string[];
   stock?: number;
   category?: string;
+  brand?: string;
 }
 
 type SortOption =
@@ -31,13 +32,14 @@ const Shop: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [brandFilter, setBrandFilter] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch products
+  // --- Fetch products ---
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,7 +56,7 @@ const Shop: React.FC = () => {
     fetchData();
   }, []);
 
-  // Lock scroll when sidebar open
+  // --- Lock scroll when sidebar open ---
   useEffect(() => {
     document.body.style.overflow = showFilters ? "hidden" : "";
     return () => {
@@ -81,24 +83,30 @@ const Shop: React.FC = () => {
     setSortBy("none");
     setStockFilter("all");
     setCategoryFilter([]);
+    setBrandFilter([]);
     setPriceRange({ min: 0, max: 1000 });
     setCurrentPage(1);
   }, []);
 
-  // --- Sorting logic ---
+  // --- Sorting logic (with out-of-stock pushed to end) ---
   const sortedProducts = useMemo(() => {
     const sorted = [...products];
+
     switch (sortBy) {
       case "name-asc":
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
       case "name-desc":
-        return sorted.sort((a, b) => b.title.localeCompare(a.title));
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
       case "price-asc":
-        return sorted.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => a.price - b.price);
+        break;
       case "price-desc":
-        return sorted.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => b.price - a.price);
+        break;
       case "discount-high":
-        return sorted.sort((a, b) => {
+        sorted.sort((a, b) => {
           const dA = a.oldPrice
             ? ((a.oldPrice - a.price) / a.oldPrice) * 100
             : 0;
@@ -107,9 +115,17 @@ const Shop: React.FC = () => {
             : 0;
           return dB - dA;
         });
-      default:
-        return sorted;
+        break;
     }
+
+    // Push out-of-stock items to the end
+    return sorted.sort((a, b) => {
+      const stockA = a.stock ?? 0;
+      const stockB = b.stock ?? 0;
+      if (stockA > 0 && stockB <= 0) return -1;
+      if (stockA <= 0 && stockB > 0) return 1;
+      return 0;
+    });
   }, [products, sortBy]);
 
   // --- Filtering logic ---
@@ -128,13 +144,20 @@ const Shop: React.FC = () => {
       );
     }
 
+    // Brand
+    if (brandFilter.length > 0) {
+      result = result.filter((p) =>
+        brandFilter.includes(p.brand?.toLowerCase() ?? "")
+      );
+    }
+
     // Price
     result = result.filter(
       (p) => p.price >= priceRange.min && p.price <= priceRange.max
     );
 
     return result;
-  }, [sortedProducts, stockFilter, categoryFilter, priceRange]);
+  }, [sortedProducts, stockFilter, categoryFilter, brandFilter, priceRange]);
 
   // --- Pagination ---
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -151,11 +174,20 @@ const Shop: React.FC = () => {
     return Array.from(new Set(validCategories));
   }, [products]);
 
+  // --- Brand options ---
+  const brandOptions = useMemo<string[]>(() => {
+    const validBrands = products
+      .map((p) => p.brand?.toLowerCase())
+      .filter((b): b is string => Boolean(b));
+    return Array.from(new Set(validBrands));
+  }, [products]);
+
   // --- Active filter check ---
   const hasActiveFilters =
     sortBy !== "none" ||
     stockFilter !== "all" ||
     categoryFilter.length > 0 ||
+    brandFilter.length > 0 ||
     priceRange.min > 0 ||
     priceRange.max < 1000;
 
@@ -234,6 +266,9 @@ const Shop: React.FC = () => {
             categoryFilter={categoryFilter}
             setCategoryFilter={setCategoryFilter}
             categoryOptions={categoryOptions}
+            brandFilter={brandFilter}
+            setBrandFilter={setBrandFilter}
+            brandOptions={brandOptions}
             hasActiveFilters={hasActiveFilters}
             clearFilters={clearFilters}
             priceRange={priceRange}
