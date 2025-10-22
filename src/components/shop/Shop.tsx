@@ -114,7 +114,7 @@ const Shop: React.FC = () => {
         stock: stockFilter,
       });
       setIsFiltering(false);
-    }, 400);
+    }, 500);
 
     return () => clearTimeout(handler);
   }, [priceRange, categoryFilter, brandFilter, stockFilter]);
