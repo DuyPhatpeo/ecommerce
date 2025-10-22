@@ -20,6 +20,9 @@ interface Props {
   clearFilters: () => void;
   priceRange: { min: number; max: number };
   setPriceRange: (v: { min: number; max: number }) => void;
+  priceMin: number;
+  priceMax: number;
+  priceStep?: number;
   brandFilter: string[];
   setBrandFilter: (v: string[]) => void;
   brandOptions: string[];
@@ -37,14 +40,17 @@ const ShopFilter: React.FC<Props> = ({
   clearFilters,
   priceRange,
   setPriceRange,
+  priceMin,
+  priceMax,
+  priceStep = 100000,
   brandFilter,
   setBrandFilter,
   brandOptions,
 }) => {
-  const MIN = 0;
-  const MAX = 1000;
-  const STEP = 10;
-  const minGap = 10;
+  const MIN = priceMin;
+  const MAX = priceMax;
+  const STEP = priceStep;
+  const minGap = STEP;
 
   // ✅ State mở/đóng các nhóm filter
   const [open, setOpen] = useState({
@@ -123,7 +129,12 @@ const ShopFilter: React.FC<Props> = ({
         ]
       : []),
     ...(priceRange.min !== MIN || priceRange.max !== MAX
-      ? [{ label: `$${priceRange.min} - $${priceRange.max}`, type: "price" }]
+      ? [
+          {
+            label: `${priceRange.min.toLocaleString()}₫ - ${priceRange.max.toLocaleString()}₫`,
+            type: "price",
+          },
+        ]
       : []),
   ];
 
@@ -197,11 +208,12 @@ const ShopFilter: React.FC<Props> = ({
         {/* --- PRICE RANGE --- */}
         <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
           <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
-            <DollarSign size={14} className="text-orange-600" /> Price Range
+            <DollarSign size={14} className="text-orange-600" /> Khoảng giá
+            (VNĐ)
           </h4>
           <div className="flex justify-between text-xs text-gray-500 font-medium mb-2">
-            <span>Min: ${priceRange.min}</span>
-            <span>Max: ${priceRange.max}</span>
+            <span>Min: {priceRange.min.toLocaleString()}₫</span>
+            <span>Max: {priceRange.max.toLocaleString()}₫</span>
           </div>
           <div className="relative mb-2">
             <div className="absolute w-full h-1.5 bg-orange-100 rounded-full top-1/2 -translate-y-1/2" />

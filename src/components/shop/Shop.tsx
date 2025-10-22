@@ -28,12 +28,22 @@ type StockFilter = "all" | "in" | "out";
 const ITEMS_PER_LOAD = 6;
 
 const Shop: React.FC = () => {
+  // Giá trị min/max chỉ định nghĩa ở đây
+  const USD_TO_VND = 24000;
+  const PRICE_MIN_USD = 0;
+  const PRICE_MAX_USD = 1000;
+  // Giá trị filter min/max truyền xuống filter là VNĐ
+  const PRICE_MIN = PRICE_MIN_USD * USD_TO_VND;
+  const PRICE_MAX = PRICE_MAX_USD * USD_TO_VND;
   const [products, setProducts] = useState<Product[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [priceRange, setPriceRange] = useState({
+    min: PRICE_MIN,
+    max: PRICE_MAX,
+  });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isFiltering, setIsFiltering] = useState(false);
@@ -78,9 +88,9 @@ const Shop: React.FC = () => {
     setStockFilter("all");
     setCategoryFilter([]);
     setBrandFilter([]);
-    setPriceRange({ min: 0, max: 1000 });
+    setPriceRange({ min: PRICE_MIN, max: PRICE_MAX });
     setVisibleCount(ITEMS_PER_LOAD);
-  }, []);
+  }, [PRICE_MIN, PRICE_MAX]);
 
   const handleSeeMore = useCallback(() => {
     setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
@@ -173,10 +183,11 @@ const Shop: React.FC = () => {
     }
 
     // price
+    // Chuyển filter từ VNĐ sang USD để so sánh với dữ liệu USD
     result = result.filter(
       (p) =>
-        p.price >= debouncedFilters.price.min &&
-        p.price <= debouncedFilters.price.max
+        p.price * USD_TO_VND >= debouncedFilters.price.min &&
+        p.price * USD_TO_VND <= debouncedFilters.price.max
     );
 
     return result;
@@ -208,8 +219,8 @@ const Shop: React.FC = () => {
     stockFilter !== "all" ||
     categoryFilter.length > 0 ||
     brandFilter.length > 0 ||
-    priceRange.min > 0 ||
-    priceRange.max < 1000;
+    priceRange.min > PRICE_MIN ||
+    priceRange.max < PRICE_MAX;
 
   // --- Render ---
   if (loading)
@@ -293,6 +304,9 @@ const Shop: React.FC = () => {
               clearFilters={clearFilters}
               priceRange={priceRange}
               setPriceRange={setPriceRange}
+              priceMin={PRICE_MIN}
+              priceMax={PRICE_MAX}
+              priceStep={100000}
             />
           </div>
 
