@@ -95,12 +95,13 @@ const ShopFilter: React.FC<Props> = ({
 
   return (
     <aside
-      className={`fixed lg:static inset-y-0 right-0 w-[85%] sm:w-2/3 lg:w-64 bg-white z-50 lg:z-0 transform ${
+      className={`fixed lg:static top-0 right-0 w-[85%] sm:w-2/3 lg:w-64 bg-white z-50 lg:z-0 transform ${
         showFilters ? "translate-x-0" : "translate-x-full"
-      } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-l-2xl lg:rounded-xl border border-orange-100 flex flex-col`}
+      } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-l-2xl lg:rounded-xl border border-orange-100 flex flex-col 
+      lg:max-h-[80vh] lg:overflow-hidden`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
+      <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60 sticky top-0 z-10">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
           <Filter size={18} className="text-orange-500" /> Filters
         </h3>
@@ -146,8 +147,8 @@ const ShopFilter: React.FC<Props> = ({
       )}
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[75vh] custom-scrollbar">
-        {/* --- PRICE RANGE moved up and always visible --- */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[70vh] custom-scrollbar">
+        {/* --- Price Range --- */}
         <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
           <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
             <DollarSign size={14} className="text-orange-600" /> Price Range
