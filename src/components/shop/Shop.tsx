@@ -70,67 +70,46 @@ const Shop: React.FC = () => {
     };
   }, [showFilters]);
 
-  // --- Utility to trigger spinner on filter/sort changes ---
-  const triggerFilter = (fn: () => void) => {
-    setIsFiltering(true);
-    fn();
-    setTimeout(() => {
-      setIsFiltering(false);
-    }, 500);
-  };
-
-  // --- Handlers ---
-  const handleSortChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      triggerFilter(() => {
-        setSortBy(e.target.value as SortOption);
-        setVisibleCount(ITEMS_PER_LOAD);
-      });
-    },
-    []
-  );
-
-  const handleStockChange = useCallback((value: StockFilter) => {
-    triggerFilter(() => setStockFilter(value));
-    setVisibleCount(ITEMS_PER_LOAD);
-  }, []);
-
-  const handleCategoryChange = useCallback((values: string[]) => {
-    triggerFilter(() => setCategoryFilter(values));
-    setVisibleCount(ITEMS_PER_LOAD);
-  }, []);
-
-  const handleBrandChange = useCallback((values: string[]) => {
-    triggerFilter(() => setBrandFilter(values));
-    setVisibleCount(ITEMS_PER_LOAD);
-  }, []);
-
-  const handlePriceChange = useCallback(
-    (range: { min: number; max: number }) => {
-      triggerFilter(() => setPriceRange(range));
-      setVisibleCount(ITEMS_PER_LOAD);
-    },
-    []
-  );
-
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
 
+  // --- Clear all filters ---
   const clearFilters = useCallback(() => {
-    triggerFilter(() => {
-      setSortBy("none");
-      setStockFilter("all");
-      setCategoryFilter([]);
-      setBrandFilter([]);
-      setPriceRange({ min: 0, max: 1000 });
-      setVisibleCount(ITEMS_PER_LOAD);
-    });
+    setSortBy("none");
+    setStockFilter("all");
+    setCategoryFilter([]);
+    setBrandFilter([]);
+    setPriceRange({ min: 0, max: 1000 });
+    setVisibleCount(ITEMS_PER_LOAD);
   }, []);
 
   const handleSeeMore = useCallback(() => {
     setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
   }, []);
 
-  // --- Sorting logic ---
+  // --- Debounced filter state ---
+  const [debouncedFilters, setDebouncedFilters] = useState({
+    price: priceRange,
+    category: categoryFilter,
+    brand: brandFilter,
+    stock: stockFilter,
+  });
+
+  useEffect(() => {
+    setIsFiltering(true);
+    const handler = setTimeout(() => {
+      setDebouncedFilters({
+        price: priceRange,
+        category: categoryFilter,
+        brand: brandFilter,
+        stock: stockFilter,
+      });
+      setIsFiltering(false);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [priceRange, categoryFilter, brandFilter, stockFilter]);
+
+  // --- Sorting ---
   const sortedProducts = useMemo(() => {
     const sorted = [...products];
     switch (sortBy) {
@@ -171,26 +150,37 @@ const Shop: React.FC = () => {
   // --- Filtering logic ---
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
-    if (stockFilter === "in") result = result.filter((p) => (p.stock ?? 0) > 0);
-    else if (stockFilter === "out")
+
+    // stock
+    if (debouncedFilters.stock === "in") {
+      result = result.filter((p) => (p.stock ?? 0) > 0);
+    } else if (debouncedFilters.stock === "out") {
       result = result.filter((p) => (p.stock ?? 0) <= 0);
+    }
 
-    if (categoryFilter.length)
+    // category
+    if (debouncedFilters.category.length) {
       result = result.filter((p) =>
-        categoryFilter.includes(p.category?.toLowerCase() ?? "")
+        debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
       );
+    }
 
-    if (brandFilter.length)
+    // brand
+    if (debouncedFilters.brand.length) {
       result = result.filter((p) =>
-        brandFilter.includes(p.brand?.toLowerCase() ?? "")
+        debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
       );
+    }
 
+    // price
     result = result.filter(
-      (p) => p.price >= priceRange.min && p.price <= priceRange.max
+      (p) =>
+        p.price >= debouncedFilters.price.min &&
+        p.price <= debouncedFilters.price.max
     );
 
     return result;
-  }, [sortedProducts, stockFilter, categoryFilter, brandFilter, priceRange]);
+  }, [sortedProducts, debouncedFilters]);
 
   const paginatedProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
@@ -272,7 +262,7 @@ const Shop: React.FC = () => {
             <ArrowUpDown size={18} className="text-orange-500" />
             <select
               value={sortBy}
-              onChange={handleSortChange}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
               <option value="none">Default</option>
@@ -292,17 +282,17 @@ const Shop: React.FC = () => {
               showFilters={showFilters}
               toggleFilters={toggleFilters}
               stockFilter={stockFilter}
-              setStockFilter={handleStockChange}
+              setStockFilter={setStockFilter}
               categoryFilter={categoryFilter}
-              setCategoryFilter={handleCategoryChange}
+              setCategoryFilter={setCategoryFilter}
               categoryOptions={categoryOptions}
               brandFilter={brandFilter}
-              setBrandFilter={handleBrandChange}
+              setBrandFilter={setBrandFilter}
               brandOptions={brandOptions}
               hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}
               priceRange={priceRange}
-              setPriceRange={handlePriceChange}
+              setPriceRange={setPriceRange}
             />
           </div>
 
