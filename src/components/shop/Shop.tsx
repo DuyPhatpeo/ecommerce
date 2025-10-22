@@ -25,7 +25,7 @@ type SortOption =
   | "discount-high";
 type StockFilter = "all" | "in" | "out";
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_LOAD = 6;
 
 const Shop: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -36,24 +36,30 @@ const Shop: React.FC = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
 
-  // --- Fetch products ---
+  // --- Fetch products once ---
   useEffect(() => {
+    let mounted = true;
     const fetchData = async () => {
       try {
         setLoading(true);
         const data: Product[] = await getProducts();
         if (!Array.isArray(data)) throw new Error("Invalid product data");
-        setProducts(data);
+        if (mounted) setProducts(data);
       } catch {
-        setError("Failed to load products. Please try again later.");
+        if (mounted)
+          setError("Failed to load products. Please try again later.");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchData();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // --- Lock scroll when sidebar open ---
@@ -64,34 +70,69 @@ const Shop: React.FC = () => {
     };
   }, [showFilters]);
 
+  // --- Utility to trigger spinner on filter/sort changes ---
+  const triggerFilter = (fn: () => void) => {
+    setIsFiltering(true);
+    fn();
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 500);
+  };
+
   // --- Handlers ---
   const handleSortChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortBy(e.target.value as SortOption);
-      setCurrentPage(1);
+      triggerFilter(() => {
+        setSortBy(e.target.value as SortOption);
+        setVisibleCount(ITEMS_PER_LOAD);
+      });
     },
     []
   );
 
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
+  const handleStockChange = useCallback((value: StockFilter) => {
+    triggerFilter(() => setStockFilter(value));
+    setVisibleCount(ITEMS_PER_LOAD);
   }, []);
+
+  const handleCategoryChange = useCallback((values: string[]) => {
+    triggerFilter(() => setCategoryFilter(values));
+    setVisibleCount(ITEMS_PER_LOAD);
+  }, []);
+
+  const handleBrandChange = useCallback((values: string[]) => {
+    triggerFilter(() => setBrandFilter(values));
+    setVisibleCount(ITEMS_PER_LOAD);
+  }, []);
+
+  const handlePriceChange = useCallback(
+    (range: { min: number; max: number }) => {
+      triggerFilter(() => setPriceRange(range));
+      setVisibleCount(ITEMS_PER_LOAD);
+    },
+    []
+  );
 
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
 
   const clearFilters = useCallback(() => {
-    setSortBy("none");
-    setStockFilter("all");
-    setCategoryFilter([]);
-    setBrandFilter([]);
-    setPriceRange({ min: 0, max: 1000 });
-    setCurrentPage(1);
+    triggerFilter(() => {
+      setSortBy("none");
+      setStockFilter("all");
+      setCategoryFilter([]);
+      setBrandFilter([]);
+      setPriceRange({ min: 0, max: 1000 });
+      setVisibleCount(ITEMS_PER_LOAD);
+    });
   }, []);
 
-  // --- Sorting logic (with out-of-stock pushed to end) ---
+  const handleSeeMore = useCallback(() => {
+    setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
+  }, []);
+
+  // --- Sorting logic ---
   const sortedProducts = useMemo(() => {
     const sorted = [...products];
-
     switch (sortBy) {
       case "name-asc":
         sorted.sort((a, b) => a.title.localeCompare(b.title));
@@ -117,8 +158,7 @@ const Shop: React.FC = () => {
         });
         break;
     }
-
-    // Push out-of-stock items to the end
+    // push out-of-stock to end
     return sorted.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -131,27 +171,20 @@ const Shop: React.FC = () => {
   // --- Filtering logic ---
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
-
-    // Stock
     if (stockFilter === "in") result = result.filter((p) => (p.stock ?? 0) > 0);
     else if (stockFilter === "out")
       result = result.filter((p) => (p.stock ?? 0) <= 0);
 
-    // Category
-    if (categoryFilter.length > 0) {
+    if (categoryFilter.length)
       result = result.filter((p) =>
         categoryFilter.includes(p.category?.toLowerCase() ?? "")
       );
-    }
 
-    // Brand
-    if (brandFilter.length > 0) {
+    if (brandFilter.length)
       result = result.filter((p) =>
         brandFilter.includes(p.brand?.toLowerCase() ?? "")
       );
-    }
 
-    // Price
     result = result.filter(
       (p) => p.price >= priceRange.min && p.price <= priceRange.max
     );
@@ -159,30 +192,27 @@ const Shop: React.FC = () => {
     return result;
   }, [sortedProducts, stockFilter, categoryFilter, brandFilter, priceRange]);
 
-  // --- Pagination ---
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredProducts, currentPage]);
+  const paginatedProducts = useMemo(
+    () => filteredProducts.slice(0, visibleCount),
+    [filteredProducts, visibleCount]
+  );
 
-  // --- Category options ---
-  const categoryOptions = useMemo<string[]>(() => {
-    const validCategories = products
+  const hasMore = visibleCount < filteredProducts.length;
+
+  const categoryOptions = useMemo(() => {
+    const valid = products
       .map((p) => p.category?.toLowerCase())
-      .filter((c): c is string => Boolean(c));
-    return Array.from(new Set(validCategories));
+      .filter(Boolean) as string[];
+    return Array.from(new Set(valid));
   }, [products]);
 
-  // --- Brand options ---
-  const brandOptions = useMemo<string[]>(() => {
-    const validBrands = products
+  const brandOptions = useMemo(() => {
+    const valid = products
       .map((p) => p.brand?.toLowerCase())
-      .filter((b): b is string => Boolean(b));
-    return Array.from(new Set(validBrands));
+      .filter(Boolean) as string[];
+    return Array.from(new Set(valid));
   }, [products]);
 
-  // --- Active filter check ---
   const hasActiveFilters =
     sortBy !== "none" ||
     stockFilter !== "all" ||
@@ -221,7 +251,6 @@ const Shop: React.FC = () => {
           </h2>
         </div>
 
-        {/* Overlay for mobile */}
         {showFilters && (
           <div
             className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -263,27 +292,33 @@ const Shop: React.FC = () => {
               showFilters={showFilters}
               toggleFilters={toggleFilters}
               stockFilter={stockFilter}
-              setStockFilter={setStockFilter}
+              setStockFilter={handleStockChange}
               categoryFilter={categoryFilter}
-              setCategoryFilter={setCategoryFilter}
+              setCategoryFilter={handleCategoryChange}
               categoryOptions={categoryOptions}
               brandFilter={brandFilter}
-              setBrandFilter={setBrandFilter}
+              setBrandFilter={handleBrandChange}
               brandOptions={brandOptions}
               hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}
               priceRange={priceRange}
-              setPriceRange={setPriceRange}
+              setPriceRange={handlePriceChange}
             />
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 relative">
+            {/* Spinner overlay khi filter */}
+            {isFiltering && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+
             <ShopList
               paginatedProducts={paginatedProducts}
               clearFilters={clearFilters}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
+              hasMore={hasMore}
+              onSeeMore={handleSeeMore}
             />
           </div>
         </div>

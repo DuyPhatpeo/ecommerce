@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 import { PackageSearch, X } from "lucide-react";
 import ProductCard from "../section/ProductCard";
-import Pagination from "../ui/Pagination";
 
 interface Product {
   id: number;
@@ -15,17 +14,15 @@ interface Product {
 interface ShopListProps {
   paginatedProducts: Product[];
   clearFilters: () => void;
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
+  hasMore: boolean; // còn sản phẩm để load
+  onSeeMore: () => void; // handler See More
 }
 
 const ShopList: React.FC<ShopListProps> = ({
   paginatedProducts,
   clearFilters,
-  totalPages,
-  currentPage,
-  onPageChange,
+  hasMore,
+  onSeeMore,
 }) => {
   const noProducts = paginatedProducts.length === 0;
 
@@ -72,18 +69,15 @@ const ShopList: React.FC<ShopListProps> = ({
         )}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-10">
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={(page) => {
-              onPageChange(page);
-              // Cuộn mượt lên đầu trang khi đổi trang
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-          />
+      {/* See More */}
+      {hasMore && !noProducts && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={onSeeMore}
+            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-colors"
+          >
+            See More
+          </button>
         </div>
       )}
     </main>
