@@ -397,7 +397,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Nike",
-      "title": "NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT NIKE AIR MAX 270 REACT ",
+      "title": "NIKE AIR MAX 270 REACT (Red/White)",
       "price": 150,
       "oldPrice": 210,
       "stock": 20,
@@ -408,9 +408,7 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
-        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
-        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
-        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
       "specs": {
         "model": "Air Max 270 React",
@@ -422,11 +420,11 @@
       "description": "Nike Air Max 270 React mang đến sự thoải mái tối ưu và phong cách hiện đại, với đệm Air Max êm ái và thiết kế nổi bật."
     },
     {
-      "id": "2",
+      "id": "222",
       "status": "latest",
       "category": "running",
       "brand": "Adidas",
-      "title": "ADIDAS ULTRABOOST 21",
+      "title": "ADIDAS ULTRABOOST 21 (White/Black)",
       "price": 180,
       "oldPrice": 250,
       "stock": 12,
@@ -434,8 +432,10 @@
       "reviewsCount": 89,
       "images": [
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
-        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=70",
-        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=90"
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
       "specs": {
         "model": "Ultraboost 21",
@@ -447,11 +447,11 @@
       "description": "Adidas Ultraboost 21 mang lại trải nghiệm chạy vượt trội với phần đệm Boost nhạy bén và thiết kế Primeknit ôm chân."
     },
     {
-      "id": "3",
+      "id": "333",
       "status": "latest",
       "category": "casual",
       "brand": "Vans",
-      "title": "VANS OLD SKOOL CLASSIC",
+      "title": "VANS OLD SKOOL CLASSIC (Black/White)",
       "price": 120,
       "oldPrice": 160,
       "stock": 15,
@@ -459,8 +459,8 @@
       "reviewsCount": 75,
       "images": [
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
-        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=70",
-        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=90"
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
       "specs": {
         "model": "Old Skool Classic",
@@ -472,11 +472,11 @@
       "description": "Vans Old Skool Classic phù hợp phong cách đường phố, với thiết kế cổ điển và phần đế cao su bền bỉ."
     },
     {
-      "id": "4",
-      "status": "latest",
+      "id": "444",
+      "status": "sold-out",
       "category": "casual",
       "brand": "New Balance",
-      "title": "NEW BALANCE 574 CORE",
+      "title": "NEW BALANCE 574 CORE (Gray)",
       "price": 170,
       "oldPrice": 230,
       "stock": 0,
@@ -484,8 +484,8 @@
       "reviewsCount": 60,
       "images": [
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
-        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=70",
-        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90"
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
       "specs": {
         "model": "574 Core",
@@ -497,11 +497,11 @@
       "description": "New Balance 574 Core mang phong cách cổ điển, với đệm êm ái, thích hợp cho hoạt động hàng ngày."
     },
     {
-      "id": "5",
+      "id": "555",
       "status": "latest",
       "category": "sport",
       "brand": "Puma",
-      "title": "PUMA RS-X REINVENTION",
+      "title": "PUMA RS-X REINVENTION (Blue/White)",
       "price": 190,
       "oldPrice": 240,
       "stock": 10,
@@ -509,8 +509,9 @@
       "reviewsCount": 50,
       "images": [
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
-        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=70",
-        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90"
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
       "specs": {
         "model": "RS-X Reinvention",
@@ -522,11 +523,11 @@
       "description": "Puma RS-X Reinvention mang phong cách hiện đại, kết hợp thiết kế thể thao năng động và sự thoải mái tối đa."
     },
     {
-      "id": "6",
+      "id": "666",
       "status": "latest",
       "category": "casual",
       "brand": "Reebok",
-      "title": "REEBOK CLASSIC LEATHER",
+      "title": "REEBOK CLASSIC LEATHER (White)",
       "price": 175,
       "oldPrice": 220,
       "stock": 9,
@@ -534,8 +535,8 @@
       "reviewsCount": 45,
       "images": [
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=70",
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=90"
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
       "specs": {
         "model": "Classic Leather",
@@ -547,11 +548,11 @@
       "description": "Reebok Classic Leather đem đến sự cổ điển và thoải mái, lý tưởng cho phong cách hàng ngày."
     },
     {
-      "id": "7",
+      "id": "777",
       "status": "latest",
       "category": "casual",
       "brand": "Converse",
-      "title": "CONVERSE CHUCK 70 HIGH",
+      "title": "CONVERSE CHUCK 70 HIGH (Beige/Black)",
       "price": 160,
       "oldPrice": 200,
       "stock": 11,
@@ -559,8 +560,8 @@
       "reviewsCount": 70,
       "images": [
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
-        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=70",
-        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=90"
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
       "specs": {
         "model": "Chuck 70 High",
@@ -572,11 +573,11 @@
       "description": "Converse Chuck 70 High là biểu tượng cổ điển, phù hợp phong cách streetwear và thoải mái cả ngày."
     },
     {
-      "id": "8",
-      "status": "latest",
+      "id": "888",
+      "status": "sold-out",
       "category": "running",
       "brand": "Under Armour",
-      "title": "UNDER ARMOUR HOVR PHANTOM",
+      "title": "UNDER ARMOUR HOVR PHANTOM (Gray/Orange)",
       "price": 210,
       "oldPrice": 260,
       "stock": 0,
@@ -584,8 +585,8 @@
       "reviewsCount": 58,
       "images": [
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
-        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=70",
-        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=90"
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
       ],
       "specs": {
         "model": "HOVR Phantom",
@@ -597,20 +598,20 @@
       "description": "Under Armour HOVR Phantom mang lại trải nghiệm chạy êm ái và hiệu suất tối đa với công nghệ HOVR tiên tiến."
     },
     {
-      "id": "9",
+      "id": "999",
       "status": "coming",
       "category": "running",
       "brand": "Nike",
-      "title": "NIKE ZOOMX INVINCIBLE",
+      "title": "NIKE ZOOMX INVINCIBLE (Black/White)",
       "price": 195,
       "oldPrice": 250,
       "stock": 5,
       "rating": 4.7,
       "reviewsCount": 40,
       "images": [
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=90"
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
       "specs": {
         "model": "ZoomX Invincible",
@@ -622,18 +623,21 @@
       "description": "Nike ZoomX Invincible giúp tối ưu hiệu suất chạy, với đệm ZoomX nhạy bén và thiết kế nhẹ nhàng."
     },
     {
-      "id": "10",
+      "id": "100",
       "status": "coming",
       "category": "training",
       "brand": "Reebok",
-      "title": "REEBOK NANO X1",
+      "title": "REEBOK NANO X1 (White/Red)",
       "price": 180,
       "oldPrice": 230,
       "stock": 10,
       "rating": 4.5,
       "reviewsCount": 55,
       "images": [
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70"
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=70",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=70",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=70"
       ],
       "specs": {
         "model": "Nano X1",
@@ -643,6 +647,504 @@
         "origin": "Thailand"
       },
       "description": "Reebok Nano X1 được thiết kế cho tập luyện tối đa, với độ bền cao, linh hoạt và đệm êm ái."
+    },
+    {
+      "id": "201",
+      "status": "latest",
+      "category": "running",
+      "brand": "Asics",
+      "title": "ASICS GEL-NIMBUS 25 (Blue/Lime)",
+      "price": 195,
+      "oldPrice": 250,
+      "stock": 15,
+      "rating": 4.8,
+      "reviewsCount": 180,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
+      ],
+      "specs": {
+        "model": "GEL-NIMBUS 25",
+        "material": "Engineered knit upper, PureGEL™ technology",
+        "color": "Blue / Lime",
+        "weight": "0.82 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Asics GEL-NIMBUS 25 mang lại đệm êm ái tối đa, lý tưởng cho các buổi chạy dài và phục hồi với công nghệ PureGEL™."
+    },
+    {
+      "id": "202",
+      "status": "limited",
+      "category": "casual",
+      "brand": "Jordan",
+      "title": "JORDAN AIR JORDAN 1 RETRO HIGH OG (Red/Black/White)",
+      "price": 220,
+      "oldPrice": 300,
+      "stock": 5,
+      "rating": 4.9,
+      "reviewsCount": 350,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=90",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=90",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=90",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=90",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Air Jordan 1 Retro High OG",
+        "material": "Premium leather upper, rubber sole",
+        "color": "Red / Black / White",
+        "weight": "1.1 kg",
+        "origin": "China"
+      },
+      "description": "Air Jordan 1 Retro High OG là huyền thoại sneaker, với thiết kế cổ điển và chất liệu da cao cấp, là biểu tượng của văn hóa bóng rổ."
+    },
+    {
+      "id": "203",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Dr. Martens",
+      "title": "DR. MARTENS 1460 SMOOTH LEATHER BOOT (Black)",
+      "price": 160,
+      "oldPrice": 200,
+      "stock": 22,
+      "rating": 4.7,
+      "reviewsCount": 110,
+      "images": [
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=70",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=60",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=50",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=90"
+      ],
+      "specs": {
+        "model": "1460 Smooth Leather Boot",
+        "material": "Smooth leather, AirWair™ sole",
+        "color": "Black",
+        "weight": "1.5 kg",
+        "origin": "Thailand"
+      },
+      "description": "Dr. Martens 1460 mang phong cách bụi bặm và độ bền vượt trội, với đường chỉ vàng đặc trưng và đế AirWair."
+    },
+    {
+      "id": "204",
+      "status": "coming",
+      "category": "sport",
+      "brand": "Converse",
+      "title": "CONVERSE ALL STAR BB SHIFT (Purple/Neon)",
+      "price": 135,
+      "oldPrice": 180,
+      "stock": 9,
+      "rating": 4.5,
+      "reviewsCount": 70,
+      "images": [
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
+      ],
+      "specs": {
+        "model": "All Star BB Shift",
+        "material": "Textile upper, Nike React cushioning",
+        "color": "Purple / Neon",
+        "weight": "0.9 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Converse All Star BB Shift là giày bóng rổ hiệu suất cao, nhẹ và phản hồi nhanh nhờ công nghệ Nike React, phù hợp cho các pha bứt tốc."
+    },
+    {
+      "id": "205",
+      "status": "latest",
+      "category": "running",
+      "brand": "Saucony",
+      "title": "SAUCONY KINVARA 14 (Green/White)",
+      "price": 140,
+      "oldPrice": 190,
+      "stock": 18,
+      "rating": 4.6,
+      "reviewsCount": 90,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Kinvara 14",
+        "material": "Mesh upper, PWRRUN cushioning",
+        "color": "Green / White",
+        "weight": "0.78 kg",
+        "origin": "Indonesia"
+      },
+      "description": "Saucony Kinvara 14 là đôi giày chạy bộ tốc độ, cực kỳ nhẹ và linh hoạt, mang lại cảm giác tiếp đất tự nhiên cho những bước chạy nhanh."
+    },
+    {
+      "id": "206",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Asics",
+      "title": "ASICS GEL-LYTE III OG (White/Orange)",
+      "price": 150,
+      "oldPrice": 190,
+      "stock": 14,
+      "rating": 4.5,
+      "reviewsCount": 75,
+      "images": [
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "GEL-Lyte III OG",
+        "material": "Suede and mesh upper, GEL™ technology",
+        "color": "White / Orange",
+        "weight": "0.85 kg",
+        "origin": "China"
+      },
+      "description": "Asics GEL-LYTE III OG nổi tiếng với thiết kế lưỡi gà chia đôi độc đáo và đệm GEL êm ái, mang phong cách retro."
+    },
+    {
+      "id": "207",
+      "status": "latest",
+      "category": "training",
+      "brand": "Under Armour",
+      "title": "UNDER ARMOUR UA PROJECT ROCK 5 (Black/Yellow)",
+      "price": 170,
+      "oldPrice": 220,
+      "stock": 11,
+      "rating": 4.7,
+      "reviewsCount": 60,
+      "images": [
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Project Rock 5",
+        "material": "Mesh upper, UA HOVR™ cushioning",
+        "color": "Black / Yellow",
+        "weight": "1.0 kg",
+        "origin": "Vietnam"
+      },
+      "description": "UA Project Rock 5 là giày tập luyện được thiết kế bởi The Rock, mang lại độ ổn định và đệm HOVR™ năng lượng cho tập tạ và HIIT."
+    },
+    {
+      "id": "208",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Puma",
+      "title": "PUMA SUEDE CLASSIC XXI (Burgundy)",
+      "price": 110,
+      "oldPrice": 150,
+      "stock": 25,
+      "rating": 4.2,
+      "reviewsCount": 150,
+      "images": [
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Suede Classic XXI",
+        "material": "Suede upper, rubber sole",
+        "color": "Burgundy",
+        "weight": "0.9 kg",
+        "origin": "Indonesia"
+      },
+      "description": "Puma Suede Classic XXI là biểu tượng streetwear vượt thời gian với chất liệu da lộn mềm mại."
+    },
+    {
+      "id": "209",
+      "status": "latest",
+      "category": "running",
+      "brand": "Adidas",
+      "title": "ADIDAS ADIZERO ADIOS PRO 3 (Solar Red)",
+      "price": 250,
+      "oldPrice": 320,
+      "stock": 7,
+      "rating": 4.9,
+      "reviewsCount": 100,
+      "images": [
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Adizero Adios Pro 3",
+        "material": "Textile upper, Lightstrike Pro cushioning, Carbon rods",
+        "color": "Solar Red",
+        "weight": "0.7 kg",
+        "origin": "China"
+      },
+      "description": "Adidas Adizero Adios Pro 3 là giày đua marathon hiệu suất cao, siêu nhẹ với đệm và thanh Carbon để tối đa hóa tốc độ."
+    },
+    {
+      "id": "210",
+      "status": "coming",
+      "category": "casual",
+      "brand": "New Balance",
+      "title": "NEW BALANCE 990V6 (Navy/Gray)",
+      "price": 210,
+      "oldPrice": 260,
+      "stock": 13,
+      "rating": 4.7,
+      "reviewsCount": 80,
+      "images": [
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
+      ],
+      "specs": {
+        "model": "990v6",
+        "material": "Suede and mesh upper, FuelCell cushioning",
+        "color": "Navy / Gray",
+        "weight": "1.0 kg",
+        "origin": "USA"
+      },
+      "description": "New Balance 990v6 là sự kết hợp hoàn hảo giữa phong cách cổ điển và công nghệ hiện đại, mang lại sự thoải mái vượt trội."
+    },
+    {
+      "id": "211",
+      "status": "latest",
+      "category": "sport",
+      "brand": "Nike",
+      "title": "NIKE LEBRON XX (Violet/Gold)",
+      "price": 200,
+      "oldPrice": 250,
+      "stock": 8,
+      "rating": 4.6,
+      "reviewsCount": 95,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
+      ],
+      "specs": {
+        "model": "LeBron XX",
+        "material": "Knit upper, Zoom Air cushioning",
+        "color": "Violet / Gold",
+        "weight": "0.98 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Nike LeBron XX là giày bóng rổ hiệu suất, nhẹ và đệm tốt, thiết kế dành cho tốc độ và sức mạnh."
+    },
+    {
+      "id": "212",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Adidas",
+      "title": "ADIDAS SAMBA OG (Black/White)",
+      "price": 100,
+      "oldPrice": 140,
+      "stock": 30,
+      "rating": 4.4,
+      "reviewsCount": 200,
+      "images": [
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Samba OG",
+        "material": "Leather and suede upper, rubber gumsole",
+        "color": "Black / White",
+        "weight": "0.8 kg",
+        "origin": "Indonesia"
+      },
+      "description": "Adidas Samba OG là một thiết kế bóng đá cổ điển đã trở thành biểu tượng thời trang đường phố."
+    },
+    {
+      "id": "213",
+      "status": "latest",
+      "category": "running",
+      "brand": "Hoka",
+      "title": "HOKA CLIFTON 9 (Gray/Pink)",
+      "price": 170,
+      "oldPrice": 210,
+      "stock": 16,
+      "rating": 4.7,
+      "reviewsCount": 130,
+      "images": [
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Clifton 9",
+        "material": "Engineered knit upper, EVA foam midsole",
+        "color": "Gray / Pink",
+        "weight": "0.75 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Hoka Clifton 9 mang lại sự cân bằng hoàn hảo giữa đệm êm ái và trọng lượng nhẹ, là lựa chọn tuyệt vời cho việc chạy hàng ngày."
+    },
+    {
+      "id": "214",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Vans",
+      "title": "VANS SLIP-ON CHECKERBOARD (Black/White)",
+      "price": 90,
+      "oldPrice": 120,
+      "stock": 40,
+      "rating": 4.3,
+      "reviewsCount": 180,
+      "images": [
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Slip-On Checkerboard",
+        "material": "Canvas upper, rubber waffle outsole",
+        "color": "Black / White Checker",
+        "weight": "0.7 kg",
+        "origin": "China"
+      },
+      "description": "Vans Slip-On với họa tiết bàn cờ cổ điển là một lựa chọn tiện lợi và phong cách cho mọi hoạt động thường ngày."
+    },
+    {
+      "id": "215",
+      "status": "latest",
+      "category": "training",
+      "brand": "Reebok",
+      "title": "REEBOK LEGACY LIFTER II (White/Blue)",
+      "price": 165,
+      "oldPrice": 210,
+      "stock": 10,
+      "rating": 4.8,
+      "reviewsCount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Legacy Lifter II",
+        "material": "Textile and synthetic upper, rubber outsole",
+        "color": "White / Blue",
+        "weight": "1.2 kg",
+        "origin": "Thailand"
+      },
+      "description": "Reebok Legacy Lifter II được thiết kế chuyên dụng cho nâng tạ, mang lại sự ổn định tối đa và đế không nén."
+    },
+    {
+      "id": "216",
+      "status": "latest",
+      "category": "running",
+      "brand": "Puma",
+      "title": "PUMA VELOCITY NITRO 2 (Pink/Black)",
+      "price": 140,
+      "oldPrice": 180,
+      "stock": 17,
+      "rating": 4.5,
+      "reviewsCount": 85,
+      "images": [
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Velocity Nitro 2",
+        "material": "Engineered mesh, NITRO foam midsole",
+        "color": "Pink / Black",
+        "weight": "0.8 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Puma Velocity Nitro 2 là giày chạy bộ hàng ngày cân bằng, nhẹ và êm ái nhờ công nghệ đệm NITRO."
+    },
+    {
+      "id": "217",
+      "status": "limited",
+      "category": "casual",
+      "brand": "Jordan",
+      "title": "JORDAN AIR JORDAN 4 RETRO 'SE' (Yellow/Black)",
+      "price": 280,
+      "oldPrice": 350,
+      "stock": 3,
+      "rating": 4.9,
+      "reviewsCount": 400,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=90",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=90",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=90",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90",
+        "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90"
+      ],
+      "specs": {
+        "model": "Air Jordan 4 Retro SE",
+        "material": "Leather and synthetic upper, Air-Sole unit",
+        "color": "Yellow / Black",
+        "weight": "1.2 kg",
+        "origin": "China"
+      },
+      "description": "Air Jordan 4 Retro là một trong những mẫu giày Air Jordan được săn đón nhất, với thiết kế lưới đặc trưng và phong cách đường phố nổi bật."
+    },
+    {
+      "id": "218",
+      "status": "latest",
+      "category": "casual",
+      "brand": "Converse",
+      "title": "CONVERSE CHUCK TAYLOR ALL STAR LIFT (White)",
+      "price": 130,
+      "oldPrice": 170,
+      "stock": 19,
+      "rating": 4.3,
+      "reviewsCount": 110,
+      "images": [
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Chuck Taylor All Star Lift",
+        "material": "Canvas upper, rubber platform sole",
+        "color": "White",
+        "weight": "0.9 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Converse Lift là phiên bản đế cao của Chuck Taylor cổ điển, thêm chiều cao và phong cách thời trang."
+    },
+    {
+      "id": "219",
+      "status": "latest",
+      "category": "running",
+      "brand": "Brooks",
+      "title": "BROOKS GHOST 15 (Black/Blue)",
+      "price": 160,
+      "oldPrice": 200,
+      "stock": 20,
+      "rating": 4.6,
+      "reviewsCount": 150,
+      "images": [
+        "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
+      ],
+      "specs": {
+        "model": "Ghost 15",
+        "material": "Engineered mesh, DNA LOFT cushioning",
+        "color": "Black / Blue",
+        "weight": "0.85 kg",
+        "origin": "Vietnam"
+      },
+      "description": "Brooks Ghost 15 là giày chạy bộ hàng ngày đáng tin cậy, với sự cân bằng hoàn hảo giữa đệm êm và độ bền."
     }
   ]
 }
