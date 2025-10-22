@@ -257,31 +257,35 @@ const Shop: React.FC = () => {
         </div>
 
         {/* Layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          <ShopFilter
-            showFilters={showFilters}
-            toggleFilters={toggleFilters}
-            stockFilter={stockFilter}
-            setStockFilter={setStockFilter}
-            categoryFilter={categoryFilter}
-            setCategoryFilter={setCategoryFilter}
-            categoryOptions={categoryOptions}
-            brandFilter={brandFilter}
-            setBrandFilter={setBrandFilter}
-            brandOptions={brandOptions}
-            hasActiveFilters={hasActiveFilters}
-            clearFilters={clearFilters}
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-          />
+        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+          <div className="lg:w-64 shrink-0 self-start">
+            <ShopFilter
+              showFilters={showFilters}
+              toggleFilters={toggleFilters}
+              stockFilter={stockFilter}
+              setStockFilter={setStockFilter}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              categoryOptions={categoryOptions}
+              brandFilter={brandFilter}
+              setBrandFilter={setBrandFilter}
+              brandOptions={brandOptions}
+              hasActiveFilters={hasActiveFilters}
+              clearFilters={clearFilters}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+            />
+          </div>
 
-          <ShopList
-            paginatedProducts={paginatedProducts}
-            clearFilters={clearFilters}
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
+          <div className="flex-1">
+            <ShopList
+              paginatedProducts={paginatedProducts}
+              clearFilters={clearFilters}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
     </section>

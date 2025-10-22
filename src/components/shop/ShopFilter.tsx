@@ -46,29 +46,36 @@ const ShopFilter: React.FC<Props> = ({
   const STEP = 10;
   const minGap = 10;
 
-  const [open, setOpen] = useState<string | null>("category");
+  // ✅ Mở nhiều section độc lập
+  const [open, setOpen] = useState({
+    category: true,
+    brand: false,
+    availability: false,
+  });
 
-  // --- Section toggle ---
-  const toggleSection = (name: string) => {
-    setOpen(open === name ? null : name);
+  const toggleSection = (name: keyof typeof open) => {
+    setOpen((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
   };
 
   // --- Category ---
   const handleCategoryChange = (cat: string) => {
-    if (categoryFilter.includes(cat)) {
-      setCategoryFilter(categoryFilter.filter((c) => c !== cat));
-    } else {
-      setCategoryFilter([...categoryFilter, cat]);
-    }
+    setCategoryFilter(
+      categoryFilter.includes(cat)
+        ? categoryFilter.filter((c) => c !== cat)
+        : [...categoryFilter, cat]
+    );
   };
 
   // --- Brand ---
   const handleBrandChange = (brand: string) => {
-    if (brandFilter.includes(brand)) {
-      setBrandFilter(brandFilter.filter((b) => b !== brand));
-    } else {
-      setBrandFilter([...brandFilter, brand]);
-    }
+    setBrandFilter(
+      brandFilter.includes(brand)
+        ? brandFilter.filter((b) => b !== brand)
+        : [...brandFilter, brand]
+    );
   };
 
   // --- Price ---
@@ -104,15 +111,12 @@ const ShopFilter: React.FC<Props> = ({
   ];
 
   const handleRemoveFilter = (f: { label: string; type: string }) => {
-    if (f.type === "category") {
+    if (f.type === "category")
       setCategoryFilter(categoryFilter.filter((c) => c !== f.label));
-    } else if (f.type === "brand") {
+    else if (f.type === "brand")
       setBrandFilter(brandFilter.filter((b) => b !== f.label));
-    } else if (f.type === "stock") {
-      setStockFilter("all");
-    } else if (f.type === "price") {
-      setPriceRange({ min: MIN, max: MAX });
-    }
+    else if (f.type === "stock") setStockFilter("all");
+    else if (f.type === "price") setPriceRange({ min: MIN, max: MAX });
   };
 
   return (
@@ -167,8 +171,8 @@ const ShopFilter: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[75vh] custom-scrollbar">
+      {/* Content */}
+      <div className="p-4 space-y-3">
         {/* --- PRICE RANGE --- */}
         <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
           <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
@@ -230,11 +234,11 @@ const ShopFilter: React.FC<Props> = ({
             <ChevronDown
               size={16}
               className={`transition-transform ${
-                open === "category" ? "rotate-180" : ""
+                open.category ? "rotate-180" : ""
               }`}
             />
           </button>
-          {open === "category" && (
+          {open.category && (
             <div className="p-3 space-y-1.5 max-h-36 overflow-y-auto">
               {categoryOptions.map((cat) => (
                 <label
@@ -268,12 +272,11 @@ const ShopFilter: React.FC<Props> = ({
             <ChevronDown
               size={16}
               className={`transition-transform ${
-                open === "brand" ? "rotate-180" : ""
+                open.brand ? "rotate-180" : ""
               }`}
             />
           </button>
-
-          {open === "brand" && (
+          {open.brand && (
             <div className="p-3 space-y-1.5">
               {brandOptions.map((brand) => (
                 <label
@@ -308,11 +311,11 @@ const ShopFilter: React.FC<Props> = ({
             <ChevronDown
               size={16}
               className={`transition-transform ${
-                open === "availability" ? "rotate-180" : ""
+                open.availability ? "rotate-180" : ""
               }`}
             />
           </button>
-          {open === "availability" && (
+          {open.availability && (
             <div className="p-3">
               <select
                 value={stockFilter}
