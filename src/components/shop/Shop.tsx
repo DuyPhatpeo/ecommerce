@@ -30,13 +30,14 @@ const Shop: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch data
+  // Fetch products
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,7 +54,7 @@ const Shop: React.FC = () => {
     fetchData();
   }, []);
 
-  // Disable body scroll when filter sidebar is open
+  // Lock scroll when sidebar open
   useEffect(() => {
     document.body.style.overflow = showFilters ? "hidden" : "";
     return () => {
@@ -75,10 +76,12 @@ const Shop: React.FC = () => {
   }, []);
 
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
+
   const clearFilters = useCallback(() => {
     setSortBy("none");
     setStockFilter("all");
-    setCategoryFilter("all");
+    setCategoryFilter([]);
+    setPriceRange({ min: 0, max: 1000 });
     setCurrentPage(1);
   }, []);
 
@@ -108,17 +111,26 @@ const Shop: React.FC = () => {
   // --- Filtering logic ---
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
+
+    // Stock
     if (stockFilter === "in") result = result.filter((p) => (p.stock ?? 0) > 0);
     else if (stockFilter === "out")
       result = result.filter((p) => (p.stock ?? 0) <= 0);
 
-    if (categoryFilter !== "all")
-      result = result.filter(
-        (p) => p.category?.toLowerCase() === categoryFilter.toLowerCase()
+    // Category
+    if (categoryFilter.length > 0) {
+      result = result.filter((p) =>
+        categoryFilter.includes(p.category?.toLowerCase() ?? "")
       );
+    }
+
+    // Price
+    result = result.filter(
+      (p) => p.price >= priceRange.min && p.price <= priceRange.max
+    );
 
     return result;
-  }, [sortedProducts, stockFilter, categoryFilter]);
+  }, [sortedProducts, stockFilter, categoryFilter, priceRange]);
 
   // --- Pagination ---
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -130,13 +142,18 @@ const Shop: React.FC = () => {
   // --- Category options ---
   const categoryOptions = useMemo<string[]>(() => {
     const validCategories = products
-      .map((p) => p.category)
+      .map((p) => p.category?.toLowerCase())
       .filter((c): c is string => Boolean(c));
     return Array.from(new Set(validCategories));
   }, [products]);
 
+  // --- Active filter check ---
   const hasActiveFilters =
-    sortBy !== "none" || stockFilter !== "all" || categoryFilter !== "all";
+    sortBy !== "none" ||
+    stockFilter !== "all" ||
+    categoryFilter.length > 0 ||
+    priceRange.min > 0 ||
+    priceRange.max < 1000;
 
   // --- Render ---
   if (loading)
@@ -168,7 +185,7 @@ const Shop: React.FC = () => {
           </h2>
         </div>
 
-        {/* Overlay for mobile filters */}
+        {/* Overlay for mobile */}
         {showFilters && (
           <div
             className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -178,7 +195,6 @@ const Shop: React.FC = () => {
 
         {/* Controls */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
-          {/* Filter button - Mobile */}
           <button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
@@ -187,7 +203,6 @@ const Shop: React.FC = () => {
             Filters
           </button>
 
-          {/* Sort - Desktop */}
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
             <ArrowUpDown size={18} className="text-orange-500" />
             <select
@@ -205,7 +220,7 @@ const Shop: React.FC = () => {
           </div>
         </div>
 
-        {/* Main layout */}
+        {/* Layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           <ShopFilter
             showFilters={showFilters}
@@ -217,7 +232,10 @@ const Shop: React.FC = () => {
             categoryOptions={categoryOptions}
             hasActiveFilters={hasActiveFilters}
             clearFilters={clearFilters}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
           />
+
           <ShopList
             paginatedProducts={paginatedProducts}
             clearFilters={clearFilters}
