@@ -99,8 +99,12 @@ const Shop: React.FC = () => {
         return sorted.sort((a, b) => b.price - a.price);
       case "discount-high":
         return sorted.sort((a, b) => {
-          const dA = a.oldPrice ? a.oldPrice - a.price : 0;
-          const dB = b.oldPrice ? b.oldPrice - b.price : 0;
+          const dA = a.oldPrice
+            ? ((a.oldPrice - a.price) / a.oldPrice) * 100
+            : 0;
+          const dB = b.oldPrice
+            ? ((b.oldPrice - b.price) / b.oldPrice) * 100
+            : 0;
           return dB - dA;
         });
       default:
@@ -211,11 +215,11 @@ const Shop: React.FC = () => {
               className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
               <option value="none">Default</option>
-              <option value="name-asc">Name: A → Z</option>
-              <option value="name-desc">Name: Z → A</option>
-              <option value="price-asc">Price: Low → High</option>
-              <option value="price-desc">Price: High → Low</option>
-              <option value="discount-high">Biggest Discount</option>
+              <option value="name-asc">A → Z</option>
+              <option value="name-desc">Z → A</option>
+              <option value="price-asc">Low → High</option>
+              <option value="price-desc">High → Low</option>
+              <option value="discount-high">Biggest Discount (%)</option>
             </select>
           </div>
         </div>
