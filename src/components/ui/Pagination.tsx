@@ -14,16 +14,20 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
+  const handlePageChange = (page: number) => {
+    onPageChange(page);
+  };
+
   const handlePrev = () => {
-    if (currentPage > 1) onPageChange(currentPage - 1);
+    if (currentPage > 1) handlePageChange(currentPage - 1);
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) onPageChange(currentPage + 1);
+    if (currentPage < totalPages) handlePageChange(currentPage + 1);
   };
 
   return (
-    <div className="flex justify-center items-center gap-2 sm:gap-3 mt-10 select-none">
+    <div className="flex justify-center items-center gap-2 sm:gap-3 mt-6 sm:mt-10 select-none">
       <button
         onClick={handlePrev}
         disabled={currentPage === 1}
@@ -39,7 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
         <button
           key={page}
-          onClick={() => onPageChange(page)}
+          onClick={() => handlePageChange(page)}
           className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border font-semibold transition ${
             page === currentPage
               ? "bg-orange-500 text-white border-orange-500"
