@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../components/general/Header";
 import MainShop from "../components/shop/MainShop";
 import Footer from "../components/general/Footer";
