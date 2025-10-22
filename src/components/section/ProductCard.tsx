@@ -27,12 +27,13 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
+  // 🛒 Hiển thị thông báo khi thêm vào giỏ
   const showCartToast = useCallback(
     (imageUrl: string, title: string, price: number) => {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-center gap-4 p-4 max-w-sm w-full bg-white shadow-lg rounded-xl relative transition-all duration-300 ${
+            className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 max-w-xs sm:max-w-sm w-full bg-white shadow-lg rounded-xl relative transition-all duration-300 ${
               t.visible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2"
@@ -42,23 +43,23 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-16 h-16 rounded-lg object-cover"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover"
               />
             ) : (
-              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
                 No image
               </div>
             )}
 
             <div className="flex-1">
-              <p className="font-semibold text-gray-800 line-clamp-1">
+              <p className="font-semibold text-gray-800 text-sm sm:text-base line-clamp-1">
                 {title}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 Added <span className="font-semibold text-orange-500">1</span>{" "}
-                item to your cart
+                item
               </p>
-              <p className="text-sm text-gray-700 font-medium">
+              <p className="text-xs sm:text-sm text-gray-700 font-medium">
                 ${price.toFixed(2)}
               </p>
 
@@ -69,13 +70,14 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                   toast.dismiss(t.id);
                   navigate("/cart");
                 }}
-                className="mt-2 text-sm bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg transition"
+                className="mt-2 text-xs sm:text-sm bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg transition"
               />
             </div>
 
             <button
               onClick={() => toast.dismiss(t.id)}
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              aria-label="Close"
             >
               <X size={16} />
             </button>
@@ -87,6 +89,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     [navigate]
   );
 
+  // 🧩 Xử lý thêm vào giỏ
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
     setLoading(true);
@@ -124,60 +127,55 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
   return (
     <div
-      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 w-full overflow-hidden border border-gray-100 ${
+      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 overflow-hidden ${
         isOutOfStock ? "opacity-90" : ""
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image */}
-      <NavLink
-        to={`/product/${id}`}
-        className={({ isActive }) =>
-          `block transition-all duration-300 ${
-            isActive ? "ring-2 ring-orange-400 rounded-xl" : ""
-          }`
-        }
-      >
-        <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] overflow-hidden rounded-t-2xl bg-gray-50">
+      {/* 🖼 Ảnh sản phẩm */}
+      <NavLink to={`/product/${id}`} className="block relative overflow-hidden">
+        <div className="relative w-full aspect-[3/4] bg-gray-50">
           <img
             src={img}
             alt={title}
-            className={`w-full h-full object-cover transition-all duration-700 ${
-              isHovered ? "scale-110 rotate-1" : "scale-100 rotate-0"
+            loading="lazy"
+            className={`w-full h-full object-cover transition-transform duration-700 ${
+              isHovered ? "scale-110" : "scale-100"
             } ${isOutOfStock ? "grayscale-[30%]" : ""}`}
           />
 
+          {/* Overlay hết hàng */}
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
-                <p className="text-gray-800 font-bold text-sm sm:text-base">
+              <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+                <p className="text-gray-800 font-bold text-xs sm:text-sm">
                   OUT OF STOCK
                 </p>
               </div>
             </div>
           )}
 
-          {/* 🔥 Discount badge (top-left) */}
+          {/* Giảm giá */}
           {!isOutOfStock && discountPercent > 0 && (
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
+            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-md">
               -{discountPercent}%
             </div>
           )}
 
-          {/* ⚡ Low stock badge (below discount, also left side) */}
+          {/* Gần hết hàng */}
           {!isOutOfStock && stock > 0 && stock <= 5 && (
-            <div className="absolute top-10 left-3 sm:top-12 sm:left-4 bg-yellow-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md hover:shadow-yellow-400/50 transition-shadow duration-300">
+            <div className="absolute top-8 left-2 sm:top-10 sm:left-3 bg-yellow-500 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-md">
               Only {stock} left
             </div>
           )}
 
-          {/* Action icons */}
+          {/* Nút hành động */}
           <div
-            className={`absolute top-3 sm:top-4 right-3 sm:right-4 flex flex-col gap-2 transition-all duration-500 ${
+            className={`absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-2 transition-all duration-500 ${
               isHovered
-                ? "translate-x-0 opacity-100"
-                : "translate-x-10 opacity-0"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-6"
             }`}
           >
             {icons.map((item, idx) => (
@@ -190,22 +188,22 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               >
                 <Button
                   icon={item.icon}
+                  aria-label={item.label}
                   onClick={(e) => {
                     e.preventDefault();
                     if (item.disabled) {
-                      if (item.id === "cart") {
+                      if (item.id === "cart")
                         toast.error("This product is currently out of stock!");
-                      }
                       return;
                     }
-                    item.id === "cart" && item.action && item.action();
+                    if (item.id === "cart" && item.action) item.action();
                   }}
                   disabled={item.disabled}
-                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-300 shadow-md ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md transition-all duration-300 ${
                     item.disabled
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : hoveredIcon === item.id
-                      ? "bg-orange-500 text-white scale-110 shadow-orange-500/50"
+                      ? "bg-orange-500 text-white scale-110"
                       : "bg-white/90 text-gray-700 hover:bg-orange-500 hover:text-white"
                   }`}
                 />
@@ -215,22 +213,23 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         </div>
       </NavLink>
 
-      {/* Info */}
-      <div className="p-4 sm:p-5">
+      {/* 🧾 Thông tin sản phẩm */}
+      <div className="p-3 sm:p-4 flex flex-col">
         <h3
-          className={`font-semibold text-base sm:text-lg md:text-xl leading-tight line-clamp-2 min-h-[38px] sm:min-h-[44px] mb-2 sm:mb-3 transition-colors duration-300 text-left ${
+          title={title}
+          className={`font-semibold text-sm sm:text-base leading-tight line-clamp-2 min-h-[38px] mb-1 transition-colors ${
             isOutOfStock
               ? "text-gray-500"
               : "text-gray-800 group-hover:text-orange-600"
           }`}
-          title={title}
         >
           <NavLink to={`/product/${id}`}>{title || "Untitled Product"}</NavLink>
         </h3>
 
-        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+        {/* Giá */}
+        <div className="flex items-center gap-2 mb-1">
           <span
-            className={`font-bold text-base sm:text-lg ${
+            className={`font-bold text-sm sm:text-lg ${
               isOutOfStock ? "text-gray-400" : "text-orange-600"
             }`}
           >
@@ -241,26 +240,27 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               ${oldPrice.toFixed(2)}
             </span>
           )}
-          {!isOutOfStock && discountPercent > 0 && (
-            <span className="ml-auto text-green-600 text-[11px] sm:text-xs font-semibold bg-green-50 px-2 py-1 rounded-full">
-              Save ${(oldPrice! - price!).toFixed(2)}
-            </span>
-          )}
         </div>
 
-        <div className="flex items-center justify-between">
-          {isOutOfStock ? (
-            <span className="text-red-500 text-xs sm:text-sm font-semibold">
-              ⚠️ Out of stock
+        {/* Save phía dưới giá */}
+        {!isOutOfStock && discountPercent > 0 && (
+          <div className="mb-2">
+            <span className="inline-block text-green-600 text-[10px] sm:text-xs font-semibold bg-green-50 px-2 py-0.5 rounded-full">
+              Save ${(oldPrice! - price!).toFixed(2)}
             </span>
+          </div>
+        )}
+
+        {/* Tình trạng kho */}
+        <div className="flex items-center justify-between text-[11px] sm:text-xs mb-3">
+          {isOutOfStock ? (
+            <span className="text-red-500 font-semibold">⚠️ Out of stock</span>
           ) : stock <= 5 ? (
-            <span className="text-yellow-600 text-xs sm:text-sm font-semibold">
+            <span className="text-yellow-600 font-semibold">
               ⚡ Almost sold out – {stock} left
             </span>
           ) : (
-            <span className="text-green-600 text-xs sm:text-sm font-semibold">
-              ✓ In stock
-            </span>
+            <span className="text-green-600 font-semibold">✓ In stock</span>
           )}
         </div>
       </div>
