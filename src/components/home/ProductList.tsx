@@ -75,7 +75,7 @@ const ProductList: React.FC = () => {
   if (sections.length === 0) {
     return (
       <div className="w-full py-20 text-center text-gray-500">
-        Đang tải sản phẩm...
+        Loading products...
       </div>
     );
   }

@@ -43,7 +43,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <MessageSquare className="w-6 h-6 text-orange-500" />
-        Đánh giá khách hàng
+        Customer reviews
       </h3>
 
       {/* --- Nếu chưa có review --- */}
@@ -53,18 +53,16 @@ export default function ProductReviews({ reviews = [] }: Props) {
           <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-8 text-center">
             <MessageSquare className="w-16 h-16 mx-auto mb-4 text-orange-400" />
             <p className="text-gray-600 font-medium mb-4">
-              Chưa có đánh giá cho sản phẩm này.
+              No reviews for this product yet.
             </p>
             <p className="text-sm text-gray-500">
-              Hãy là người đầu tiên đánh giá!
+              Be the first to leave a review!
             </p>
           </div>
 
           {/* Khối form đánh giá */}
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 border-2 border-dashed border-gray-300">
-            <h4 className="font-bold text-gray-800 mb-3">
-              Viết đánh giá của bạn
-            </h4>
+            <h4 className="font-bold text-gray-800 mb-3">Write your review</h4>
 
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Rating */}
@@ -83,14 +81,14 @@ export default function ProductReviews({ reviews = [] }: Props) {
                   />
                 ))}
                 <span className="ml-2 text-sm text-gray-500">
-                  {rating ? `${rating}/5` : "Chọn số sao"}
+                  {rating ? `${rating}/5` : "Select stars"}
                 </span>
               </div>
 
               {/* Tên */}
               <input
                 type="text"
-                placeholder="Tên của bạn"
+                placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
@@ -98,7 +96,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
 
               {/* Bình luận */}
               <textarea
-                placeholder="Nội dung đánh giá..."
+                placeholder="Write your review..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 rows={3}
@@ -109,7 +107,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
                 type="submit"
                 className="bg-orange-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
               >
-                Gửi đánh giá
+                Submit review
               </button>
             </form>
           </div>

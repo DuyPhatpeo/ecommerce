@@ -9,7 +9,7 @@ export default function ProductSpecification({ specs }: Props) {
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <Star className="w-6 h-6 text-orange-500" />
-        Thông số kỹ thuật
+        Technical specifications
       </h3>
       {specs && Object.keys(specs).length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,7 +36,7 @@ export default function ProductSpecification({ specs }: Props) {
         <div className="text-center py-12 bg-gray-50 rounded-xl">
           <Star className="w-16 h-16 mx-auto mb-3 text-gray-300" />
           <p className="text-gray-500 font-medium">
-            Không có thông số kỹ thuật.
+            No specifications available.
           </p>
         </div>
       )}

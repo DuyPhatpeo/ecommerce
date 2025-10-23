@@ -58,7 +58,7 @@ export default function CartItem({
     if (item.quantity < maxStock) {
       updateQuantity(item.id, 1);
     } else {
-      toast.error("Bạn đã đạt số lượng tối đa trong kho!");
+      toast.error("You have reached the maximum stock quantity!");
     }
   };
 
@@ -75,7 +75,7 @@ export default function CartItem({
     if (!isOutOfStock) {
       toggleSelect(item.id);
     } else {
-      toast.error("Sản phẩm này đã hết hàng, không thể chọn!");
+      toast.error("This product is out of stock and cannot be selected!");
     }
   };
 

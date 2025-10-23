@@ -39,13 +39,13 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        if (!id) throw new Error("Không có ID sản phẩm");
+        if (!id) throw new Error("No product ID");
         const data = await getProductById(id);
         setProduct(data);
         setError(null);
       } catch (err) {
         console.error(err);
-        setError("Không thể tải sản phẩm.");
+        setError("Unable to load product.");
       } finally {
         setLoading(false);
       }
@@ -60,9 +60,7 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
-        <p className="text-gray-600 text-lg font-medium">
-          Đang tải sản phẩm...
-        </p>
+        <p className="text-gray-600 text-lg font-medium">Loading product...</p>
       </div>
     );
 
@@ -73,7 +71,7 @@ export default function ProductDetail() {
         <div className="bg-white p-8 rounded-2xl shadow-xl">
           <div className="text-red-500 text-6xl mb-4 text-center">⚠️</div>
           <p className="text-red-600 text-lg font-semibold text-center">
-            {error || "Sản phẩm không tồn tại."}
+            {error || "Product not found."}
           </p>
         </div>
       </div>
@@ -108,7 +106,7 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* ======= Tabs (Mô tả / Thông số / Đánh giá) ======= */}
+          {/* ======= Tabs (Description / Specification / Reviews) ======= */}
           <ProductTabs
             description={product.description}
             specs={product.specs}

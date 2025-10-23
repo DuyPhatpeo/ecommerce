@@ -28,9 +28,9 @@ export default function ProductTabs({
   >("description");
 
   const tabs = [
-    { id: "description", label: "Mô tả", icon: Package },
-    { id: "specification", label: "Thông số", icon: Star },
-    { id: "reviews", label: "Đánh giá", icon: MessageSquare },
+    { id: "description", label: "Description", icon: Package },
+    { id: "specification", label: "Specification", icon: Star },
+    { id: "reviews", label: "Reviews", icon: MessageSquare },
   ];
 
   return (

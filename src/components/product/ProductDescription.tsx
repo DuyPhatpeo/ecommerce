@@ -9,11 +9,11 @@ export default function ProductDescription({ description }: Props) {
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <Package className="w-6 h-6 text-orange-500" />
-        Mô tả sản phẩm
+        Product description
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="prose prose-lg text-gray-600 leading-relaxed">
-          {description || "Chưa có mô tả cho sản phẩm này."}
+          {description || "No description is available for this product."}
         </div>
         <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-6 flex items-center justify-center">
           <div className="text-center text-gray-500">
