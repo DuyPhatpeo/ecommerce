@@ -133,18 +133,16 @@ const Banner: React.FC = () => {
 
       {/* Navigation Buttons */}
       <div className="absolute bottom-6 right-6 flex items-center gap-4 z-30">
-        <button
+        <Button
           onClick={prevSlide}
+          icon={<ArrowLeft size={22} />}
           className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <button
+        />
+        <Button
           onClick={nextSlide}
+          icon={<ArrowRight size={22} />}
           className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
-        >
-          <ArrowRight size={22} />
-        </button>
+        />
       </div>
     </section>
   );

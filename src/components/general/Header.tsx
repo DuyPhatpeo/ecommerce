@@ -9,6 +9,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { getCart } from "../../api/cartApi";
+import Button from "../ui/Button";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -182,12 +183,11 @@ const Header = () => {
             </Link>
 
             {/* Search */}
-            <button onClick={() => setSearchOpen((prev) => !prev)}>
-              <Search
-                size={18}
-                className="sm:w-5 sm:h-5 cursor-pointer hover:text-orange-500 transition-colors"
-              />
-            </button>
+            <Button
+              onClick={() => setSearchOpen((prev) => !prev)}
+              className="sm:w-5 sm:h-5 cursor-pointer hover:text-orange-500 transition-colors"
+              icon={<Search size={18} />}
+            />
 
             {/* Mobile toggle */}
             <div className="lg:hidden">
@@ -226,12 +226,11 @@ const Header = () => {
                 className="w-full pl-12 pr-12 py-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-gray-500 text-sm sm:text-base"
               />
               {/* ❌ icon phải */}
-              <button
+              <Button
                 onClick={() => setSearchOpen(false)}
                 className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
-              >
-                <X size={20} />
-              </button>
+                icon={<X size={20} />}
+              />
             </div>
           </div>
         </div>

@@ -131,7 +131,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
       const diffY = Math.abs(touchStart.y - touchEnd.y);
 
       if (Math.abs(diffX) > 50 && diffY < 100) {
-        diffX > 0 ? nextImage() : prevImage();
+        if (diffX > 0) {
+          nextImage();
+        } else {
+          prevImage();
+        }
       }
     }
   };
@@ -217,12 +221,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
         <div className="relative px-8 sm:px-10">
           <div className="flex items-center justify-center gap-2 sm:gap-3">
             {thumbIndex > 0 && (
-              <button
+              <Button
                 onClick={handlePrevThumbs}
                 className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
-              >
-                <ChevronLeft className="w-4 h-4 text-gray-700" />
-              </button>
+                icon={<ChevronLeft className="w-4 h-4" />}
+              />
             )}
 
             <div className="flex justify-center gap-2 sm:gap-3 overflow-hidden">
@@ -255,12 +258,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             </div>
 
             {thumbIndex < maxThumbIndex && (
-              <button
+              <Button
                 onClick={handleNextThumbs}
-                className="absolute right-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
-              >
-                <ChevronRight className="w-4 h-4 text-gray-700" />
-              </button>
+                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
+                icon={<ChevronRight className="w-4 h-4" />}
+              />
             )}
           </div>
         </div>
@@ -272,12 +274,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
           className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center cursor-zoom-out"
           onClick={() => setIsZoomed(false)}
         >
-          <button
-            className="absolute top-5 right-5 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
+          <Button
             onClick={() => setIsZoomed(false)}
-          >
-            <X className="w-6 h-6" />
-          </button>
+            className="absolute top-5 right-5 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
+            icon={<X className="w-6 h-6" />}
+          />
 
           <div
             onClick={(e) => e.stopPropagation()}
