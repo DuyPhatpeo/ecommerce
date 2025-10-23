@@ -30,6 +30,10 @@ const Header = () => {
     {
       label: "SHOP",
       path: "/shop",
+    },
+    { label: "BLOG", path: "/blog" },
+    {
+      label: "PAGES",
       subMenu: [
         { label: "SHOP CATEGORY", path: "/shop/category" },
         { label: "PRODUCT DETAILS", path: "/shop/product-details" },
@@ -38,8 +42,6 @@ const Header = () => {
         { label: "CONFIRMATION", path: "/shop/confirmation" },
       ],
     },
-    { label: "BLOG", path: "/blog" },
-    { label: "PAGES", path: "/pages" },
     { label: "CONTACT", path: "/contact" },
   ];
 
