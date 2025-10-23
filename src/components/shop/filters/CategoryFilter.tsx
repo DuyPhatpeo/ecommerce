@@ -1,5 +1,5 @@
 import React from "react";
-import { Tags, ChevronDown } from "lucide-react";
+import { Boxes, ChevronDown } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -31,7 +31,7 @@ const CategoryFilter: React.FC<Props> = ({
         className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
       >
         <span className="flex items-center gap-2">
-          <Tags size={14} className="text-orange-600" /> Category
+          <Boxes size={14} className="text-orange-600" /> Category
         </span>
         <ChevronDown
           size={16}

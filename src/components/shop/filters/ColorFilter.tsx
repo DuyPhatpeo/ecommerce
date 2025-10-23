@@ -1,5 +1,5 @@
 import React from "react";
-import { Tags, ChevronDown } from "lucide-react";
+import { Palette, ChevronDown } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -42,7 +42,7 @@ const ColorFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
         className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
       >
         <span className="flex items-center gap-2">
-          <Tags size={14} className="text-orange-600" /> Color
+          <Palette size={14} className="text-orange-600" /> Color
         </span>
         <ChevronDown
           size={16}
