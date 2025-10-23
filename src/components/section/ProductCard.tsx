@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { Heart, ShoppingBag, Share2, X } from "lucide-react";
+import React, { useState, useCallback, useEffect } from "react";
+import { Heart, HeartOff, ShoppingBag, Share2, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
@@ -18,6 +18,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const navigate = useNavigate();
 
   const { id, title, img, price, oldPrice, stock = 0 } = data;
@@ -27,7 +28,14 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
-  // 🛒 Hiển thị thông báo khi thêm vào giỏ
+  // Kiểm tra wishlist ban đầu
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    const exists = stored.some((item: any) => item.id === id);
+    setIsWishlisted(exists);
+  }, [id]);
+
+  // 🛒 Thêm vào giỏ
   const showCartToast = useCallback(
     (imageUrl: string, title: string, price: number) => {
       toast.custom(
@@ -88,7 +96,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     [navigate]
   );
 
-  // 🧩 Xử lý thêm vào giỏ
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
     setLoading(true);
@@ -102,6 +109,47 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     }
   }, [id, img, title, price, loading, isOutOfStock, showCartToast]);
 
+  // ❤️ Toggle Wishlist
+  const handleToggleWishlist = useCallback(() => {
+    const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    const exists = stored.find((item: any) => item.id === id);
+
+    if (exists) {
+      const updated = stored.filter((item: any) => item.id !== id);
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+      setIsWishlisted(false);
+      toast("Removed from wishlist 💔");
+    } else {
+      const updated = [...stored, { id, title, img, price }];
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+      setIsWishlisted(true);
+      toast.success("Added to wishlist 💕");
+    }
+  }, [id, title, img, price]);
+
+  // 🔗 Share
+  const handleShare = useCallback(async () => {
+    const productUrl = `${window.location.origin}/product/${id}`;
+    const shareData = {
+      title,
+      text: `Check out this product: ${title}`,
+      url: productUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        toast.success("Shared successfully!");
+      } catch {
+        toast.error("Failed to share.");
+      }
+    } else {
+      navigator.clipboard.writeText(productUrl);
+      toast.success("Link copied to clipboard!");
+    }
+  }, [id, title]);
+
+  // Danh sách icon hành động
   const icons = [
     {
       id: "cart",
@@ -112,14 +160,20 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     },
     {
       id: "wishlist",
-      icon: <Heart size={16} />,
-      label: "Add to Wishlist",
+      icon: isWishlisted ? (
+        <Heart className="text-red-500 fill-red-500" size={16} />
+      ) : (
+        <Heart size={16} />
+      ),
+      label: isWishlisted ? "Remove from Wishlist" : "Add to Wishlist",
+      action: handleToggleWishlist,
       disabled: false,
     },
     {
       id: "share",
       icon: <Share2 size={16} />,
-      label: "Share",
+      label: "Share Product",
+      action: handleShare,
       disabled: false,
     },
   ];
@@ -132,7 +186,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 🖼 Ảnh sản phẩm */}
+      {/* Ảnh sản phẩm */}
       <NavLink to={`/product/${id}`} className="block relative overflow-hidden">
         <div className="relative w-full aspect-[3/4] bg-gray-50">
           <img
@@ -195,7 +249,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                         toast.error("This product is currently out of stock!");
                       return;
                     }
-                    if (item.id === "cart" && item.action) item.action();
+                    if (item.action) item.action();
                   }}
                   disabled={item.disabled}
                   className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md transition-all duration-300 ${
@@ -212,7 +266,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         </div>
       </NavLink>
 
-      {/* 🧾 Thông tin sản phẩm */}
+      {/* Thông tin sản phẩm */}
       <div className="p-3 sm:p-4 flex flex-col">
         <h3
           title={title}
@@ -225,7 +279,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           <NavLink to={`/product/${id}`}>{title || "Untitled Product"}</NavLink>
         </h3>
 
-        {/* Giá */}
         <div className="flex items-center gap-2 mb-1">
           <span
             className={`font-bold text-sm sm:text-lg ${
@@ -241,7 +294,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
         </div>
 
-        {/* Save phía dưới giá */}
         {!isOutOfStock && discountPercent > 0 && (
           <div className="mb-2">
             <span className="inline-block text-green-600 text-[10px] sm:text-xs font-semibold bg-green-50 px-2 py-0.5 rounded-full">
@@ -250,7 +302,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </div>
         )}
 
-        {/* Tình trạng kho */}
         <div className="flex items-center justify-between text-[11px] sm:text-xs mb-3">
           {isOutOfStock ? (
             <span className="text-red-500 font-semibold">⚠️ Out of stock</span>
