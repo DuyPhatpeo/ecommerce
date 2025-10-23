@@ -52,6 +52,12 @@ const Shop: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
 
+  // debug: log when color/size filters change to verify they update parent state
+  React.useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.debug("Shop filters updated:", { colorFilter, sizeFilter });
+  }, [colorFilter, sizeFilter]);
+
   // --- Fetch products once ---
   useEffect(() => {
     let mounted = true;
