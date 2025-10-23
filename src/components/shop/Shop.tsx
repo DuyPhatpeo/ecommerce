@@ -25,7 +25,7 @@ type SortOption =
   | "discount-high";
 type StockFilter = "all" | "in" | "out";
 
-const ITEMS_PER_LOAD = 6;
+const ITEMS_PER_LOAD = 9;
 
 const Shop: React.FC = () => {
   // Giá trị min/max chỉ định nghĩa ở đây
