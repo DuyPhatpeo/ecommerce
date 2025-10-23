@@ -225,7 +225,7 @@ const Shop: React.FC = () => {
   // --- Render ---
   if (loading)
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
         <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -313,7 +313,7 @@ const Shop: React.FC = () => {
           <div className="flex-1 relative">
             {/* Spinner overlay khi filter */}
             {isFiltering && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
+              <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}

@@ -43,7 +43,7 @@ const ShopList: React.FC<ShopListProps> = ({
             </p>
             <button
               onClick={clearFilters}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg text-sm hover:scale-105 transition-transform"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg text-sm hover:scale-105 transition-transform"
             >
               <X size={18} />
               Clear All
