@@ -33,7 +33,7 @@ const ScrollToTop = () => {
             fixed bottom-5 right-5
             sm:bottom-10 sm:right-10
             bg-orange-500 hover:bg-orange-600
-            text-white p-2 sm:p-3 rounded-full
+            text-white p-2 sm:p-3 rounded-2xl
             shadow-lg hover:shadow-xl
             transition-all duration-300
             z-50
@@ -41,7 +41,7 @@ const ScrollToTop = () => {
           "
           aria-label="Scroll to top"
         >
-          <ArrowUp size={20} sm={24} />
+          <ArrowUp size={15} />
         </button>
       )}
     </>
