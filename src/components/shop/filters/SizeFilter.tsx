@@ -25,17 +25,28 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
     <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
       <Button
         onClick={toggle}
-        className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
+        justify="between"
         aria-label="Toggle size"
+        className="
+    w-full flex items-center
+    px-3 py-2 rounded-lg
+    border border-gray-200
+    bg-white hover:bg-orange-50
+    text-sm font-medium text-gray-800
+    transition-all duration-200
+    shadow-sm hover:shadow
+  "
         label={
-          <span className="flex items-center gap-2">
-            <Ruler size={14} className="text-orange-600" /> Size
+          <span className="flex items-center gap-2 h-5">
+            <Ruler size={15} className="text-orange-500" /> Size
           </span>
         }
         icon={
           <ChevronDown
             size={16}
-            className={`transition-transform ${open ? "rotate-180" : ""}`}
+            className={`text-gray-600 transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            } my-auto`}
           />
         }
         iconPosition="right"

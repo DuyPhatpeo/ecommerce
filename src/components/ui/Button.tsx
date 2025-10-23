@@ -7,6 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   iconPosition?: "left" | "right";
   className?: string;
   type?: "button" | "submit" | "reset";
+  justify?: "start" | "center" | "between" | "end";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,21 +16,26 @@ const Button: React.FC<ButtonProps> = ({
   iconPosition = "left",
   className = "",
   type = "button",
+  justify = "center",
   ...props
 }) => {
-  const hasIcon = !!icon;
-  const hasLabel = !!label;
+  const justifyClass = {
+    start: "justify-start",
+    center: "justify-center",
+    between: "justify-between",
+    end: "justify-end",
+  }[justify];
 
   return (
     <button
       type={type}
       {...props}
-      className={`inline-flex items-center justify-center gap-2 transition-all duration-300 
-        ${className}`}
+      className={`inline-flex items-center gap-2 ${justifyClass} 
+        transition-all duration-300 ${className}`}
     >
-      {hasIcon && iconPosition === "left" && icon}
-      {hasLabel && <span>{label}</span>}
-      {hasIcon && iconPosition === "right" && icon}
+      {iconPosition === "left" && icon}
+      {label && <span>{label}</span>}
+      {iconPosition === "right" && icon}
     </button>
   );
 };
