@@ -40,6 +40,8 @@ const Shop: React.FC = () => {
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
+  const [colorFilter, setColorFilter] = useState<string[]>([]);
+  const [sizeFilter, setSizeFilter] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({
     min: PRICE_MIN,
     max: PRICE_MAX,
@@ -88,6 +90,8 @@ const Shop: React.FC = () => {
     setStockFilter("all");
     setCategoryFilter([]);
     setBrandFilter([]);
+    setColorFilter([]);
+    setSizeFilter([]);
     setPriceRange({ min: PRICE_MIN, max: PRICE_MAX });
     setVisibleCount(ITEMS_PER_LOAD);
   }, [PRICE_MIN, PRICE_MAX]);
@@ -219,6 +223,8 @@ const Shop: React.FC = () => {
     stockFilter !== "all" ||
     categoryFilter.length > 0 ||
     brandFilter.length > 0 ||
+    colorFilter.length > 0 ||
+    sizeFilter.length > 0 ||
     priceRange.min > PRICE_MIN ||
     priceRange.max < PRICE_MAX;
 
@@ -299,6 +305,10 @@ const Shop: React.FC = () => {
               categoryOptions={categoryOptions}
               brandFilter={brandFilter}
               setBrandFilter={setBrandFilter}
+              colorFilter={colorFilter}
+              setColorFilter={setColorFilter}
+              sizeFilter={sizeFilter}
+              setSizeFilter={setSizeFilter}
               brandOptions={brandOptions}
               hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}

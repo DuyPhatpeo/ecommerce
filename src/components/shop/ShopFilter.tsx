@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import {
   Filter,
-  Tags,
+  Layers,
   PackageSearch,
   X,
   DollarSign,
   ChevronDown,
+  Palette,
+  Tag,
+  Ruler,
 } from "lucide-react";
 
 interface Props {
@@ -26,6 +29,10 @@ interface Props {
   brandFilter: string[];
   setBrandFilter: (v: string[]) => void;
   brandOptions: string[];
+  colorFilter: string[];
+  setColorFilter: (v: string[]) => void;
+  sizeFilter: string[];
+  setSizeFilter: (v: string[]) => void;
 }
 
 const ShopFilter: React.FC<Props> = ({
@@ -46,6 +53,10 @@ const ShopFilter: React.FC<Props> = ({
   brandFilter,
   setBrandFilter,
   brandOptions,
+  colorFilter,
+  setColorFilter,
+  sizeFilter,
+  setSizeFilter,
 }) => {
   const MIN = priceMin;
   const MAX = priceMax;
@@ -98,19 +109,19 @@ const ShopFilter: React.FC<Props> = ({
     }
   };
 
-  // ✅ Bổ sung state cho Color và Size
-  const [colorFilter, setColorFilter] = useState<string[]>([]);
-  const [sizeFilter, setSizeFilter] = useState<string[]>([]);
-
   const handleColorChange = (color: string) => {
-    setColorFilter((prev) =>
-      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
+    setColorFilter(
+      colorFilter.includes(color)
+        ? colorFilter.filter((c) => c !== color)
+        : [...colorFilter, color]
     );
   };
 
   const handleSizeChange = (size: string) => {
-    setSizeFilter((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    setSizeFilter(
+      sizeFilter.includes(size)
+        ? sizeFilter.filter((s) => s !== size)
+        : [...sizeFilter, size]
     );
   };
 
@@ -262,7 +273,7 @@ const ShopFilter: React.FC<Props> = ({
             className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
           >
             <span className="flex items-center gap-2">
-              <Tags size={14} className="text-orange-600" /> Category
+              <Layers size={14} className="text-orange-600" /> Category
             </span>
             <ChevronDown
               size={16}
@@ -300,7 +311,7 @@ const ShopFilter: React.FC<Props> = ({
             className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
           >
             <span className="flex items-center gap-2">
-              <Tags size={14} className="text-orange-600" /> Brand
+              <Tag size={14} className="text-orange-600" /> Brand
             </span>
             <ChevronDown
               size={16}
@@ -330,30 +341,57 @@ const ShopFilter: React.FC<Props> = ({
             </div>
           )}
         </div>
-        {/* --- Color --- */}
+        {/* --- Color Filter --- */}
         <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
+          {/* Header */}
           <button
             onClick={() => toggleSection("color")}
-            className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
+            className="w-full flex justify-between items-center px-3 py-2 text-sm font-semibold text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition-colors"
           >
             <span className="flex items-center gap-2">
-              <Tags size={14} className="text-orange-600" /> Color
+              <Palette size={14} className="text-orange-600" />
+              Colors
             </span>
             <ChevronDown
               size={16}
-              className={`transition-transform ${
+              className={`transition-transform duration-200 ${
                 open.color ? "rotate-180" : ""
               }`}
             />
           </button>
 
+          {/* Body */}
           {open.color && (
-            <div className="p-3 space-y-1.5">
-              {["Red", "Blue", "Green", "Black", "White", "Beige"].map(
-                (color) => (
+            <div className="p-3 flex flex-col space-y-2">
+              {[
+                "Red",
+                "Blue",
+                "Green",
+                "Black",
+                "White",
+                "Beige",
+                "Light Blue",
+                "Dark Green",
+              ].map((color) => {
+                const colorMap: Record<string, string> = {
+                  red: "bg-red-500 border-red-500",
+                  blue: "bg-blue-500 border-blue-500",
+                  green: "bg-green-500 border-green-500",
+                  black: "bg-black border-black",
+                  white: "bg-white border-gray-300",
+                  beige: "bg-amber-200 border-amber-300",
+                  "light blue": "bg-sky-400 border-sky-400",
+                  "dark green": "bg-green-700 border-green-700",
+                };
+
+                const colorKey = color.toLowerCase();
+                const colorClass =
+                  colorMap[colorKey] || "bg-gray-300 border-gray-300";
+
+                return (
                   <label
                     key={color}
-                    className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition-colors group"
+                    className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition group"
                   >
                     <input
                       type="checkbox"
@@ -361,21 +399,15 @@ const ShopFilter: React.FC<Props> = ({
                       onChange={() => handleColorChange(color)}
                       className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-200 cursor-pointer accent-orange-500"
                     />
-                    <span className="capitalize group-hover:translate-x-0.5 transition-transform flex items-center gap-2">
+                    <span className="flex items-center gap-2">
                       <span
-                        className={`w-4 h-4 rounded-full border ${
-                          color.toLowerCase() === "white"
-                            ? "bg-white border-gray-300"
-                            : color.toLowerCase() === "beige"
-                            ? "bg-amber-200 border-amber-300"
-                            : `bg-${color.toLowerCase()}-500`
-                        }`}
+                        className={`w-4 h-4 rounded-full border ${colorClass} group-hover:scale-110 transition-transform`}
                       ></span>
-                      {color}
+                      <span className="capitalize">{color}</span>
                     </span>
                   </label>
-                )
-              )}
+                );
+              })}
             </div>
           )}
         </div>
@@ -387,7 +419,7 @@ const ShopFilter: React.FC<Props> = ({
             className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
           >
             <span className="flex items-center gap-2">
-              <PackageSearch size={14} className="text-orange-600" /> Size
+              <Ruler size={14} className="text-orange-600" /> Size
             </span>
             <ChevronDown
               size={16}
