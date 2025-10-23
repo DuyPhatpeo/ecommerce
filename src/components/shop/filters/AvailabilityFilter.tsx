@@ -1,6 +1,7 @@
 import React from "react";
 import { PackageSearch, ChevronDown } from "lucide-react";
 import Button from "../../ui/Button";
+import Checkbox from "../../ui/Checkbox";
 
 interface Props {
   open: boolean;
@@ -47,19 +48,22 @@ const AvailabilityFilter: React.FC<Props> = ({
               key={opt.value}
               className="flex items-center gap-2 cursor-pointer group"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={stockFilter === opt.value}
                 onChange={() =>
                   setStockFilter(
-                    stockFilter === opt.value ? "all" : (opt.value as any)
+                    stockFilter === opt.value
+                      ? "all"
+                      : (opt.value as "in" | "out")
                   )
+                }
+                label={
+                  <span className="text-sm text-gray-700 group-hover:text-orange-600 font-medium">
+                    {opt.label}
+                  </span>
                 }
                 className="form-checkbox text-orange-500 border-orange-300 rounded focus:ring-orange-300"
               />
-              <span className="text-sm text-gray-700 group-hover:text-orange-600 font-medium">
-                {opt.label}
-              </span>
             </label>
           ))}
         </div>

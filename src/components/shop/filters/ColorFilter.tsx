@@ -1,6 +1,7 @@
 import React from "react";
 import { Palette, ChevronDown } from "lucide-react";
 import Button from "../../ui/Button";
+import Checkbox from "../../ui/Checkbox";
 
 interface Props {
   open: boolean;
@@ -64,18 +65,19 @@ const ColorFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
               key={color}
               className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition-colors group"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={selected.includes(color)}
                 onChange={() => handleChange(color)}
+                label={
+                  <span className="capitalize group-hover:translate-x-0.5 transition-transform flex items-center gap-2">
+                    <span
+                      className={`w-4 h-4 rounded-full border ${colorMap[color]}`}
+                    ></span>
+                    {color}
+                  </span>
+                }
                 className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-200 cursor-pointer accent-orange-500"
               />
-              <span className="capitalize group-hover:translate-x-0.5 transition-transform flex items-center gap-2">
-                <span
-                  className={`w-4 h-4 rounded-full border ${colorMap[color]}`}
-                ></span>
-                {color}
-              </span>
             </label>
           ))}
         </div>

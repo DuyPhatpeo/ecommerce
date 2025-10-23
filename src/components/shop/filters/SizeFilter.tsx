@@ -1,6 +1,7 @@
 import React from "react";
 import { Ruler, ChevronDown } from "lucide-react";
 import Button from "../../ui/Button";
+import Checkbox from "../../ui/Checkbox";
 
 interface Props {
   open: boolean;
@@ -52,13 +53,12 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
                     : "bg-white text-gray-700 border-gray-300 hover:bg-orange-100"
                 }`}
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={selected.includes(size.toString())}
                 onChange={() => handleChange(size.toString())}
+                label={size}
                 className="hidden"
               />
-              {size}
             </label>
           ))}
         </div>

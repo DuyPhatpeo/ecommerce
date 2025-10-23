@@ -1,6 +1,7 @@
 import React from "react";
 import { Tags, ChevronDown } from "lucide-react";
 import Button from "../../ui/Button";
+import Checkbox from "../../ui/Checkbox";
 
 interface Props {
   open: boolean;
@@ -51,15 +52,16 @@ const BrandFilter: React.FC<Props> = ({
               key={brand}
               className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition-colors group"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={selected.includes(brand)}
                 onChange={() => handleChange(brand)}
+                label={
+                  <span className="capitalize group-hover:translate-x-0.5 transition-transform">
+                    {brand}
+                  </span>
+                }
                 className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-200 cursor-pointer accent-orange-500"
               />
-              <span className="capitalize group-hover:translate-x-0.5 transition-transform">
-                {brand}
-              </span>
             </label>
           ))}
         </div>
