@@ -1,5 +1,6 @@
 import { ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
 import CartItem from "./CartItem";
+import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import Checkbox from "../ui/Checkbox";
 
@@ -117,18 +118,17 @@ export default function CartList({
               {selectedItems.length} selected
             </span>
 
-            <button
+            <Button
               onClick={clearAll}
               disabled={clearing || cartItems.length === 0}
+              icon={<Trash2 className="w-4 h-4" />}
+              label={clearing ? "Clearing..." : "Clear All"}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 ${
                 clearing
                   ? "bg-gray-200 text-gray-500 cursor-wait"
                   : "text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
               }`}
-            >
-              <Trash2 className="w-4 h-4" />
-              {clearing ? "Clearing..." : "Clear All"}
-            </button>
+            />
           </div>
         </div>
       )}

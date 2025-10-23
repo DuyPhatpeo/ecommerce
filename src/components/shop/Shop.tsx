@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { ArrowUpDown, Sparkles, Filter, ShoppingBag } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ShopFilter from "./ShopFilter";
+import Button from "../ui/Button";
 import ShopList from "./ShopList";
 
 interface Product {
@@ -273,13 +274,12 @@ const Shop: React.FC = () => {
 
         {/* Controls */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
-          <button
+          <Button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
-          >
-            <Filter size={18} />
-            Filters
-          </button>
+            icon={<Filter size={18} />}
+            label={"Filters"}
+          />
 
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
             <ArrowUpDown size={18} className="text-orange-500" />

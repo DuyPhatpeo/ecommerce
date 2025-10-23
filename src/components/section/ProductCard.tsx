@@ -74,13 +74,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               />
             </div>
 
-            <button
+            <Button
               onClick={() => toast.dismiss(t.id)}
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              icon={<X size={16} />}
               aria-label="Close"
-            >
-              <X size={16} />
-            </button>
+            />
           </div>
         ),
         { duration: 3000 }

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { PackageSearch, X } from "lucide-react";
 import ProductCard from "../section/ProductCard";
+import Button from "../ui/Button";
 
 interface Product {
   id: number;
@@ -41,13 +42,12 @@ const ShopList: React.FC<ShopListProps> = ({
             <p className="text-gray-500 mb-6 text-sm">
               Try adjusting your filters
             </p>
-            <button
+            <Button
               onClick={clearFilters}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg text-sm hover:scale-105 transition-transform"
-            >
-              <X size={18} />
-              Clear All
-            </button>
+              icon={<X size={18} />}
+              label={"Clear All"}
+              className="bg-gradient-to-r from-orange-500 to-orange-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg text-sm hover:scale-105 transition-transform"
+            />
           </div>
         ) : (
           /* Product grid */
@@ -72,12 +72,11 @@ const ShopList: React.FC<ShopListProps> = ({
       {/* See More */}
       {hasMore && !noProducts && (
         <div className="flex justify-center mt-6">
-          <button
+          <Button
             onClick={onSeeMore}
+            label={"See More"}
             className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-colors"
-          >
-            See More
-          </button>
+          />
         </div>
       )}
     </main>

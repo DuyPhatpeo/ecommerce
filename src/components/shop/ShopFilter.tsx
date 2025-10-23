@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Filter, X } from "lucide-react";
+import Button from "../ui/Button";
 import CategoryFilter from "./filters/CategoryFilter";
 import BrandFilter from "./filters/BrandFilter";
 import ColorFilter from "./filters/ColorFilter";
@@ -129,12 +130,12 @@ const ShopFilter: React.FC<Props> = ({
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
           <Filter size={18} className="text-orange-500" /> Filters
         </h3>
-        <button
+        <Button
           onClick={toggleFilters}
+          icon={<X size={18} />}
           className="lg:hidden text-gray-400 hover:text-gray-600 p-2 rounded-lg transition-colors"
-        >
-          <X size={18} />
-        </button>
+          aria-label="Close filters"
+        />
       </div>
 
       {/* Active filters */}
@@ -144,12 +145,11 @@ const ShopFilter: React.FC<Props> = ({
             <p className="text-sm font-semibold text-gray-700">
               Active Filters
             </p>
-            <button
+            <Button
               onClick={clearFilters}
+              label={"Clear All"}
               className="text-xs text-orange-600 hover:underline font-medium"
-            >
-              Clear All
-            </button>
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             {activeFilters.map((f, i) => (
@@ -158,12 +158,12 @@ const ShopFilter: React.FC<Props> = ({
                 className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-full border border-orange-200"
               >
                 {f.label}
-                <button
+                <Button
                   onClick={() => handleRemoveFilter(f)}
+                  icon={<X size={12} />}
                   className="hover:text-red-500 transition-colors"
-                >
-                  <X size={12} />
-                </button>
+                  aria-label={`Remove ${f.label} filter`}
+                />
               </span>
             ))}
           </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Boxes, ChevronDown } from "lucide-react";
+import Button from "../../ui/Button";
 
 interface Props {
   open: boolean;
@@ -26,18 +27,23 @@ const CategoryFilter: React.FC<Props> = ({
 
   return (
     <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
-      <button
+      <Button
         onClick={toggle}
         className="w-full flex justify-between items-center px-3 py-2 font-semibold text-sm text-gray-800 bg-orange-100 hover:bg-orange-200/70 transition"
-      >
-        <span className="flex items-center gap-2">
-          <Boxes size={14} className="text-orange-600" /> Category
-        </span>
-        <ChevronDown
-          size={16}
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
+        aria-label="Toggle category"
+        label={
+          <span className="flex items-center gap-2">
+            <Boxes size={14} className="text-orange-600" /> Category
+          </span>
+        }
+        icon={
+          <ChevronDown
+            size={16}
+            className={`transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        }
+        iconPosition="right"
+      />
       {open && (
         <div className="p-3 space-y-1.5 max-h-36 overflow-y-auto">
           {options.map((cat) => (

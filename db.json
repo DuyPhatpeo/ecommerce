@@ -362,6 +362,33 @@
       "shipping": 0,
       "total": 330,
       "createdAt": "2025-10-21T02:00:23.019Z"
+    },
+    {
+      "id": "d245",
+      "customer": {
+        "fullName": "Trần Duy Phát",
+        "email": "tranduyphat2810@gmail.com",
+        "phone": "0866482834",
+        "address": "123 abc",
+        "city": "Nha Trang",
+        "district": "",
+        "ward": "",
+        "note": "",
+        "paymentMethod": "cod"
+      },
+      "items": [
+        {
+          "productId": "111",
+          "title": "NIKE AIR MAX 270 REACT (Red/White)",
+          "quantity": 1,
+          "price": 150
+        }
+      ],
+      "subtotal": 150,
+      "tax": 15,
+      "shipping": 30000,
+      "total": 30165,
+      "createdAt": "2025-10-23T07:39:09.255Z"
     }
   ],
   "cart": [

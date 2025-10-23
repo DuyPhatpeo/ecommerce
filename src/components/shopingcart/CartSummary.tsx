@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
 
 interface ProductType {
   id: number;
@@ -202,18 +203,19 @@ export default function CartSummary({
         </div>
 
         {/* Checkout Button */}
-        <button
+        <Button
           onClick={handleCheckout}
           disabled={validSelectedItems.length === 0}
+          icon={
+            <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          }
+          label={"Proceed to Checkout"}
           className={`w-full font-bold text-lg py-5 rounded-2xl transition-all duration-300 flex justify-center items-center gap-3 group ${
             validSelectedItems.length === 0
               ? "bg-gray-300 text-gray-600 cursor-not-allowed"
               : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
           }`}
-        >
-          <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
-          <span>Proceed to Checkout</span>
-        </button>
+        />
 
         {/* Empty message */}
         {validSelectedItems.length === 0 && selectedItems.length === 0 && (

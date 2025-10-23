@@ -3,6 +3,7 @@ import { CheckCircle, ShoppingBag, Home } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/general/Header";
 import Footer from "../components/general/Footer";
+import Button from "../components/ui/Button";
 
 const OrderSuccess: React.FC = () => {
   const navigate = useNavigate();
@@ -56,20 +57,18 @@ const OrderSuccess: React.FC = () => {
 
           {/* ✅ Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button
+            <Button
               onClick={() => navigate("/")}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition-all"
-            >
-              <Home className="w-5 h-5" />
-              Back to Home
-            </button>
-            <button
+              icon={<Home className="w-5 h-5" />}
+              label={"Back to Home"}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition-all"
+            />
+            <Button
               onClick={() => navigate("/cart")}
-              className="flex items-center justify-center gap-2 border-2 border-orange-400 text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              Continue Shopping
-            </button>
+              icon={<ShoppingBag className="w-5 h-5" />}
+              label={"Continue Shopping"}
+              className="border-2 border-orange-400 text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all"
+            />
           </div>
         </div>
       </main>
