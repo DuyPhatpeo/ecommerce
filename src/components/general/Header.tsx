@@ -136,7 +136,7 @@ const Header = () => {
                 onMouseLeave={handleMouseLeave}
               >
                 <Link
-                  to={item.path}
+                  to={item.path ?? "/"}
                   className={`px-2 transition-colors duration-300 ${
                     location.pathname === item.path
                       ? "text-orange-500"
