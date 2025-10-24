@@ -281,7 +281,7 @@ const Shop: React.FC = () => {
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
             icon={<Filter size={18} />}
-            label={"Bộ lọc"}
+            label={"Filter"}
           />
 
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
