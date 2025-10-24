@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { ArrowUpDown, Sparkles, Filter, ShoppingBag } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
 import ShopFilter from "./ShopFilter";
 import Button from "../ui/Button";
@@ -8,7 +9,7 @@ import ShopList from "./ShopList";
 interface Product {
   id: number;
   title: string;
-  salePrice: number; // VNĐ
+  salePrice: number;
   regularPrice?: number;
   status?: string;
   images?: string[];
@@ -29,6 +30,7 @@ type StockFilter = "all" | "in" | "out";
 const ITEMS_PER_LOAD = 9;
 
 const Shop: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const PRICE_MIN = 0;
   const PRICE_MAX = 100_000_000;
 
@@ -71,7 +73,42 @@ const Shop: React.FC = () => {
     };
   }, []);
 
-  // --- Ngăn cuộn khi mở bộ lọc (mobile) ---
+  // --- Khôi phục filter từ URL ---
+  useEffect(() => {
+    const sort = searchParams.get("sort") as SortOption | null;
+    const stock = (searchParams.get("stock") as StockFilter) || "all";
+    const cat = searchParams.get("category")?.split(",").filter(Boolean) || [];
+    const brand = searchParams.get("brand")?.split(",").filter(Boolean) || [];
+    const min = Number(searchParams.get("min") ?? PRICE_MIN);
+    const max = Number(searchParams.get("max") ?? PRICE_MAX);
+
+    if (sort) setSortBy(sort);
+    setStockFilter(stock);
+    setCategoryFilter(cat);
+    setBrandFilter(brand);
+    setPriceRange({ min, max });
+  }, [searchParams]);
+
+  // --- Cập nhật URL khi filter thay đổi ---
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (sortBy !== "none") params.sort = sortBy;
+    if (stockFilter !== "all") params.stock = stockFilter;
+    if (categoryFilter.length) params.category = categoryFilter.join(",");
+    if (brandFilter.length) params.brand = brandFilter.join(",");
+    if (priceRange.min > PRICE_MIN) params.min = String(priceRange.min);
+    if (priceRange.max < PRICE_MAX) params.max = String(priceRange.max);
+    setSearchParams(params, { replace: true });
+  }, [
+    sortBy,
+    stockFilter,
+    categoryFilter,
+    brandFilter,
+    priceRange,
+    setSearchParams,
+  ]);
+
+  // --- Ngăn cuộn khi mở bộ lọc ---
   useEffect(() => {
     document.body.style.overflow = showFilters ? "hidden" : "";
     return () => {
@@ -81,7 +118,6 @@ const Shop: React.FC = () => {
 
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
 
-  // --- Reset toàn bộ bộ lọc ---
   const clearFilters = useCallback(() => {
     setSortBy("none");
     setStockFilter("all");
@@ -91,13 +127,14 @@ const Shop: React.FC = () => {
     setSizeFilter([]);
     setPriceRange({ min: PRICE_MIN, max: PRICE_MAX });
     setVisibleCount(ITEMS_PER_LOAD);
-  }, [PRICE_MIN, PRICE_MAX]);
+    setSearchParams({}); // 🧹 clear URL luôn
+  }, [PRICE_MIN, PRICE_MAX, setSearchParams]);
 
   const handleSeeMore = useCallback(() => {
     setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
   }, []);
 
-  // --- Debounce để tránh lọc quá nhanh khi user kéo slider ---
+  // --- Debounce tránh lọc quá nhanh ---
   const [debouncedFilters, setDebouncedFilters] = useState({
     price: priceRange,
     category: categoryFilter,
@@ -115,11 +152,10 @@ const Shop: React.FC = () => {
         stock: stockFilter,
       });
       setIsFiltering(false);
-    }, 500);
+    }, 400);
     return () => clearTimeout(handler);
   }, [priceRange, categoryFilter, brandFilter, stockFilter]);
 
-  // --- Hàm tính giá thực tế (ưu tiên salePrice, nếu không có thì dùng regularPrice) ---
   const getFinalPrice = useCallback((p: Product) => {
     if (p.salePrice && p.salePrice > 0) return p.salePrice;
     if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
@@ -127,12 +163,12 @@ const Shop: React.FC = () => {
   }, []);
 
   // =====================================================
-  // 🧠 SORT LOGIC (sắp xếp)
+  // 🧠 SORT + FILTER logic giữ nguyên như code của Dino
   // =====================================================
+
   const sortedProducts = useMemo(() => {
     let sorted = [...products];
 
-    // Tính % giảm giá nếu có
     const getDiscountPercent = (p: Product) => {
       if (
         p.regularPrice &&
@@ -147,27 +183,18 @@ const Shop: React.FC = () => {
 
     switch (sortBy) {
       case "name-asc":
-        // 🔤 Sắp xếp A → Z
         sorted.sort((a, b) => a.title.localeCompare(b.title));
         break;
-
       case "name-desc":
-        // 🔤 Sắp xếp Z → A
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
-
       case "price-asc":
-        // 💰 Giá tăng dần (ưu tiên salePrice)
         sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
         break;
-
       case "price-desc":
-        // 💰 Giá giảm dần
         sorted.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
         break;
-
       case "discount-high":
-        // 💥 Ưu tiên sản phẩm có giảm giá lớn nhất
         const discounted = sorted.filter((p) => getDiscountPercent(p) > 0);
         discounted.sort(
           (a, b) => getDiscountPercent(b) - getDiscountPercent(a)
@@ -177,7 +204,6 @@ const Shop: React.FC = () => {
         break;
     }
 
-    // 📦 Ưu tiên hiển thị sản phẩm còn hàng trước
     sorted.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -189,49 +215,36 @@ const Shop: React.FC = () => {
     return sorted;
   }, [products, sortBy, getFinalPrice]);
 
-  // =====================================================
-  // 🧩 FILTER LOGIC (lọc)
-  // =====================================================
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
 
-    // --- 1️⃣ Lọc theo tình trạng kho ---
     if (debouncedFilters.stock === "in") {
-      // chỉ lấy sản phẩm còn hàng
       result = result.filter((p) => (p.stock ?? 0) > 0);
     } else if (debouncedFilters.stock === "out") {
-      // chỉ lấy sản phẩm hết hàng
       result = result.filter((p) => (p.stock ?? 0) <= 0);
     }
 
-    // --- 2️⃣ Lọc theo danh mục ---
     if (debouncedFilters.category.length) {
       result = result.filter((p) =>
         debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
       );
     }
 
-    // --- 3️⃣ Lọc theo thương hiệu ---
     if (debouncedFilters.brand.length) {
       result = result.filter((p) =>
         debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
       );
     }
 
-    // --- 4️⃣ Lọc theo khoảng giá ---
-    // ⚡ Dùng giá thực tế (salePrice nếu có, nếu không dùng regularPrice)
     result = result.filter(
       (p) =>
         getFinalPrice(p) >= debouncedFilters.price.min &&
         getFinalPrice(p) <= debouncedFilters.price.max
     );
 
-    // 🧠 Nếu có thêm filter màu, size,... có thể thêm tương tự ở đây
-
     return result;
   }, [sortedProducts, debouncedFilters, getFinalPrice]);
 
-  // --- 5️⃣ Phân trang / "Xem thêm" ---
   const paginatedProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
     [filteredProducts, visibleCount]
@@ -239,7 +252,6 @@ const Shop: React.FC = () => {
 
   const hasMore = visibleCount < filteredProducts.length;
 
-  // --- 6️⃣ Sinh danh sách tùy chọn danh mục / thương hiệu ---
   const categoryOptions = useMemo(() => {
     const valid = products
       .map((p) => p.category?.toLowerCase())
@@ -254,7 +266,6 @@ const Shop: React.FC = () => {
     return Array.from(new Set(valid));
   }, [products]);
 
-  // Kiểm tra xem có filter nào đang hoạt động không
   const hasActiveFilters =
     sortBy !== "none" ||
     stockFilter !== "all" ||
@@ -266,7 +277,7 @@ const Shop: React.FC = () => {
     priceRange.max < PRICE_MAX;
 
   // =====================================================
-  // 🖼️ Giao diện hiển thị
+  // 🖼️ UI giữ nguyên
   // =====================================================
 
   if (loading)
@@ -286,7 +297,7 @@ const Shop: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto">
-        {/* --- Tiêu đề --- */}
+        {/* Tiêu đề */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
@@ -305,7 +316,7 @@ const Shop: React.FC = () => {
           />
         )}
 
-        {/* --- Thanh công cụ --- */}
+        {/* Thanh công cụ */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={toggleFilters}
@@ -314,7 +325,6 @@ const Shop: React.FC = () => {
             label={"Filter"}
           />
 
-          {/* Bộ chọn sắp xếp */}
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
             <ArrowUpDown size={18} className="text-orange-500" />
             <select
@@ -332,7 +342,6 @@ const Shop: React.FC = () => {
           </div>
         </div>
 
-        {/* --- Khu vực chính: Bộ lọc + Danh sách sản phẩm --- */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
@@ -360,14 +369,12 @@ const Shop: React.FC = () => {
             />
           </div>
 
-          {/* Danh sách sản phẩm */}
           <div className="flex-1 relative">
             {isFiltering && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
-
             <ShopList
               paginatedProducts={paginatedProducts}
               clearFilters={clearFilters}
