@@ -6,8 +6,8 @@ interface Product {
   title: string;
   images?: string[];
   quantity: number;
-  price?: number;
-  salePrice?: number;
+  price?: number; // Giá gốc
+  salePrice?: number; // Giá giảm (nếu có)
 }
 
 interface Props {
@@ -16,16 +16,19 @@ interface Props {
 }
 
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
+  const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
+
   return (
     <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-orange-100">
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
         <ShoppingBag className="w-6 h-6 text-white" />
         <div>
-          <h2 className="text-2xl font-bold text-white">Order Items</h2>
+          <h2 className="text-2xl font-bold text-white">
+            Products in the order
+          </h2>
           <p className="text-orange-100 mt-1 text-sm">
-            {products.length} {products.length === 1 ? "item" : "items"} in your
-            order
+            {products.length} products in the order
           </p>
         </div>
       </div>
@@ -51,53 +54,71 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
         ) : products.length > 0 ? (
           // Product list
           <div className="space-y-6">
-            {products.map((p) => (
-              <div
-                key={p.id}
-                className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
-              >
-                <img
-                  src={
-                    Array.isArray(p.images) && p.images.length > 0
-                      ? p.images[0]
-                      : "/placeholder.png"
-                  }
-                  alt={p.title}
-                  className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3
-                    className="font-semibold text-lg text-gray-800 truncate"
-                    title={p.title}
-                  >
-                    {p.title}
-                  </h3>
-                  <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
+            {products.map((p) => {
+              const hasDiscount =
+                p.salePrice !== undefined && p.salePrice < (p.price ?? 0);
+              const regularPrice = p.price ?? 0;
+              const finalPrice = hasDiscount ? p.salePrice! : regularPrice;
+
+              return (
+                <div
+                  key={p.id}
+                  className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
+                >
+                  <img
+                    src={
+                      Array.isArray(p.images) && p.images.length > 0
+                        ? p.images[0]
+                        : "/placeholder.png"
+                    }
+                    alt={p.title}
+                    className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h3
+                      className="font-semibold text-lg text-gray-800 truncate"
+                      title={p.title}
+                    >
+                      {p.title}
+                    </h3>
+                    <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
+                  </div>
+
+                  {/* Hiển thị giá */}
+                  <div className="text-right">
+                    {hasDiscount ? (
+                      <>
+                        <p className="font-semibold text-orange-600 text-lg">
+                          {formatPrice(finalPrice * p.quantity)}
+                        </p>
+                        <p className="text-sm text-gray-400 line-through">
+                          {formatPrice(regularPrice * p.quantity)}
+                        </p>
+                        <p className="text-xs text-green-600 font-medium mt-1">
+                          Save{" "}
+                          {formatPrice(
+                            (regularPrice - finalPrice) * p.quantity
+                          )}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-semibold text-orange-600 text-lg">
+                          {formatPrice(regularPrice * p.quantity)}
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          ({formatPrice(regularPrice)} / product)
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-orange-600 text-lg">
-                    {(
-                      (p.salePrice ?? p.price ?? 0) * p.quantity
-                    ).toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    })}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    (
-                    {(p.salePrice ?? p.price ?? 0).toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    })}{" "}
-                    / item)
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-16 text-gray-500">
-            No items in your order
+            There are no products in the order
           </div>
         )}
       </div>

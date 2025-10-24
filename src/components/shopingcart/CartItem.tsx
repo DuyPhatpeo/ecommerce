@@ -7,8 +7,8 @@ import Button from "../ui/Button";
 interface Product {
   id: number;
   title: string;
-  price?: number;
-  salePrice?: number;
+  regularPrice?: number; // Original price
+  salePrice?: number; // Discounted price
   stock: number;
   status?: string;
   category?: string;
@@ -44,8 +44,15 @@ export default function CartItem({
   const formatPrice = (price: number) =>
     `${new Intl.NumberFormat("vi-VN").format(price)} đ`;
 
-  // Prefer salePrice if present, fallback to legacy price
-  const unitPrice = item.product?.salePrice ?? item.product?.price ?? 0;
+  // Check discount
+  const hasDiscount =
+    item.product?.salePrice &&
+    item.product?.regularPrice &&
+    item.product.salePrice < item.product.regularPrice;
+
+  const displayPrice = hasDiscount
+    ? item.product.salePrice!
+    : item.product?.regularPrice ?? 0;
 
   const isOutOfStock =
     item.product?.status?.toLowerCase() === "outofstock" ||
@@ -59,7 +66,7 @@ export default function CartItem({
     if (item.quantity < maxStock) {
       updateQuantity(item.id, 1);
     } else {
-      toast.error("You have reached the maximum stock quantity!");
+      toast.error("You have reached the stock limit!");
     }
   };
 
@@ -103,7 +110,7 @@ export default function CartItem({
           />
         </div>
 
-        {/* Product Image (clickable) */}
+        {/* Product Image */}
         <Link
           to={`/product/${item.product?.id}`}
           className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100 shadow shrink-0 hover:opacity-90 transition"
@@ -132,15 +139,29 @@ export default function CartItem({
             )}
           </div>
 
+          {/* Price Display */}
           {isOutOfStock ? (
             <div className="flex items-center gap-1.5 text-red-600 font-semibold text-xs sm:text-sm mt-1">
               <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Out of stock
             </div>
           ) : (
-            <p className="text-orange-600 font-bold text-lg sm:text-xl md:text-2xl">
-              {formatPrice(unitPrice)}
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
+              {hasDiscount ? (
+                <>
+                  <p className="text-gray-400 line-through text-sm sm:text-base">
+                    {formatPrice(item.product.regularPrice!)}
+                  </p>
+                  <p className="text-orange-600 font-bold text-lg sm:text-xl md:text-2xl">
+                    {formatPrice(item.product.salePrice!)}
+                  </p>
+                </>
+              ) : (
+                <p className="text-orange-600 font-bold text-lg sm:text-xl md:text-2xl">
+                  {formatPrice(item.product.regularPrice ?? 0)}
+                </p>
+              )}
+            </div>
           )}
 
           {/* Category on mobile */}
@@ -164,6 +185,7 @@ export default function CartItem({
 
       {/* Bottom Section: Quantity + Subtotal */}
       <div className="flex items-center justify-between mt-3 sm:mt-4 pl-8 sm:pl-10 md:pl-0 md:ml-0">
+        {/* Quantity Control */}
         <div
           className={`flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl p-2 sm:p-3 shadow-md ${
             isOutOfStock
@@ -200,12 +222,12 @@ export default function CartItem({
             Subtotal
           </p>
           <p
-            title={formatPrice(unitPrice * item.quantity)}
+            title={formatPrice(displayPrice * item.quantity)}
             className={`font-bold text-base sm:text-lg md:text-xl ${
               isOutOfStock ? "text-gray-400 line-through" : "text-gray-800"
             }`}
           >
-            {formatPrice(unitPrice * item.quantity)}
+            {formatPrice(displayPrice * item.quantity)}
           </p>
         </div>
       </div>

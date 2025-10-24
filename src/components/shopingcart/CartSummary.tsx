@@ -14,8 +14,8 @@ import Button from "../ui/Button";
 interface ProductType {
   id: number;
   title: string;
-  price?: number;
-  salePrice?: number;
+  regularPrice?: number; // Giá gốc
+  salePrice?: number; // Giá giảm (nếu có)
   stock: number;
 }
 
@@ -52,11 +52,12 @@ export default function CartSummary({
       (item.product.stock === 0 || item.quantity > item.product.stock)
   );
 
-  // Tính subtotal
+  // Tính subtotal — ưu tiên salePrice, nếu không có thì dùng regularPrice
   const subtotal = validSelectedItems.reduce((sum, item) => {
-    const unit = item.product.salePrice ?? item.product.price ?? 0;
+    const unit = item.product.salePrice ?? item.product.regularPrice ?? 0;
     return sum + unit * item.quantity;
   }, 0);
+
   const tax = subtotal * 0.1;
   const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;

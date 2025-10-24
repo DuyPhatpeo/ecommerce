@@ -8,8 +8,8 @@ interface ProductType {
   id: number;
   title: string;
   image: string;
-  price?: number;
-  salePrice?: number;
+  price?: number; // regular price
+  salePrice?: number; // discounted price (if any)
   stock: number;
 }
 
@@ -45,7 +45,7 @@ export default function CartList({
   clearAll,
   clearing,
 }: CartListProps) {
-  // ✅ Filter valid items (in stock and within stock limit)
+  // ✅ Filter valid products (in stock and within stock limit)
   const validItems = cartItems.filter(
     (item) => item.product?.stock > 0 && item.quantity <= item.product?.stock
   );
@@ -57,44 +57,30 @@ export default function CartList({
     validIds.every((id) => selectedItems.includes(id)) &&
     selectedItems.length === validIds.length;
 
-  // ✅ Out of stock items
+  // ✅ Out-of-stock items
   const outOfStockItems = cartItems.filter((item) => item.product?.stock === 0);
 
-  // ✅ Handle select all valid items
+  // ✅ Handle select all
   const handleSelectAll = () => {
     if (allValidSelected) {
-      toggleSelectAll([]); // Deselect all
+      toggleSelectAll([]); // unselect all
     } else {
-      toggleSelectAll(validIds); // Select valid items
+      toggleSelectAll(validIds); // select all valid
       const invalidCount = cartItems.length - validIds.length;
       if (invalidCount > 0) {
         toast.error(
-          `${invalidCount} items cannot be selected (out of stock or exceed available quantity)`
+          `${invalidCount} item(s) cannot be selected (out of stock or exceeds stock quantity)`
         );
       }
     }
   };
 
-  // ✅ Sort: in-stock items first
+  // ✅ Sort: available first, out-of-stock last
   const sortedCartItems = [...cartItems].sort((a, b) => {
     const aOut = a.product?.stock === 0 || a.quantity > a.product?.stock;
     const bOut = b.product?.stock === 0 || b.quantity > b.product?.stock;
     return aOut === bOut ? 0 : aOut ? 1 : -1;
   });
-
-  // ✅ Valid selected items
-  const selectedValidItems = validItems.filter((item) =>
-    selectedItems.includes(item.id)
-  );
-
-  // ✅ Calculate total
-  const totalSelected = selectedValidItems.reduce((sum, item) => {
-    const unit = item.product?.salePrice ?? item.product?.price ?? 0;
-    return sum + unit * item.quantity;
-  }, 0);
-
-  // ✅ Format price
-  const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
 
   return (
     <div className="lg:col-span-2">
@@ -103,7 +89,7 @@ export default function CartList({
         <div className="bg-white px-6 py-4 flex flex-wrap items-center justify-between border-b-2 border-orange-200 gap-3">
           <div className="flex items-center gap-3">
             <Checkbox
-              label="Select All"
+              label="Select all"
               checked={allValidSelected}
               onChange={handleSelectAll}
               disabled={validIds.length === 0}
@@ -122,7 +108,7 @@ export default function CartList({
               onClick={clearAll}
               disabled={clearing || cartItems.length === 0}
               icon={<Trash2 className="w-4 h-4" />}
-              label={clearing ? "Clearing..." : "Clear All"}
+              label={clearing ? "Clearing..." : "Clear all"}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 ${
                 clearing
                   ? "bg-gray-200 text-gray-500 cursor-wait"
@@ -139,9 +125,7 @@ export default function CartList({
         {loading && (
           <div className="p-16 text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-gray-500 text-lg font-medium">
-              Loading your cart...
-            </p>
+            <p className="text-gray-500 text-lg font-medium">Loading cart...</p>
           </div>
         )}
 
@@ -154,7 +138,9 @@ export default function CartList({
             <p className="text-gray-700 text-xl font-semibold mb-2">
               Your cart is empty
             </p>
-            <p className="text-gray-500">Start adding items to your cart!</p>
+            <p className="text-gray-500">
+              Add some products to your cart to get started!
+            </p>
           </div>
         )}
 
@@ -167,10 +153,10 @@ export default function CartList({
                 <AlertTriangle className="w-10 h-10 text-yellow-500" />
               </div>
               <p className="text-gray-700 text-lg font-semibold mb-2">
-                All items in your cart are out of stock!
+                All products are out of stock!
               </p>
               <p className="text-gray-500">
-                Please remove them or check again later.
+                Please remove or check back later.
               </p>
             </div>
           )}
@@ -192,24 +178,6 @@ export default function CartList({
           </div>
         )}
       </div>
-
-      {/* ✅ Total */}
-      {selectedValidItems.length > 0 && (
-        <div className="mt-6 bg-white rounded-xl p-4 shadow flex justify-between items-center border border-orange-200">
-          <p className="text-gray-700 font-medium">
-            Selected:{" "}
-            <span className="font-semibold text-orange-600">
-              {selectedValidItems.length} item(s)
-            </span>
-          </p>
-          <p className="text-gray-800 text-lg font-bold">
-            Total:{" "}
-            <span className="text-orange-600">
-              {formatPrice(totalSelected)}
-            </span>
-          </p>
-        </div>
-      )}
     </div>
   );
 }
