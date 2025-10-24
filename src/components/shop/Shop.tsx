@@ -32,6 +32,7 @@ const Shop: React.FC = () => {
   const PRICE_MIN = 0;
   const PRICE_MAX = 100_000_000;
 
+  // --- State chính ---
   const [products, setProducts] = useState<Product[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
@@ -49,7 +50,7 @@ const Shop: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
 
-  // --- Fetch products once ---
+  // --- Lấy danh sách sản phẩm ---
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
@@ -70,6 +71,7 @@ const Shop: React.FC = () => {
     };
   }, []);
 
+  // --- Ngăn cuộn khi mở bộ lọc (mobile) ---
   useEffect(() => {
     document.body.style.overflow = showFilters ? "hidden" : "";
     return () => {
@@ -79,6 +81,7 @@ const Shop: React.FC = () => {
 
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
 
+  // --- Reset toàn bộ bộ lọc ---
   const clearFilters = useCallback(() => {
     setSortBy("none");
     setStockFilter("all");
@@ -94,6 +97,7 @@ const Shop: React.FC = () => {
     setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
   }, []);
 
+  // --- Debounce để tránh lọc quá nhanh khi user kéo slider ---
   const [debouncedFilters, setDebouncedFilters] = useState({
     price: priceRange,
     category: categoryFilter,
@@ -115,18 +119,20 @@ const Shop: React.FC = () => {
     return () => clearTimeout(handler);
   }, [priceRange, categoryFilter, brandFilter, stockFilter]);
 
-  // --- Sorting ---
+  // --- Hàm tính giá thực tế (ưu tiên salePrice, nếu không có thì dùng regularPrice) ---
+  const getFinalPrice = useCallback((p: Product) => {
+    if (p.salePrice && p.salePrice > 0) return p.salePrice;
+    if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
+    return 0;
+  }, []);
+
+  // =====================================================
+  // 🧠 SORT LOGIC (sắp xếp)
+  // =====================================================
   const sortedProducts = useMemo(() => {
     let sorted = [...products];
 
-    // --- Hàm tính giá thực tế (ưu tiên salePrice, fallback regularPrice) ---
-    const getFinalPrice = (p: Product) => {
-      if (p.salePrice && p.salePrice > 0) return p.salePrice;
-      if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
-      return 0;
-    };
-
-    // --- Hàm tính phần trăm giảm giá (nếu có) ---
+    // Tính % giảm giá nếu có
     const getDiscountPercent = (p: Product) => {
       if (
         p.regularPrice &&
@@ -141,33 +147,37 @@ const Shop: React.FC = () => {
 
     switch (sortBy) {
       case "name-asc":
+        // 🔤 Sắp xếp A → Z
         sorted.sort((a, b) => a.title.localeCompare(b.title));
         break;
 
       case "name-desc":
+        // 🔤 Sắp xếp Z → A
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
 
       case "price-asc":
+        // 💰 Giá tăng dần (ưu tiên salePrice)
         sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
         break;
 
       case "price-desc":
+        // 💰 Giá giảm dần
         sorted.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
         break;
 
       case "discount-high":
+        // 💥 Ưu tiên sản phẩm có giảm giá lớn nhất
         const discounted = sorted.filter((p) => getDiscountPercent(p) > 0);
         discounted.sort(
           (a, b) => getDiscountPercent(b) - getDiscountPercent(a)
         );
-
         const nonDiscounted = sorted.filter((p) => getDiscountPercent(p) === 0);
         sorted = [...discounted, ...nonDiscounted];
         break;
     }
 
-    // --- Ưu tiên sản phẩm còn hàng ---
+    // 📦 Ưu tiên hiển thị sản phẩm còn hàng trước
     sorted.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -177,39 +187,51 @@ const Shop: React.FC = () => {
     });
 
     return sorted;
-  }, [products, sortBy]);
+  }, [products, sortBy, getFinalPrice]);
 
-  // --- Filtering ---
+  // =====================================================
+  // 🧩 FILTER LOGIC (lọc)
+  // =====================================================
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
 
+    // --- 1️⃣ Lọc theo tình trạng kho ---
     if (debouncedFilters.stock === "in") {
+      // chỉ lấy sản phẩm còn hàng
       result = result.filter((p) => (p.stock ?? 0) > 0);
     } else if (debouncedFilters.stock === "out") {
+      // chỉ lấy sản phẩm hết hàng
       result = result.filter((p) => (p.stock ?? 0) <= 0);
     }
 
+    // --- 2️⃣ Lọc theo danh mục ---
     if (debouncedFilters.category.length) {
       result = result.filter((p) =>
         debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
       );
     }
 
+    // --- 3️⃣ Lọc theo thương hiệu ---
     if (debouncedFilters.brand.length) {
       result = result.filter((p) =>
         debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
       );
     }
 
+    // --- 4️⃣ Lọc theo khoảng giá ---
+    // ⚡ Dùng giá thực tế (salePrice nếu có, nếu không dùng regularPrice)
     result = result.filter(
       (p) =>
-        (p.salePrice ?? 0) >= debouncedFilters.price.min &&
-        (p.salePrice ?? 0) <= debouncedFilters.price.max
+        getFinalPrice(p) >= debouncedFilters.price.min &&
+        getFinalPrice(p) <= debouncedFilters.price.max
     );
 
-    return result;
-  }, [sortedProducts, debouncedFilters]);
+    // 🧠 Nếu có thêm filter màu, size,... có thể thêm tương tự ở đây
 
+    return result;
+  }, [sortedProducts, debouncedFilters, getFinalPrice]);
+
+  // --- 5️⃣ Phân trang / "Xem thêm" ---
   const paginatedProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
     [filteredProducts, visibleCount]
@@ -217,6 +239,7 @@ const Shop: React.FC = () => {
 
   const hasMore = visibleCount < filteredProducts.length;
 
+  // --- 6️⃣ Sinh danh sách tùy chọn danh mục / thương hiệu ---
   const categoryOptions = useMemo(() => {
     const valid = products
       .map((p) => p.category?.toLowerCase())
@@ -231,6 +254,7 @@ const Shop: React.FC = () => {
     return Array.from(new Set(valid));
   }, [products]);
 
+  // Kiểm tra xem có filter nào đang hoạt động không
   const hasActiveFilters =
     sortBy !== "none" ||
     stockFilter !== "all" ||
@@ -240,6 +264,10 @@ const Shop: React.FC = () => {
     sizeFilter.length > 0 ||
     priceRange.min > PRICE_MIN ||
     priceRange.max < PRICE_MAX;
+
+  // =====================================================
+  // 🖼️ Giao diện hiển thị
+  // =====================================================
 
   if (loading)
     return (
@@ -258,6 +286,7 @@ const Shop: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto">
+        {/* --- Tiêu đề --- */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
@@ -276,6 +305,7 @@ const Shop: React.FC = () => {
           />
         )}
 
+        {/* --- Thanh công cụ --- */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={toggleFilters}
@@ -284,6 +314,7 @@ const Shop: React.FC = () => {
             label={"Filter"}
           />
 
+          {/* Bộ chọn sắp xếp */}
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
             <ArrowUpDown size={18} className="text-orange-500" />
             <select
@@ -301,6 +332,7 @@ const Shop: React.FC = () => {
           </div>
         </div>
 
+        {/* --- Khu vực chính: Bộ lọc + Danh sách sản phẩm --- */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
@@ -328,6 +360,7 @@ const Shop: React.FC = () => {
             />
           </div>
 
+          {/* Danh sách sản phẩm */}
           <div className="flex-1 relative">
             {isFiltering && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
