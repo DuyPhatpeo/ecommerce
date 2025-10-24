@@ -393,12 +393,11 @@
   ],
   "cart": [
     {
-      "id": "211e",
+      "id": "8fae",
       "productId": "111",
-      "quantity": 2
+      "quantity": 1
     }
   ],
-
   "products": [
     {
       "id": "111",
@@ -406,7 +405,7 @@
       "category": "running",
       "brand": "Nike",
       "title": "NIKE AIR MAX 270 REACT (Red/White)",
-      "salePrice": 3750000,
+      "salePrice": null,
       "regularPrice": 5250000,
       "stock": 20,
       "rating": 4.5,

@@ -16,7 +16,7 @@ import Input from "../ui/Input";
 interface ProductInfoProps {
   id: number;
   title: string;
-  salePrice: number;
+  salePrice?: number;
   regularPrice?: number;
   category: string;
   brand: string;
@@ -95,8 +95,8 @@ const QuantitySelector = memo(
 const ProductInfo = ({
   id,
   title,
-  salePrice: price,
-  regularPrice: oldPrice,
+  salePrice,
+  regularPrice,
   category,
   brand,
   rating = 5,
@@ -112,18 +112,21 @@ const ProductInfo = ({
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  /** Discount */
-  const discountPercentage = useMemo(() => {
-    if (oldPrice && oldPrice > price)
-      return Math.round(((oldPrice - price) / oldPrice) * 100);
-    return 0;
-  }, [oldPrice, price]);
+  /** ✅ Xử lý giá hợp lệ */
+  const effectivePrice = salePrice || regularPrice || 0;
 
-  /** Format price in VND */
+  /** ✅ Tính phần trăm giảm giá */
+  const discountPercentage = useMemo(() => {
+    if (regularPrice && salePrice && regularPrice > salePrice)
+      return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
+    return 0;
+  }, [regularPrice, salePrice]);
+
+  /** ✅ Format VND */
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
-  /** Custom Toast */
+  /** ✅ Custom Toast Add to Cart */
   const showCartToast = useCallback(
     (imageUrl: string) => {
       toast.custom(
@@ -152,7 +155,11 @@ const ProductInfo = ({
                 </span>{" "}
                 item(s)
               </p>
-              <p className="text-gray-700 font-medium">{formatVND(price)}</p>
+              {effectivePrice > 0 && (
+                <p className="text-gray-700 font-medium">
+                  {formatVND(effectivePrice)}
+                </p>
+              )}
               <Button
                 label="View cart"
                 onClick={() => {
@@ -172,10 +179,10 @@ const ProductInfo = ({
         { duration: 3000 }
       );
     },
-    [navigate, price, quantity, title]
+    [navigate, effectivePrice, quantity, title]
   );
 
-  /** Add to Cart */
+  /** ✅ Add to Cart */
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
     if (quantity > stock) {
@@ -201,7 +208,12 @@ const ProductInfo = ({
       return;
     }
 
-    const subtotal = price * quantity;
+    if (effectivePrice <= 0) {
+      toast.error("This product does not have a valid price!");
+      return;
+    }
+
+    const subtotal = effectivePrice * quantity;
     const tax = subtotal * 0.1;
     const shipping = 30000;
     const total = subtotal + tax + shipping;
@@ -218,9 +230,9 @@ const ProductInfo = ({
     });
 
     toast.success("Redirecting to checkout...");
-  }, [id, price, quantity, isOutOfStock, navigate]);
+  }, [id, effectivePrice, quantity, isOutOfStock, navigate]);
 
-  /** Favorite */
+  /** ✅ Favorite */
   const handleToggleFavorite = useCallback(() => {
     setIsFavorite((prev) => !prev);
     toast.success(
@@ -229,146 +241,161 @@ const ProductInfo = ({
   }, [isFavorite]);
 
   return (
-    <>
-      <div
-        className={`flex flex-col pb-24 md:pb-0 ${loading ? "opacity-80" : ""}`}
-      >
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
+    <div
+      className={`flex flex-col pb-24 md:pb-0 ${loading ? "opacity-80" : ""}`}
+    >
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
 
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-6">
-          {Array.from({ length: 5 }, (_, i) => (
-            <Star
-              key={i}
-              className={`w-5 h-5 ${
-                i < rating ? "fill-current text-orange-400" : "text-gray-300"
-              }`}
-            />
-          ))}
-          <span className="text-gray-600">(128 reviews)</span>
+      {/* ⭐ Rating */}
+      <div className="flex items-center gap-2 mb-6">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Star
+            key={i}
+            className={`w-5 h-5 ${
+              i < rating ? "fill-current text-orange-400" : "text-gray-300"
+            }`}
+          />
+        ))}
+        <span className="text-gray-600">(128 reviews)</span>
+      </div>
+
+      {/* ⚠️ Stock notice */}
+      {isOutOfStock && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600" />
+          <div>
+            <p className="text-red-700 font-semibold mb-1">Out of Stock</p>
+            <p className="text-sm text-gray-600">
+              This item is currently unavailable.
+            </p>
+          </div>
         </div>
+      )}
 
-        {/* Stock notice */}
-        {isOutOfStock && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600" />
-            <div>
-              <p className="text-red-700 font-semibold mb-1">Out of Stock</p>
-              <p className="text-sm text-gray-600">
-                This item is currently unavailable.
-              </p>
-            </div>
+      {!isOutOfStock && isLowStock && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600" />
+          <div>
+            <p className="text-amber-700 font-semibold mb-1">Low Stock</p>
+            <p className="text-sm text-gray-600">
+              Only {stock} left! Order soon.
+            </p>
           </div>
-        )}
-
-        {!isOutOfStock && isLowStock && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <div>
-              <p className="text-amber-700 font-semibold mb-1">Low Stock</p>
-              <p className="text-sm text-gray-600">
-                Only {stock} left! Order soon.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Price box */}
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative">
-          {discountPercentage > 0 && (
-            <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-              -{discountPercentage}%
-            </div>
-          )}
-          <div className="text-4xl font-bold text-orange-600 mb-1">
-            {formatVND(price)}
-          </div>
-          {oldPrice && (
-            <div className="text-gray-500 line-through text-lg">
-              {formatVND(oldPrice)}
-            </div>
-          )}
         </div>
+      )}
 
-        {!isOutOfStock && (
-          <div className="hidden lg:block">
-            <QuantitySelector
-              quantity={quantity}
-              setQuantity={setQuantity}
-              stock={stock}
-            />
+      {/* 💰 Price box */}
+      <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative">
+        {discountPercentage > 0 && (
+          <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+            -{discountPercentage}%
           </div>
         )}
 
-        {/* Buttons */}
-        <div className="flex gap-3 mb-6 items-center">
-          <div className="hidden lg:flex flex-1 gap-3">
-            <Button
-              onClick={handleAddToCart}
-              disabled={loading || isOutOfStock}
-              icon={<ShoppingBag className="w-5 h-5" />}
-              label={
-                isOutOfStock
-                  ? "Out of Stock"
-                  : loading
-                  ? "Adding..."
-                  : "Add to Cart"
-              }
-              className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-                isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-orange-600 text-white hover:scale-105"
-              }`}
-            />
-            <Button
-              onClick={handleBuyNow}
-              disabled={isOutOfStock}
-              icon={<CreditCard className="w-5 h-5" />}
-              label={isOutOfStock ? "Out of Stock" : "Buy Now"}
-              className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-                isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-black text-white hover:bg-gray-800 hover:scale-105"
-              }`}
-            />
+        {effectivePrice > 0 ? (
+          <>
+            <div className="text-4xl font-bold text-orange-600 mb-1">
+              {formatVND(effectivePrice)}
+            </div>
+            {regularPrice && salePrice && regularPrice > salePrice && (
+              <div className="text-gray-500 line-through text-lg">
+                {formatVND(regularPrice)}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-lg font-semibold text-gray-600">
+            Contact for price
           </div>
+        )}
+      </div>
 
+      {!isOutOfStock && (
+        <div className="hidden lg:block">
+          <QuantitySelector
+            quantity={quantity}
+            setQuantity={setQuantity}
+            stock={stock}
+          />
+        </div>
+      )}
+
+      {/* 🛒 Buttons */}
+      <div className="flex gap-3 mb-6 items-center">
+        <div className="hidden lg:flex flex-1 gap-3">
           <Button
-            onClick={handleToggleFavorite}
-            icon={
-              <Heart
-                className={`w-6 h-6 ${
-                  isFavorite ? "fill-red-500 text-red-500" : ""
-                }`}
-              />
+            onClick={handleAddToCart}
+            disabled={loading || isOutOfStock || effectivePrice <= 0}
+            icon={<ShoppingBag className="w-5 h-5" />}
+            label={
+              isOutOfStock
+                ? "Out of Stock"
+                : effectivePrice <= 0
+                ? "No Price"
+                : loading
+                ? "Adding..."
+                : "Add to Cart"
             }
-            className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center ${
-              isFavorite
-                ? "border-red-500 bg-red-50"
-                : "border-gray-300 hover:border-red-500 hover:text-red-500"
+            className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+              isOutOfStock || effectivePrice <= 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-orange-600 text-white hover:scale-105"
+            }`}
+          />
+          <Button
+            onClick={handleBuyNow}
+            disabled={isOutOfStock || effectivePrice <= 0}
+            icon={<CreditCard className="w-5 h-5" />}
+            label={
+              isOutOfStock
+                ? "Out of Stock"
+                : effectivePrice <= 0
+                ? "No Price"
+                : "Buy Now"
+            }
+            className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+              isOutOfStock || effectivePrice <= 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-black text-white hover:bg-gray-800 hover:scale-105"
             }`}
           />
         </div>
 
-        {/* Info */}
-        <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
-          <div className="flex justify-between">
-            <span>Category:</span>
-            <span className="font-semibold text-gray-900">{category}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Brand:</span>
-            <span className="font-semibold text-gray-900">{brand}</span>
-          </div>
-          {sku && (
-            <div className="flex justify-between">
-              <span>SKU:</span>
-              <span className="font-semibold text-gray-900">{sku}</span>
-            </div>
-          )}
-        </div>
+        <Button
+          onClick={handleToggleFavorite}
+          icon={
+            <Heart
+              className={`w-6 h-6 ${
+                isFavorite ? "fill-red-500 text-red-500" : ""
+              }`}
+            />
+          }
+          className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center ${
+            isFavorite
+              ? "border-red-500 bg-red-50"
+              : "border-gray-300 hover:border-red-500 hover:text-red-500"
+          }`}
+        />
       </div>
-    </>
+
+      {/* ℹ️ Info */}
+      <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
+        <div className="flex justify-between">
+          <span>Category:</span>
+          <span className="font-semibold text-gray-900">{category}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Brand:</span>
+          <span className="font-semibold text-gray-900">{brand}</span>
+        </div>
+        {sku && (
+          <div className="flex justify-between">
+            <span>SKU:</span>
+            <span className="font-semibold text-gray-900">{sku}</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

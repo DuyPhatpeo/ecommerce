@@ -11,7 +11,8 @@ import toast from "react-hot-toast";
 interface Product {
   id: number;
   title: string;
-  price: number;
+  price?: number;
+  salePrice?: number;
   images?: string[];
 }
 
@@ -124,7 +125,11 @@ const CheckOut: React.FC = () => {
     }
 
     const calculatedSubtotal =
-      subtotal || products.reduce((sum, p) => sum + p.price * p.quantity, 0);
+      subtotal ||
+      products.reduce(
+        (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
+        0
+      );
 
     const orderData = {
       customer: customerInfo,
@@ -132,7 +137,7 @@ const CheckOut: React.FC = () => {
         productId: p.id,
         title: p.title,
         quantity: p.quantity,
-        price: p.price,
+        price: p.salePrice ?? p.price,
       })),
       subtotal: calculatedSubtotal,
       tax,
@@ -181,13 +186,19 @@ const CheckOut: React.FC = () => {
             <CheckoutSummary
               subtotal={
                 subtotal ||
-                products.reduce((sum, p) => sum + p.price * p.quantity, 0)
+                products.reduce(
+                  (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
+                  0
+                )
               }
               tax={tax}
               shipping={shipping}
               total={
                 total ||
-                products.reduce((sum, p) => sum + p.price * p.quantity, 0)
+                products.reduce(
+                  (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
+                  0
+                )
               }
               // pass default when customerInfo is null to satisfy typing and avoid runtime crashes
               customerInfo={customerInfo ?? defaultCustomerInfo}

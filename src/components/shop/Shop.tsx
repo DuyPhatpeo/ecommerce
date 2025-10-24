@@ -117,39 +117,66 @@ const Shop: React.FC = () => {
 
   // --- Sorting ---
   const sortedProducts = useMemo(() => {
-    const sorted = [...products];
+    let sorted = [...products];
+
+    // --- Hàm tính giá thực tế (ưu tiên salePrice, fallback regularPrice) ---
+    const getFinalPrice = (p: Product) => {
+      if (p.salePrice && p.salePrice > 0) return p.salePrice;
+      if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
+      return 0;
+    };
+
+    // --- Hàm tính phần trăm giảm giá (nếu có) ---
+    const getDiscountPercent = (p: Product) => {
+      if (
+        p.regularPrice &&
+        p.salePrice &&
+        p.regularPrice > p.salePrice &&
+        p.regularPrice > 0
+      ) {
+        return ((p.regularPrice - p.salePrice) / p.regularPrice) * 100;
+      }
+      return 0;
+    };
+
     switch (sortBy) {
       case "name-asc":
         sorted.sort((a, b) => a.title.localeCompare(b.title));
         break;
+
       case "name-desc":
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
+
       case "price-asc":
-        sorted.sort((a, b) => (a.salePrice ?? 0) - (b.salePrice ?? 0));
+        sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
         break;
+
       case "price-desc":
-        sorted.sort((a, b) => (b.salePrice ?? 0) - (a.salePrice ?? 0));
+        sorted.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
         break;
+
       case "discount-high":
-        sorted.sort((a, b) => {
-          const dA = a.regularPrice
-            ? ((a.regularPrice - a.salePrice) / a.regularPrice) * 100
-            : 0;
-          const dB = b.regularPrice
-            ? ((b.regularPrice - b.salePrice) / b.regularPrice) * 100
-            : 0;
-          return dB - dA;
-        });
+        const discounted = sorted.filter((p) => getDiscountPercent(p) > 0);
+        discounted.sort(
+          (a, b) => getDiscountPercent(b) - getDiscountPercent(a)
+        );
+
+        const nonDiscounted = sorted.filter((p) => getDiscountPercent(p) === 0);
+        sorted = [...discounted, ...nonDiscounted];
         break;
     }
-    return sorted.sort((a, b) => {
+
+    // --- Ưu tiên sản phẩm còn hàng ---
+    sorted.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
       if (stockA > 0 && stockB <= 0) return -1;
       if (stockA <= 0 && stockB > 0) return 1;
       return 0;
     });
+
+    return sorted;
   }, [products, sortBy]);
 
   // --- Filtering ---

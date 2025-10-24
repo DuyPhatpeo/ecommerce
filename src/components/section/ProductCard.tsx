@@ -9,7 +9,7 @@ interface Product {
   id: number;
   title: string;
   img: string;
-  salePrice: number;
+  salePrice?: number;
   regularPrice?: number;
   stock?: number;
 }
@@ -22,21 +22,24 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-  const {
-    id,
-    title,
-    img,
-    salePrice: price,
-    regularPrice: oldPrice,
-    stock = 0,
-  } = data;
+  const { id, title, img, salePrice, regularPrice, stock = 0 } = data;
+
+  // ✅ Ưu tiên salePrice nếu có, ngược lại dùng regularPrice
+  const price = salePrice ?? regularPrice ?? 0;
+
+  // ✅ Chỉ hiển thị oldPrice nếu có giảm thật
+  const oldPrice =
+    salePrice && regularPrice && regularPrice > salePrice
+      ? regularPrice
+      : undefined;
+
   const isOutOfStock = stock === 0;
   const discountPercent =
     oldPrice && oldPrice > price
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
-  // 💰 Format to VNĐ
+  // 💰 Format tiền VNĐ
   const formatVND = useCallback(
     (value: number) =>
       value.toLocaleString("vi-VN", {
@@ -47,20 +50,17 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     []
   );
 
-  // Detect mobile/tablet devices
+  // Detect mobile
   useEffect(() => {
     const checkMobile = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 1024); // lg breakpoint
+      setIsMobile(window.innerWidth < 1024);
     };
-
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Check wishlist status on mount
+  // Check wishlist
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
@@ -71,7 +71,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     }
   }, [id]);
 
-  // 🛒 Custom toast for "added to cart"
+  // 🛒 Custom toast
   const showCartToast = useCallback(
     (imageUrl: string, productTitle: string, productPrice: number) => {
       toast.custom(
@@ -97,7 +97,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                 item
               </p>
               <p className="text-sm text-gray-700 font-medium">
-                {formatVND(productPrice)}
+                {productPrice > 0 ? formatVND(productPrice) : "Liên hệ"}
               </p>
               <Button
                 label="View Cart"
@@ -122,10 +122,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     [navigate, formatVND]
   );
 
-  // 🧡 Add to cart handler
+  // 🧡 Add to cart
   const handleAddToCart = useCallback(async () => {
     if (loading || isOutOfStock) return;
-
     setLoading(true);
     try {
       await addToCart(id, 1);
@@ -138,30 +137,24 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     }
   }, [id, img, title, price, loading, isOutOfStock, showCartToast]);
 
-  // ❤️ Toggle wishlist handler
+  // ❤️ Wishlist
   const handleToggleWishlist = useCallback(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
       const exists = stored.find((item: any) => item.id === id);
-
       if (exists) {
         const updated = stored.filter((item: any) => item.id !== id);
         localStorage.setItem("wishlist", JSON.stringify(updated));
         setIsWishlisted(false);
         toast("Removed from wishlist 💔", {
           icon: "💔",
-          style: {
-            background: "#fee",
-            color: "#333",
-          },
+          style: { background: "#fee", color: "#333" },
         });
       } else {
         const updated = [...stored, { id, title, img, price }];
         localStorage.setItem("wishlist", JSON.stringify(updated));
         setIsWishlisted(true);
-        toast.success("Added to wishlist 💕", {
-          icon: "💕",
-        });
+        toast.success("Added to wishlist 💕", { icon: "💕" });
       }
     } catch (error) {
       console.error("Wishlist error:", error);
@@ -169,7 +162,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     }
   }, [id, title, img, price]);
 
-  // 🔗 Share handler
+  // 🔗 Share
   const handleShare = useCallback(async () => {
     const productUrl = `${window.location.origin}/product/${id}`;
     const shareData = {
@@ -177,16 +170,13 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       text: `Check out this product: ${title}`,
       url: productUrl,
     };
-
     try {
       if (navigator.share && isMobile) {
         await navigator.share(shareData);
         toast.success("Shared successfully!");
       } else {
         await navigator.clipboard.writeText(productUrl);
-        toast.success("Product link copied to clipboard!", {
-          icon: "📋",
-        });
+        toast.success("Product link copied to clipboard!", { icon: "📋" });
       }
     } catch (error) {
       if ((error as Error).name !== "AbortError") {
@@ -196,7 +186,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     }
   }, [id, title, isMobile]);
 
-  // Action icons configuration
+  // 🎯 Icons
   const icons = [
     {
       id: "cart",
@@ -245,7 +235,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             } ${isOutOfStock ? "grayscale-[30%]" : ""}`}
           />
 
-          {/* Out of stock overlay */}
+          {/* Out of stock */}
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
@@ -263,7 +253,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </div>
           )}
 
-          {/* Action buttons - Desktop (hover) */}
+          {/* Action buttons - Desktop */}
           {!isMobile && (
             <div
               className={`absolute top-2 right-2 flex flex-col gap-2 transition-all duration-500 ${
@@ -286,14 +276,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-
                       if (item.disabled) {
                         if (isOutOfStock) {
                           toast.error("This product is out of stock!");
                         }
                         return;
                       }
-
                       item.action?.();
                     }}
                     className={`w-8 h-8 rounded-full shadow-md transition-all duration-300 flex items-center justify-center ${
@@ -309,7 +297,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </div>
           )}
 
-          {/* Action buttons - Mobile/Tablet (bottom bar) */}
+          {/* Action buttons - Mobile */}
           {isMobile && (
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent p-3 pt-8">
               <div className="flex items-center justify-center gap-3">
@@ -322,14 +310,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-
                       if (item.disabled) {
                         if (isOutOfStock) {
                           toast.error("This product is out of stock!");
                         }
                         return;
                       }
-
                       item.action?.();
                     }}
                     className={`w-10 h-10 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center ${
@@ -360,23 +346,27 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           <NavLink to={`/product/${id}`}>{title}</NavLink>
         </h3>
 
-        {/* Price section */}
+        {/* Price */}
         <div className="flex items-center gap-2 flex-wrap mb-2">
-          <span
-            className={`font-bold text-lg sm:text-xl ${
-              isOutOfStock ? "text-gray-400" : "text-orange-600"
-            }`}
-          >
-            {formatVND(price)}
-          </span>
-          {oldPrice && oldPrice > price && (
+          {price > 0 ? (
+            <span
+              className={`font-bold text-lg sm:text-xl ${
+                isOutOfStock ? "text-gray-400" : "text-orange-600"
+              }`}
+            >
+              {formatVND(price)}
+            </span>
+          ) : (
+            <span className="text-gray-500 italic text-sm">Liên hệ</span>
+          )}
+          {oldPrice && (
             <span className="text-gray-400 line-through text-sm">
               {formatVND(oldPrice)}
             </span>
           )}
         </div>
 
-        {/* Stock status indicator */}
+        {/* Stock */}
         <div className="text-xs font-medium">
           {isOutOfStock ? (
             <span className="text-red-500 flex items-center gap-1">
