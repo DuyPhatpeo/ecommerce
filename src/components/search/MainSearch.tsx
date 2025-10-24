@@ -9,8 +9,8 @@ import Button from "../ui/Button";
 interface Product {
   id: number;
   title: string;
-  price: number;
-  oldPrice?: number;
+  salePrice: number;
+  regularPrice?: number;
   stock?: number;
   images?: string[];
 }
@@ -69,8 +69,8 @@ const MainSearch: React.FC = () => {
         const mapped: Product[] = filtered.map((p: any) => ({
           id: p.id,
           title: p.title,
-          price: p.price,
-          oldPrice: p.oldPrice,
+          salePrice: p.salePrice ?? p.price,
+          regularPrice: p.regularPrice ?? p.oldPrice,
           stock: p.stock,
           images: Array.isArray(p.images)
             ? p.images
@@ -100,18 +100,18 @@ const MainSearch: React.FC = () => {
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "price-asc":
-        sorted.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => (a.salePrice ?? 0) - (b.salePrice ?? 0));
         break;
       case "price-desc":
-        sorted.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => (b.salePrice ?? 0) - (a.salePrice ?? 0));
         break;
       case "discount-high":
         sorted.sort((a, b) => {
-          const dA = a.oldPrice
-            ? ((a.oldPrice - a.price) / a.oldPrice) * 100
+          const dA = a.regularPrice
+            ? ((a.regularPrice - a.salePrice) / a.regularPrice) * 100
             : 0;
-          const dB = b.oldPrice
-            ? ((b.oldPrice - b.price) / b.oldPrice) * 100
+          const dB = b.regularPrice
+            ? ((b.regularPrice - b.salePrice) / b.regularPrice) * 100
             : 0;
           return dB - dA;
         });
@@ -183,8 +183,8 @@ const MainSearch: React.FC = () => {
                         id: p.id,
                         img: p.images?.[0] || "/no-image.png",
                         title: p.title,
-                        price: p.price,
-                        oldPrice: p.oldPrice,
+                        salePrice: p.salePrice,
+                        regularPrice: p.regularPrice,
                         stock: p.stock,
                       }}
                     />

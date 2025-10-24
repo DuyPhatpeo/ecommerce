@@ -21,8 +21,8 @@ interface Product {
   category: string;
   brand: string;
   status: string;
-  price: number;
-  oldPrice?: number;
+  salePrice: number;
+  regularPrice?: number;
   description?: string;
   specs?: Record<string, string>;
   reviews?: Review[];
@@ -96,8 +96,8 @@ export default function ProductDetail() {
               <ProductInfo
                 id={product.id}
                 title={product.title}
-                price={product.price}
-                oldPrice={product.oldPrice}
+                salePrice={product.salePrice ?? (product as any).price}
+                regularPrice={product.regularPrice ?? (product as any).oldPrice}
                 category={product.category}
                 brand={product.brand}
                 images={product.images}

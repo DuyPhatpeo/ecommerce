@@ -14,7 +14,8 @@ import Button from "../ui/Button";
 interface ProductType {
   id: number;
   title: string;
-  price: number;
+  price?: number;
+  salePrice?: number;
   stock: number;
 }
 
@@ -52,10 +53,10 @@ export default function CartSummary({
   );
 
   // Tính subtotal
-  const subtotal = validSelectedItems.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  const subtotal = validSelectedItems.reduce((sum, item) => {
+    const unit = item.product.salePrice ?? item.product.price ?? 0;
+    return sum + unit * item.quantity;
+  }, 0);
   const tax = subtotal * 0.1;
   const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;

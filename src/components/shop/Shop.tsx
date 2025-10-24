@@ -8,8 +8,8 @@ import ShopList from "./ShopList";
 interface Product {
   id: number;
   title: string;
-  price: number; // VNĐ
-  oldPrice?: number;
+  salePrice: number; // VNĐ
+  regularPrice?: number;
   status?: string;
   images?: string[];
   stock?: number;
@@ -126,18 +126,18 @@ const Shop: React.FC = () => {
         sorted.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "price-asc":
-        sorted.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => (a.salePrice ?? 0) - (b.salePrice ?? 0));
         break;
       case "price-desc":
-        sorted.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => (b.salePrice ?? 0) - (a.salePrice ?? 0));
         break;
       case "discount-high":
         sorted.sort((a, b) => {
-          const dA = a.oldPrice
-            ? ((a.oldPrice - a.price) / a.oldPrice) * 100
+          const dA = a.regularPrice
+            ? ((a.regularPrice - a.salePrice) / a.regularPrice) * 100
             : 0;
-          const dB = b.oldPrice
-            ? ((b.oldPrice - b.price) / b.oldPrice) * 100
+          const dB = b.regularPrice
+            ? ((b.regularPrice - b.salePrice) / b.regularPrice) * 100
             : 0;
           return dB - dA;
         });
@@ -176,8 +176,8 @@ const Shop: React.FC = () => {
 
     result = result.filter(
       (p) =>
-        p.price >= debouncedFilters.price.min &&
-        p.price <= debouncedFilters.price.max
+        (p.salePrice ?? 0) >= debouncedFilters.price.min &&
+        (p.salePrice ?? 0) <= debouncedFilters.price.max
     );
 
     return result;

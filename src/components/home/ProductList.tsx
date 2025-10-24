@@ -7,8 +7,8 @@ import { getProducts } from "../../api/productApi";
 interface Product {
   id: number;
   title: string;
-  price: number;
-  oldPrice?: number;
+  salePrice: number;
+  regularPrice?: number;
   status?: string;
   images?: string[];
   stock?: number;
@@ -163,8 +163,8 @@ const ProductList: React.FC = () => {
                 id: product.id,
                 img: product.images?.[0] || "no-image.png",
                 title: product.title,
-                price: product.price,
-                oldPrice: product.oldPrice,
+                salePrice: product.salePrice ?? (product as any).price,
+                regularPrice: product.regularPrice ?? (product as any).oldPrice,
                 stock: product.stock,
               }}
             />

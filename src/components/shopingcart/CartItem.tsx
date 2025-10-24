@@ -7,7 +7,8 @@ import Button from "../ui/Button";
 interface Product {
   id: number;
   title: string;
-  price: number;
+  price?: number;
+  salePrice?: number;
   stock: number;
   status?: string;
   category?: string;
@@ -42,6 +43,9 @@ export default function CartItem({
 
   const formatPrice = (price: number) =>
     `${new Intl.NumberFormat("vi-VN").format(price)} đ`;
+
+  // Prefer salePrice if present, fallback to legacy price
+  const unitPrice = item.product?.salePrice ?? item.product?.price ?? 0;
 
   const isOutOfStock =
     item.product?.status?.toLowerCase() === "outofstock" ||
@@ -135,7 +139,7 @@ export default function CartItem({
             </div>
           ) : (
             <p className="text-orange-600 font-bold text-lg sm:text-xl md:text-2xl">
-              {formatPrice(item.product?.price || 0)}
+              {formatPrice(unitPrice)}
             </p>
           )}
 
@@ -196,12 +200,12 @@ export default function CartItem({
             Subtotal
           </p>
           <p
-            title={formatPrice((item.product?.price || 0) * item.quantity)}
+            title={formatPrice(unitPrice * item.quantity)}
             className={`font-bold text-base sm:text-lg md:text-xl ${
               isOutOfStock ? "text-gray-400 line-through" : "text-gray-800"
             }`}
           >
-            {formatPrice((item.product?.price || 0) * item.quantity)}
+            {formatPrice(unitPrice * item.quantity)}
           </p>
         </div>
       </div>

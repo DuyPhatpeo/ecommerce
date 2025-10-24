@@ -36,22 +36,22 @@ const HotDeal: React.FC = () => {
       id: 1,
       name: "Adidas New Hammer Sole",
       img: "e-p1.png",
-      price: 150,
-      oldPrice: 210,
+      salePrice: 150,
+      regularPrice: 210,
     },
     {
       id: 2,
       name: "Nike Air Zoom Pegasus 40",
       img: "e-p2.png",
-      price: 180,
-      oldPrice: 230,
+      salePrice: 180,
+      regularPrice: 230,
     },
     {
       id: 3,
       name: "Puma RS-X Reinvent",
       img: "e-p3.png",
-      price: 140,
-      oldPrice: 200,
+      salePrice: 140,
+      regularPrice: 200,
     },
   ];
 
@@ -166,10 +166,10 @@ const HotDeal: React.FC = () => {
             </div>
 
             <p className="text-gray-400 line-through text-xs sm:text-sm">
-              ${products[currentIndex].oldPrice.toFixed(2)}
+              ${products[currentIndex].regularPrice.toFixed(2)}
             </p>
             <p className="text-lg sm:text-xl md:text-2xl font-semibold mb-1 text-orange-600">
-              ${products[currentIndex].price.toFixed(2)}
+              ${products[currentIndex].salePrice.toFixed(2)}
             </p>
             <h3 className="text-xs sm:text-sm md:text-base font-bold uppercase mb-5 max-w-xs sm:max-w-md">
               {products[currentIndex].name}

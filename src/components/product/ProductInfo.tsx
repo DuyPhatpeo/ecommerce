@@ -16,8 +16,8 @@ import Input from "../ui/Input";
 interface ProductInfoProps {
   id: number;
   title: string;
-  price: number;
-  oldPrice?: number;
+  salePrice: number;
+  regularPrice?: number;
   category: string;
   brand: string;
   rating?: number;
@@ -95,8 +95,8 @@ const QuantitySelector = memo(
 const ProductInfo = ({
   id,
   title,
-  price,
-  oldPrice,
+  salePrice: price,
+  regularPrice: oldPrice,
   category,
   brand,
   rating = 5,

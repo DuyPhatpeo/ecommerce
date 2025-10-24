@@ -6,8 +6,8 @@ import Button from "../ui/Button";
 interface Product {
   id: number;
   title: string;
-  price: number;
-  oldPrice?: number;
+  salePrice: number;
+  regularPrice?: number;
   stock?: number;
   images?: string[];
 }
@@ -59,8 +59,8 @@ const ShopList: React.FC<ShopListProps> = ({
                   id: p.id,
                   img: p.images?.[0] || "/no-image.png",
                   title: p.title,
-                  price: p.price,
-                  oldPrice: p.oldPrice,
+                  salePrice: p.salePrice ?? (p as any).price,
+                  regularPrice: p.regularPrice ?? (p as any).oldPrice,
                   stock: p.stock,
                 }}
               />

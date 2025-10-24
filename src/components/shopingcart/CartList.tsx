@@ -8,7 +8,8 @@ interface ProductType {
   id: number;
   title: string;
   image: string;
-  price: number;
+  price?: number;
+  salePrice?: number;
   stock: number;
 }
 
@@ -87,10 +88,10 @@ export default function CartList({
   );
 
   // ✅ Calculate total
-  const totalSelected = selectedValidItems.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  const totalSelected = selectedValidItems.reduce((sum, item) => {
+    const unit = item.product?.salePrice ?? item.product?.price ?? 0;
+    return sum + unit * item.quantity;
+  }, 0);
 
   // ✅ Format price
   const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
