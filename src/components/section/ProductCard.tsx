@@ -135,25 +135,38 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         )}
 
         {/* ❤️ WISHLIST */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleToggleWishlist();
-          }}
-          className={`absolute top-3 right-3 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
-            ${
-              isWishlisted
-                ? "text-red-500 bg-white/40 border-white/70"
-                : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
-            }
-            ${
-              isMobile ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
-            }
-          `}
+        <div
+          className={`absolute top-3 right-3 transition-all duration-300 ${
+            isMobile ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
+          }`}
         >
-          <Heart size={18} className={isWishlisted ? "fill-red-500" : ""} />
-        </button>
+          <div className="relative group/wish">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleToggleWishlist();
+              }}
+              className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
+                ${
+                  isWishlisted
+                    ? "text-red-500 bg-white/40 border-white/70"
+                    : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
+                }`}
+            >
+              <Heart size={18} className={isWishlisted ? "fill-red-500" : ""} />
+            </button>
+
+            {/* Tooltip for ❤️ */}
+            <span
+              className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/wish:opacity-100
+                bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+                shadow-lg transition-all duration-200 scale-95 group-hover/wish:scale-100"
+            >
+              {isWishlisted ? "Remove Wishlist" : "Add to Wishlist"}
+            </span>
+          </div>
+        </div>
 
         {/* 🛒 + 🔗 Buttons */}
         {!isMobile && (
@@ -165,23 +178,41 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             }`}
           >
             {[
-              { icon: <ShoppingBag size={18} />, onClick: handleAddToCart },
-              { icon: <Share2 size={18} />, onClick: handleShare },
+              {
+                icon: <ShoppingBag size={18} />,
+                onClick: handleAddToCart,
+                label: "Add to cart",
+              },
+              {
+                icon: <Share2 size={18} />,
+                onClick: handleShare,
+                label: "Share",
+              },
             ].map((btn, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  btn.onClick(e);
-                }}
-                className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
-                  bg-black/30 text-white border border-white/40 backdrop-blur-md
-                  hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
-                  transition-all hover:scale-105 active:scale-95 shadow-md"
-              >
-                {btn.icon}
-              </button>
+              <div key={idx} className="relative group/btn">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    btn.onClick(e);
+                  }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
+                    bg-black/30 text-white border border-white/40 backdrop-blur-md
+                    hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
+                    transition-all hover:scale-105 active:scale-95 shadow-md"
+                >
+                  {btn.icon}
+                </button>
+
+                {/* Tooltip */}
+                <span
+                  className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/btn:opacity-100
+                    bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+                    shadow-lg transition-all duration-200 scale-95 group-hover/btn:scale-100"
+                >
+                  {btn.label}
+                </span>
+              </div>
             ))}
           </div>
         )}
@@ -193,14 +224,14 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           <h3
             title={title}
             className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
-    group-hover:text-orange-600 mb-2 leading-snug 
-    line-clamp-2 overflow-hidden break-normal whitespace-normal min-h-[3.2rem]"
+              group-hover:text-orange-600 mb-2 leading-snug 
+              line-clamp-2 overflow-hidden break-normal whitespace-normal min-h-[3.2rem]"
           >
             {title}
           </h3>
         </NavLink>
 
-        {/* PRICE — responsive and non-breaking */}
+        {/* PRICE */}
         <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-2 mb-2 text-center sm:text-left">
           <span className="font-bold text-base sm:text-lg text-orange-600 whitespace-nowrap">
             {formatVND(price)}
