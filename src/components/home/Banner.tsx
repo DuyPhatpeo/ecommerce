@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import Button from "../ui/Button";
@@ -27,6 +27,15 @@ const Banner: React.FC = () => {
 
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  // --- Auto slide ---
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % banners.length);
+    }, 5000); // đổi mỗi 5 giây
+    return () => clearInterval(timer);
+  }, []);
 
   const nextSlide = () => {
     setDirection(1);
@@ -58,7 +67,10 @@ const Banner: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-white">
+    <section
+      className="relative w-full flex items-center justify-center overflow-hidden bg-white"
+      style={{ height: "100dvh" }}
+    >
       {/* Background */}
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-cover transition-all duration-700 ease-in-out"
@@ -67,7 +79,7 @@ const Banner: React.FC = () => {
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 overflow-hidden">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-5 sm:px-6 md:px-8 lg:px-12 overflow-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
             key={banners[current].title}
@@ -76,12 +88,12 @@ const Banner: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex flex-col lg:flex-row items-center justify-between gap-10"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 lg:gap-10"
           >
             {/* LEFT CONTENT */}
-            <div className="max-w-xl text-center lg:text-left">
+            <div className="max-w-xl text-center md:text-left">
               <motion.h1
-                className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -90,7 +102,7 @@ const Banner: React.FC = () => {
               </motion.h1>
 
               <motion.p
-                className="mt-6 text-gray-600 text-base md:text-lg"
+                className="mt-4 sm:mt-6 text-gray-600 text-sm sm:text-base md:text-lg"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
@@ -99,7 +111,7 @@ const Banner: React.FC = () => {
               </motion.p>
 
               <motion.div
-                className="mt-10 flex items-center justify-center lg:justify-start"
+                className="mt-6 sm:mt-10 flex items-center justify-center md:justify-start"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
@@ -108,14 +120,14 @@ const Banner: React.FC = () => {
                   type="button"
                   icon={<Plus size={22} className="text-white" />}
                   label="ADD TO BAG"
-                  className="bg-gradient-to-r from-orange-400 to-orange-500 px-6 py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
+                  className="bg-gradient-to-r from-orange-400 to-orange-500 px-5 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
                 />
               </motion.div>
             </div>
 
             {/* RIGHT IMAGE */}
             <motion.div
-              className="relative w-full lg:w-1/2 flex justify-center"
+              className="relative w-full md:w-1/2 flex justify-center"
               initial={{ opacity: 0, rotate: -10, y: 40 }}
               animate={{ opacity: 1, rotate: -5, y: 0 }}
               transition={{ delay: 0.3, duration: 0.7 }}
@@ -123,7 +135,7 @@ const Banner: React.FC = () => {
               <motion.img
                 src={banners[current].productImage}
                 alt={banners[current].title}
-                className="max-w-[600px] w-full drop-shadow-2xl transition-transform duration-700 ease-in-out"
+                className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full drop-shadow-2xl transition-transform duration-700 ease-in-out"
                 whileHover={{ scale: 1.1, rotate: 0 }}
               />
             </motion.div>
