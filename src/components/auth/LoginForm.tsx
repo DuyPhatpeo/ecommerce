@@ -1,24 +1,88 @@
 import { useState } from "react";
 import { Eye, EyeOff, LogIn, Mail, Lock, Home, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+
+const GoogleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path
+      d="M19.8 10.2273C19.8 9.51819 19.7364 8.83637 19.6182 8.18182H10V12.05H15.5091C15.2727 13.3 14.5636 14.3591 13.5 15.0682V17.5773H16.7818C18.7091 15.8364 19.8 13.2727 19.8 10.2273Z"
+      fill="#4285F4"
+    />
+    <path
+      d="M10 20C12.7 20 14.9636 19.1045 16.7818 17.5773L13.5 15.0682C12.6091 15.6682 11.4818 16.0227 10 16.0227C7.39545 16.0227 5.19091 14.2636 4.40455 11.9H1.01364V14.4909C2.81818 18.0682 6.10909 20 10 20Z"
+      fill="#34A853"
+    />
+    <path
+      d="M4.40455 11.9C4.20455 11.3 4.09091 10.6591 4.09091 10C4.09091 9.34091 4.20455 8.7 4.40455 8.1V5.50909H1.01364C0.340909 6.85909 0 8.38636 0 10C0 11.6136 0.340909 13.1409 1.01364 14.4909L4.40455 11.9Z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M10 3.97727C11.6136 3.97727 13.0636 4.54091 14.2045 5.62727L17.1227 2.70909C14.9591 0.681818 12.6955 0 10 0C6.10909 0 2.81818 1.93182 1.01364 5.50909L4.40455 8.1C5.19091 5.73636 7.39545 3.97727 10 3.97727Z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      alert("Please enter email and password");
+
+    const newErrors = { email: "", password: "" };
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (newErrors.email || newErrors.password) {
+      setErrors(newErrors);
       return;
     }
-    alert(`Login successful! \nEmail: ${formData.email}`);
+
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      alert(`Login successful! \nEmail: ${formData.email}`);
+    }, 1500);
+  };
+
+  const handleGoogleSignIn = () => {
+    alert("Google Sign In would be implemented here with OAuth 2.0");
+  };
+
+  const handleNavigation = (path) => {
+    alert(`Navigation to ${path} would be handled by React Router`);
   };
 
   return (
@@ -44,7 +108,7 @@ export default function LoginForm() {
           <div className="flex justify-center gap-2 mt-12">
             <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
             <div className="w-8 h-2 rounded-full bg-white"></div>
-            <div className="w-2 h-2 rounded-full bg-white"></div>
+            <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
           </div>
         </div>
       </div>
@@ -54,8 +118,8 @@ export default function LoginForm() {
         <div className="w-full max-w-md">
           {/* Navigation Buttons */}
           <div className="flex items-center justify-between mb-8">
-            <Link
-              to="/"
+            <button
+              onClick={() => handleNavigation("/")}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-200 group border border-gray-100"
             >
               <Home
@@ -65,15 +129,15 @@ export default function LoginForm() {
               <span className="font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
                 Home
               </span>
-            </Link>
+            </button>
 
-            <Link
-              to="/register"
+            <button
+              onClick={() => handleNavigation("/register")}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg transition-all duration-200 text-white"
             >
               <span className="font-medium">Sign Up</span>
               <ArrowLeft size={18} className="rotate-180" />
-            </Link>
+            </button>
           </div>
 
           {/* Header */}
@@ -85,10 +149,7 @@ export default function LoginForm() {
           </div>
 
           {/* Form Card */}
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-5"
-          >
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-5">
             {/* Email */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -105,10 +166,14 @@ export default function LoginForm() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
-                  required
+                  className={`w-full pl-12 pr-4 py-3.5 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition ${
+                    errors.email ? "border-red-500" : "border-gray-200"
+                  }`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -127,8 +192,9 @@ export default function LoginForm() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
-                  required
+                  className={`w-full pl-12 pr-12 py-3.5 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition ${
+                    errors.password ? "border-red-500" : "border-gray-200"
+                  }`}
                 />
                 <button
                   type="button"
@@ -138,48 +204,89 @@ export default function LoginForm() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
               {/* Forgot Password Link */}
               <div className="text-right mt-2">
-                <Link
-                  to="/forgot-password"
+                <button
+                  type="button"
+                  onClick={() => handleNavigation("/forgot-password")}
                   className="text-sm text-orange-600 hover:text-orange-700 font-medium hover:underline"
                 >
                   Forgot Password?
-                </Link>
+                </button>
               </div>
             </div>
 
             {/* Submit Button */}
             <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-6"
+              type="button"
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <LogIn size={20} />
-              Sign In
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Signing In...
+                </>
+              ) : (
+                <>
+                  <LogIn size={20} />
+                  Sign In
+                </>
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-4 py-4">
+              <div className="flex-1 border-t border-gray-200"></div>
+              <span className="text-sm text-gray-500 font-medium">
+                Or continue with
+              </span>
+              <div className="flex-1 border-t border-gray-200"></div>
+            </div>
+
+            {/* Google Sign In Button */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-3"
+            >
+              <GoogleIcon />
+              Sign in with Google
             </button>
 
             {/* Sign Up Link */}
             <p className="text-center text-sm text-gray-600 pt-4">
               Don't have an account?{" "}
-              <Link
-                to="/register"
+              <button
+                type="button"
+                onClick={() => handleNavigation("/register")}
                 className="text-orange-600 hover:text-orange-700 font-semibold hover:underline"
               >
                 Sign up for free
-              </Link>
+              </button>
             </p>
-          </form>
+          </div>
 
           {/* Footer */}
           <p className="text-center text-xs text-gray-500 mt-6 leading-relaxed">
             By signing in, you agree to our{" "}
-            <a href="#" className="text-orange-600 hover:underline font-medium">
+            <button
+              onClick={() => alert("Terms of Service")}
+              className="text-orange-600 hover:underline font-medium"
+            >
               Terms of Service
-            </a>{" "}
+            </button>{" "}
             and{" "}
-            <a href="#" className="text-orange-600 hover:underline font-medium">
+            <button
+              onClick={() => alert("Privacy Policy")}
+              className="text-orange-600 hover:underline font-medium"
+            >
               Privacy Policy
-            </a>
+            </button>
           </p>
         </div>
       </div>
