@@ -191,24 +191,28 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       <div className="p-3 sm:p-4 flex flex-col flex-1">
         <NavLink to={`/product/${id}`}>
           <h3
-            className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-orange-600 mb-2 
-            line-clamp-2 leading-tight min-h-[3.2em]"
+            title={title}
+            className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
+              group-hover:text-orange-600 mb-2 leading-tight 
+              line-clamp-2 overflow-hidden break-words break-all hyphens-auto min-h-[3.5rem]"
           >
             {title}
           </h3>
         </NavLink>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="font-bold text-base sm:text-lg text-orange-600">
+        {/* PRICE — responsive and non-breaking */}
+        <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-2 mb-2 text-center sm:text-left">
+          <span className="font-bold text-base sm:text-lg text-orange-600 whitespace-nowrap">
             {formatVND(price)}
           </span>
           {oldPrice && (
-            <span className="text-gray-400 line-through text-xs sm:text-sm">
+            <span className="text-gray-400 line-through text-xs sm:text-sm whitespace-nowrap">
               {formatVND(oldPrice)}
             </span>
           )}
         </div>
 
+        {/* STOCK */}
         <div className="min-h-[20px] mb-3 sm:mb-4">
           {isOutOfStock ? (
             <span className="text-red-500 text-xs font-bold">Out of stock</span>
