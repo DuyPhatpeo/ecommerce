@@ -169,8 +169,16 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* 🔸 Icons */}
-          <div className="flex items-center gap-8 text-gray-800">
+          {/* 🔸 Icons + Login */}
+          <div className="flex items-center gap-4 lg:gap-8 text-gray-800">
+            {/* Login Button (Desktop) */}
+            <Link
+              to="/login"
+              className="hidden lg:inline-block px-4 py-2 border border-orange-500 rounded text-orange-500 font-semibold text-sm hover:bg-orange-500 hover:text-white transition-colors"
+            >
+              Đăng nhập
+            </Link>
+
             {/* Search */}
             <button
               onClick={() => setSearchOpen((prev) => !prev)}
@@ -312,6 +320,17 @@ const Header = () => {
                   )}
                 </div>
               ))}
+
+              {/* 🔹 Login Mobile */}
+              <div className="border-b border-gray-100">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full text-left px-5 py-3 text-[14px] font-semibold text-orange-500 hover:bg-orange-500 hover:text-white"
+                >
+                  Đăng nhập
+                </Link>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

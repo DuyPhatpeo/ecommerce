@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -8,9 +8,10 @@ import {
   User,
   ArrowLeft,
   Phone,
+  Home,
 } from "lucide-react";
 
-const RegisterForm = () => {
+export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
@@ -30,7 +31,7 @@ const RegisterForm = () => {
     alert("Registration successful!");
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -39,53 +40,78 @@ const RegisterForm = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex flex-col md:flex-row">
-      {/* Left Column - Branding / Image */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-orange-500 to-orange-600 text-white flex-col items-center justify-center p-10 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-10"></div>
-        <div className="relative z-10 text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Our Community</h1>
-          <p className="text-lg text-orange-100 mb-8">
-            Join thousands of users who trust us to grow their business every
-            day.
+      {/* Left Column - Image */}
+      <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
+        <img
+          src="/auth-bg.jpg"
+          alt="Team collaboration"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Làm mờ nhẹ, sáng hơn */}
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="relative z-10 text-white p-10 flex flex-col items-center justify-center text-center max-w-md mx-auto">
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl mb-6 shadow-2xl">
+              <UserPlus className="text-white" size={40} />
+            </div>
+          </div>
+
+          <h1 className="text-5xl font-bold mb-6 leading-tight drop-shadow-md">
+            Join Our Community
+          </h1>
+          <p className="text-xl text-orange-50 mb-8 leading-relaxed drop-shadow-sm">
+            Create your account and start your amazing journey with thousands of
+            users worldwide.
           </p>
-          <div className="flex justify-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-white"></div>
-            <div className="w-3 h-3 rounded-full bg-orange-300"></div>
-            <div className="w-3 h-3 rounded-full bg-orange-200"></div>
+
+          <div className="flex justify-center gap-2 mt-12">
+            <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
+            <div className="w-8 h-2 rounded-full bg-white"></div>
+            <div className="w-2 h-2 rounded-full bg-white"></div>
           </div>
         </div>
       </div>
 
       {/* Right Column - Register Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6">
-        <div className="w-full max-w-md relative">
-          {/* Back Button */}
-          <a
-            href="/"
-            className="absolute top-0 -left-2 flex items-center gap-2 text-gray-600 hover:text-orange-600 transition duration-200 group"
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-md group-hover:shadow-lg transition duration-200">
-              <ArrowLeft size={20} />
-            </div>
-            <span className="font-medium hidden sm:inline">Back Home</span>
-          </a>
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-md">
+          {/* Navigation Buttons */}
+          <div className="flex items-center justify-between mb-8">
+            <a
+              href="/"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-200 group border border-gray-100"
+            >
+              <Home
+                size={18}
+                className="text-gray-600 group-hover:text-orange-600 transition-colors"
+              />
+              <span className="font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
+                Home
+              </span>
+            </a>
+
+            <a
+              href="/login"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg transition-all duration-200 text-white"
+            >
+              <span className="font-medium">Sign In</span>
+              <ArrowLeft size={18} className="rotate-180" />
+            </a>
+          </div>
 
           {/* Header */}
-          <div className="text-center mb-8 mt-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg mb-4">
-              <UserPlus className="text-white" size={32} />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-3">
               Create Account
             </h1>
-            <p className="text-gray-600">Join us and start your journey</p>
+            <p className="text-gray-600 text-lg">
+              Join us and start your journey today.
+            </p>
           </div>
 
           {/* Form Card */}
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 space-y-5"
-          >
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-5">
             {/* Full Name */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -103,7 +129,7 @@ const RegisterForm = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white"
+                  className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
                 />
               </div>
             </div>
@@ -125,7 +151,7 @@ const RegisterForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white"
+                  className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
                 />
               </div>
             </div>
@@ -147,7 +173,7 @@ const RegisterForm = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+84 123 456 789"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white"
+                  className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
                 />
               </div>
             </div>
@@ -168,13 +194,13 @@ const RegisterForm = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white"
+                  placeholder="Create a strong password"
+                  className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -197,13 +223,13 @@ const RegisterForm = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white"
+                  placeholder="Confirm your password"
+                  className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition"
                 >
                   {showConfirmPassword ? (
                     <EyeOff size={20} />
@@ -215,24 +241,24 @@ const RegisterForm = () => {
             </div>
 
             {/* Terms */}
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 pt-2">
               <input
                 type="checkbox"
                 required
-                className="w-4 h-4 mt-1 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
+                className="w-4 h-4 mt-1 rounded border-gray-300 text-orange-500 focus:ring-orange-500 cursor-pointer"
               />
-              <label className="text-sm text-gray-600">
+              <label className="text-sm text-gray-600 leading-relaxed">
                 I agree to the{" "}
                 <a
                   href="#"
-                  className="text-orange-600 hover:underline font-medium"
+                  className="text-orange-600 hover:text-orange-700 font-semibold hover:underline"
                 >
-                  Terms
+                  Terms of Service
                 </a>{" "}
                 and{" "}
                 <a
                   href="#"
-                  className="text-orange-600 hover:underline font-medium"
+                  className="text-orange-600 hover:text-orange-700 font-semibold hover:underline"
                 >
                   Privacy Policy
                 </a>
@@ -241,28 +267,39 @@ const RegisterForm = () => {
 
             {/* Submit Button */}
             <button
+              type="submit"
               onClick={handleSubmit}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-6"
             >
               <UserPlus size={20} />
               Create Account
             </button>
 
             {/* Sign In Link */}
-            <p className="text-center text-sm text-gray-600 mt-4">
+            <p className="text-center text-sm text-gray-600 pt-4">
               Already have an account?{" "}
               <a
                 href="/login"
-                className="text-orange-600 hover:text-orange-700 font-semibold"
+                className="text-orange-600 hover:text-orange-700 font-semibold hover:underline"
               >
                 Sign in
               </a>
             </p>
-          </form>
+          </div>
+
+          {/* Footer */}
+          <p className="text-center text-xs text-gray-500 mt-6 leading-relaxed">
+            By creating an account, you agree to our{" "}
+            <a href="#" className="text-orange-600 hover:underline font-medium">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-orange-600 hover:underline font-medium">
+              Privacy Policy
+            </a>
+          </p>
         </div>
       </div>
     </div>
   );
-};
-
-export default RegisterForm;
+}

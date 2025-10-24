@@ -10,6 +10,9 @@ const ShopPage = lazy(() => import("../pages/ShopPage"));
 const SearchPage = lazy(() => import("../pages/SearchPage.tsx"));
 const LoginPage = lazy(() => import("../pages/LoginPage.tsx"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage.tsx"));
+const ForgotPasswordPage = lazy(
+  () => import("../pages/ForgotPasswordPage.tsx")
+);
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -37,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* 404 */}
         <Route
