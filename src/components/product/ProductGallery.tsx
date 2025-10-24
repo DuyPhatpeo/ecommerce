@@ -20,12 +20,9 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const [thumbIndex, setThumbIndex] = useState(0);
   const maxThumbIndex = Math.max(0, images.length - visibleThumbs);
 
-  // fallback ảnh nếu rỗng
   const safeImages = images.length ? images : ["no-image.png"];
 
-  /** ======================
-   *  RESPONSIVE THUMBNAILS
-   * ====================== */
+  /** Responsive thumbnails */
   useEffect(() => {
     const updateVisibleThumbs = () => {
       setVisibleThumbs(window.innerWidth < 640 ? 3 : 4);
@@ -35,9 +32,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     return () => window.removeEventListener("resize", updateVisibleThumbs);
   }, []);
 
-  /** ======================
-   *  HANDLE MAIN IMAGE CHANGE
-   * ====================== */
+  /** Image change */
   const changeImage = useCallback(
     (newIndex: number) => {
       if (newIndex < 0 || newIndex >= safeImages.length) return;
@@ -68,9 +63,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     );
   }, [selectedImage, safeImages.length, changeImage]);
 
-  /** ======================
-   *  SCROLL LOCK & KEYBOARD
-   * ====================== */
+  /** Scroll lock & keyboard */
   useEffect(() => {
     document.body.style.overflow = isZoomed ? "hidden" : "auto";
     return () => {
@@ -89,9 +82,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [isZoomed, nextImage, prevImage]);
 
-  /** ======================
-   *  ZOOM & DRAG
-   * ====================== */
+  /** Zoom & drag */
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     setZoom((z) => Math.max(1, Math.min(4, z - e.deltaY * 0.001)));
@@ -112,9 +103,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const handleMouseUp = () => setDragging(false);
 
-  /** ======================
-   *  TOUCH SUPPORT
-   * ====================== */
+  /** Touch support */
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1 && zoom <= 1) {
       setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
@@ -140,12 +129,9 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     }
   };
 
-  /** ======================
-   *  THUMBNAILS SLIDE
-   * ====================== */
+  /** Thumbnails slide */
   const handleNextThumbs = () =>
     setThumbIndex((prev) => Math.min(prev + 1, maxThumbIndex));
-
   const handlePrevThumbs = () => setThumbIndex((prev) => Math.max(prev - 1, 0));
 
   const visibleImages = safeImages.slice(
@@ -153,9 +139,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
     thumbIndex + visibleThumbs
   );
 
-  /** ======================
-   *  RENDER
-   * ====================== */
+  /** Render */
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Main image */}
@@ -202,7 +186,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             </>
           )}
 
-          {/* Image counter */}
+          {/* Counter */}
           {safeImages.length > 1 && (
             <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-medium">
               {selectedImage + 1} / {safeImages.length}
@@ -220,13 +204,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
       {safeImages.length > 1 && (
         <div className="relative px-8 sm:px-10">
           <div className="flex items-center justify-center gap-2 sm:gap-3">
-            {thumbIndex > 0 && (
-              <Button
-                onClick={handlePrevThumbs}
-                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
-                icon={<ChevronLeft className="w-4 h-4" />}
-              />
-            )}
+            {/* Prev button (always visible) */}
+            <Button
+              onClick={handlePrevThumbs}
+              disabled={thumbIndex === 0}
+              className={`absolute left-0 z-10 p-2 rounded-full border shadow-md transition-all ${
+                thumbIndex === 0
+                  ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-50 border-gray-200 hover:scale-110 active:scale-95"
+              }`}
+              icon={<ChevronLeft className="w-4 h-4" />}
+            />
 
             <div className="flex justify-center gap-2 sm:gap-3 overflow-hidden">
               {visibleImages.map((img, idx) => {
@@ -257,13 +245,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               })}
             </div>
 
-            {thumbIndex < maxThumbIndex && (
-              <Button
-                onClick={handleNextThumbs}
-                className="absolute left-0 z-10 p-2 rounded-full bg-white hover:bg-gray-50 border border-gray-200 shadow-md hover:scale-110 active:scale-95 transition-all"
-                icon={<ChevronRight className="w-4 h-4" />}
-              />
-            )}
+            {/* Next button (always visible) */}
+            <Button
+              onClick={handleNextThumbs}
+              disabled={thumbIndex === maxThumbIndex}
+              className={`absolute right-0 z-10 p-2 rounded-full border shadow-md transition-all ${
+                thumbIndex === maxThumbIndex
+                  ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-50 border-gray-200 hover:scale-110 active:scale-95"
+              }`}
+              icon={<ChevronRight className="w-4 h-4" />}
+            />
           </div>
         </div>
       )}
