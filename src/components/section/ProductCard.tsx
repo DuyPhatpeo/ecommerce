@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Heart, HeartOff, ShoppingBag, Share2, X } from "lucide-react";
+import { Heart, ShoppingBag, Share2, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
