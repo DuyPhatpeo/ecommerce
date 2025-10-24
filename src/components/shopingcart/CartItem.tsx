@@ -41,10 +41,7 @@ export default function CartItem({
     item.product?.images?.[0] || "https://via.placeholder.com/150";
 
   const formatPrice = (price: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
+    `${new Intl.NumberFormat("vi-VN").format(price)} đ`;
 
   const isOutOfStock =
     item.product?.status?.toLowerCase() === "outofstock" ||

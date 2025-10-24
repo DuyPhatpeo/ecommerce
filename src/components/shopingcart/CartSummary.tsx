@@ -60,8 +60,7 @@ export default function CartSummary({
   const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;
 
-  const formatPrice = (price: number) =>
-    price.toLocaleString("en-US", { style: "currency", currency: "USD" });
+  const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
 
   // Checkout
   const handleCheckout = () => {

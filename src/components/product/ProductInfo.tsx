@@ -119,6 +119,10 @@ const ProductInfo = ({
     return 0;
   }, [oldPrice, price]);
 
+  /** Format price in VND */
+  const formatVND = (val: number) =>
+    val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+
   /** Custom Toast */
   const showCartToast = useCallback(
     (imageUrl: string) => {
@@ -148,7 +152,7 @@ const ProductInfo = ({
                 </span>{" "}
                 item(s)
               </p>
-              <p className="text-gray-700 font-medium">{price.toFixed(2)} $</p>
+              <p className="text-gray-700 font-medium">{formatVND(price)}</p>
               <Button
                 label="View cart"
                 onClick={() => {
@@ -190,7 +194,7 @@ const ProductInfo = ({
     }
   }, [id, quantity, stock, images, loading, showCartToast, isOutOfStock]);
 
-  /** ✅ Buy Now (Fixed) */
+  /** ✅ Buy Now */
   const handleBuyNow = useCallback(() => {
     if (isOutOfStock) {
       toast.error("This product is out of stock!");
@@ -204,7 +208,7 @@ const ProductInfo = ({
 
     navigate("/checkout", {
       state: {
-        productId: id, // ✅ đúng key cho mua trực tiếp
+        productId: id,
         quantity,
         subtotal,
         tax,
@@ -218,11 +222,7 @@ const ProductInfo = ({
 
   /** Favorite */
   const handleToggleFavorite = useCallback(() => {
-    setIsFavorite((prev) => {
-      const newState = !prev;
-      return newState;
-    });
-
+    setIsFavorite((prev) => !prev);
     toast.success(
       isFavorite ? "Removed from favorites!" : "Added to favorites!"
     );
@@ -235,6 +235,7 @@ const ProductInfo = ({
       >
         <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
 
+        {/* Rating */}
         <div className="flex items-center gap-2 mb-6">
           {Array.from({ length: 5 }, (_, i) => (
             <Star
@@ -280,11 +281,11 @@ const ProductInfo = ({
             </div>
           )}
           <div className="text-4xl font-bold text-orange-600 mb-1">
-            {price.toFixed(2)} $
+            {formatVND(price)}
           </div>
           {oldPrice && (
             <div className="text-gray-500 line-through text-lg">
-              {oldPrice.toFixed(2)} $
+              {formatVND(oldPrice)}
             </div>
           )}
         </div>
@@ -299,17 +300,11 @@ const ProductInfo = ({
           </div>
         )}
 
+        {/* Buttons */}
         <div className="flex gap-3 mb-6 items-center">
-          {/* Nút mua – chỉ hiển thị desktop */}
           <div className="hidden lg:flex flex-1 gap-3">
             <Button
-              onClick={() => {
-                if (isOutOfStock) {
-                  toast.error("This product is currently out of stock!");
-                  return;
-                }
-                handleAddToCart();
-              }}
+              onClick={handleAddToCart}
               disabled={loading || isOutOfStock}
               icon={<ShoppingBag className="w-5 h-5" />}
               label={
@@ -317,7 +312,7 @@ const ProductInfo = ({
                   ? "Out of Stock"
                   : loading
                   ? "Adding..."
-                  : "Add to cart"
+                  : "Add to Cart"
               }
               className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
                 isOutOfStock
@@ -326,13 +321,7 @@ const ProductInfo = ({
               }`}
             />
             <Button
-              onClick={() => {
-                if (isOutOfStock) {
-                  toast.error("This product is currently out of stock!");
-                  return;
-                }
-                handleBuyNow();
-              }}
+              onClick={handleBuyNow}
               disabled={isOutOfStock}
               icon={<CreditCard className="w-5 h-5" />}
               label={isOutOfStock ? "Out of Stock" : "Buy Now"}
@@ -344,7 +333,6 @@ const ProductInfo = ({
             />
           </div>
 
-          {/* Favorite button luôn hiện, sát lề phải */}
           <Button
             onClick={handleToggleFavorite}
             icon={
@@ -378,92 +366,6 @@ const ProductInfo = ({
               <span className="font-semibold text-gray-900">{sku}</span>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Mobile sticky bottom bar */}
-      <div className="block lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50 border-t border-orange-100">
-        <div className="flex items-center justify-between gap-3 p-3">
-          {/* Quantity Selector */}
-          <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2">
-            <button
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              disabled={quantity <= 1 || isOutOfStock}
-              className="text-xl text-gray-700 hover:text-orange-500 disabled:opacity-50"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              min={1}
-              max={stock}
-              value={quantity}
-              disabled={isOutOfStock}
-              onChange={(e) =>
-                setQuantity(
-                  Math.min(Math.max(1, parseInt(e.target.value) || 1), stock)
-                )
-              }
-              className="w-10 text-center font-semibold text-gray-700 border-none outline-none bg-transparent"
-            />
-            <button
-              onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
-              disabled={quantity >= stock || isOutOfStock}
-              className="text-xl text-gray-700 hover:text-orange-500 disabled:opacity-50"
-            >
-              +
-            </button>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex items-center gap-2 flex-1">
-            <Button
-              onClick={() => {
-                if (isOutOfStock) {
-                  toast.error("This product is currently out of stock!");
-                  return;
-                }
-                handleAddToCart();
-              }}
-              disabled={loading || isOutOfStock}
-              label={
-                <div className="flex items-center justify-center gap-2">
-                  <ShoppingBag className="w-5 h-5" />
-                  <span className="text-sm">
-                    {isOutOfStock ? "Out" : loading ? "Adding..." : "Add Card"}
-                  </span>
-                </div>
-              }
-              className={`flex-1 py-3 rounded-xl font-semibold active:scale-95 transition-all ${
-                isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-orange-500 text-white hover:bg-orange-600"
-              }`}
-            />
-            <Button
-              onClick={() => {
-                if (isOutOfStock) {
-                  toast.error("This product is currently out of stock!");
-                  return;
-                }
-                handleBuyNow();
-              }}
-              disabled={isOutOfStock}
-              label={
-                <div className="flex items-center justify-center gap-2">
-                  <CreditCard className="w-5 h-5" />
-                  <span className="text-sm">
-                    {isOutOfStock ? "Out" : "Buy Now"}
-                  </span>
-                </div>
-              }
-              className={`flex-1 py-3 rounded-xl font-semibold active:scale-95 transition-all ${
-                isOutOfStock
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-black text-white hover:bg-gray-800"
-              }`}
-            />
-          </div>
         </div>
       </div>
     </>

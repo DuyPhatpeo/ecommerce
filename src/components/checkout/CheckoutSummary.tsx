@@ -45,11 +45,17 @@ const CheckoutSummary: React.FC<Props> = ({
       !customerInfo.address ||
       !customerInfo.city
     ) {
-      alert("⚠️ Please fill in all required fields before placing your order!");
+      alert(
+        "⚠️ Please fill in all required information before placing your order!"
+      );
       return;
     }
     onPlaceOrder(customerInfo);
   };
+
+  // Format helper
+  const formatVND = (value: number) =>
+    value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
   return (
     <div className="sticky top-24 bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100 transition-all duration-300 hover:shadow-orange-200">
@@ -70,7 +76,7 @@ const CheckoutSummary: React.FC<Props> = ({
             <span>Subtotal</span>
           </div>
           <span className="font-semibold text-gray-800">
-            ${subtotal.toLocaleString()}
+            {formatVND(subtotal)}
           </span>
         </div>
 
@@ -80,9 +86,7 @@ const CheckoutSummary: React.FC<Props> = ({
             <DollarSign className="w-5 h-5 text-green-500 group-hover:scale-105 transition-transform" />
             <span>Tax (10%)</span>
           </div>
-          <span className="font-semibold text-gray-800">
-            ${tax.toLocaleString()}
-          </span>
+          <span className="font-semibold text-gray-800">{formatVND(tax)}</span>
         </div>
 
         {/* Shipping */}
@@ -93,9 +97,9 @@ const CheckoutSummary: React.FC<Props> = ({
           </div>
           <span className="font-semibold">
             {shipping === 0 ? (
-              <span className="text-green-600 font-bold">FREE</span>
+              <span className="text-green-600 font-bold">Free</span>
             ) : (
-              `$${shipping.toLocaleString()}`
+              formatVND(shipping)
             )}
           </span>
         </div>
@@ -110,7 +114,7 @@ const CheckoutSummary: React.FC<Props> = ({
             <span>Total</span>
           </div>
           <span className="text-2xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-            ${total.toLocaleString()}
+            {formatVND(total)}
           </span>
         </div>
 
@@ -120,13 +124,13 @@ const CheckoutSummary: React.FC<Props> = ({
           className="w-full mt-6 flex justify-center items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:from-orange-600 hover:to-amber-600 hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
           <CreditCard className="w-5 h-5" />
-          Place Order
+          Place Order Now
         </button>
 
         {/* Secure badge */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-5 pt-5 border-t border-gray-100">
           <ShieldCheck className="w-5 h-5 text-green-500" />
-          <span>Secure checkout guaranteed</span>
+          <span>Secure and encrypted payment</span>
         </div>
       </div>
     </div>

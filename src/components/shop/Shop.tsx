@@ -8,7 +8,7 @@ import ShopList from "./ShopList";
 interface Product {
   id: number;
   title: string;
-  price: number;
+  price: number; // VNĐ
   oldPrice?: number;
   status?: string;
   images?: string[];
@@ -29,13 +29,9 @@ type StockFilter = "all" | "in" | "out";
 const ITEMS_PER_LOAD = 9;
 
 const Shop: React.FC = () => {
-  // Giá trị min/max chỉ định nghĩa ở đây
-  const USD_TO_VND = 24000;
-  const PRICE_MIN_USD = 0;
-  const PRICE_MAX_USD = 1000;
-  // Giá trị filter min/max truyền xuống filter là VNĐ
-  const PRICE_MIN = PRICE_MIN_USD * USD_TO_VND;
-  const PRICE_MAX = PRICE_MAX_USD * USD_TO_VND;
+  const PRICE_MIN = 0;
+  const PRICE_MAX = 100_000_000;
+
   const [products, setProducts] = useState<Product[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [stockFilter, setStockFilter] = useState<StockFilter>("all");
@@ -53,12 +49,6 @@ const Shop: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
 
-  // debug: log when color/size filters change to verify they update parent state
-  React.useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug("Shop filters updated:", { colorFilter, sizeFilter });
-  }, [colorFilter, sizeFilter]);
-
   // --- Fetch products once ---
   useEffect(() => {
     let mounted = true;
@@ -69,8 +59,7 @@ const Shop: React.FC = () => {
         if (!Array.isArray(data)) throw new Error("Invalid product data");
         if (mounted) setProducts(data);
       } catch {
-        if (mounted)
-          setError("Failed to load products. Please try again later.");
+        if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -81,7 +70,6 @@ const Shop: React.FC = () => {
     };
   }, []);
 
-  // --- Lock scroll when sidebar open ---
   useEffect(() => {
     document.body.style.overflow = showFilters ? "hidden" : "";
     return () => {
@@ -91,7 +79,6 @@ const Shop: React.FC = () => {
 
   const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
 
-  // --- Clear all filters ---
   const clearFilters = useCallback(() => {
     setSortBy("none");
     setStockFilter("all");
@@ -107,7 +94,6 @@ const Shop: React.FC = () => {
     setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
   }, []);
 
-  // --- Debounced filter state ---
   const [debouncedFilters, setDebouncedFilters] = useState({
     price: priceRange,
     category: categoryFilter,
@@ -126,7 +112,6 @@ const Shop: React.FC = () => {
       });
       setIsFiltering(false);
     }, 500);
-
     return () => clearTimeout(handler);
   }, [priceRange, categoryFilter, brandFilter, stockFilter]);
 
@@ -158,7 +143,6 @@ const Shop: React.FC = () => {
         });
         break;
     }
-    // push out-of-stock to end
     return sorted.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -168,37 +152,32 @@ const Shop: React.FC = () => {
     });
   }, [products, sortBy]);
 
-  // --- Filtering logic ---
+  // --- Filtering ---
   const filteredProducts = useMemo(() => {
     let result = sortedProducts;
 
-    // stock
     if (debouncedFilters.stock === "in") {
       result = result.filter((p) => (p.stock ?? 0) > 0);
     } else if (debouncedFilters.stock === "out") {
       result = result.filter((p) => (p.stock ?? 0) <= 0);
     }
 
-    // category
     if (debouncedFilters.category.length) {
       result = result.filter((p) =>
         debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
       );
     }
 
-    // brand
     if (debouncedFilters.brand.length) {
       result = result.filter((p) =>
         debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
       );
     }
 
-    // price
-    // Chuyển filter từ VNĐ sang USD để so sánh với dữ liệu USD
     result = result.filter(
       (p) =>
-        p.price * USD_TO_VND >= debouncedFilters.price.min &&
-        p.price * USD_TO_VND <= debouncedFilters.price.max
+        p.price >= debouncedFilters.price.min &&
+        p.price <= debouncedFilters.price.max
     );
 
     return result;
@@ -235,7 +214,6 @@ const Shop: React.FC = () => {
     priceRange.min > PRICE_MIN ||
     priceRange.max < PRICE_MAX;
 
-  // --- Render ---
   if (loading)
     return (
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
@@ -253,15 +231,14 @@ const Shop: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
-            <span>All Products</span>
+            <span>Tất cả sản phẩm</span>
             <ShoppingBag size={18} />
           </div>
           <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-gray-900 via-orange-600 to-pink-600 bg-clip-text text-transparent">
-            Our Collection
+            Bộ Sưu Tập Của Chúng Tôi
           </h2>
         </div>
 
@@ -272,13 +249,12 @@ const Shop: React.FC = () => {
           />
         )}
 
-        {/* Controls */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
             icon={<Filter size={18} />}
-            label={"Filters"}
+            label={"Bộ lọc"}
           />
 
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
@@ -288,17 +264,16 @@ const Shop: React.FC = () => {
               onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
-              <option value="none">Default</option>
-              <option value="name-asc">A → Z</option>
-              <option value="name-desc">Z → A</option>
-              <option value="price-asc">Low → High</option>
-              <option value="price-desc">High → Low</option>
-              <option value="discount-high">Biggest Discount (%)</option>
+              <option value="none">Mặc định</option>
+              <option value="name-asc">Tên A → Z</option>
+              <option value="name-desc">Tên Z → A</option>
+              <option value="price-asc">Giá thấp → cao</option>
+              <option value="price-desc">Giá cao → thấp</option>
+              <option value="discount-high">Giảm giá nhiều nhất (%)</option>
             </select>
           </div>
         </div>
 
-        {/* Layout */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
@@ -327,7 +302,6 @@ const Shop: React.FC = () => {
           </div>
 
           <div className="flex-1 relative">
-            {/* Spinner overlay khi filter */}
             {isFiltering && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>

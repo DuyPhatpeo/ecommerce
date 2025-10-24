@@ -93,8 +93,7 @@ export default function CartList({
   );
 
   // ✅ Format price
-  const formatPrice = (price: number) =>
-    price.toLocaleString("en-US", { style: "currency", currency: "USD" });
+  const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
 
   return (
     <div className="lg:col-span-2">

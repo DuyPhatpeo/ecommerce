@@ -45,7 +45,7 @@ const OrderSuccess: React.FC = () => {
               <p className="text-gray-700">
                 <strong>Total:</strong>{" "}
                 <span className="text-orange-600 font-semibold">
-                  ${orderData.total.toFixed(2)}
+                  {orderData.total.toLocaleString("vi-VN")} đ
                 </span>
               </p>
               <p className="text-gray-700">
