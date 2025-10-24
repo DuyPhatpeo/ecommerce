@@ -193,8 +193,8 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           <h3
             title={title}
             className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
-              group-hover:text-orange-600 mb-2 leading-tight 
-              line-clamp-2 overflow-hidden break-words break-all hyphens-auto min-h-[3.5rem]"
+    group-hover:text-orange-600 mb-2 leading-snug 
+    line-clamp-2 overflow-hidden break-normal whitespace-normal min-h-[3.2rem]"
           >
             {title}
           </h3>
