@@ -141,7 +141,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             e.stopPropagation();
             handleToggleWishlist();
           }}
-          className={`absolute top-3 right-3 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
+          className={`absolute top-3 right-3 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
             ${
               isWishlisted
                 ? "text-red-500 bg-white/40 border-white/70"
@@ -175,7 +175,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                   e.stopPropagation();
                   btn.onClick(e);
                 }}
-                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full
+                className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
                   bg-black/30 text-white border border-white/40 backdrop-blur-md
                   hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
                   transition-all hover:scale-105 active:scale-95 shadow-md"
@@ -190,7 +190,10 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       {/* INFO */}
       <div className="p-3 sm:p-4 flex flex-col flex-1">
         <NavLink to={`/product/${id}`}>
-          <h3 className="text-sm sm:text-base font-semibold line-clamp-2 leading-tight mb-2 text-gray-800 group-hover:text-orange-600">
+          <h3
+            className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-orange-600 mb-2 
+            line-clamp-2 leading-tight min-h-[3.2em]"
+          >
             {title}
           </h3>
         </NavLink>
