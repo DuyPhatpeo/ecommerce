@@ -129,7 +129,7 @@ const Header = () => {
           </Link>
 
           {/* 🔸 Desktop Menu */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-10 text-[13px] font-semibold tracking-wide">
+          <nav className="hidden lg:flex items-center gap-8 text-[13px] font-semibold tracking-wide">
             {menuItems.map((item, i) => (
               <div
                 key={i}
@@ -147,8 +147,6 @@ const Header = () => {
                 >
                   {item.label}
                 </Link>
-
-                {/* submenu */}
                 {item.subMenu && activeMenu === item.label && (
                   <div className="absolute left-1/2 -translate-x-1/2 top-[50px] w-[220px] bg-white shadow-lg border border-gray-100 z-40 rounded">
                     {item.subMenu.map((sub, j) => (
@@ -166,13 +164,16 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* 🔸 Icons */}
-          <div className="flex items-center gap-3 sm:gap-5 text-gray-800 relative">
-            {/* Cart */}
-            <Link to="/cart" className="relative">
+          {/* 🔸 Icons (aligned & evenly spaced) */}
+          <div className="hidden lg:flex items-center gap-6 ml-8 text-gray-800">
+            {/* Cart Icon */}
+            <Link
+              to="/cart"
+              className="relative group hover:text-orange-500 transition-colors"
+            >
               <ShoppingBag
-                size={20}
-                className="cursor-pointer hover:text-orange-500"
+                size={22}
+                className="transition-transform duration-200 group-hover:scale-110"
               />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
@@ -181,29 +182,33 @@ const Header = () => {
               )}
             </Link>
 
-            {/* Search */}
-            <Button
+            {/* Search Icon */}
+            <button
               onClick={() => setSearchOpen((prev) => !prev)}
-              className="cursor-pointer hover:text-orange-500"
-              icon={<Search size={20} />}
-            />
+              className="group hover:text-orange-500 transition-colors"
+            >
+              <Search
+                size={22}
+                className="transition-transform duration-200 group-hover:scale-110"
+              />
+            </button>
+          </div>
 
-            {/* Mobile Toggle */}
-            <div className="lg:hidden">
-              {mobileOpen ? (
-                <X
-                  size={22}
-                  className="cursor-pointer hover:text-orange-500"
-                  onClick={() => setMobileOpen(false)}
-                />
-              ) : (
-                <Menu
-                  size={22}
-                  className="cursor-pointer hover:text-orange-500"
-                  onClick={() => setMobileOpen(true)}
-                />
-              )}
-            </div>
+          {/* 🔸 Mobile Toggle */}
+          <div className="lg:hidden">
+            {mobileOpen ? (
+              <X
+                size={22}
+                className="cursor-pointer hover:text-orange-500"
+                onClick={() => setMobileOpen(false)}
+              />
+            ) : (
+              <Menu
+                size={22}
+                className="cursor-pointer hover:text-orange-500"
+                onClick={() => setMobileOpen(true)}
+              />
+            )}
           </div>
         </div>
 

@@ -1,17 +1,30 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
+import { Search } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import SectionBanner from "../section/SectionBanner";
-import { Search, Loader2, PackageX } from "lucide-react"; // 🧩 Icons
+import Button from "../ui/Button";
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  oldPrice?: number;
+  stock?: number;
+  images?: string[];
+}
+
+const ITEMS_PER_PAGE = 8; // số lượng hiển thị mỗi lần
 
 const MainSearch: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
   const location = useLocation();
 
-  // 🔍 Extract query param from URL (e.g. /search?query=nike or /search?search=nike)
+  // 🔍 Get query param from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const value = params.get("search") || params.get("query") || "";
@@ -30,6 +43,7 @@ const MainSearch: React.FC = () => {
       try {
         setLoading(true);
         const data = await getProducts();
+
         const lowerKeyword = keyword.toLowerCase();
 
         // Filter by title, brand, or category
@@ -44,7 +58,20 @@ const MainSearch: React.FC = () => {
           );
         });
 
-        setProducts(filtered);
+        // ✅ Only take the first image per product
+        const mapped: Product[] = filtered.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          price: p.price,
+          oldPrice: p.oldPrice,
+          stock: p.stock,
+          images: Array.isArray(p.images)
+            ? p.images
+            : [p.image || "/no-image.png"],
+        }));
+
+        setProducts(mapped);
+        setVisibleCount(ITEMS_PER_PAGE); // reset khi search mới
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -56,58 +83,76 @@ const MainSearch: React.FC = () => {
   }, [keyword]);
 
   const totalFound = useMemo(() => products.length, [products]);
+  const visibleProducts = useMemo(
+    () => products.slice(0, visibleCount),
+    [products, visibleCount]
+  );
+  const hasMore = visibleCount < totalFound;
 
   return (
     <>
       <SectionBanner
         bgImage="/banner-bg.jpg"
-        title="Search Products"
-        subtitle="Find the products that match your keywords"
+        title="Search Results"
+        subtitle="Discover products that match your keyword"
       />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-24 min-h-screen">
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-3 text-gray-500">
-            <Loader2 className="w-6 h-6 animate-spin" />
-            <p>Loading products...</p>
-          </div>
+          <p className="text-center text-gray-500 animate-pulse">
+            Loading products...
+          </p>
         ) : keyword ? (
           <>
-            <div className="flex justify-center items-center gap-2 mb-6 text-gray-800 text-center">
-              <Search className="w-5 h-5 text-orange-500" />
-              <h2 className="text-lg sm:text-xl font-semibold">
-                Results for <span className="text-orange-500">“{keyword}”</span>{" "}
-                ({totalFound} found)
-              </h2>
-            </div>
+            <h2 className="text-lg sm:text-xl font-semibold mb-6 text-gray-800 text-center">
+              <Search className="inline-block mr-2 text-orange-500" size={18} />
+              Results for{" "}
+              <span className="text-orange-500 font-semibold">
+                “{keyword}”
+              </span>{" "}
+              ({totalFound} items)
+            </h2>
 
             {products.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-                {products.map((p) => (
-                  <ProductCard
-                    key={p.id}
-                    data={{
-                      id: p.id,
-                      img: p.images?.[0] || "/no-image.png",
-                      title: p.title,
-                      price: p.price,
-                      oldPrice: p.oldPrice,
-                      stock: p.stock,
-                    }}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {visibleProducts.map((p) => (
+                    <ProductCard
+                      key={p.id}
+                      data={{
+                        id: p.id,
+                        img: p.images?.[0] || "/no-image.png",
+                        title: p.title,
+                        price: p.price,
+                        oldPrice: p.oldPrice,
+                        stock: p.stock,
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* 🔽 See More button */}
+                {hasMore && (
+                  <div className="flex justify-center mt-10">
+                    <Button
+                      onClick={() =>
+                        setVisibleCount((prev) => prev + ITEMS_PER_PAGE)
+                      }
+                      label="See More"
+                      className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all duration-200 hover:scale-105"
+                    />
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex flex-col items-center mt-10 text-gray-500">
-                <PackageX className="w-10 h-10 mb-2 text-gray-400" />
-                <p>No products found.</p>
+              <div className="text-center text-gray-500 mt-10">
+                No products found matching your keyword.
               </div>
             )}
           </>
         ) : (
-          <div className="flex flex-col items-center mt-16 text-gray-400 text-sm sm:text-base">
-            <Search className="w-6 h-6 mb-2 text-gray-400" />
-            <p>Type a keyword in the search bar to get started</p>
+          <div className="text-center text-gray-400 mt-16 text-sm sm:text-base">
+            Type a keyword into the search bar to get started 🛍️
           </div>
         )}
       </div>
