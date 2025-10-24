@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
-import { Search } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import SectionBanner from "../section/SectionBanner";
 import Button from "../ui/Button";
@@ -15,13 +15,22 @@ interface Product {
   images?: string[];
 }
 
-const ITEMS_PER_PAGE = 8; // số lượng hiển thị mỗi lần
+type SortOption =
+  | "none"
+  | "name-asc"
+  | "name-desc"
+  | "price-asc"
+  | "price-desc"
+  | "discount-high";
+
+const ITEMS_PER_PAGE = 8;
 
 const MainSearch: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("none");
   const location = useLocation();
 
   // 🔍 Get query param from URL
@@ -46,7 +55,6 @@ const MainSearch: React.FC = () => {
 
         const lowerKeyword = keyword.toLowerCase();
 
-        // Filter by title, brand, or category
         const filtered = data.filter((p: any) => {
           const title = p.title?.toLowerCase() || "";
           const brand = p.brand?.toLowerCase() || "";
@@ -58,7 +66,6 @@ const MainSearch: React.FC = () => {
           );
         });
 
-        // ✅ Only take the first image per product
         const mapped: Product[] = filtered.map((p: any) => ({
           id: p.id,
           title: p.title,
@@ -71,7 +78,7 @@ const MainSearch: React.FC = () => {
         }));
 
         setProducts(mapped);
-        setVisibleCount(ITEMS_PER_PAGE); // reset khi search mới
+        setVisibleCount(ITEMS_PER_PAGE);
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -82,10 +89,41 @@ const MainSearch: React.FC = () => {
     fetchData();
   }, [keyword]);
 
-  const totalFound = useMemo(() => products.length, [products]);
+  // 🧮 Sorting logic
+  const sortedProducts = useMemo(() => {
+    const sorted = [...products];
+    switch (sortBy) {
+      case "name-asc":
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "name-desc":
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "price-asc":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "discount-high":
+        sorted.sort((a, b) => {
+          const dA = a.oldPrice
+            ? ((a.oldPrice - a.price) / a.oldPrice) * 100
+            : 0;
+          const dB = b.oldPrice
+            ? ((b.oldPrice - b.price) / b.oldPrice) * 100
+            : 0;
+          return dB - dA;
+        });
+        break;
+    }
+    return sorted;
+  }, [products, sortBy]);
+
+  const totalFound = sortedProducts.length;
   const visibleProducts = useMemo(
-    () => products.slice(0, visibleCount),
-    [products, visibleCount]
+    () => sortedProducts.slice(0, visibleCount),
+    [sortedProducts, visibleCount]
   );
   const hasMore = visibleCount < totalFound;
 
@@ -104,16 +142,38 @@ const MainSearch: React.FC = () => {
           </p>
         ) : keyword ? (
           <>
-            <h2 className="text-lg sm:text-xl font-semibold mb-6 text-gray-800 text-center">
-              <Search className="inline-block mr-2 text-orange-500" size={18} />
-              Results for{" "}
-              <span className="text-orange-500 font-semibold">
-                “{keyword}”
-              </span>{" "}
-              ({totalFound} items)
-            </h2>
+            <div className="flex flex-wrap justify-between items-center mb-8">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+                <Search
+                  className="inline-block mr-2 text-orange-500"
+                  size={18}
+                />
+                Results for{" "}
+                <span className="text-orange-500 font-semibold">
+                  “{keyword}”
+                </span>{" "}
+                ({totalFound} items)
+              </h2>
 
-            {products.length > 0 ? (
+              {/* 🔽 Sort Dropdown */}
+              <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
+                <ArrowUpDown size={18} className="text-orange-500" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
+                >
+                  <option value="none">Default</option>
+                  <option value="name-asc">A → Z</option>
+                  <option value="name-desc">Z → A</option>
+                  <option value="price-asc">Low → High</option>
+                  <option value="price-desc">High → Low</option>
+                  <option value="discount-high">Biggest Discount (%)</option>
+                </select>
+              </div>
+            </div>
+
+            {sortedProducts.length > 0 ? (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                   {visibleProducts.map((p) => (
@@ -131,7 +191,6 @@ const MainSearch: React.FC = () => {
                   ))}
                 </div>
 
-                {/* 🔽 See More button */}
                 {hasMore && (
                   <div className="flex justify-center mt-10">
                     <Button
