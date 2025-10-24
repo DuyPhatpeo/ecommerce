@@ -261,11 +261,11 @@ const Shop: React.FC = () => {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
-            <span>Tất cả sản phẩm</span>
+            <span>All products</span>
             <ShoppingBag size={18} />
           </div>
           <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-gray-900 via-orange-600 to-pink-600 bg-clip-text text-transparent">
-            Bộ Sưu Tập Của Chúng Tôi
+            Our Collection
           </h2>
         </div>
 
@@ -291,12 +291,12 @@ const Shop: React.FC = () => {
               onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
-              <option value="none">Mặc định</option>
-              <option value="name-asc">Tên A → Z</option>
-              <option value="name-desc">Tên Z → A</option>
-              <option value="price-asc">Giá thấp → cao</option>
-              <option value="price-desc">Giá cao → thấp</option>
-              <option value="discount-high">Giảm giá nhiều nhất (%)</option>
+              <option value="none">Default</option>
+              <option value="name-asc">A → Z</option>
+              <option value="name-desc">Z → A</option>
+              <option value="price-asc">Low → high</option>
+              <option value="price-desc">High → low price</option>
+              <option value="discount-high">Biggest discount (%)</option>
             </select>
           </div>
         </div>

@@ -389,6 +389,38 @@
       "shipping": 30000,
       "total": 30165,
       "createdAt": "2025-10-23T07:39:09.255Z"
+    },
+    {
+      "id": "facf",
+      "customer": {
+        "fullName": "Trần Duy Phát",
+        "email": "tranduyphat2810@gmail.com",
+        "phone": "0866482834",
+        "address": "123 abc",
+        "city": "Nha Trang",
+        "district": "",
+        "ward": "",
+        "note": "",
+        "paymentMethod": "cod"
+      },
+      "items": [
+        {
+          "productId": "111",
+          "title": "NIKE AIR MAX 270 REACT (Red/White)",
+          "quantity": 1
+        },
+        {
+          "productId": "222",
+          "title": "ADIDAS ULTRABOOST 21 (White/Black)",
+          "quantity": 1,
+          "price": 4500000
+        }
+      ],
+      "subtotal": 9750000,
+      "tax": 975000,
+      "shipping": 0,
+      "total": 10725000,
+      "createdAt": "2025-10-24T04:25:32.698Z"
     }
   ],
   "cart": [
