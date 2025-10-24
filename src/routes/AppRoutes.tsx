@@ -8,6 +8,8 @@ const CheckOutPage = lazy(() => import("../pages/CheckOutPage"));
 const OrderSuccessPage = lazy(() => import("../pages/OrderSuccessPage"));
 const ShopPage = lazy(() => import("../pages/ShopPage"));
 const SearchPage = lazy(() => import("../pages/SearchPage.tsx"));
+const LoginPage = lazy(() => import("../pages/LoginPage.tsx"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage.tsx"));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -32,9 +34,9 @@ const AppRoutes = () => {
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/checkout" element={<CheckOutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
-
-        {/* ✅ Trang kết quả tìm kiếm */}
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* 404 */}
         <Route
