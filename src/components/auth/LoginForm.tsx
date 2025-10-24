@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Điều hướng React Router
 import { Eye, EyeOff, LogIn, Mail, Lock, Home, ArrowLeft } from "lucide-react";
 
 const GoogleIcon = () => (
@@ -23,49 +24,34 @@ const GoogleIcon = () => (
 );
 
 export default function LoginForm() {
+  const navigate = useNavigate(); // ✅ NEW
+
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
-    }
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newErrors = {};
 
-    const newErrors = { email: "", password: "" };
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!validateEmail(formData.email))
       newErrors.email = "Please enter a valid email";
-    }
 
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters";
-    }
 
-    if (newErrors.email || newErrors.password) {
+    if (Object.keys(newErrors).length) {
       setErrors(newErrors);
       return;
     }
@@ -81,75 +67,61 @@ export default function LoginForm() {
     alert("Google Sign In would be implemented here with OAuth 2.0");
   };
 
-  const handleNavigation = (path) => {
-    alert(`Navigation to ${path} would be handled by React Router`);
-  };
+  const handleNavigation = (path) => navigate(path); // ✅ Thay alert bằng navigate
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex flex-col md:flex-row">
-      {/* Left Column */}
+      {/* Left section giữ nguyên */}
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
         <img
           src="/auth-bg.jpg"
-          alt="Team collaboration"
+          alt="bg"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
-
+        <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 text-white p-10 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-          <h1 className="text-5xl font-bold mb-6 leading-tight drop-shadow-md">
+          <h1 className="text-5xl font-bold mb-6 drop-shadow-md">
             Welcome Back!
           </h1>
-          <p className="text-xl text-orange-50 mb-8 leading-relaxed drop-shadow-sm">
+          <p className="text-xl text-orange-50 mb-8 drop-shadow-sm">
             Sign in to access your account and continue your amazing journey
             with us.
           </p>
-
-          <div className="flex justify-center gap-2 mt-12">
-            <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
-            <div className="w-8 h-2 rounded-full bg-white"></div>
-            <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
-          </div>
         </div>
       </div>
 
-      {/* Right Column */}
+      {/* Right section */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          {/* Navigation Buttons */}
           <div className="flex items-center justify-between mb-8">
             <button
               onClick={() => handleNavigation("/")}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-200 group border border-gray-100"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md hover:shadow-lg group"
             >
               <Home
                 size={18}
-                className="text-gray-600 group-hover:text-orange-600 transition-colors"
+                className="text-gray-600 group-hover:text-orange-600"
               />
-              <span className="font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
+              <span className="font-medium text-gray-700 group-hover:text-orange-600">
                 Home
               </span>
             </button>
 
             <button
               onClick={() => handleNavigation("/register")}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg transition-all duration-200 text-white"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg"
             >
               <span className="font-medium">Sign Up</span>
               <ArrowLeft size={18} className="rotate-180" />
             </button>
           </div>
 
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-3">Sign In</h1>
-            <p className="text-gray-600 text-lg">
-              Welcome back! Please enter your email and password.
-            </p>
-          </div>
+          <h1 className="text-4xl font-bold text-gray-800 mb-3">Sign In</h1>
+          <p className="text-gray-600 text-lg mb-8">
+            Welcome back! Please enter your email and password.
+          </p>
 
-          {/* Form Card */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-5">
+          <div className="bg-white rounded-2xl shadow-xl p-8  space-y-5">
             {/* Email */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -166,7 +138,7 @@ export default function LoginForm() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className={`w-full pl-12 pr-4 py-3.5 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition ${
+                  className={`w-full pl-12 pr-4 py-3.5 rounded-xl bg-gray-50 focus:ring-2 focus:ring-orange-500 ${
                     errors.email ? "border-red-500" : "border-gray-200"
                   }`}
                 />
@@ -192,39 +164,40 @@ export default function LoginForm() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className={`w-full pl-12 pr-12 py-3.5 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition ${
+                  className={`w-full pl-12 pr-12 py-3.5 rounded-xl bg-gray-50 focus:ring-2 focus:ring-orange-500 ${
                     errors.password ? "border-red-500" : "border-gray-200"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-              )}
-              {/* Forgot Password Link */}
+
               <div className="text-right mt-2">
                 <button
                   type="button"
                   onClick={() => handleNavigation("/forgot-password")}
-                  className="text-sm text-orange-600 hover:text-orange-700 font-medium hover:underline"
+                  className="text-sm text-orange-600 hover:underline font-medium"
                 >
                   Forgot Password?
                 </button>
               </div>
+
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
-              type="button"
+              type="submit"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -239,54 +212,37 @@ export default function LoginForm() {
               )}
             </button>
 
-            {/* Divider */}
             <div className="flex items-center gap-4 py-4">
-              <div className="flex-1 border-t border-gray-200"></div>
+              <div className="flex-1 border-t" />
               <span className="text-sm text-gray-500 font-medium">
                 Or continue with
               </span>
-              <div className="flex-1 border-t border-gray-200"></div>
+              <div className="flex-1 border-t" />
             </div>
 
-            {/* Google Sign In Button */}
+            {/* Google Sign In */}
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-3"
+              className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-50 shadow-sm flex items-center justify-center gap-3"
             >
               <GoogleIcon />
               Sign in with Google
             </button>
 
-            {/* Sign Up Link */}
             <p className="text-center text-sm text-gray-600 pt-4">
-              Don't have an account?{" "}
+              Don't have an account?
               <button
-                type="button"
                 onClick={() => handleNavigation("/register")}
-                className="text-orange-600 hover:text-orange-700 font-semibold hover:underline"
+                className="text-orange-600 hover:underline font-semibold ml-1"
               >
                 Sign up for free
               </button>
             </p>
           </div>
 
-          {/* Footer */}
-          <p className="text-center text-xs text-gray-500 mt-6 leading-relaxed">
-            By signing in, you agree to our{" "}
-            <button
-              onClick={() => alert("Terms of Service")}
-              className="text-orange-600 hover:underline font-medium"
-            >
-              Terms of Service
-            </button>{" "}
-            and{" "}
-            <button
-              onClick={() => alert("Privacy Policy")}
-              className="text-orange-600 hover:underline font-medium"
-            >
-              Privacy Policy
-            </button>
+          <p className="text-center text-xs text-gray-500 mt-6">
+            By signing in, you agree to our Terms of Service and Privacy Policy.
           </p>
         </div>
       </div>
