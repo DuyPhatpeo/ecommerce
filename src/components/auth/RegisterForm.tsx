@@ -51,12 +51,6 @@ export default function RegisterForm() {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 text-white p-10 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl mb-6 shadow-2xl">
-              <UserPlus className="text-white" size={40} />
-            </div>
-          </div>
-
           <h1 className="text-5xl font-bold mb-6 leading-tight drop-shadow-md">
             Join Our Community
           </h1>
