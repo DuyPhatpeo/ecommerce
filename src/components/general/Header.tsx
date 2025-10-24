@@ -61,14 +61,6 @@ const Header = () => {
     }
   };
 
-  // 🧭 Khi nhấn icon kính lúp
-  const handleSearchClick = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-    }
-  };
-
   // 🔁 Cập nhật giỏ hàng khi chuyển trang
   useEffect(() => {
     fetchCartCount();
