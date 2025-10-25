@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, memo } from "react";
 import { Heart, ShoppingBag, Share2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -13,6 +13,116 @@ interface Product {
   regularPrice?: number;
   stock?: number;
 }
+
+interface DesktopButtonsProps {
+  id: number;
+  loading: boolean;
+  isOutOfStock: boolean;
+  handleAddToCart: (e?: React.MouseEvent) => void;
+  handleShare: () => void;
+}
+
+const DesktopButtons = memo(
+  ({
+    handleAddToCart,
+    handleShare,
+    loading,
+    isOutOfStock,
+  }: DesktopButtonsProps) => (
+    <div className="absolute top-16 right-3 flex flex-col gap-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 opacity-0 translate-x-4">
+      {[
+        {
+          icon: <ShoppingBag size={18} />,
+          onClick: handleAddToCart,
+          label: "Add to cart",
+          disabled: isOutOfStock || loading,
+        },
+        {
+          icon: <Share2 size={18} />,
+          onClick: handleShare,
+          label: "Share",
+        },
+      ].map((btn, idx) => (
+        <div key={idx} className="relative group/btn">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              btn.onClick(e);
+            }}
+            disabled={(btn as any).disabled}
+            className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
+                    bg-black/30 text-white border border-white/40 backdrop-blur-md
+                    hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
+                    transition-all hover:scale-105 active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {btn.icon}
+          </button>
+          <span
+            className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/btn:opacity-100
+                    bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+                    shadow-lg transition-all duration-200 scale-95 group-hover/btn:scale-100"
+          >
+            {btn.label}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+);
+
+interface WishlistButtonProps {
+  id: number;
+  title: string;
+  img: string;
+  price: number;
+  isWishlisted: boolean;
+  handleToggleWishlist: () => void;
+  isMobile: boolean;
+}
+
+const WishlistButton = memo(
+  ({
+    id,
+    title,
+    img,
+    price,
+    isWishlisted,
+    handleToggleWishlist,
+    isMobile,
+  }: WishlistButtonProps) => (
+    <div
+      className={`absolute top-3 right-3 transition-all duration-300 ${
+        isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+      }`}
+    >
+      <div className="relative group/wish">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggleWishlist();
+          }}
+          className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
+                ${
+                  isWishlisted
+                    ? "text-red-500 bg-white/40 border-white/70"
+                    : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
+                }`}
+        >
+          <Heart size={18} className={isWishlisted ? "fill-red-500" : ""} />
+        </button>
+        <span
+          className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/wish:opacity-100
+                bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+                shadow-lg transition-all duration-200 scale-95 group-hover/wish:scale-100"
+        >
+          {isWishlisted ? "Remove Wishlist" : "Add to Wishlist"}
+        </span>
+      </div>
+    </div>
+  )
+);
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -58,18 +168,22 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     } catch {}
   }, [id]);
 
-  const handleAddToCart = useCallback(async () => {
-    if (loading || isOutOfStock) return;
-    setLoading(true);
-    try {
-      await addToCart(id, 1);
-      toast.success("Added to cart 🛒");
-    } catch {
-      toast.error("Failed to add to cart.");
-    } finally {
-      setLoading(false);
-    }
-  }, [id, loading, isOutOfStock]);
+  const handleAddToCart = useCallback(
+    async (e?: React.MouseEvent) => {
+      if (e) e.stopPropagation();
+      if (loading || isOutOfStock) return;
+      setLoading(true);
+      try {
+        await addToCart(id, 1);
+        toast.success("Added to cart 🛒", { id: `add-cart-${id}` });
+      } catch {
+        toast.error("Failed to add to cart.", { id: `add-cart-${id}` });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [id, loading, isOutOfStock]
+  );
 
   const handleToggleWishlist = useCallback(() => {
     try {
@@ -101,7 +215,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
   return (
     <div
-      className={`group flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden`}
+      className="group flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden"
       onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
@@ -134,87 +248,24 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </div>
         )}
 
-        {/* ❤️ WISHLIST */}
-        <div
-          className={`absolute top-3 right-3 transition-all duration-300 ${
-            isMobile ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <div className="relative group/wish">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleToggleWishlist();
-              }}
-              className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
-                ${
-                  isWishlisted
-                    ? "text-red-500 bg-white/40 border-white/70"
-                    : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
-                }`}
-            >
-              <Heart size={18} className={isWishlisted ? "fill-red-500" : ""} />
-            </button>
+        <WishlistButton
+          id={id}
+          title={title}
+          img={img}
+          price={price}
+          isWishlisted={isWishlisted}
+          handleToggleWishlist={handleToggleWishlist}
+          isMobile={isMobile}
+        />
 
-            {/* Tooltip for ❤️ */}
-            <span
-              className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/wish:opacity-100
-                bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
-                shadow-lg transition-all duration-200 scale-95 group-hover/wish:scale-100"
-            >
-              {isWishlisted ? "Remove Wishlist" : "Add to Wishlist"}
-            </span>
-          </div>
-        </div>
-
-        {/* 🛒 + 🔗 Buttons */}
         {!isMobile && (
-          <div
-            className={`absolute top-16 right-3 flex flex-col gap-2 transition-all duration-300 ${
-              isHovered
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-4"
-            }`}
-          >
-            {[
-              {
-                icon: <ShoppingBag size={18} />,
-                onClick: handleAddToCart,
-                label: "Add to cart",
-              },
-              {
-                icon: <Share2 size={18} />,
-                onClick: handleShare,
-                label: "Share",
-              },
-            ].map((btn, idx) => (
-              <div key={idx} className="relative group/btn">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    btn.onClick(e);
-                  }}
-                  className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
-                    bg-black/30 text-white border border-white/40 backdrop-blur-md
-                    hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
-                    transition-all hover:scale-105 active:scale-95 shadow-md"
-                >
-                  {btn.icon}
-                </button>
-
-                {/* Tooltip */}
-                <span
-                  className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/btn:opacity-100
-                    bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
-                    shadow-lg transition-all duration-200 scale-95 group-hover/btn:scale-100"
-                >
-                  {btn.label}
-                </span>
-              </div>
-            ))}
-          </div>
+          <DesktopButtons
+            handleAddToCart={handleAddToCart}
+            handleShare={handleShare}
+            loading={loading}
+            isOutOfStock={isOutOfStock}
+            id={id}
+          />
         )}
       </NavLink>
 

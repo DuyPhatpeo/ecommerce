@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, ArrowLeft, Home, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function ForgotPassword() {
@@ -11,79 +11,63 @@ export default function ForgotPassword() {
       alert("Please enter your email");
       return;
     }
-    // Gửi yêu cầu reset mật khẩu (API)
     alert(`Password reset link sent to: ${email}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex flex-col md:flex-row">
-      {/* Left Column */}
+    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-orange-100 via-white to-pink-100">
+      {/* Left Side */}
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
         <img
           src="/auth-bg.jpg"
           alt="Team collaboration"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/40 to-transparent" />
         <div className="relative z-10 text-white p-10 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-          <h1 className="text-5xl font-bold mb-6 leading-tight drop-shadow-md">
+          <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">
             Forgot Password?
           </h1>
-          <p className="text-xl text-orange-50 mb-8 leading-relaxed drop-shadow-sm">
-            Enter your email and we will send you a link to reset your password.
+          <p className="text-lg text-orange-50/90 mb-8 leading-relaxed">
+            Enter your email and we’ll send you a link to reset your password.
           </p>
-          <div className="flex justify-center gap-2 mt-12">
-            <div className="w-2 h-2 rounded-full bg-white bg-opacity-50"></div>
-            <div className="w-8 h-2 rounded-full bg-white"></div>
-            <div className="w-2 h-2 rounded-full bg-white"></div>
+          <div className="flex justify-center gap-2 mt-10">
+            <div className="w-2 h-2 rounded-full bg-white/60" />
+            <div className="w-8 h-2 rounded-full bg-white" />
+            <div className="w-2 h-2 rounded-full bg-white/60" />
           </div>
         </div>
       </div>
 
-      {/* Right Column */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-        <div className="w-full max-w-md">
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mb-8">
-            <Link
-              to="/"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-200 group border border-gray-100"
-            >
-              <Home
-                size={18}
-                className="text-gray-600 group-hover:text-orange-600 transition-colors"
+      {/* Right Side */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-10 relative bg-gradient-to-br from-white to-orange-50">
+        <div className="w-full max-w-md space-y-6">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <Link to="/" className="inline-flex items-center">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="w-32 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
               />
-              <span className="font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
-                Home
-              </span>
-            </Link>
-
-            <Link
-              to="/login"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg transition-all duration-200 text-white"
-            >
-              <span className="font-medium">Sign In</span>
-              <ArrowLeft size={18} className="rotate-180" />
             </Link>
           </div>
 
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-3">
-              Reset Password
+          {/* Heading */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+              Reset Your Password
             </h1>
-            <p className="text-gray-600 text-lg">
-              Enter your email below and we'll send you a link to reset your
-              password.
+            <p className="text-gray-600 text-sm md:text-base">
+              We’ll send you a link to create a new password.
             </p>
           </div>
 
-          {/* Form Card */}
+          {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-5"
+            className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-6 border border-orange-100 space-y-5"
           >
-            {/* Email */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Email Address
@@ -105,16 +89,14 @@ export default function ForgotPassword() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold py-3.5 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-6"
+              className="w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3.5 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2"
             >
               <Send size={20} />
               Send Reset Link
             </button>
 
-            {/* Back to Sign In */}
             <p className="text-center text-sm text-gray-600 pt-4">
               Remember your password?{" "}
               <Link
@@ -125,18 +107,6 @@ export default function ForgotPassword() {
               </Link>
             </p>
           </form>
-
-          {/* Footer */}
-          <p className="text-center text-xs text-gray-500 mt-6 leading-relaxed">
-            By requesting a password reset, you agree to our{" "}
-            <a href="#" className="text-orange-600 hover:underline font-medium">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-orange-600 hover:underline font-medium">
-              Privacy Policy
-            </a>
-          </p>
         </div>
       </div>
     </div>

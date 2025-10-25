@@ -1,4 +1,15 @@
 {
+  "users": [
+    {
+      "id": 1761379510984,
+      "fullName": "phat",
+      "email": "phattranduy00@gmail.com",
+      "phone": "+84866482834",
+      "password": "phat2810@",
+      "confirmPassword": "phat2810@",
+      "createdAt": "2025-10-25T08:05:10.984Z"
+    }
+  ],
   "orders": [
     {
       "id": "5118",
@@ -425,14 +436,14 @@
   ],
   "cart": [
     {
-      "id": "8fae",
-      "productId": "111",
-      "quantity": 1
-    },
-    {
       "id": "ec4c",
       "productId": "222",
       "quantity": 1
+    },
+    {
+      "id": "82bf",
+      "productId": "111",
+      "quantity": 2
     }
   ],
   "products": [
