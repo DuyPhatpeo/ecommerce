@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import useLoginForm from "../../hooks/useLoginForm.ts";
@@ -11,6 +11,10 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { formData, errors, loading, handleChange, handleSubmit } =
     useLoginForm();
+
+  const handleGoogleSignIn = () => {
+    alert("Đăng nhập Google (OAuth 2.0) sẽ được thêm tại đây!");
+  };
 
   return (
     <div className="h-screen overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-orange-100 via-white to-pink-100">
@@ -106,6 +110,7 @@ export default function LoginForm() {
               </Link>
             </div>
 
+            {/* Sign In button */}
             <Button
               type="submit"
               disabled={loading}
@@ -115,6 +120,48 @@ export default function LoginForm() {
                 loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             />
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 py-3">
+              <div className="flex-1 border-t border-gray-300" />
+              <span className="text-sm text-gray-500 font-medium">
+                Or continue with
+              </span>
+              <div className="flex-1 border-t border-gray-300" />
+            </div>
+
+            {/* Google Sign In */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-50 shadow-sm flex items-center justify-center gap-3 transition-all"
+            >
+              {/* SVG Google icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M19.8 10.2273C19.8 9.51819 19.7364 8.83637 19.6182 8.18182H10V12.05H15.5091C15.2727 13.3 14.5636 14.3591 13.5 15.0682V17.5773H16.7818C18.7091 15.8364 19.8 13.2727 19.8 10.2273Z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M10 20C12.7 20 14.9636 19.1045 16.7818 17.5773L13.5 15.0682C12.6091 15.6682 11.4818 16.0227 10 16.0227C7.39545 16.0227 5.19091 14.2636 4.40455 11.9H1.01364V14.4909C2.81818 18.0682 6.10909 20 10 20Z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M4.40455 11.9C4.20455 11.3 4.09091 10.6591 4.09091 10C4.09091 9.34091 4.20455 8.7 4.40455 8.1V5.50909H1.01364C0.340909 6.85909 0 8.38636 0 10C0 11.6136 0.340909 13.1409 1.01364 14.4909L4.40455 11.9Z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M10 3.97727C11.6136 3.97727 13.0636 4.54091 14.2045 5.62727L17.1227 2.70909C14.9591 0.681818 12.6955 0 10 0C6.10909 0 2.81818 1.93182 1.01364 5.50909L4.40455 8.1C5.19091 5.73636 7.39545 3.97727 10 3.97727Z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Sign in with Google
+            </button>
           </form>
         </div>
       </div>
