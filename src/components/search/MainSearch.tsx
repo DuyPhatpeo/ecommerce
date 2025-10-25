@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useMemo } from "react";
+// ============================================================
+// MainSearch.tsx - Hoàn chỉnh với useShopSort hook
+// ============================================================
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
 import { Search, ArrowUpDown } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import SectionBanner from "../section/SectionBanner";
 import Button from "../ui/Button";
+import { useShopSort } from "../../hooks/useSort";
 
 interface Product {
   id: number;
   title: string;
-  salePrice: number; // VNĐ
+  salePrice: number;
   regularPrice?: number;
   stock?: number;
   images?: string[];
@@ -17,22 +21,14 @@ interface Product {
   brand?: string;
 }
 
-type SortOption =
-  | "none"
-  | "name-asc"
-  | "name-desc"
-  | "price-asc"
-  | "price-desc"
-  | "discount-high";
-
 const ITEMS_PER_PAGE = 8;
 
 const MainSearch: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  // States
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("none");
   const location = useLocation();
 
   // 🔍 Lấy từ khóa từ URL
@@ -42,124 +38,64 @@ const MainSearch: React.FC = () => {
     setKeyword(value.trim());
   }, [location.search]);
 
-  // 📦 Fetch & filter products
+  // 📦 Fetch tất cả products một lần khi component mount
   useEffect(() => {
     const fetchData = async () => {
-      if (!keyword) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
         const data = await getProducts();
-
-        const lowerKeyword = keyword.toLowerCase();
-
-        const filtered = data.filter((p: any) => {
-          const title = p.title?.toLowerCase() || "";
-          const brand = p.brand?.toLowerCase() || "";
-          const category = p.category?.toLowerCase() || "";
-          return (
-            title.includes(lowerKeyword) ||
-            brand.includes(lowerKeyword) ||
-            category.includes(lowerKeyword)
-          );
-        });
-
-        const mapped: Product[] = filtered.map((p: any) => ({
-          id: p.id,
-          title: p.title,
-          salePrice: p.salePrice ?? p.price,
-          regularPrice: p.regularPrice ?? p.oldPrice,
-          stock: p.stock,
-          images: Array.isArray(p.images)
-            ? p.images
-            : [p.image || "/no-image.png"],
-          category: p.category,
-          brand: p.brand,
-        }));
-
-        setProducts(mapped);
-        setVisibleCount(ITEMS_PER_PAGE);
+        setAllProducts(data);
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [keyword]);
+  }, []);
 
-  // 🧮 Sorting logic (đồng bộ với Shop)
-  const sortedProducts = useMemo(() => {
-    let sorted = [...products];
-
-    const getFinalPrice = (p: Product) => {
-      if (p.salePrice && p.salePrice > 0) return p.salePrice;
-      if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
-      return 0;
-    };
-
-    const getDiscountPercent = (p: Product) => {
-      if (
-        p.regularPrice &&
-        p.salePrice &&
-        p.regularPrice > p.salePrice &&
-        p.regularPrice > 0
-      ) {
-        return ((p.regularPrice - p.salePrice) / p.regularPrice) * 100;
-      }
-      return 0;
-    };
-
-    switch (sortBy) {
-      case "name-asc":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-
-      case "name-desc":
-        sorted.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-
-      case "price-asc":
-        sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
-        break;
-
-      case "price-desc":
-        sorted.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
-        break;
-
-      case "discount-high":
-        const discounted = sorted.filter((p) => getDiscountPercent(p) > 0);
-        discounted.sort(
-          (a, b) => getDiscountPercent(b) - getDiscountPercent(a)
-        );
-        const nonDiscounted = sorted.filter((p) => getDiscountPercent(p) === 0);
-        sorted = [...discounted, ...nonDiscounted];
-        break;
+  // 🔎 Filter products khi keyword thay đổi
+  useEffect(() => {
+    if (!keyword) {
+      setSearchResults([]);
+      return;
     }
 
-    // Ưu tiên sản phẩm còn hàng
-    sorted.sort((a, b) => {
-      const stockA = a.stock ?? 0;
-      const stockB = b.stock ?? 0;
-      if (stockA > 0 && stockB <= 0) return -1;
-      if (stockA <= 0 && stockB > 0) return 1;
-      return 0;
+    const lowerKeyword = keyword.toLowerCase();
+
+    const filtered = allProducts.filter((p: any) => {
+      const title = p.title?.toLowerCase() || "";
+      const brand = p.brand?.toLowerCase() || "";
+      const category = p.category?.toLowerCase() || "";
+      return (
+        title.includes(lowerKeyword) ||
+        brand.includes(lowerKeyword) ||
+        category.includes(lowerKeyword)
+      );
     });
 
-    return sorted;
-  }, [products, sortBy]);
+    const mapped: Product[] = filtered.map((p: any) => ({
+      id: p.id,
+      title: p.title,
+      salePrice: p.salePrice ?? p.price,
+      regularPrice: p.regularPrice ?? p.oldPrice,
+      stock: p.stock,
+      images: Array.isArray(p.images) ? p.images : [p.image || "/no-image.png"],
+      category: p.category,
+      brand: p.brand,
+    }));
 
-  const totalFound = sortedProducts.length;
-  const visibleProducts = useMemo(
-    () => sortedProducts.slice(0, visibleCount),
-    [sortedProducts, visibleCount]
-  );
-  const hasMore = visibleCount < totalFound;
+    setSearchResults(mapped);
+  }, [keyword, allProducts]);
+
+  // 🎯 Sử dụng useShopSort hook để xử lý sort & pagination
+  const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
+    useShopSort(searchResults, undefined, {
+      itemsPerLoad: ITEMS_PER_PAGE,
+      syncWithUrl: false, // Không sync với URL để tránh conflict với ?search param
+    });
+
+  const totalFound = searchResults.length;
 
   return (
     <>
@@ -176,7 +112,8 @@ const MainSearch: React.FC = () => {
           </p>
         ) : keyword ? (
           <>
-            <div className="flex flex-wrap justify-between items-center mb-8">
+            {/* Header với kết quả và sort */}
+            <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                 <Search
                   className="inline-block mr-2 text-orange-500"
@@ -184,7 +121,7 @@ const MainSearch: React.FC = () => {
                 />
                 Results for{" "}
                 <span className="text-orange-500 font-semibold">
-                  “{keyword}”
+                  "{keyword}"
                 </span>{" "}
                 ({totalFound} items)
               </h2>
@@ -207,10 +144,11 @@ const MainSearch: React.FC = () => {
               </div>
             </div>
 
-            {sortedProducts.length > 0 ? (
+            {/* Product Grid hoặc Empty State */}
+            {searchResults.length > 0 ? (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                  {visibleProducts.map((p) => (
+                  {paginatedProducts.map((p) => (
                     <ProductCard
                       key={p.id}
                       data={{
@@ -225,12 +163,11 @@ const MainSearch: React.FC = () => {
                   ))}
                 </div>
 
+                {/* See More Button */}
                 {hasMore && (
                   <div className="flex justify-center mt-10">
                     <Button
-                      onClick={() =>
-                        setVisibleCount((prev) => prev + ITEMS_PER_PAGE)
-                      }
+                      onClick={handleSeeMore}
                       label="See More"
                       className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all duration-200 hover:scale-105"
                     />

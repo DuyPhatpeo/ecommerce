@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowUpDown, Sparkles, Filter, ShoppingBag } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
 import ShopFilter from "./ShopFilter";
 import Button from "../ui/Button";
 import ShopList from "./ShopList";
+import { useShopFilter } from "../../hooks/useFilter";
+import { useShopSort } from "../../hooks/useSort";
 
 interface Product {
   id: number;
@@ -18,41 +19,11 @@ interface Product {
   brand?: string;
 }
 
-type SortOption =
-  | "none"
-  | "name-asc"
-  | "name-desc"
-  | "price-asc"
-  | "price-desc"
-  | "discount-high";
-type StockFilter = "all" | "in" | "out";
-
-const ITEMS_PER_LOAD = 9;
-
 const Shop: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const PRICE_MIN = 0;
-  const PRICE_MAX = 100_000_000;
-
-  // --- State chính ---
   const [products, setProducts] = useState<Product[]>([]);
-  const [sortBy, setSortBy] = useState<SortOption>("none");
-  const [stockFilter, setStockFilter] = useState<StockFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [brandFilter, setBrandFilter] = useState<string[]>([]);
-  const [colorFilter, setColorFilter] = useState<string[]>([]);
-  const [sizeFilter, setSizeFilter] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState({
-    min: PRICE_MIN,
-    max: PRICE_MAX,
-  });
-  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
 
-  // --- Lấy danh sách sản phẩm ---
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
@@ -73,212 +44,35 @@ const Shop: React.FC = () => {
     };
   }, []);
 
-  // --- Khôi phục filter từ URL ---
-  useEffect(() => {
-    const sort = searchParams.get("sort") as SortOption | null;
-    const stock = (searchParams.get("stock") as StockFilter) || "all";
-    const cat = searchParams.get("category")?.split(",").filter(Boolean) || [];
-    const brand = searchParams.get("brand")?.split(",").filter(Boolean) || [];
-    const min = Number(searchParams.get("min") ?? PRICE_MIN);
-    const max = Number(searchParams.get("max") ?? PRICE_MAX);
-
-    if (sort) setSortBy(sort);
-    setStockFilter(stock);
-    setCategoryFilter(cat);
-    setBrandFilter(brand);
-    setPriceRange({ min, max });
-  }, [searchParams]);
-
-  // --- Cập nhật URL khi filter thay đổi ---
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (sortBy !== "none") params.sort = sortBy;
-    if (stockFilter !== "all") params.stock = stockFilter;
-    if (categoryFilter.length) params.category = categoryFilter.join(",");
-    if (brandFilter.length) params.brand = brandFilter.join(",");
-    if (priceRange.min > PRICE_MIN) params.min = String(priceRange.min);
-    if (priceRange.max < PRICE_MAX) params.max = String(priceRange.max);
-    setSearchParams(params, { replace: true });
-  }, [
-    sortBy,
+  // --- FILTER ---
+  const {
     stockFilter,
+    setStockFilter,
     categoryFilter,
+    setCategoryFilter,
     brandFilter,
+    setBrandFilter,
+    colorFilter,
+    setColorFilter,
+    sizeFilter,
+    setSizeFilter,
     priceRange,
-    setSearchParams,
-  ]);
+    setPriceRange,
+    showFilters,
+    isFiltering,
+    debouncedFilters,
+    toggleFilters,
+    clearFilters,
+    categoryOptions,
+    brandOptions,
+    hasActiveFilters,
+    PRICE_MIN,
+    PRICE_MAX,
+  } = useShopFilter(products);
 
-  // --- Ngăn cuộn khi mở bộ lọc ---
-  useEffect(() => {
-    document.body.style.overflow = showFilters ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showFilters]);
-
-  const toggleFilters = useCallback(() => setShowFilters((p) => !p), []);
-
-  const clearFilters = useCallback(() => {
-    setSortBy("none");
-    setStockFilter("all");
-    setCategoryFilter([]);
-    setBrandFilter([]);
-    setColorFilter([]);
-    setSizeFilter([]);
-    setPriceRange({ min: PRICE_MIN, max: PRICE_MAX });
-    setVisibleCount(ITEMS_PER_LOAD);
-    setSearchParams({}); // 🧹 clear URL luôn
-  }, [PRICE_MIN, PRICE_MAX, setSearchParams]);
-
-  const handleSeeMore = useCallback(() => {
-    setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
-  }, []);
-
-  // --- Debounce tránh lọc quá nhanh ---
-  const [debouncedFilters, setDebouncedFilters] = useState({
-    price: priceRange,
-    category: categoryFilter,
-    brand: brandFilter,
-    stock: stockFilter,
-  });
-
-  useEffect(() => {
-    setIsFiltering(true);
-    const handler = setTimeout(() => {
-      setDebouncedFilters({
-        price: priceRange,
-        category: categoryFilter,
-        brand: brandFilter,
-        stock: stockFilter,
-      });
-      setIsFiltering(false);
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [priceRange, categoryFilter, brandFilter, stockFilter]);
-
-  const getFinalPrice = useCallback((p: Product) => {
-    if (p.salePrice && p.salePrice > 0) return p.salePrice;
-    if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
-    return 0;
-  }, []);
-
-  // =====================================================
-  // 🧠 SORT + FILTER logic giữ nguyên như code của Dino
-  // =====================================================
-
-  const sortedProducts = useMemo(() => {
-    let sorted = [...products];
-
-    const getDiscountPercent = (p: Product) => {
-      if (
-        p.regularPrice &&
-        p.salePrice &&
-        p.regularPrice > p.salePrice &&
-        p.regularPrice > 0
-      ) {
-        return ((p.regularPrice - p.salePrice) / p.regularPrice) * 100;
-      }
-      return 0;
-    };
-
-    switch (sortBy) {
-      case "name-asc":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "name-desc":
-        sorted.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case "price-asc":
-        sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
-        break;
-      case "price-desc":
-        sorted.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
-        break;
-      case "discount-high":
-        const discounted = sorted.filter((p) => getDiscountPercent(p) > 0);
-        discounted.sort(
-          (a, b) => getDiscountPercent(b) - getDiscountPercent(a)
-        );
-        const nonDiscounted = sorted.filter((p) => getDiscountPercent(p) === 0);
-        sorted = [...discounted, ...nonDiscounted];
-        break;
-    }
-
-    sorted.sort((a, b) => {
-      const stockA = a.stock ?? 0;
-      const stockB = b.stock ?? 0;
-      if (stockA > 0 && stockB <= 0) return -1;
-      if (stockA <= 0 && stockB > 0) return 1;
-      return 0;
-    });
-
-    return sorted;
-  }, [products, sortBy, getFinalPrice]);
-
-  const filteredProducts = useMemo(() => {
-    let result = sortedProducts;
-
-    if (debouncedFilters.stock === "in") {
-      result = result.filter((p) => (p.stock ?? 0) > 0);
-    } else if (debouncedFilters.stock === "out") {
-      result = result.filter((p) => (p.stock ?? 0) <= 0);
-    }
-
-    if (debouncedFilters.category.length) {
-      result = result.filter((p) =>
-        debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
-      );
-    }
-
-    if (debouncedFilters.brand.length) {
-      result = result.filter((p) =>
-        debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
-      );
-    }
-
-    result = result.filter(
-      (p) =>
-        getFinalPrice(p) >= debouncedFilters.price.min &&
-        getFinalPrice(p) <= debouncedFilters.price.max
-    );
-
-    return result;
-  }, [sortedProducts, debouncedFilters, getFinalPrice]);
-
-  const paginatedProducts = useMemo(
-    () => filteredProducts.slice(0, visibleCount),
-    [filteredProducts, visibleCount]
-  );
-
-  const hasMore = visibleCount < filteredProducts.length;
-
-  const categoryOptions = useMemo(() => {
-    const valid = products
-      .map((p) => p.category?.toLowerCase())
-      .filter(Boolean) as string[];
-    return Array.from(new Set(valid));
-  }, [products]);
-
-  const brandOptions = useMemo(() => {
-    const valid = products
-      .map((p) => p.brand?.toLowerCase())
-      .filter(Boolean) as string[];
-    return Array.from(new Set(valid));
-  }, [products]);
-
-  const hasActiveFilters =
-    sortBy !== "none" ||
-    stockFilter !== "all" ||
-    categoryFilter.length > 0 ||
-    brandFilter.length > 0 ||
-    colorFilter.length > 0 ||
-    sizeFilter.length > 0 ||
-    priceRange.min > PRICE_MIN ||
-    priceRange.max < PRICE_MAX;
-
-  // =====================================================
-  // 🖼️ UI giữ nguyên
-  // =====================================================
+  // --- SORT + PAGINATION ---
+  const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
+    useShopSort(products, debouncedFilters, { itemsPerLoad: 9 });
 
   if (loading)
     return (
@@ -297,7 +91,7 @@ const Shop: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto">
-        {/* Tiêu đề */}
+        {/* --- Header --- */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
@@ -309,6 +103,7 @@ const Shop: React.FC = () => {
           </h2>
         </div>
 
+        {/* --- Backdrop Mobile Filter --- */}
         {showFilters && (
           <div
             className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -316,7 +111,7 @@ const Shop: React.FC = () => {
           />
         )}
 
-        {/* Thanh công cụ */}
+        {/* --- Toolbar --- */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={toggleFilters}
@@ -325,24 +120,27 @@ const Shop: React.FC = () => {
             label={"Filter"}
           />
 
+          {/* --- Sort Selector --- */}
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
-            <ArrowUpDown size={18} className="text-orange-500" />
+            <ArrowUpDown size={18} className="text-orange-500 shrink-0" />
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              onChange={(e) => setSortBy(e.target.value as any)}
               className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
               <option value="none">Default</option>
               <option value="name-asc">A → Z</option>
               <option value="name-desc">Z → A</option>
-              <option value="price-asc">Low → high</option>
-              <option value="price-desc">High → low price</option>
+              <option value="price-asc">Low → High</option>
+              <option value="price-desc">High → Low</option>
               <option value="discount-high">Biggest discount (%)</option>
             </select>
           </div>
         </div>
 
+        {/* --- Main Layout --- */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+          {/* Sidebar Filter */}
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
               showFilters={showFilters}
@@ -369,6 +167,7 @@ const Shop: React.FC = () => {
             />
           </div>
 
+          {/* Product List */}
           <div className="flex-1 relative">
             {isFiltering && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
