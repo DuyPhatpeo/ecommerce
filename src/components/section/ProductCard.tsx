@@ -3,12 +3,13 @@ import { Heart, ShoppingBag, Share2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
-import { addToCart } from "../../api/cartApi";
+import { useAddToCart } from "../../hooks/useAddToCart";
 
 interface Product {
   id: number;
   title: string;
   img: string;
+  images?: string[];
   salePrice?: number;
   regularPrice?: number;
   stock?: number;
@@ -52,16 +53,16 @@ const DesktopButtons = memo(
             }}
             disabled={(btn as any).disabled}
             className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
-                    bg-black/30 text-white border border-white/40 backdrop-blur-md
-                    hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
-                    transition-all hover:scale-105 active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              bg-black/30 text-white border border-white/40 backdrop-blur-md
+              hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
+              transition-all hover:scale-105 active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {btn.icon}
           </button>
           <span
             className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/btn:opacity-100
-                    bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
-                    shadow-lg transition-all duration-200 scale-95 group-hover/btn:scale-100"
+              bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+              shadow-lg transition-all duration-200 scale-95 group-hover/btn:scale-100"
           >
             {btn.label}
           </span>
@@ -104,18 +105,18 @@ const WishlistButton = memo(
             handleToggleWishlist();
           }}
           className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
-                ${
-                  isWishlisted
-                    ? "text-red-500 bg-white/40 border-white/70"
-                    : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
-                }`}
+            ${
+              isWishlisted
+                ? "text-red-500 bg-white/40 border-white/70"
+                : "text-white bg-black/30 border-white/40 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500"
+            }`}
         >
           <Heart size={18} className={isWishlisted ? "fill-red-500" : ""} />
         </button>
         <span
           className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/wish:opacity-100
-                bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
-                shadow-lg transition-all duration-200 scale-95 group-hover/wish:scale-100"
+            bg-black text-white text-xs font-medium px-2 py-1 rounded-md whitespace-nowrap
+            shadow-lg transition-all duration-200 scale-95 group-hover/wish:scale-100"
         >
           {isWishlisted ? "Remove Wishlist" : "Add to Wishlist"}
         </span>
@@ -130,7 +131,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { id, title, img, salePrice, regularPrice, stock = 0 } = data;
+  const { handleAddToCart } = useAddToCart();
+
+  const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
 
   const price = salePrice ?? regularPrice ?? 0;
   const oldPrice =
@@ -168,21 +171,35 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     } catch {}
   }, [id]);
 
-  const handleAddToCart = useCallback(
-    async (e?: React.MouseEvent) => {
+  /** 🔹 Sử dụng hook useAddToCart với ảnh đầu tiên */
+  const handleAdd = useCallback(
+    (e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
-      if (loading || isOutOfStock) return;
-      setLoading(true);
-      try {
-        await addToCart(id, 1);
-        toast.success("Added to cart 🛒", { id: `add-cart-${id}` });
-      } catch {
-        toast.error("Failed to add to cart.", { id: `add-cart-${id}` });
-      } finally {
-        setLoading(false);
-      }
+      if (isOutOfStock || loading) return;
+
+      const firstImage = images?.[0] || img;
+
+      handleAddToCart({
+        id,
+        title,
+        stock,
+        quantity: 1,
+        price,
+        images: [firstImage],
+        setLoading,
+      });
     },
-    [id, loading, isOutOfStock]
+    [
+      id,
+      title,
+      stock,
+      price,
+      images,
+      img,
+      handleAddToCart,
+      loading,
+      isOutOfStock,
+    ]
   );
 
   const handleToggleWishlist = useCallback(() => {
@@ -219,7 +236,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
-      {/* IMAGE */}
       <NavLink
         to={`/product/${id}`}
         className="relative block aspect-[3/4] overflow-hidden bg-gray-50"
@@ -232,14 +248,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           } ${isOutOfStock ? "grayscale-[40%]" : ""}`}
         />
 
-        {/* DISCOUNT BADGE */}
         {discountPercent > 0 && (
           <span className="absolute top-3 left-3 bg-orange-500 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-full shadow-md">
             -{discountPercent}%
           </span>
         )}
 
-        {/* OUT OF STOCK */}
         {isOutOfStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <span className="bg-white text-gray-800 font-semibold px-4 py-2 rounded-lg text-sm shadow">
@@ -260,7 +274,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
         {!isMobile && (
           <DesktopButtons
-            handleAddToCart={handleAddToCart}
+            handleAddToCart={handleAdd}
             handleShare={handleShare}
             loading={loading}
             isOutOfStock={isOutOfStock}
@@ -269,7 +283,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         )}
       </NavLink>
 
-      {/* INFO */}
       <div className="p-3 sm:p-4 flex flex-col flex-1">
         <NavLink to={`/product/${id}`}>
           <h3
@@ -282,7 +295,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </h3>
         </NavLink>
 
-        {/* PRICE */}
         <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-2 mb-2 text-center sm:text-left">
           <span className="font-bold text-base sm:text-lg text-orange-600 whitespace-nowrap">
             {formatVND(price)}
@@ -294,7 +306,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
         </div>
 
-        {/* STOCK */}
         <div className="min-h-[20px] mb-3 sm:mb-4">
           {isOutOfStock ? (
             <span className="text-red-500 text-xs font-bold">Out of stock</span>
@@ -307,10 +318,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
         </div>
 
-        {/* Mobile Add to Cart */}
         {isMobile && (
           <Button
-            onClick={handleAddToCart}
+            onClick={handleAdd}
             disabled={isOutOfStock || loading}
             icon={<ShoppingBag size={18} />}
             label={loading ? "Adding..." : "Add to cart"}
