@@ -6,8 +6,8 @@ interface Product {
   title: string;
   images?: string[];
   quantity: number;
-  price?: number; // Giá gốc
-  salePrice?: number; // Giá giảm (nếu có)
+  price?: number;
+  salePrice?: number;
 }
 
 interface Props {
@@ -16,8 +16,6 @@ interface Props {
 }
 
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
-  const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
-
   return (
     <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-orange-100">
       {/* Header */}
@@ -54,67 +52,34 @@ const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
         ) : products.length > 0 ? (
           // Product list
           <div className="space-y-6">
-            {products.map((p) => {
-              const hasDiscount =
-                p.salePrice !== undefined && p.salePrice < (p.price ?? 0);
-              const regularPrice = p.price ?? 0;
-              const finalPrice = hasDiscount ? p.salePrice! : regularPrice;
+            {products.map((p) => (
+              <div
+                key={p.id}
+                className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
+              >
+                {/* Product Image */}
+                <img
+                  src={
+                    Array.isArray(p.images) && p.images.length > 0
+                      ? p.images[0]
+                      : "/placeholder.png"
+                  }
+                  alt={p.title}
+                  className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                />
 
-              return (
-                <div
-                  key={p.id}
-                  className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
-                >
-                  <img
-                    src={
-                      Array.isArray(p.images) && p.images.length > 0
-                        ? p.images[0]
-                        : "/placeholder.png"
-                    }
-                    alt={p.title}
-                    className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h3
-                      className="font-semibold text-lg text-gray-800 truncate"
-                      title={p.title}
-                    >
-                      {p.title}
-                    </h3>
-                    <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
-                  </div>
-
-                  {/* Hiển thị giá */}
-                  <div className="text-right">
-                    {hasDiscount ? (
-                      <>
-                        <p className="font-semibold text-orange-600 text-lg">
-                          {formatPrice(finalPrice * p.quantity)}
-                        </p>
-                        <p className="text-sm text-gray-400 line-through">
-                          {formatPrice(regularPrice * p.quantity)}
-                        </p>
-                        <p className="text-xs text-green-600 font-medium mt-1">
-                          Save{" "}
-                          {formatPrice(
-                            (regularPrice - finalPrice) * p.quantity
-                          )}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="font-semibold text-orange-600 text-lg">
-                          {formatPrice(regularPrice * p.quantity)}
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          ({formatPrice(regularPrice)} / product)
-                        </p>
-                      </>
-                    )}
-                  </div>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className="font-semibold text-lg text-gray-800 truncate"
+                    title={p.title}
+                  >
+                    {p.title}
+                  </h3>
+                  <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-16 text-gray-500">

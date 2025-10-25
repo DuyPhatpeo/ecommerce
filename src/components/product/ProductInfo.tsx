@@ -3,16 +3,16 @@ import {
   ShoppingBag,
   Heart,
   Star,
-  X,
   AlertCircle,
   CreditCard,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { addToCart } from "../../api/cartApi";
-import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
+import { useAddToCart } from "../../hooks/useAddToCart";
+import { useBuyNow } from "../../hooks/useBuyNow";
 
+/* ------------------- Types ------------------- */
 interface ProductInfoProps {
   id: number;
   title: string;
@@ -26,7 +26,7 @@ interface ProductInfoProps {
   sku?: string;
 }
 
-/** Quantity Selector */
+/* ------------------- Quantity Selector ------------------- */
 const QuantitySelector = memo(
   ({
     quantity,
@@ -92,6 +92,7 @@ const QuantitySelector = memo(
   }
 );
 
+/* ------------------- Product Info ------------------- */
 const ProductInfo = ({
   id,
   title,
@@ -107,132 +108,26 @@ const ProductInfo = ({
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const navigate = useNavigate();
+
+  const { handleAddToCart } = useAddToCart();
+  const { handleBuyNow } = useBuyNow();
 
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  /** ✅ Xử lý giá hợp lệ */
-  const effectivePrice = salePrice || regularPrice || 0;
+  // ✅ Ưu tiên salePrice, fallback sang regularPrice
+  const effectivePrice = salePrice ?? regularPrice ?? 0;
 
-  /** ✅ Tính phần trăm giảm giá */
+  // ✅ Tính % giảm giá
   const discountPercentage = useMemo(() => {
     if (regularPrice && salePrice && regularPrice > salePrice)
       return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
     return 0;
   }, [regularPrice, salePrice]);
 
-  /** ✅ Format VND */
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
-  /** ✅ Custom Toast Add to Cart */
-  const showCartToast = useCallback(
-    (imageUrl: string) => {
-      toast.custom(
-        (t) => (
-          <div
-            className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl relative transition-all ${
-              t.visible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2"
-            }`}
-          >
-            <img
-              src={imageUrl || "/placeholder.jpg"}
-              alt={title}
-              className="w-16 h-16 rounded-lg border object-cover"
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
-            />
-            <div className="flex-1 text-sm">
-              <p className="font-semibold text-gray-800 line-clamp-1">
-                {title}
-              </p>
-              <p className="text-gray-600">
-                Added{" "}
-                <span className="text-orange-500 font-semibold">
-                  {quantity}
-                </span>{" "}
-                item(s)
-              </p>
-              {effectivePrice > 0 && (
-                <p className="text-gray-700 font-medium">
-                  {formatVND(effectivePrice)}
-                </p>
-              )}
-              <Button
-                label="View cart"
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  navigate("/cart");
-                }}
-                className="mt-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg"
-              />
-            </div>
-            <Button
-              onClick={() => toast.dismiss(t.id)}
-              icon={<X size={16} />}
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            />
-          </div>
-        ),
-        { duration: 3000 }
-      );
-    },
-    [navigate, effectivePrice, quantity, title]
-  );
-
-  /** ✅ Add to Cart */
-  const handleAddToCart = useCallback(async () => {
-    if (loading || isOutOfStock) return;
-    if (quantity > stock) {
-      toast.error(`Only ${stock} items left in stock!`);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await addToCart(id, quantity);
-      showCartToast(images?.[0]);
-    } catch {
-      toast.error("Failed to add product to cart!");
-    } finally {
-      setLoading(false);
-    }
-  }, [id, quantity, stock, images, loading, showCartToast, isOutOfStock]);
-
-  /** ✅ Buy Now */
-  const handleBuyNow = useCallback(() => {
-    if (isOutOfStock) {
-      toast.error("This product is out of stock!");
-      return;
-    }
-
-    if (effectivePrice <= 0) {
-      toast.error("This product does not have a valid price!");
-      return;
-    }
-
-    const subtotal = effectivePrice * quantity;
-    const tax = subtotal * 0.1;
-    const shipping = 30000;
-    const total = subtotal + tax + shipping;
-
-    navigate("/checkout", {
-      state: {
-        productId: id,
-        quantity,
-        subtotal,
-        tax,
-        shipping,
-        total,
-      },
-    });
-
-    toast.success("Redirecting to checkout...");
-  }, [id, effectivePrice, quantity, isOutOfStock, navigate]);
-
-  /** ✅ Favorite */
   const handleToggleFavorite = useCallback(() => {
     setIsFavorite((prev) => !prev);
     toast.success(
@@ -240,6 +135,7 @@ const ProductInfo = ({
     );
   }, [isFavorite]);
 
+  /* ------------------- UI ------------------- */
   return (
     <div
       className={`flex flex-col pb-24 md:pb-0 ${loading ? "opacity-80" : ""}`}
@@ -259,7 +155,7 @@ const ProductInfo = ({
         <span className="text-gray-600">(128 reviews)</span>
       </div>
 
-      {/* ⚠️ Stock notice */}
+      {/* ⚠️ Stock Notice */}
       {isOutOfStock && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600" />
@@ -284,7 +180,7 @@ const ProductInfo = ({
         </div>
       )}
 
-      {/* 💰 Price box */}
+      {/* 💰 Price */}
       <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative">
         {discountPercentage > 0 && (
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -310,6 +206,7 @@ const ProductInfo = ({
         )}
       </div>
 
+      {/* 🔢 Quantity */}
       {!isOutOfStock && (
         <div className="hidden lg:block">
           <QuantitySelector
@@ -324,7 +221,17 @@ const ProductInfo = ({
       <div className="flex gap-3 mb-6 items-center">
         <div className="hidden lg:flex flex-1 gap-3">
           <Button
-            onClick={handleAddToCart}
+            onClick={() =>
+              handleAddToCart({
+                id,
+                title,
+                stock,
+                quantity,
+                price: effectivePrice,
+                images,
+                setLoading,
+              })
+            }
             disabled={loading || isOutOfStock || effectivePrice <= 0}
             icon={<ShoppingBag className="w-5 h-5" />}
             label={
@@ -342,8 +249,17 @@ const ProductInfo = ({
                 : "bg-orange-600 text-white hover:scale-105"
             }`}
           />
+
           <Button
-            onClick={handleBuyNow}
+            onClick={() =>
+              handleBuyNow({
+                id,
+                quantity,
+                salePrice,
+                price: regularPrice,
+                stock,
+              })
+            }
             disabled={isOutOfStock || effectivePrice <= 0}
             icon={<CreditCard className="w-5 h-5" />}
             label={
@@ -361,6 +277,7 @@ const ProductInfo = ({
           />
         </div>
 
+        {/* ❤️ Favorite */}
         <Button
           onClick={handleToggleFavorite}
           icon={
