@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+// components/Header.tsx
+import { Link } from "react-router-dom";
 import {
   ShoppingBag,
   Search,
@@ -7,103 +7,39 @@ import {
   X,
   ChevronRight,
   ChevronDown,
+  User,
+  LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getCart } from "../../api/cartApi";
 import Button from "../ui/Button";
+import { useHeader } from "../../hooks/useHeader";
+import { useMenuItems } from "../../hooks/useMenuItems";
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    isScrolled,
+    activeMenu,
+    mobileOpen,
+    searchOpen,
+    cartCount,
+    searchQuery,
+    user,
+    searchInputRef,
+    searchBoxRef,
+    mobileMenuRef,
+    setMobileOpen,
+    setSearchOpen,
+    setSearchQuery,
+    handleSearchSubmit,
+    handleLogout,
+    handleMouseEnter,
+    handleMouseLeave,
+    toggleSubMenu,
+    location,
+    navigate,
+  } = useHeader();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const searchBoxRef = useRef<HTMLDivElement | null>(null);
-  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-
-  const menuItems = [
-    { label: "HOME", path: "/" },
-    { label: "SHOP", path: "/shop" },
-    { label: "BLOG", path: "/blog" },
-    {
-      label: "PAGES",
-      subMenu: [
-        { label: "SHOP CATEGORY", path: "/shop/category" },
-        { label: "PRODUCT DETAILS", path: "/product/1" },
-        { label: "CHECKOUT", path: "/checkout" },
-        { label: "SHOPPING CART", path: "/cart" },
-        { label: "CONFIRMATION", path: "/order-success" },
-      ],
-    },
-    { label: "CONTACT", path: "/contact" },
-  ];
-
-  // 🛒 Lấy số lượng sản phẩm trong giỏ hàng
-  const fetchCartCount = async () => {
-    try {
-      const { data } = await getCart();
-      setCartCount(Array.isArray(data) ? data.length : 0);
-    } catch (error) {
-      console.error("Lỗi khi lấy giỏ hàng:", error);
-    }
-  };
-
-  // ⌨️ Khi nhấn Enter → điều hướng sang /search
-  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCartCount();
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleMouseEnter = (label: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setActiveMenu(label);
-  };
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
-  };
-  const toggleSubMenu = (label: string) => {
-    setActiveMenu((prev) => (prev === label ? null : label));
-  };
-
-  useEffect(() => {
-    if (searchOpen && searchInputRef.current) {
-      setTimeout(() => searchInputRef.current?.focus(), 120);
-    }
-  }, [searchOpen]);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      const outsideSearch =
-        searchBoxRef.current && !searchBoxRef.current.contains(target);
-      const outsideMobile =
-        mobileMenuRef.current && !mobileMenuRef.current.contains(target);
-
-      if (searchOpen && outsideSearch) setSearchOpen(false);
-      if (mobileOpen && outsideMobile) setMobileOpen(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [searchOpen, mobileOpen]);
+  const { menuItems } = useMenuItems();
 
   return (
     <header className="fixed left-0 top-0 w-full z-50">
@@ -115,7 +51,7 @@ const Header = () => {
         }`}
       >
         <div className="flex items-center justify-between max-w-[1200px] mx-auto h-[70px] sm:h-[80px] px-4 sm:px-6 gap-8">
-          {/* 🔸 Logo */}
+          {/* Logo */}
           <Link to="/" className="flex items-center mr-auto">
             <img
               src="/logo.png"
@@ -124,7 +60,7 @@ const Header = () => {
             />
           </Link>
 
-          {/* 🔸 Desktop Menu */}
+          {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center gap-8 text-[13px] font-semibold tracking-wide">
             {menuItems.map((item, i) => (
               <div
@@ -169,15 +105,17 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* 🔸 Icons + Login */}
-          <div className="flex items-center gap-4 lg:gap-8 text-gray-800">
-            {/* Login Button (Desktop) */}
-            <Link
-              to="/login"
-              className="hidden lg:inline-block px-4 py-2 border border-orange-500 rounded text-orange-500 font-semibold text-sm hover:bg-orange-500 hover:text-white transition-colors"
-            >
-              Đăng nhập
-            </Link>
+          {/* Right Icons */}
+          <div className="flex items-center gap-4 lg:gap-6 text-gray-800">
+            {/* Login Button (Desktop - only if not logged in) */}
+            {!user && (
+              <Link
+                to="/login"
+                className="hidden lg:inline-block px-4 py-2 border border-orange-500 rounded text-orange-500 font-semibold text-sm hover:bg-orange-500 hover:text-white transition-colors"
+              >
+                Login
+              </Link>
+            )}
 
             {/* Search */}
             <button
@@ -189,6 +127,46 @@ const Header = () => {
                 className="transition-transform duration-200 group-hover:scale-110"
               />
             </button>
+
+            {/* User Dropdown (Desktop - only if logged in) */}
+            {user && (
+              <div
+                className="hidden lg:block relative"
+                onMouseEnter={() => handleMouseEnter("USER")}
+                onMouseLeave={handleMouseLeave}
+              >
+                <button className="hover:text-orange-500 transition-colors">
+                  <User size={22} />
+                </button>
+
+                <AnimatePresence>
+                  {activeMenu === "USER" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-1/2 -translate-x-1/2 top-[50px] w-[180px] bg-white shadow-lg border border-gray-100 z-40 rounded"
+                    >
+                      <Link
+                        to="/account"
+                        className="block px-5 py-2 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-700 hover:bg-orange-500 hover:text-white flex items-center gap-2"
+                      >
+                        <User size={16} />
+                        My Account
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left block px-5 py-2 text-[13px] border-t border-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white flex items-center gap-2"
+                      >
+                        <LogOut size={16} />
+                        Log out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Cart */}
             <Link
@@ -225,7 +203,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* 🔸 Search Bar (Animated) */}
+        {/* Search Bar (Animated) */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -245,7 +223,7 @@ const Header = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearchSubmit}
-                    placeholder="Tìm sản phẩm..."
+                    placeholder="Search products..."
                     className="w-full pl-12 pr-12 py-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm sm:text-base"
                   />
                   <Button
@@ -259,7 +237,7 @@ const Header = () => {
           )}
         </AnimatePresence>
 
-        {/* 🔸 Mobile Menu (Animated) */}
+        {/* Mobile Menu (Animated) */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -321,16 +299,43 @@ const Header = () => {
                 </div>
               ))}
 
-              {/* 🔹 Login Mobile */}
-              <div className="border-b border-gray-100">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="block w-full text-left px-5 py-3 text-[14px] font-semibold text-orange-500 hover:bg-orange-500 hover:text-white"
-                >
-                  Đăng nhập
-                </Link>
-              </div>
+              {/* User Menu Mobile */}
+              {!user ? (
+                <div className="border-b border-gray-100">
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="block w-full text-left px-5 py-3 text-[14px] font-semibold text-orange-500 hover:bg-orange-500 hover:text-white"
+                  >
+                    Login
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <div className="border-b border-gray-100">
+                    <Link
+                      to="/account"
+                      onClick={() => setMobileOpen(false)}
+                      className="block w-full text-left px-5 py-3 text-[14px] font-semibold text-gray-800 hover:text-orange-500 flex items-center gap-2"
+                    >
+                      <User size={18} />
+                      My Account
+                    </Link>
+                  </div>
+                  <div className="border-b border-gray-100">
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileOpen(false);
+                      }}
+                      className="block w-full text-left px-5 py-3 text-[14px] font-semibold text-gray-800 hover:text-orange-500 flex items-center gap-2"
+                    >
+                      <LogOut size={18} />
+                      Log out
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
