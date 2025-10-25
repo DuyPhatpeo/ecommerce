@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
 import { useAddToCart } from "../../hooks/useAddToCart";
+import { useWishlist } from "../../hooks/useWishlist";
 
 interface Product {
   id: number;
@@ -16,11 +17,10 @@ interface Product {
 }
 
 interface DesktopButtonsProps {
-  id: number;
-  loading: boolean;
-  isOutOfStock: boolean;
   handleAddToCart: (e?: React.MouseEvent) => void;
   handleShare: () => void;
+  loading: boolean;
+  isOutOfStock: boolean;
 }
 
 const DesktopButtons = memo(
@@ -73,25 +73,13 @@ const DesktopButtons = memo(
 );
 
 interface WishlistButtonProps {
-  id: number;
-  title: string;
-  img: string;
-  price: number;
   isWishlisted: boolean;
   handleToggleWishlist: () => void;
   isMobile: boolean;
 }
 
 const WishlistButton = memo(
-  ({
-    id,
-    title,
-    img,
-    price,
-    isWishlisted,
-    handleToggleWishlist,
-    isMobile,
-  }: WishlistButtonProps) => (
+  ({ isWishlisted, handleToggleWishlist, isMobile }: WishlistButtonProps) => (
     <div
       className={`absolute top-3 right-3 transition-all duration-300 ${
         isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
@@ -128,7 +116,6 @@ const WishlistButton = memo(
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { handleAddToCart } = useAddToCart();
@@ -145,6 +132,13 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     oldPrice && oldPrice > price
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
+
+  const { isWishlisted, handleToggleWishlist } = useWishlist({
+    id,
+    title,
+    img,
+    price,
+  });
 
   const formatVND = useCallback(
     (value: number) =>
@@ -163,15 +157,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
-      const exists = stored.some((item: any) => item.id === id);
-      setIsWishlisted(exists);
-    } catch {}
-  }, [id]);
-
-  /** 🔹 Sử dụng hook useAddToCart với ảnh đầu tiên */
   const handleAdd = useCallback(
     (e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
@@ -201,26 +186,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       isOutOfStock,
     ]
   );
-
-  const handleToggleWishlist = useCallback(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("wishlist") || "[]");
-      const exists = stored.find((item: any) => item.id === id);
-      if (exists) {
-        const updated = stored.filter((item: any) => item.id !== id);
-        localStorage.setItem("wishlist", JSON.stringify(updated));
-        setIsWishlisted(false);
-        toast("Removed from wishlist 💔");
-      } else {
-        const updated = [...stored, { id, title, img, price }];
-        localStorage.setItem("wishlist", JSON.stringify(updated));
-        setIsWishlisted(true);
-        toast.success("Added to wishlist 💕");
-      }
-    } catch {
-      toast.error("Wishlist update failed.");
-    }
-  }, [id, title, img, price]);
 
   const handleShare = useCallback(() => {
     const productUrl = `${window.location.origin}/product/${id}`;
@@ -263,10 +228,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         )}
 
         <WishlistButton
-          id={id}
-          title={title}
-          img={img}
-          price={price}
           isWishlisted={isWishlisted}
           handleToggleWishlist={handleToggleWishlist}
           isMobile={isMobile}
@@ -278,7 +239,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             handleShare={handleShare}
             loading={loading}
             isOutOfStock={isOutOfStock}
-            id={id}
           />
         )}
       </NavLink>

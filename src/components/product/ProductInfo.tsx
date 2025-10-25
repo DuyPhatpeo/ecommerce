@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { useAddToCart } from "../../hooks/useAddToCart";
 import { useBuyNow } from "../../hooks/useBuyNow";
+import { useWishlist } from "../../hooks/useWishlist";
 
 /* ------------------- Types ------------------- */
 interface ProductInfoProps {
@@ -107,16 +108,25 @@ const ProductInfo = ({
 }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const { handleAddToCart } = useAddToCart();
   const { handleBuyNow } = useBuyNow();
 
-  const isOutOfStock = stock === 0;
-  const isLowStock = stock > 0 && stock <= 5;
+  const firstImage = images?.[0] || "";
 
   // ✅ Ưu tiên salePrice, fallback sang regularPrice
   const effectivePrice = salePrice ?? regularPrice ?? 0;
+
+  // ✅ Wishlist Hook (ảnh đầu tiên)
+  const { isWishlisted, handleToggleWishlist } = useWishlist({
+    id,
+    title,
+    img: firstImage,
+    price: effectivePrice,
+  });
+
+  const isOutOfStock = stock === 0;
+  const isLowStock = stock > 0 && stock <= 5;
 
   // ✅ Tính % giảm giá
   const discountPercentage = useMemo(() => {
@@ -127,13 +137,6 @@ const ProductInfo = ({
 
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-
-  const handleToggleFavorite = useCallback(() => {
-    setIsFavorite((prev) => !prev);
-    toast.success(
-      isFavorite ? "Removed from favorites!" : "Added to favorites!"
-    );
-  }, [isFavorite]);
 
   /* ------------------- UI ------------------- */
   return (
@@ -255,9 +258,9 @@ const ProductInfo = ({
               handleBuyNow({
                 id,
                 quantity,
-                salePrice,
-                price: regularPrice,
+                price: effectivePrice,
                 stock,
+                image: firstImage,
               })
             }
             disabled={isOutOfStock || effectivePrice <= 0}
@@ -277,18 +280,18 @@ const ProductInfo = ({
           />
         </div>
 
-        {/* ❤️ Favorite */}
+        {/* ❤️ Wishlist */}
         <Button
-          onClick={handleToggleFavorite}
+          onClick={handleToggleWishlist}
           icon={
             <Heart
               className={`w-6 h-6 ${
-                isFavorite ? "fill-red-500 text-red-500" : ""
+                isWishlisted ? "fill-red-500 text-red-500" : ""
               }`}
             />
           }
           className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center ${
-            isFavorite
+            isWishlisted
               ? "border-red-500 bg-red-50"
               : "border-gray-300 hover:border-red-500 hover:text-red-500"
           }`}
