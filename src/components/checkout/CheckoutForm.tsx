@@ -153,16 +153,16 @@ const CheckoutForm: React.FC<Props> = ({ onChange }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <InputField
             icon={<MapPin />}
-            label="City"
-            name="city"
-            value={customerInfo.city}
+            label="District"
+            name="district"
+            value={customerInfo.district}
             onChange={handleInputChange}
           />
           <InputField
             icon={<MapPin />}
-            label="District"
-            name="district"
-            value={customerInfo.district}
+            label="City"
+            name="city"
+            value={customerInfo.city}
             onChange={handleInputChange}
           />
           <InputField
