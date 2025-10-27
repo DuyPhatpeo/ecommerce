@@ -26,7 +26,7 @@ interface DebouncedFilters {
   stock: "all" | "in" | "out";
 }
 
-interface UseShopSortOptions {
+interface UseSortOptions {
   itemsPerLoad?: number;
   syncWithUrl?: boolean;
 }
@@ -37,10 +37,10 @@ interface UseShopSortOptions {
  * @param debouncedFilters - Filters (optional, nếu không có thì chỉ sort)
  * @param options - Cấu hình (itemsPerLoad, syncWithUrl)
  */
-export const useShopSort = (
+export const useSort = (
   products: Product[],
   debouncedFilters?: DebouncedFilters,
-  options: UseShopSortOptions = {}
+  options: UseSortOptions = {}
 ) => {
   const { itemsPerLoad = 9, syncWithUrl = true } = options;
   const [searchParams, setSearchParams] = useSearchParams();

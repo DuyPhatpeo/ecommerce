@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useMemo } from "react";
+import { useState, memo, useMemo } from "react";
 import {
   ShoppingBag,
   Heart,
@@ -25,6 +25,14 @@ interface ProductInfoProps {
   images: string[];
   stock: number;
   sku?: string;
+}
+
+interface BuyNowPayload {
+  id: number;
+  quantity: number;
+  price: number;
+  stock: number;
+  image?: string;
 }
 
 /* ------------------- Quantity Selector ------------------- */
@@ -111,27 +119,22 @@ const ProductInfo = ({
 
   const { handleAddToCart } = useAddToCart();
   const { handleBuyNow } = useBuyNow();
-
-  const firstImage = images?.[0] || "";
-
-  // ✅ Ưu tiên salePrice, fallback sang regularPrice
-  const effectivePrice = salePrice ?? regularPrice ?? 0;
-
-  // ✅ Wishlist Hook (ảnh đầu tiên)
   const { isWishlisted, handleToggleWishlist } = useWishlist({
     id,
     title,
-    img: firstImage,
-    price: effectivePrice,
+    img: images?.[0] || "",
+    price: salePrice ?? regularPrice ?? 0,
   });
 
+  const firstImage = images?.[0] || "";
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
+  const effectivePrice = salePrice ?? regularPrice ?? 0;
 
-  // ✅ Tính % giảm giá
   const discountPercentage = useMemo(() => {
-    if (regularPrice && salePrice && regularPrice > salePrice)
+    if (regularPrice && salePrice && regularPrice > salePrice) {
       return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
+    }
     return 0;
   }, [regularPrice, salePrice]);
 
@@ -261,7 +264,7 @@ const ProductInfo = ({
                 price: effectivePrice,
                 stock,
                 image: firstImage,
-              })
+              } as BuyNowPayload)
             }
             disabled={isOutOfStock || effectivePrice <= 0}
             icon={<CreditCard className="w-5 h-5" />}

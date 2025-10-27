@@ -5,7 +5,7 @@ import ShopFilter from "./ShopFilter";
 import Button from "../ui/Button";
 import ShopList from "./ShopList";
 import { useShopFilter } from "../../hooks/useFilter";
-import { useShopSort } from "../../hooks/useSort";
+import { useSort } from "../../hooks/useSort";
 
 interface Product {
   id: number;
@@ -72,7 +72,7 @@ const Shop: React.FC = () => {
 
   // --- SORT + PAGINATION ---
   const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
-    useShopSort(products, debouncedFilters, { itemsPerLoad: 9 });
+    useSort(products, debouncedFilters, { itemsPerLoad: 9 });
 
   if (loading)
     return (

@@ -8,9 +8,18 @@ import { Search, ArrowUpDown } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import SectionBanner from "../section/SectionBanner";
 import Button from "../ui/Button";
-import { useShopSort } from "../../hooks/useSort";
+import { useSort } from "../../hooks/useSort";
 
-interface Product {
+// ================== Type & Constants ==================
+export type SortOption =
+  | "none"
+  | "name-asc"
+  | "name-desc"
+  | "price-asc"
+  | "price-desc"
+  | "discount-high";
+
+export interface Product {
   id: number;
   title: string;
   salePrice: number;
@@ -23,8 +32,8 @@ interface Product {
 
 const ITEMS_PER_PAGE = 8;
 
+// ================== Component ==================
 const MainSearch: React.FC = () => {
-  // States
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +47,7 @@ const MainSearch: React.FC = () => {
     setKeyword(value.trim());
   }, [location.search]);
 
-  // 📦 Fetch tất cả products một lần khi component mount
+  // 📦 Fetch tất cả products
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,7 +63,7 @@ const MainSearch: React.FC = () => {
     fetchData();
   }, []);
 
-  // 🔎 Filter products khi keyword thay đổi
+  // 🔎 Filter theo keyword
   useEffect(() => {
     if (!keyword) {
       setSearchResults([]);
@@ -63,7 +72,7 @@ const MainSearch: React.FC = () => {
 
     const lowerKeyword = keyword.toLowerCase();
 
-    const filtered = allProducts.filter((p: any) => {
+    const filtered = allProducts.filter((p) => {
       const title = p.title?.toLowerCase() || "";
       const brand = p.brand?.toLowerCase() || "";
       const category = p.category?.toLowerCase() || "";
@@ -77,7 +86,7 @@ const MainSearch: React.FC = () => {
     const mapped: Product[] = filtered.map((p: any) => ({
       id: p.id,
       title: p.title,
-      salePrice: p.salePrice ?? p.price,
+      salePrice: p.salePrice ?? p.price ?? 0,
       regularPrice: p.regularPrice ?? p.oldPrice,
       stock: p.stock,
       images: Array.isArray(p.images) ? p.images : [p.image || "/no-image.png"],
@@ -88,15 +97,16 @@ const MainSearch: React.FC = () => {
     setSearchResults(mapped);
   }, [keyword, allProducts]);
 
-  // 🎯 Sử dụng useShopSort hook để xử lý sort & pagination
+  // 🎯 Sort & Pagination
   const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
-    useShopSort(searchResults, undefined, {
+    useSort(searchResults, undefined, {
       itemsPerLoad: ITEMS_PER_PAGE,
-      syncWithUrl: false, // Không sync với URL để tránh conflict với ?search param
+      syncWithUrl: false,
     });
 
   const totalFound = searchResults.length;
 
+  // ================== Render ==================
   return (
     <>
       <SectionBanner
@@ -112,7 +122,7 @@ const MainSearch: React.FC = () => {
           </p>
         ) : keyword ? (
           <>
-            {/* Header với kết quả và sort */}
+            {/* Header + Sort */}
             <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                 <Search
@@ -126,7 +136,7 @@ const MainSearch: React.FC = () => {
                 ({totalFound} items)
               </h2>
 
-              {/* 🔽 Sort Dropdown */}
+              {/* Sort Dropdown */}
               <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
                 <ArrowUpDown size={18} className="text-orange-500" />
                 <select
@@ -137,14 +147,14 @@ const MainSearch: React.FC = () => {
                   <option value="none">Default</option>
                   <option value="name-asc">A → Z</option>
                   <option value="name-desc">Z → A</option>
-                  <option value="price-asc">Low → high</option>
-                  <option value="price-desc">High → low</option>
-                  <option value="discount-high">Biggest discount (%)</option>
+                  <option value="price-asc">Low → High</option>
+                  <option value="price-desc">High → Low</option>
+                  <option value="discount-high">Biggest Discount (%)</option>
                 </select>
               </div>
             </div>
 
-            {/* Product Grid hoặc Empty State */}
+            {/* Product Grid */}
             {searchResults.length > 0 ? (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -163,7 +173,7 @@ const MainSearch: React.FC = () => {
                   ))}
                 </div>
 
-                {/* See More Button */}
+                {/* See More */}
                 {hasMore && (
                   <div className="flex justify-center mt-10">
                     <Button

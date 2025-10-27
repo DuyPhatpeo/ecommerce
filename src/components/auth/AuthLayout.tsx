@@ -1,5 +1,5 @@
 // src/layouts/AuthLayout.tsx
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface AuthLayoutProps {
   children: ReactNode;
