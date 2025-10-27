@@ -9,6 +9,7 @@ export interface User {
   phone?: string;
   role?: string;
   avatar?: string;
+  createdAt?: string;
 }
 
 // 🧾 Lấy danh sách user (để kiểm tra email trùng)

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getUsers, registerUser } from "../api/userApi";
+import type { User } from "../api/userApi";
 
 interface RegisterFormData {
   fullName: string;
@@ -31,12 +32,18 @@ export default function useRegisterForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
 
+  // -----------------------------
+  // Handle input change
+  // -----------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  // -----------------------------
+  // Validate form
+  // -----------------------------
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     const { fullName, email, phone, password, confirmPassword } = formData;
@@ -65,6 +72,9 @@ export default function useRegisterForm() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // -----------------------------
+  // Submit handler
+  // -----------------------------
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -73,23 +83,31 @@ export default function useRegisterForm() {
     try {
       const res = await getUsers();
       const existingUser = res.data.find(
-        (u: any) => u.email === formData.email.trim()
+        (u) =>
+          u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
+
       if (existingUser) {
         toast.error("Email already exists.");
         return;
       }
 
-      const newUser = {
+      // ✅ Tạo user mới đúng kiểu `User` trong userApi
+      const newUser: User = {
         id: Date.now(),
-        ...formData,
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        role: "customer",
+        avatar: "",
         createdAt: new Date().toISOString(),
       };
 
       await registerUser(newUser);
       toast.success("Account created successfully! 🎉 Redirecting...");
 
-      // 👉 Reset form rồi chuyển hướng ngay
+      // Reset form
       setFormData({
         fullName: "",
         email: "",
@@ -98,7 +116,6 @@ export default function useRegisterForm() {
         confirmPassword: "",
       });
 
-      // Chuyển sang trang login sau 1s để toast hiển thị rõ
       setTimeout(() => navigate("/login"), 1000);
     } catch (error) {
       console.error(error);
