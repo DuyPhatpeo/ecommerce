@@ -31,6 +31,7 @@ export default function useRegisterForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false); // <-- trạng thái đăng ký thành công
 
   // -----------------------------
   // Handle input change
@@ -81,6 +82,7 @@ export default function useRegisterForm() {
 
     setLoading(true);
     try {
+      // Lấy danh sách user hiện tại
       const res = await getUsers();
       const existingUser = res.data.find(
         (u) =>
@@ -92,7 +94,7 @@ export default function useRegisterForm() {
         return;
       }
 
-      // ✅ Tạo user mới đúng kiểu `User` trong userApi
+      // Tạo user mới
       const newUser: User = {
         id: Date.now(),
         name: formData.fullName,
@@ -105,7 +107,9 @@ export default function useRegisterForm() {
       };
 
       await registerUser(newUser);
-      toast.success("Account created successfully! 🎉 Redirecting...");
+      toast.success("Account created successfully! 🎉");
+
+      setSuccess(true); // đánh dấu đăng ký thành công
 
       // Reset form
       setFormData({
@@ -116,14 +120,16 @@ export default function useRegisterForm() {
         confirmPassword: "",
       });
 
-      setTimeout(() => navigate("/login"), 1000);
+      // Chuyển sang login ngay
+      navigate("/login");
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong.");
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
   };
 
-  return { formData, errors, loading, handleChange, handleSubmit };
+  return { formData, errors, loading, success, handleChange, handleSubmit };
 }
