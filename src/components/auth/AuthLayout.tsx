@@ -15,8 +15,8 @@ export default function AuthLayout({
   image = "/auth-bg.jpg",
 }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-orange-100 via-white to-pink-100 overflow-hidden">
-      {/* Left side - chỉ hiển thị trên desktop */}
+    <div className="min-h-screen flex flex-col lg:flex-row-reverse bg-gradient-to-br from-orange-100 via-white to-pink-100 overflow-hidden">
+      {/* Right side - chỉ hiển thị trên desktop */}
       <div className="hidden lg:flex lg:w-1/3 relative">
         <img
           src={image}
@@ -34,7 +34,7 @@ export default function AuthLayout({
         </div>
       </div>
 
-      {/* Right side */}
+      {/* Left side */}
       <div className="w-full lg:w-2/3 flex items-center justify-center p-5 sm:p-6 md:p-8 lg:p-10 bg-gradient-to-br from-white to-orange-50">
         {children}
       </div>
