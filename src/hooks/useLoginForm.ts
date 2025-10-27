@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getUsers } from "../api/userApi";
@@ -15,12 +15,24 @@ interface FormErrors {
 
 export default function useLoginForm() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(
+    localStorage.getItem("rememberMe") === "true"
+  );
+
+  // ✅ Khi component mount: nếu Remember me được bật → tự điền email
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("email");
+    if (savedEmail) {
+      setFormData((prev) => ({ ...prev, email: savedEmail }));
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,7 +77,7 @@ export default function useLoginForm() {
         return;
       }
 
-      // ✅ Lưu thông tin user vào localStorage
+      // ✅ Lưu user vào localStorage (phiên đăng nhập)
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -75,10 +87,18 @@ export default function useLoginForm() {
         })
       );
 
+      // ✅ Lưu hoặc xóa email nhớ đăng nhập
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", "true");
+        localStorage.setItem("email", formData.email);
+      } else {
+        localStorage.removeItem("rememberMe");
+        localStorage.removeItem("email");
+      }
+
       toast.success(`Welcome back, ${user.fullName}! 🎉`);
       setTimeout(() => navigate("/"), 1500);
 
-      // Reset form
       setFormData({ email: "", password: "" });
     } catch (error) {
       console.error(error);
@@ -88,5 +108,13 @@ export default function useLoginForm() {
     }
   };
 
-  return { formData, errors, loading, handleChange, handleSubmit };
+  return {
+    formData,
+    errors,
+    loading,
+    rememberMe,
+    setRememberMe,
+    handleChange,
+    handleSubmit,
+  };
 }

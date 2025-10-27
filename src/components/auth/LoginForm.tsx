@@ -9,8 +9,17 @@ import Button from "../ui/Button";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const { formData, errors, loading, handleChange, handleSubmit } =
-    useLoginForm();
+
+  // ✅ Lấy rememberMe và setRememberMe từ hook
+  const {
+    formData,
+    errors,
+    loading,
+    rememberMe,
+    setRememberMe,
+    handleChange,
+    handleSubmit,
+  } = useLoginForm();
 
   const handleGoogleSignIn = () => {
     alert("Đăng nhập Google (OAuth 2.0) sẽ được thêm tại đây!");
@@ -97,9 +106,15 @@ export default function LoginForm() {
               error={errors.password}
             />
 
+            {/* ✅ Remember me */}
             <div className="flex justify-between items-center text-sm mb-2">
               <label className="flex items-center gap-2 text-gray-600">
-                <input type="checkbox" className="rounded text-orange-500" />
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="rounded text-orange-500 focus:ring-orange-500"
+                />
                 Remember me
               </label>
               <Link
@@ -136,7 +151,6 @@ export default function LoginForm() {
               onClick={handleGoogleSignIn}
               className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-50 shadow-sm flex items-center justify-center gap-3 transition-all"
             >
-              {/* SVG Google icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
