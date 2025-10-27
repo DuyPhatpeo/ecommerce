@@ -30,6 +30,7 @@ export default function PasswordField({
 
       {/* Input wrapper */}
       <div className="relative">
+        {/* Icon khóa */}
         <Lock
           className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
           size={20}
@@ -41,14 +42,15 @@ export default function PasswordField({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`w-full pl-12 pr-12 py-3.5 border rounded-xl focus:ring-2 outline-none transition ${
-            error
-              ? "border-red-400 focus:ring-red-500 bg-red-50"
-              : "border-gray-200 focus:ring-orange-500 bg-gray-50 focus:bg-white"
-          }`}
+          className={`w-full pl-12 pr-12 py-3.5 border rounded-xl outline-none transition 
+            ${
+              error
+                ? "border-red-400 bg-red-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
+                : "border-gray-200 bg-gray-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
+            }`}
         />
 
-        {/* Nút toggle ẩn/hiện mật khẩu */}
+        {/* Nút toggle hiển thị mật khẩu */}
         <button
           type="button"
           onClick={toggle}
@@ -57,7 +59,7 @@ export default function PasswordField({
           {show ? <EyeOff size={20} /> : <Eye size={20} />}
         </button>
 
-        {/* ❗ Error overlay (absolute, không đẩy layout) */}
+        {/* ❗ Thông báo lỗi (không đẩy layout) */}
         {error && (
           <p className="absolute -bottom-5 left-1 text-xs text-red-500 bg-white px-1 rounded">
             {error}
@@ -65,7 +67,7 @@ export default function PasswordField({
         )}
       </div>
 
-      {/* Giữ không gian cố định cho lỗi */}
+      {/* Giữ chỗ lỗi cố định */}
       <div className="h-5" />
     </div>
   );
