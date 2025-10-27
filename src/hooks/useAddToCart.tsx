@@ -17,13 +17,7 @@ export const useAddToCart = () => {
 
   /** Hiển thị toast tuỳ chỉnh khi thêm vào giỏ */
   const showCartToast = useCallback(
-    (
-      title: string,
-      imageUrl: string,
-      price: number,
-      quantity: number,
-      id: number
-    ) => {
+    (title: string, imageUrl: string, price: number, quantity: number) => {
       toast.custom(
         (t) => (
           <div
@@ -102,7 +96,7 @@ export const useAddToCart = () => {
       setLoading(true);
       try {
         await addToCart(id, quantity);
-        showCartToast(title, images?.[0] || "", price, quantity, id);
+        showCartToast(title, images?.[0] || "", price, quantity);
       } catch {
         toast.error("Failed to add product to cart!");
       } finally {

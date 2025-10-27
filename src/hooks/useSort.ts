@@ -1,16 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
-interface Product {
-  id: number;
-  title: string;
-  salePrice: number;
-  regularPrice?: number;
-  stock?: number;
-  category?: string;
-  brand?: string;
-}
-
+// ======================
+// 🔹 Types
+// ======================
 export type SortOption =
   | "none"
   | "name-asc"
@@ -19,26 +12,29 @@ export type SortOption =
   | "price-desc"
   | "discount-high";
 
-interface DebouncedFilters {
+export interface DebouncedFilters {
   price: { min: number; max: number };
   category: string[];
   brand: string[];
   stock: "all" | "in" | "out";
 }
 
-interface UseSortOptions {
+export interface UseSortOptions {
   itemsPerLoad?: number;
   syncWithUrl?: boolean;
 }
 
+// ======================
+// 🔹 Generic Hook
+// ======================
 /**
- * Hook để xử lý sort, filter và pagination cho products
- * @param products - Danh sách products
- * @param debouncedFilters - Filters (optional, nếu không có thì chỉ sort)
+ * Hook xử lý sort, filter và pagination cho danh sách (Product hoặc type khác)
+ * @param products - Danh sách items (Product[])
+ * @param debouncedFilters - Filters (optional)
  * @param options - Cấu hình (itemsPerLoad, syncWithUrl)
  */
-export const useSort = (
-  products: Product[],
+export const useSort = <T extends Record<string, any>>(
+  products: T[],
   debouncedFilters?: DebouncedFilters,
   options: UseSortOptions = {}
 ) => {
@@ -47,55 +43,51 @@ export const useSort = (
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [visibleCount, setVisibleCount] = useState(itemsPerLoad);
 
-  // Khôi phục sort từ URL (nếu bật syncWithUrl)
+  // ======================
+  // 🔸 Đồng bộ sort với URL
+  // ======================
   useEffect(() => {
     if (!syncWithUrl) return;
     const sort = searchParams.get("sort") as SortOption | null;
     if (sort) setSortBy(sort);
   }, [searchParams, syncWithUrl]);
 
-  // Cập nhật URL khi sort thay đổi (nếu bật syncWithUrl)
   useEffect(() => {
     if (!syncWithUrl) return;
     const params = Object.fromEntries(searchParams);
-    if (sortBy !== "none") {
-      params.sort = sortBy;
-    } else {
-      delete params.sort;
-    }
+    if (sortBy !== "none") params.sort = sortBy;
+    else delete params.sort;
     setSearchParams(params, { replace: true });
   }, [sortBy, searchParams, setSearchParams, syncWithUrl]);
 
-  // Helper: Lấy giá cuối cùng
-  const getFinalPrice = useCallback((p: Product) => {
+  // ======================
+  // 🔸 Helper functions
+  // ======================
+  const getFinalPrice = useCallback((p: any) => {
     if (p.salePrice && p.salePrice > 0) return p.salePrice;
     if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
     return 0;
   }, []);
 
-  // Helper: Tính % giảm giá
-  const getDiscountPercent = useCallback((p: Product) => {
-    if (
-      p.regularPrice &&
-      p.salePrice &&
-      p.regularPrice > p.salePrice &&
-      p.regularPrice > 0
-    ) {
+  const getDiscountPercent = useCallback((p: any) => {
+    if (p.regularPrice && p.salePrice && p.regularPrice > p.salePrice) {
       return ((p.regularPrice - p.salePrice) / p.regularPrice) * 100;
     }
     return 0;
   }, []);
 
-  // SORT logic
+  // ======================
+  // 🔸 SORT logic
+  // ======================
   const sortedProducts = useMemo(() => {
     let sorted = [...products];
 
     switch (sortBy) {
       case "name-asc":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        sorted.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
         break;
       case "name-desc":
-        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
         break;
       case "price-asc":
         sorted.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
@@ -113,8 +105,8 @@ export const useSort = (
         break;
     }
 
-    // Luôn ưu tiên sản phẩm còn hàng
-    sorted.sort((a, b) => {
+    // Ưu tiên sản phẩm còn hàng (nếu có field `stock`)
+    sorted.sort((a: any, b: any) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
       if (stockA > 0 && stockB <= 0) return -1;
@@ -125,37 +117,34 @@ export const useSort = (
     return sorted;
   }, [products, sortBy, getFinalPrice, getDiscountPercent]);
 
-  // FILTER logic (chỉ khi có debouncedFilters)
+  // ======================
+  // 🔸 FILTER logic
+  // ======================
   const filteredProducts = useMemo(() => {
-    // Nếu không có filters, trả về sortedProducts
     if (!debouncedFilters) return sortedProducts;
+    let result = [...sortedProducts];
 
-    let result = sortedProducts;
+    // Stock
+    if (debouncedFilters.stock === "in")
+      result = result.filter((p: any) => (p.stock ?? 0) > 0);
+    else if (debouncedFilters.stock === "out")
+      result = result.filter((p: any) => (p.stock ?? 0) <= 0);
 
-    // Filter theo stock
-    if (debouncedFilters.stock === "in") {
-      result = result.filter((p) => (p.stock ?? 0) > 0);
-    } else if (debouncedFilters.stock === "out") {
-      result = result.filter((p) => (p.stock ?? 0) <= 0);
-    }
-
-    // Filter theo category
-    if (debouncedFilters.category.length) {
-      result = result.filter((p) =>
-        debouncedFilters.category.includes(p.category?.toLowerCase() ?? "")
+    // Category
+    if (debouncedFilters.category.length)
+      result = result.filter((p: any) =>
+        debouncedFilters.category.includes((p.category || "").toLowerCase())
       );
-    }
 
-    // Filter theo brand
-    if (debouncedFilters.brand.length) {
-      result = result.filter((p) =>
-        debouncedFilters.brand.includes(p.brand?.toLowerCase() ?? "")
+    // Brand
+    if (debouncedFilters.brand.length)
+      result = result.filter((p: any) =>
+        debouncedFilters.brand.includes((p.brand || "").toLowerCase())
       );
-    }
 
-    // Filter theo price range
+    // Price range
     result = result.filter(
-      (p) =>
+      (p: any) =>
         getFinalPrice(p) >= debouncedFilters.price.min &&
         getFinalPrice(p) <= debouncedFilters.price.max
     );
@@ -163,7 +152,9 @@ export const useSort = (
     return result;
   }, [sortedProducts, debouncedFilters, getFinalPrice]);
 
-  // PAGINATION
+  // ======================
+  // 🔸 PAGINATION
+  // ======================
   const paginatedProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
     [filteredProducts, visibleCount]
@@ -171,14 +162,19 @@ export const useSort = (
 
   const hasMore = visibleCount < filteredProducts.length;
 
-  const handleSeeMore = useCallback(() => {
-    setVisibleCount((prev) => prev + itemsPerLoad);
-  }, [itemsPerLoad]);
+  const handleSeeMore = useCallback(
+    () => setVisibleCount((prev) => prev + itemsPerLoad),
+    [itemsPerLoad]
+  );
 
-  const resetPagination = useCallback(() => {
-    setVisibleCount(itemsPerLoad);
-  }, [itemsPerLoad]);
+  const resetPagination = useCallback(
+    () => setVisibleCount(itemsPerLoad),
+    [itemsPerLoad]
+  );
 
+  // ======================
+  // 🔸 Return API
+  // ======================
   return {
     sortBy,
     setSortBy,

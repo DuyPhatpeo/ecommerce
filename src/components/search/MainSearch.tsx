@@ -99,7 +99,7 @@ const MainSearch: React.FC = () => {
 
   // 🎯 Sort & Pagination
   const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
-    useSort(searchResults, undefined, {
+    useSort<Product>(searchResults, undefined, {
       itemsPerLoad: ITEMS_PER_PAGE,
       syncWithUrl: false,
     });

@@ -13,6 +13,16 @@ interface FormErrors {
   password?: string;
 }
 
+// 👇 Mở rộng kiểu User để đảm bảo fullName không gây lỗi
+interface User {
+  id: number;
+  email: string;
+  password: string;
+  fullName?: string;
+  name?: string;
+  username?: string;
+}
+
 export default function useLoginForm() {
   const navigate = useNavigate();
 
@@ -62,8 +72,8 @@ export default function useLoginForm() {
     setLoading(true);
     try {
       const res = await getUsers();
-      const user = res.data.find(
-        (u: any) =>
+      const user = (res.data as User[]).find(
+        (u) =>
           u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
 
@@ -77,12 +87,16 @@ export default function useLoginForm() {
         return;
       }
 
+      // ✅ Xác định tên hiển thị (fullName > name > username > email)
+      const displayName =
+        user.fullName || user.name || user.username || user.email;
+
       // ✅ Lưu user vào localStorage (phiên đăng nhập)
       localStorage.setItem(
         "user",
         JSON.stringify({
           id: user.id,
-          fullName: user.fullName,
+          fullName: displayName,
           email: user.email,
         })
       );
@@ -96,7 +110,7 @@ export default function useLoginForm() {
         localStorage.removeItem("email");
       }
 
-      toast.success(`Welcome back, ${user.fullName}! 🎉`);
+      toast.success(`Welcome back, ${displayName}! 🎉`);
       setTimeout(() => navigate("/"), 1500);
 
       setFormData({ email: "", password: "" });
