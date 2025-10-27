@@ -163,13 +163,13 @@ const CheckOut: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">
             Checkout
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 pading">
             Review your order and complete your purchase
           </p>
         </div>

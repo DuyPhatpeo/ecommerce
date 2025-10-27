@@ -28,12 +28,11 @@ const Banner: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  // --- Auto slide ---
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 5000); // đổi mỗi 5 giây
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -78,8 +77,8 @@ const Banner: React.FC = () => {
       />
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
 
-      {/* Content */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-5 sm:px-6 md:px-8 lg:px-12 overflow-hidden">
+      {/* Content (canh lề giống ProductList header) */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-2 sm:px-6 md:px-16 overflow-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
             key={banners[current].title}
@@ -144,7 +143,7 @@ const Banner: React.FC = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="absolute bottom-6 right-6 flex items-center gap-4 z-30">
+      <div className="absolute bottom-8 right-8 flex items-center gap-4 z-30">
         <Button
           onClick={prevSlide}
           icon={<ArrowLeft size={22} />}

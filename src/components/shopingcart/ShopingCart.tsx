@@ -135,7 +135,7 @@ export default function ShoppingCart() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-100 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-t-3xl shadow-2xl p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32" />

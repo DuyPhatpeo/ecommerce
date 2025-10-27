@@ -9,7 +9,7 @@ const BrandStrip: React.FC = () => {
 
   return (
     <section className="bg-white py-12 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 lg:px-20">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <h2 className="text-center text-xl md:text-2xl font-semibold text-gray-700 mb-8">
           Trusted by Leading Brands
         </h2>
