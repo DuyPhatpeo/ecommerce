@@ -44,9 +44,6 @@ export default function LoginForm() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
           Welcome Back
         </h1>
-        <p className="text-gray-600 text-sm sm:text-base">
-          Sign in to continue to your account
-        </p>
       </div>
 
       {/* Form */}

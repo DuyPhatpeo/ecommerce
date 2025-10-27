@@ -34,9 +34,6 @@ export default function RegisterForm() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
           Create Account
         </h1>
-        <p className="text-gray-600 text-sm sm:text-base">
-          Join us and start your journey
-        </p>
       </div>
 
       {/* Form */}
