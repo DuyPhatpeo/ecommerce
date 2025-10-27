@@ -43,8 +43,9 @@ export default function RegisterForm() {
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-5 sm:p-6 md:p-8 border border-orange-100 space-y-4 sm:space-y-5"
+        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-5 sm:p-6 md:p-8 border border-orange-100 grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
+        {/* 2 cột cho input */}
         <InputField
           label="Full Name"
           name="fullName"
@@ -54,18 +55,6 @@ export default function RegisterForm() {
           placeholder="John Doe"
           error={errors.fullName}
         />
-
-        <InputField
-          label="Email Address"
-          name="email"
-          type="email"
-          icon={<Mail size={18} />}
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="you@example.com"
-          error={errors.email}
-        />
-
         <InputField
           label="Phone Number"
           name="phone"
@@ -76,42 +65,58 @@ export default function RegisterForm() {
           placeholder="+84 123 456 789"
           error={errors.phone}
         />
+        <div className="sm:col-span-2">
+          <InputField
+            label="Email Address"
+            name="email"
+            type="email"
+            icon={<Mail size={18} />}
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="you@example.com"
+            error={errors.email}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <PasswordField
+            label="Password"
+            name="password"
+            value={formData.password}
+            show={showPassword}
+            toggle={() => setShowPassword(!showPassword)}
+            onChange={handleChange}
+            placeholder="Create a strong password"
+            error={errors.password}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <PasswordField
+            label="Confirm Password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            show={showConfirmPassword}
+            toggle={() => setShowConfirmPassword(!showConfirmPassword)}
+            onChange={handleChange}
+            placeholder="Confirm your password"
+            error={errors.confirmPassword}
+          />
+        </div>
 
-        <PasswordField
-          label="Password"
-          name="password"
-          value={formData.password}
-          show={showPassword}
-          toggle={() => setShowPassword(!showPassword)}
-          onChange={handleChange}
-          placeholder="Create a strong password"
-          error={errors.password}
-        />
-
-        <PasswordField
-          label="Confirm Password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          show={showConfirmPassword}
-          toggle={() => setShowConfirmPassword(!showConfirmPassword)}
-          onChange={handleChange}
-          placeholder="Confirm your password"
-          error={errors.confirmPassword}
-        />
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          disabled={loading}
-          icon={<UserPlus size={18} />}
-          label={loading ? "Creating Account..." : "Create Account"}
-          className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-        />
+        {/* Submit Button full width */}
+        <div className="sm:col-span-2">
+          <Button
+            type="submit"
+            disabled={loading}
+            icon={<UserPlus size={18} />}
+            label={loading ? "Creating Account..." : "Create Account"}
+            className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          />
+        </div>
 
         {/* Divider */}
-        <div className="flex items-center gap-3 py-3 sm:py-4">
+        <div className="sm:col-span-2 flex items-center gap-3 py-3 sm:py-4">
           <div className="flex-1 border-t border-gray-300" />
           <span className="text-xs sm:text-sm text-gray-500 font-medium whitespace-nowrap">
             Or sign in
@@ -120,7 +125,7 @@ export default function RegisterForm() {
         </div>
 
         {/* Login Link */}
-        <p className="text-center text-gray-600 text-sm sm:text-base">
+        <p className="sm:col-span-2 text-center text-gray-600 text-sm sm:text-base">
           Already have an account?{" "}
           <Link
             to="/login"
