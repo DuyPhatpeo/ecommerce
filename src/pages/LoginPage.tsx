@@ -1,10 +1,16 @@
+import AuthLayout from "../components/auth/AuthLayout";
 import LoginForm from "../components/auth/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div>
-      <LoginForm />
-    </div>
+    <>
+      <AuthLayout
+        title="Welcome Back"
+        subtitle="Log in to continue exploring your personalized experience."
+      >
+        <LoginForm />
+      </AuthLayout>
+    </>
   );
 };
 

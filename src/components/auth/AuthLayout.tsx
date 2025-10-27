@@ -1,50 +1,43 @@
+// src/layouts/AuthLayout.tsx
 import { ReactNode } from "react";
-import { Home } from "lucide-react";
 
 interface AuthLayoutProps {
   children: ReactNode;
   title?: string;
   subtitle?: string;
+  image?: string;
 }
 
 export default function AuthLayout({
   children,
-  title = "Welcome Back 👋",
-  subtitle = "Sign in to continue your journey.",
+  title = "Welcome Back",
+  subtitle = "Log in to continue exploring your personalized experience.",
+  image = "/auth-bg.jpg",
 }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4 py-6">
-      {/* Header (Logo) */}
-      <header className="flex items-center justify-center mb-6 mt-4">
-        <a href="/" className="flex items-center gap-3 group">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="w-10 h-10 rounded-lg shadow-sm group-hover:scale-105 transition"
-          />
-          <span className="text-2xl font-bold text-gray-800 group-hover:text-orange-600 transition">
-            MyShop
-          </span>
-        </a>
-      </header>
-
-      {/* Main Content */}
-      <main className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">{title}</h1>
-          <p className="text-gray-600 text-sm">{subtitle}</p>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-orange-100 via-white to-pink-100 overflow-hidden">
+      {/* Left side - chỉ hiển thị trên desktop */}
+      <div className="hidden lg:flex lg:w-1/3 relative">
+        <img
+          src={image}
+          alt="Auth background"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/40 to-transparent" />
+        <div className="relative z-10 text-white p-10 xl:p-12 flex flex-col items-center justify-center text-center max-w-md mx-auto">
+          <h1 className="text-4xl xl:text-5xl font-bold mb-4 drop-shadow-lg">
+            {title}
+          </h1>
+          <p className="text-lg text-orange-50/90 mb-6 leading-relaxed">
+            {subtitle}
+          </p>
         </div>
+      </div>
 
+      {/* Right side */}
+      <div className="w-full lg:w-2/3 flex items-center justify-center p-5 sm:p-6 md:p-8 lg:p-10 bg-gradient-to-br from-white to-orange-50">
         {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="mt-8 text-center text-gray-500 text-sm">
-        <div className="flex items-center justify-center gap-2">
-          <Home size={16} className="text-orange-500" />
-          <p>© {new Date().getFullYear()} MyShop. All rights reserved.</p>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }

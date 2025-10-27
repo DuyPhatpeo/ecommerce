@@ -1,3 +1,4 @@
+// src/components/auth/RegisterForm.tsx
 import { useState } from "react";
 import { UserPlus, Mail, User, Phone } from "lucide-react";
 import { Toaster } from "react-hot-toast";
@@ -14,131 +15,114 @@ export default function RegisterForm() {
     useRegisterForm();
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col md:flex-row bg-gradient-to-br from-orange-100 via-white to-pink-100">
+    <div className="w-full max-w-md sm:max-w-2xl space-y-6 sm:space-y-8">
       <Toaster position="top-center" />
 
-      {/* Left side */}
-      <div className="hidden md:flex md:w-1/2 relative">
-        <img
-          src="/auth-bg.jpg"
-          alt="Register"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/40 to-transparent" />
-
-        {/* Text overlay */}
-        <div className="relative z-10 text-white p-10 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-          <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">
-            Join Our Community
-          </h1>
-          <p className="text-lg text-orange-50/90 mb-8 leading-relaxed">
-            Create your account and start your amazing journey with us.
-          </p>
-        </div>
+      {/* Logo */}
+      <div className="flex justify-center mb-4 sm:mb-6">
+        <Link to="/" className="inline-flex items-center">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-28 sm:w-36 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
+          />
+        </Link>
       </div>
 
-      {/* Right side */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-10 relative bg-gradient-to-br from-white to-orange-50">
-        <div className="w-full max-w-md space-y-6">
-          {/* Logo */}
-          <div className="flex justify-center mb-4">
-            <Link to="/" className="inline-flex items-center">
-              <img
-                src="/logo.png"
-                alt="Logo"
-                className="w-32 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-            </Link>
-          </div>
-
-          {/* Heading */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-              Create Account
-            </h1>
-            <p className="text-gray-600 text-sm md:text-base">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
-              >
-                Sign in here
-              </Link>
-            </p>
-          </div>
-
-          {/* Form */}
-          <form
-            onSubmit={handleSubmit}
-            noValidate
-            className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-6 border border-orange-100 space-y-4"
+      {/* Heading */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+          Create Account
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
           >
-            <InputField
-              label="Full Name"
-              name="fullName"
-              icon={<User size={20} />}
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="John Doe"
-              error={errors.fullName}
-            />
-
-            <InputField
-              label="Email Address"
-              name="email"
-              icon={<Mail size={20} />}
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              error={errors.email}
-            />
-
-            <InputField
-              label="Phone Number"
-              name="phone"
-              icon={<Phone size={20} />}
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+84 123 456 789"
-              error={errors.phone}
-            />
-
-            <PasswordField
-              label="Password"
-              name="password"
-              value={formData.password}
-              show={showPassword}
-              toggle={() => setShowPassword(!showPassword)}
-              onChange={handleChange}
-              placeholder="Create a strong password"
-              error={errors.password}
-            />
-
-            <PasswordField
-              label="Confirm Password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              show={showConfirmPassword}
-              toggle={() => setShowConfirmPassword(!showConfirmPassword)}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              error={errors.confirmPassword}
-            />
-
-            <Button
-              type="submit"
-              disabled={loading}
-              icon={<UserPlus size={20} />}
-              label={loading ? "Creating Account..." : "Create Account"}
-              className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3.5 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            />
-          </form>
-        </div>
+            Sign in here
+          </Link>
+        </p>
       </div>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-6 sm:p-8 border border-orange-100 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
+      >
+        {/* Full Name - full width */}
+        <div className="sm:col-span-2">
+          <InputField
+            label="Full Name"
+            name="fullName"
+            icon={<User size={20} />}
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="John Doe"
+            error={errors.fullName}
+          />
+        </div>
+
+        {/* Email & Phone - same row */}
+        <InputField
+          label="Email Address"
+          name="email"
+          icon={<Mail size={20} />}
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+          error={errors.email}
+        />
+
+        <InputField
+          label="Phone Number"
+          name="phone"
+          icon={<Phone size={20} />}
+          type="tel"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="+84 123 456 789"
+          error={errors.phone}
+        />
+
+        {/* Password & Confirm Password */}
+        <PasswordField
+          label="Password"
+          name="password"
+          value={formData.password}
+          show={showPassword}
+          toggle={() => setShowPassword(!showPassword)}
+          onChange={handleChange}
+          placeholder="Create a strong password"
+          error={errors.password}
+        />
+
+        <PasswordField
+          label="Confirm Password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          show={showConfirmPassword}
+          toggle={() => setShowConfirmPassword(!showConfirmPassword)}
+          onChange={handleChange}
+          placeholder="Confirm your password"
+          error={errors.confirmPassword}
+        />
+
+        {/* Submit full width */}
+        <div className="sm:col-span-2">
+          <Button
+            type="submit"
+            disabled={loading}
+            icon={<UserPlus size={20} />}
+            label={loading ? "Creating Account..." : "Create Account"}
+            className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3.5 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          />
+        </div>
+      </form>
     </div>
   );
 }
