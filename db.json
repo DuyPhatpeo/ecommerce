@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1761379510984,
+      "id": "1761379510984",
       "fullName": "phat",
       "email": "phattranduy00@gmail.com",
       "phone": "+84866482834",
@@ -20,7 +20,7 @@
     {
       "id": "82bf",
       "productId": "111",
-      "quantity": 1
+      "quantity": 2
     }
   ],
   "products": [
