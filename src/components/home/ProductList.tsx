@@ -89,7 +89,7 @@ const ProductList: React.FC = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
 
       {/* Header */}
-      <div className="max-w-6xl mx-auto mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex-1 text-center md:text-left">
           <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
             <Sparkles size={16} />
@@ -150,7 +150,7 @@ const ProductList: React.FC = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="max-w-7xl mx-auto relative">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16 mb-12 relative">
         <div
           className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6justify-items-center transition-all duration-500 ease-in-out ${
             isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"

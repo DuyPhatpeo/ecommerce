@@ -4,6 +4,7 @@ import Promo from "./Promo";
 import ProductList from "./ProductList";
 import HotDeal from "./HotDeal";
 import BrandStrip from "./BrandStrip";
+import ProductSlider from "./ProductSlider";
 
 const MainHome = () => {
   return (
@@ -12,6 +13,7 @@ const MainHome = () => {
       <Features />
       <Promo />
       <ProductList />
+      <ProductSlider />
       <HotDeal />
       <BrandStrip />
     </>
