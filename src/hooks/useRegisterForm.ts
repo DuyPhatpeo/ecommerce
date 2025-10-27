@@ -88,8 +88,8 @@ export default function useRegisterForm() {
 
       await registerUser(newUser);
       toast.success("Account created successfully! 🎉 Redirecting...");
-      setTimeout(() => navigate("/login"), 1500);
 
+      // 👉 Reset form rồi chuyển hướng ngay
       setFormData({
         fullName: "",
         email: "",
@@ -97,6 +97,9 @@ export default function useRegisterForm() {
         password: "",
         confirmPassword: "",
       });
+
+      // Chuyển sang trang login sau 1s để toast hiển thị rõ
+      setTimeout(() => navigate("/login"), 1000);
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong.");
