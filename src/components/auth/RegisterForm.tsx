@@ -1,4 +1,3 @@
-// src/components/auth/RegisterForm.tsx
 import { useState } from "react";
 import { UserPlus, Mail, User, Phone } from "lucide-react";
 import { Toaster } from "react-hot-toast";
@@ -11,11 +10,12 @@ import Button from "../ui/Button";
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { formData, errors, loading, handleChange, handleSubmit } =
     useRegisterForm();
 
   return (
-    <div className="w-full max-w-md sm:max-w-2xl space-y-6 sm:space-y-8">
+    <div className="w-full max-w-md space-y-6 sm:space-y-8">
       <Toaster position="top-center" />
 
       {/* Logo */}
@@ -24,24 +24,18 @@ export default function RegisterForm() {
           <img
             src="/logo.png"
             alt="Logo"
-            className="w-28 sm:w-36 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
+            className="w-28 sm:w-32 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
           />
         </Link>
       </div>
 
       {/* Heading */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+      <div className="text-center mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
           Create Account
         </h1>
         <p className="text-gray-600 text-sm sm:text-base">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
-          >
-            Sign in here
-          </Link>
+          Join us and start your journey
         </p>
       </div>
 
@@ -49,27 +43,23 @@ export default function RegisterForm() {
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-6 sm:p-8 border border-orange-100 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
+        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-5 sm:p-6 md:p-8 border border-orange-100 space-y-4 sm:space-y-5"
       >
-        {/* Full Name - full width */}
-        <div className="sm:col-span-2">
-          <InputField
-            label="Full Name"
-            name="fullName"
-            icon={<User size={20} />}
-            value={formData.fullName}
-            onChange={handleChange}
-            placeholder="John Doe"
-            error={errors.fullName}
-          />
-        </div>
+        <InputField
+          label="Full Name"
+          name="fullName"
+          icon={<User size={18} />}
+          value={formData.fullName}
+          onChange={handleChange}
+          placeholder="John Doe"
+          error={errors.fullName}
+        />
 
-        {/* Email & Phone - same row */}
         <InputField
           label="Email Address"
           name="email"
-          icon={<Mail size={20} />}
           type="email"
+          icon={<Mail size={18} />}
           value={formData.email}
           onChange={handleChange}
           placeholder="you@example.com"
@@ -79,15 +69,14 @@ export default function RegisterForm() {
         <InputField
           label="Phone Number"
           name="phone"
-          icon={<Phone size={20} />}
           type="tel"
+          icon={<Phone size={18} />}
           value={formData.phone}
           onChange={handleChange}
           placeholder="+84 123 456 789"
           error={errors.phone}
         />
 
-        {/* Password & Confirm Password */}
         <PasswordField
           label="Password"
           name="password"
@@ -110,18 +99,36 @@ export default function RegisterForm() {
           error={errors.confirmPassword}
         />
 
-        {/* Submit full width */}
-        <div className="sm:col-span-2">
-          <Button
-            type="submit"
-            disabled={loading}
-            icon={<UserPlus size={20} />}
-            label={loading ? "Creating Account..." : "Create Account"}
-            className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3.5 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-          />
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={loading}
+          icon={<UserPlus size={18} />}
+          label={loading ? "Creating Account..." : "Create Account"}
+          className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
+        />
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 py-3 sm:py-4">
+          <div className="flex-1 border-t border-gray-300" />
+          <span className="text-xs sm:text-sm text-gray-500 font-medium whitespace-nowrap">
+            Or sign in
+          </span>
+          <div className="flex-1 border-t border-gray-300" />
         </div>
+
+        {/* Login Link */}
+        <p className="text-center text-gray-600 text-sm sm:text-base">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+          >
+            Sign in here
+          </Link>
+        </p>
       </form>
     </div>
   );

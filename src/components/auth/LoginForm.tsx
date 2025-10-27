@@ -45,13 +45,7 @@ export default function LoginForm() {
           Welcome Back
         </h1>
         <p className="text-gray-600 text-sm sm:text-base">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
-          >
-            Create one
-          </Link>
+          Sign in to continue to your account
         </p>
       </div>
 
@@ -59,19 +53,22 @@ export default function LoginForm() {
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)] p-5 sm:p-6 md:p-8 border border-orange-100 space-y-4 sm:space-y-5"
+        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)]
+                   p-5 sm:p-6 md:p-8 border border-orange-100 space-y-4 sm:space-y-5"
       >
+        {/* Email */}
         <InputField
           label="Email Address"
           name="email"
-          icon={<Mail size={18} />}
           type="email"
+          icon={<Mail size={18} />}
           value={formData.email}
           onChange={handleChange}
           placeholder="you@example.com"
           error={errors.email}
         />
 
+        {/* Password */}
         <PasswordField
           label="Password"
           name="password"
@@ -83,8 +80,8 @@ export default function LoginForm() {
           error={errors.password}
         />
 
-        {/* Remember me */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-sm mb-2 sm:mb-3">
+        {/* Remember me + Forgot password */}
+        <div className="flex justify-between items-center text-sm flex-wrap gap-y-2">
           <label className="flex items-center gap-2 text-gray-600">
             <input
               type="checkbox"
@@ -96,13 +93,13 @@ export default function LoginForm() {
           </label>
           <Link
             to="/forgot-password"
-            className="text-orange-600 hover:text-orange-700 font-medium"
+            className="text-orange-600 hover:text-orange-700 font-medium whitespace-nowrap"
           >
             Forgot password?
           </Link>
         </div>
 
-        {/* Sign In button */}
+        {/* Submit Button */}
         <Button
           type="submit"
           disabled={loading}
@@ -153,6 +150,17 @@ export default function LoginForm() {
           </svg>
           Sign in with Google
         </button>
+
+        {/* Register Link (moved into form, like RegisterForm) */}
+        <p className="text-center text-gray-600 text-sm sm:text-base pt-2">
+          Don’t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+          >
+            Create one
+          </Link>
+        </p>
       </form>
     </div>
   );
