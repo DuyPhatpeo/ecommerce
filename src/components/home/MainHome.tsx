@@ -8,44 +8,54 @@ import ProductView from "./ProductView";
 import { useAppConfig } from "../../hooks/useAppConfig";
 
 const MainHome = () => {
-  // 🧩 Giả lập config backend (mỗi ProductView kiểu khác nhau)
+  // 🧩 Giả lập config backend (test nhiều kiểu giá trị)
   const remoteConfig = {
     sectionOrder: {
       Features: { order: 1 },
       ProductView_1: {
         order: 2,
-        props: { viewMode: "slider", status: "latest" },
+        props: { viewMode: true, status: "latest" },
       },
       ProductView_2: {
         order: 3,
-        props: { viewMode: "list", status: "coming" },
+        props: { viewMode: false, status: "coming" },
       },
-      Promo: { order: 4 },
-
-      HotDeal: { order: 6 },
-      BrandStrip: { order: 7 },
+      ProductView_3: {
+        order: 4,
+        props: { viewMode: "1", status: "coming" },
+      },
+      ProductView_4: {
+        order: 5,
+        props: { viewMode: "0", status: "latest" },
+      },
+      Promo: { order: 6 },
+      HotDeal: { order: 7 },
+      BrandStrip: { order: 8 },
     },
   };
 
-  // ⚙️ Hook xử lý config viewMode (fallback khi thiếu)
-  const { viewModeDefault } = useAppConfig(remoteConfig);
+  // ⚙️ Hook xử lý config (fallback viewMode)
+  const { normalizeViewMode, viewModeDefault } = useAppConfig(remoteConfig);
 
-  // 🧱 Map component gốc
+  // 🧱 Map component
   const sectionMap: Record<string, (props?: any) => JSX.Element> = {
     Features: () => <Features />,
     Promo: () => <Promo />,
-    ProductView: (props) => (
-      <ProductView viewMode={viewModeDefault} {...props} />
-    ),
+    ProductView: (props) => {
+      const resolvedMode = normalizeViewMode(
+        props?.viewMode ?? viewModeDefault
+      );
+      return <ProductView {...props} viewMode={resolvedMode} />;
+    },
     HotDeal: () => <HotDeal />,
     BrandStrip: () => <BrandStrip />,
   };
 
-  // 🧮 Chuẩn hóa danh sách section có thể trùng tên
+  // 🧮 Chuẩn hóa danh sách section
   const sortedSections = Object.entries(remoteConfig?.sectionOrder ?? {})
     .map(([key, cfg]) => ({
       key,
-      baseKey: key.split("_")[0], // tách phần gốc: "ProductView_1" -> "ProductView"
+      baseKey: key.split("_")[0],
       order:
         typeof cfg === "object" && "order" in cfg ? cfg.order : Number(cfg),
       props: typeof cfg === "object" && "props" in cfg ? cfg.props : undefined,
