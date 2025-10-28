@@ -51,7 +51,7 @@ const ProductSlider: React.FC<ProductSliderProps> = ({
     breakpoints: {
       "(min-width: 480px)": { slides: { perView: 2, spacing: 12 } },
       "(min-width: 640px)": { slides: { perView: 3, spacing: 16 } },
-      "(min-width: 768px)": { slides: { perView: 3.5, spacing: 20 } },
+      "(min-width: 768px)": { slides: { perView: 3, spacing: 20 } },
       "(min-width: 1024px)": { slides: { perView: 4, spacing: 24 } },
       "(min-width: 1280px)": { slides: { perView: 5, spacing: 24 } },
       "(min-width: 1536px)": { slides: { perView: 6, spacing: 28 } },
