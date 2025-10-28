@@ -30,7 +30,7 @@ export const useAddToCart = () => {
             <img
               src={imageUrl || "/placeholder.jpg"}
               alt={title}
-              className="w-16 h-16 rounded-lg border object-cover"
+              className="w-16 h-16 rounded-lg object-cover"
               onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
             />
             <div className="flex-1 text-sm">
