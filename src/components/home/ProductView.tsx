@@ -5,12 +5,12 @@ import ProductSlider from "./ProductSlider";
 import ProductGrid from "./ProductGrid";
 
 interface Product {
-  id: string;
+  id: number;
   title: string;
   price?: number;
   salePrice?: number | null;
-  regularPrice?: number | null;
-  oldPrice?: number | null;
+  regularPrice?: number;
+  oldPrice?: number;
   stock?: number;
   images?: string[];
   status?: string;

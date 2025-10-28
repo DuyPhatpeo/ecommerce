@@ -4,12 +4,12 @@ import ProductCard from "../section/ProductCard";
 import type { Section } from "./ProductView";
 
 interface Product {
-  id: string;
+  id: number;
   title: string;
   price?: number;
   salePrice?: number | null;
-  regularPrice?: number | null;
-  oldPrice?: number | null;
+  regularPrice?: number;
+  oldPrice?: number;
   stock?: number;
   images?: string[];
 }

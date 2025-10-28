@@ -1,4 +1,5 @@
 // src/components/home/MainHome.tsx
+import React from "react";
 import Banner from "./Banner";
 import Features from "./Features";
 import Promo from "./Promo";
@@ -23,7 +24,7 @@ const MainHome = () => {
   const { normalizeViewMode, viewModeDefault } = useAppConfig(remoteConfig);
 
   // Map section name → component
-  const sectionMap: Record<string, (props?: any) => JSX.Element> = {
+  const sectionMap: Record<string, (props?: any) => React.ReactElement> = {
     Features: () => <Features />,
     Promo: () => <Promo />,
     ProductView: (props) => {

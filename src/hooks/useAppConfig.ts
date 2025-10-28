@@ -24,7 +24,8 @@ export function useAppConfig(remoteConfig?: Record<string, any>) {
   const nestedViewMode =
     remoteConfig?.viewMode ??
     Object.values(remoteConfig?.sectionOrder ?? {}).find(
-      (v: any) => v?.props?.viewMode
+      (v): v is { props?: { viewMode?: any } } =>
+        !!v && typeof v === "object" && "props" in v
     )?.props?.viewMode;
 
   const normalizedViewMode = normalizeViewMode(nestedViewMode);
@@ -32,6 +33,6 @@ export function useAppConfig(remoteConfig?: Record<string, any>) {
   return {
     ...DEFAULT_CONFIG,
     viewModeDefault: normalizedViewMode,
-    normalizeViewMode, // ✅ export thêm để xài ở component
+    normalizeViewMode,
   };
 }
