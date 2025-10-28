@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Sparkles, TrendingUp } from "lucide-react";
-
 import { getProducts } from "../../api/productApi";
 import ProductSlider from "./ProductSlider";
 import ProductGrid from "./ProductGrid";
 
-// =======================
-// 🔹 Types
-// =======================
 interface Product {
   id: string;
   title: string;
@@ -41,9 +37,7 @@ interface ProductViewProps {
   itemsPerPage?: number;
 }
 
-// =======================
-// 🔹 Constants
-// =======================
+// Config tiêu đề / icon theo status
 const STATUS_CONFIG: Record<
   string,
   { title: string; subtitle: string; icon: React.ReactNode }
@@ -60,9 +54,7 @@ const STATUS_CONFIG: Record<
   },
 };
 
-// =======================
-// 🔹 Utility Functions
-// =======================
+// Lọc sản phẩm theo status, stock > 0 và maxProducts
 const filterProductsByStatus = (
   products: Product[],
   status?: string | string[],
@@ -74,15 +66,17 @@ const filterProductsByStatus = (
 
   if (status) {
     const statuses = Array.isArray(status) ? status : [status];
-    filtered = products.filter((p) => p.status && statuses.includes(p.status));
+    filtered = products.filter(
+      (p) => p.status && statuses.includes(p.status) && (p.stock ?? 0) > 0
+    );
+  } else {
+    filtered = products.filter((p) => (p.stock ?? 0) > 0);
   }
 
   return maxProducts ? filtered.slice(0, maxProducts) : filtered;
 };
 
-// =======================
-// 🔹 Custom Hook for Section Data
-// =======================
+// Hook fetch sản phẩm và tạo section
 const useSectionData = (
   status?: string | string[],
   maxProducts?: number,
@@ -100,23 +94,15 @@ const useSectionData = (
       try {
         setIsLoading(true);
         const data = await getProducts();
-
         if (!isMounted) return;
-
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid product data");
-        }
+        if (!Array.isArray(data)) throw new Error("Invalid product data");
 
         const filteredProducts = filterProductsByStatus(
           data,
           status,
           maxProducts
         );
-
-        if (!filteredProducts.length) {
-          setSection(null);
-          return;
-        }
+        if (!filteredProducts.length) return setSection(null);
 
         const defaultConfig =
           status && !Array.isArray(status) ? STATUS_CONFIG[status] : null;
@@ -138,7 +124,6 @@ const useSectionData = (
     };
 
     fetchProducts();
-
     return () => {
       isMounted = false;
     };
@@ -147,9 +132,7 @@ const useSectionData = (
   return { section, isLoading };
 };
 
-// =======================
-// 🔹 Loading State
-// =======================
+// Loading / Empty states
 const LoadingState = () => (
   <div className="w-full py-12 md:py-20 text-center text-gray-500">
     <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -157,9 +140,6 @@ const LoadingState = () => (
   </div>
 );
 
-// =======================
-// 🔹 Empty State
-// =======================
 const EmptyState = () => (
   <div className="w-full py-12 md:py-20 text-center text-gray-500">
     <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
@@ -167,33 +147,22 @@ const EmptyState = () => (
   </div>
 );
 
-// =======================
-// 🔹 Section Header Content
-// =======================
+// Header hiển thị tiêu đề, icon, subtitle
 const SectionHeaderContent = ({ section }: { section: Section }) => (
   <div className="flex-1 text-center md:text-left">
     <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
       {section.icon}
       <span>Special Collection</span>
     </div>
-
-    <h2
-      className="text-2xl md:text-4xl lg:text-5xl font-extrabold 
-  bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800
-  bg-clip-text text-transparent"
-    >
+    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
       {section.title}
     </h2>
-
     <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
       {section.subtitle}
     </p>
   </div>
 );
 
-// =======================
-// 🔹 Main Component
-// =======================
 const ProductView: React.FC<ProductViewProps> = ({
   viewMode = "slider",
   status,
@@ -226,6 +195,7 @@ const ProductView: React.FC<ProductViewProps> = ({
         <SectionHeaderContent section={section} />
       </div>
 
+      {/* View Mode */}
       {viewMode === "slider" ? (
         <ProductSlider section={section} showNavigation={showNavigation} />
       ) : (

@@ -3,9 +3,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import type { Section } from "./ProductView";
 
-// =======================
-// 🔹 Types
-// =======================
 interface Product {
   id: string;
   title: string;
@@ -23,14 +20,8 @@ interface ProductGridProps {
   itemsPerPage?: number;
 }
 
-// =======================
-// 🔹 Constants
-// =======================
 const ANIMATION_DURATION = 500;
 
-// =======================
-// 🔹 Utility Functions
-// =======================
 const mapProductData = (product: Product) => ({
   id: product.id,
   img: product.images?.[0] || "no-image.png",
@@ -47,9 +38,7 @@ const chunkArray = <T,>(arr: T[], size: number): T[][] => {
   );
 };
 
-// =======================
-// 🔹 Navigation Button
-// =======================
+// Navigation buttons
 const NavButton = memo<{
   direction: "prev" | "next";
   onClick?: () => void;
@@ -57,7 +46,6 @@ const NavButton = memo<{
   ariaLabel: string;
 }>(({ direction, onClick, disabled = false, ariaLabel }) => {
   const Icon = direction === "prev" ? ArrowLeft : ArrowRight;
-
   return (
     <button
       onClick={onClick}
@@ -74,9 +62,7 @@ const NavButton = memo<{
 });
 NavButton.displayName = "NavButton";
 
-// =======================
-// 🔹 Pagination Dots
-// =======================
+// Pagination dots
 const PaginationDots = memo<{
   total: number;
   current: number;
@@ -84,7 +70,6 @@ const PaginationDots = memo<{
   isAnimating: boolean;
 }>(({ total, current, onDotClick, isAnimating }) => {
   if (total <= 1) return null;
-
   return (
     <div className="flex gap-1.5 md:gap-2">
       {Array.from({ length: total }, (_, idx) => (
@@ -106,9 +91,7 @@ const PaginationDots = memo<{
 });
 PaginationDots.displayName = "PaginationDots";
 
-// =======================
-// 🔹 Grid Navigation
-// =======================
+// Grid navigation (arrows + dots)
 const GridNavigation = memo<{
   current: number;
   total: number;
@@ -118,7 +101,6 @@ const GridNavigation = memo<{
   isAnimating: boolean;
 }>(({ current, total, onPrev, onNext, onDotClick, isAnimating }) => {
   if (total <= 1) return null;
-
   return (
     <div className="flex items-center gap-3 md:gap-4">
       <NavButton
@@ -127,7 +109,6 @@ const GridNavigation = memo<{
         disabled={isAnimating || total <= 1}
         ariaLabel="Previous page"
       />
-
       <div className="flex flex-col items-center gap-2">
         <PaginationDots
           total={total}
@@ -139,7 +120,6 @@ const GridNavigation = memo<{
           {current + 1} / {total}
         </span>
       </div>
-
       <NavButton
         direction="next"
         onClick={onNext}
@@ -151,32 +131,26 @@ const GridNavigation = memo<{
 });
 GridNavigation.displayName = "GridNavigation";
 
-// =======================
-// 🔹 Product Grid Display
-// =======================
-const ProductGridDisplay = memo<{
-  products: Product[];
-  isAnimating: boolean;
-}>(({ products, isAnimating }) => {
-  if (!products.length) return null;
-
-  return (
-    <div
-      className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
-        isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
-      }`}
-    >
-      {products.map((p) => (
-        <ProductCard key={p.id} data={mapProductData(p)} />
-      ))}
-    </div>
-  );
-});
+// Display product grid
+const ProductGridDisplay = memo<{ products: Product[]; isAnimating: boolean }>(
+  ({ products, isAnimating }) => {
+    if (!products.length) return null;
+    return (
+      <div
+        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
+          isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
+        }`}
+      >
+        {products.map((p) => (
+          <ProductCard key={p.id} data={mapProductData(p)} />
+        ))}
+      </div>
+    );
+  }
+);
 ProductGridDisplay.displayName = "ProductGridDisplay";
 
-// =======================
-// 🔹 Custom Hook for Pagination
-// =======================
+// Pagination logic & keyboard support
 const usePagination = (totalPages: number) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -188,111 +162,85 @@ const usePagination = (totalPages: number) => {
         newPage < 0 ||
         newPage >= totalPages ||
         newPage === currentPage
-      ) {
+      )
         return;
-      }
-
       setIsAnimating(true);
       setCurrentPage(newPage);
-
-      // Scroll to top of section smoothly
       const section = document.querySelector("[data-product-grid]");
-      if (section) {
+      if (section)
         section.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
       setTimeout(() => setIsAnimating(false), ANIMATION_DURATION);
     },
     [isAnimating, totalPages, currentPage]
   );
 
-  const handleNext = useCallback(() => {
-    if (totalPages <= 1) return;
-    handlePageChange((currentPage + 1) % totalPages);
-  }, [currentPage, totalPages, handlePageChange]);
-
-  const handlePrev = useCallback(() => {
-    if (totalPages <= 1) return;
-    handlePageChange(currentPage === 0 ? totalPages - 1 : currentPage - 1);
-  }, [currentPage, totalPages, handlePageChange]);
-
-  const handleDotClick = useCallback(
-    (idx: number) => {
-      if (idx !== currentPage && idx >= 0 && idx < totalPages) {
-        handlePageChange(idx);
-      }
-    },
+  const handleNext = useCallback(
+    () => handlePageChange((currentPage + 1) % totalPages),
     [currentPage, totalPages, handlePageChange]
   );
+  const handlePrev = useCallback(
+    () =>
+      handlePageChange(currentPage === 0 ? totalPages - 1 : currentPage - 1),
+    [currentPage, totalPages, handlePageChange]
+  );
+  const handleDotClick = useCallback(
+    (idx: number) => {
+      if (idx !== currentPage) handlePageChange(idx);
+    },
+    [currentPage, handlePageChange]
+  );
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isAnimating || totalPages <= 1) return;
-
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        handlePrev();
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        handleNext();
-      }
+      if (e.key === "ArrowLeft") handlePrev();
+      else if (e.key === "ArrowRight") handleNext();
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNext, handlePrev, isAnimating, totalPages]);
 
-  return {
-    currentPage,
-    isAnimating,
-    handleNext,
-    handlePrev,
-    handleDotClick,
-  };
+  return { currentPage, isAnimating, handleNext, handlePrev, handleDotClick };
 };
 
-// =======================
-// 🔹 Main Component
-// =======================
+// Main grid component
 const ProductGrid: React.FC<ProductGridProps> = ({
   section,
   showNavigation = true,
   itemsPerPage = 8,
 }) => {
-  const productPages = useMemo(() => {
-    if (!section?.products?.length) return [];
-    return chunkArray(section.products, itemsPerPage);
-  }, [section?.products, itemsPerPage]);
-
+  const availableProducts = useMemo(
+    () => section?.products.filter((p) => p.stock && p.stock > 0) ?? [],
+    [section?.products]
+  );
+  const productPages = useMemo(
+    () => chunkArray(availableProducts, itemsPerPage),
+    [availableProducts, itemsPerPage]
+  );
   const totalPages = productPages.length;
 
   const { currentPage, isAnimating, handleNext, handlePrev, handleDotClick } =
     usePagination(totalPages);
+  const currentProducts = useMemo(
+    () => productPages[currentPage] || [],
+    [productPages, currentPage]
+  );
 
-  const currentProducts = useMemo(() => {
-    return productPages[currentPage] || [];
-  }, [productPages, currentPage]);
-
-  if (!section?.products?.length) {
+  if (!availableProducts.length)
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-16 py-12 text-center text-gray-500">
-        <p className="text-sm md:text-base">No products to display.</p>
+        <p>No products to display.</p>
       </div>
     );
-  }
 
   return (
     <div data-product-grid>
-      {/* Product Grid */}
       <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
         <ProductGridDisplay
           products={currentProducts}
           isAnimating={isAnimating}
         />
       </div>
-
-      {/* Navigation */}
       {showNavigation && totalPages > 1 && (
         <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
           <GridNavigation
