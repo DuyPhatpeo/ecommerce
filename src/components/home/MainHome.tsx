@@ -9,7 +9,7 @@ import ProductView from "./ProductView";
 import { useAppConfig } from "../../hooks/useAppConfig";
 
 const MainHome = () => {
-  // Config backend: order và props từng section
+  // Config backend (giả lập)
   const remoteConfig = {
     sectionOrder: {
       Promo: { order: 1 },
@@ -28,9 +28,19 @@ const MainHome = () => {
         props: {
           category: "running",
           viewMode: "grid",
-          maxProducts: 8,
+          maxProducts: 12,
           itemsPerPage: 8,
           title: "Running Products",
+        },
+      },
+      ProductView_4: {
+        order: 5,
+        props: {
+          category: "casual",
+          viewMode: "grid",
+          maxProducts: 12,
+          itemsPerPage: 8,
+          title: "Casual Products",
         },
       },
       HotDeal: { order: 7 },
@@ -40,45 +50,50 @@ const MainHome = () => {
 
   const { normalizeViewMode, viewModeDefault } = useAppConfig(remoteConfig);
 
-  // Map section name → component
-  const sectionMap: Record<string, (props?: any) => React.ReactElement> = {
-    Features: () => <Features />,
-    Promo: () => <Promo />,
-    ProductView: (props) => {
-      const resolvedMode = normalizeViewMode(
-        props?.viewMode ?? viewModeDefault
-      );
-      return <ProductView {...props} viewMode={resolvedMode} />;
-    },
-    HotDeal: () => <HotDeal />,
-    BrandStrip: () => <BrandStrip />,
+  // Danh sách component có thể render
+  const sectionMap: Record<string, React.FC<any>> = {
+    Banner,
+    Features,
+    Promo,
+    HotDeal,
+    BrandStrip,
+    ProductView,
   };
 
-  // Chuẩn hóa, sắp xếp, filter section
-  const displaySections = Object.entries(remoteConfig?.sectionOrder ?? {})
-    .map(([key, cfg]) => ({
-      key,
-      baseKey: key.split("_")[0],
-      order:
-        typeof cfg === "object" && "order" in cfg ? cfg.order : Number(cfg),
-      props: typeof cfg === "object" && "props" in cfg ? cfg.props : undefined,
-    }))
-    .sort((a, b) => a.order - b.order)
+  // Chuẩn hóa danh sách section
+  const displaySections = Object.entries(remoteConfig.sectionOrder ?? {})
+    .map(([key, cfg]) => {
+      const baseKey = key.split("_")[0];
+      const order =
+        typeof cfg === "object" && "order" in cfg ? cfg.order : Number(cfg);
+      const props =
+        typeof cfg === "object" && "props" in cfg ? cfg.props : undefined;
+      return { key, baseKey, order, props };
+    })
     .filter(({ baseKey }) => baseKey in sectionMap)
-    .map(({ key, baseKey, props }) => ({
-      key,
-      Component: sectionMap[baseKey],
-      props,
-    }));
+    .sort((a, b) => a.order - b.order);
 
   return (
     <>
+      {/* Banner luôn hiển thị đầu tiên */}
       <Banner />
-      {displaySections.map(({ key, Component, props }) => (
-        <section key={key}>
-          <Component {...props} />
-        </section>
-      ))}
+
+      {displaySections.map(({ key, baseKey, props }) => {
+        const Component = sectionMap[baseKey];
+        const finalProps =
+          baseKey === "ProductView"
+            ? {
+                ...props,
+                viewMode: normalizeViewMode(props?.viewMode ?? viewModeDefault),
+              }
+            : props;
+
+        return (
+          <section key={key}>
+            <Component {...finalProps} />
+          </section>
+        );
+      })}
     </>
   );
 };

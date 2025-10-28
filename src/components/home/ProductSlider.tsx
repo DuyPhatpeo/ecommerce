@@ -11,14 +11,18 @@ interface ProductSliderProps {
 // Swiper config
 const SWIPER_CONFIG = {
   slidesPerView: 2,
-  spaceBetween: 16,
+  spaceBetween: 12,
   speed: 800,
   centeredSlides: false,
   centeredSlidesBounds: true,
   breakpoints: {
+    0: { slidesPerView: 1.2, spaceBetween: 8 },
+    480: { slidesPerView: 2, spaceBetween: 12 },
     640: { slidesPerView: 3, spaceBetween: 16 },
+    768: { slidesPerView: 3.5, spaceBetween: 20 },
     1024: { slidesPerView: 4, spaceBetween: 24 },
-    1280: { slidesPerView: 6, spaceBetween: 24 },
+    1280: { slidesPerView: 5, spaceBetween: 24 },
+    1536: { slidesPerView: 6, spaceBetween: 28 },
   },
 } as const;
 
