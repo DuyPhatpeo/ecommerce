@@ -33,7 +33,7 @@ interface Section {
   swiperClass: string;
 }
 
-type ViewMode = "slider" | "list";
+type ViewMode = "slider" | "grid";
 
 interface ProductViewProps {
   viewMode?: ViewMode;
@@ -457,7 +457,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   // Memoize product pages
   const productPages = useMemo(() => {
-    if (!section || viewMode !== "list") return [];
+    if (!section || viewMode !== "grid") return [];
     return chunkProducts(section.products, itemsPerPage);
   }, [section, viewMode, itemsPerPage]);
 
