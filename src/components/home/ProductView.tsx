@@ -142,7 +142,7 @@ const EmptyState = () => (
 );
 
 const SectionHeaderContent = ({ section }: { section: Section }) => (
-  <div className="flex-1 text-center md:text-left overflow-visible">
+  <div className="flex-1 text-left overflow-visible">
     <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight pb-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
       {section.title}
     </h2>
@@ -156,7 +156,6 @@ const ProductView: React.FC<ProductViewProps> = ({
   title,
   maxProducts,
   showNavigation = true,
-  itemsPerPage = 8,
 }) => {
   const { section, isLoading } = useSectionData(
     status,
@@ -180,11 +179,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       {viewMode === "slider" ? (
         <ProductSlider section={section} showNavigation={showNavigation} />
       ) : (
-        <ProductGrid
-          section={section}
-          showNavigation={showNavigation}
-          itemsPerPage={itemsPerPage}
-        />
+        <ProductGrid section={section} />
       )}
     </section>
   );

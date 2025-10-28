@@ -28,8 +28,7 @@ const MainHome = () => {
         props: {
           category: "running",
           viewMode: "grid",
-          maxProducts: 12,
-          itemsPerPage: 8,
+          maxProducts: 8,
           title: "Running Products",
         },
       },
@@ -38,8 +37,7 @@ const MainHome = () => {
         props: {
           category: "casual",
           viewMode: "grid",
-          maxProducts: 12,
-          itemsPerPage: 8,
+          maxProducts: 8,
           title: "Casual Products",
         },
       },
