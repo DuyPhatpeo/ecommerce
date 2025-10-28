@@ -18,7 +18,7 @@ const MainHome = () => {
         props: {
           status: "latest",
           viewMode: "slider",
-          maxProducts: 8,
+          maxProducts: 12,
           title: "Last Products",
         },
       },

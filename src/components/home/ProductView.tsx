@@ -4,9 +4,6 @@ import { getProducts } from "../../api/productApi";
 import ProductSlider from "./ProductSlider";
 import ProductGrid from "./ProductGrid";
 
-// =======================
-// 🔹 Types
-// =======================
 interface Product {
   id: number;
   title: string;
@@ -38,17 +35,11 @@ interface ProductViewProps {
   itemsPerPage?: number;
 }
 
-// =======================
-// 🔹 Status config fallback
-// =======================
 const STATUS_CONFIG: Record<string, { title: string }> = {
   latest: { title: "Latest Products" },
   coming: { title: "Coming Soon" },
 };
 
-// =======================
-// 🔹 Filter function
-// =======================
 const filterProducts = (
   products: Product[],
   options?: {
@@ -82,9 +73,6 @@ const filterProducts = (
     : filtered;
 };
 
-// =======================
-// 🔹 Hook fetch & tạo section
-// =======================
 const useSectionData = (
   status?: string | string[],
   category?: string | string[],
@@ -139,9 +127,6 @@ const useSectionData = (
   return { section, isLoading };
 };
 
-// =======================
-// 🔹 UI Components
-// =======================
 const LoadingState = () => (
   <div className="w-full py-12 md:py-20 text-center text-gray-500">
     <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -156,20 +141,14 @@ const EmptyState = () => (
   </div>
 );
 
-// =======================
-// 🔹 Section Header (title only)
-// =======================
 const SectionHeaderContent = ({ section }: { section: Section }) => (
-  <div className="flex-1 text-center md:text-left">
+  <div className="flex-1 text-center md:text-left overflow-visible">
     <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight pb-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
       {section.title}
     </h2>
   </div>
 );
 
-// =======================
-// 🔹 ProductView Component
-// =======================
 const ProductView: React.FC<ProductViewProps> = ({
   viewMode = "slider",
   status,
@@ -191,16 +170,13 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   return (
     <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white-50/30 relative overflow-hidden">
-      {/* Background decorations */}
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-9 rounded-full blur-3xl -z-10" />
 
-      {/* Header */}
       <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
         <SectionHeaderContent section={section} />
       </div>
 
-      {/* View Mode */}
       {viewMode === "slider" ? (
         <ProductSlider section={section} showNavigation={showNavigation} />
       ) : (
