@@ -143,8 +143,15 @@ const EmptyState = () => (
 
 const SectionHeaderContent = ({ section }: { section: Section }) => (
   <div className="flex-1 text-left overflow-visible">
-    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight pb-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
+    <h2
+      className="relative inline-block text-3xl md:text-5xl lg:text-6xl 
+                 font-extrabold leading-tight tracking-tight 
+                 bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 
+                 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(249,115,22,0.35)]"
+    >
       {section.title}
+      {/* gạch gradient nhỏ bên dưới */}
+      <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700"></span>
     </h2>
   </div>
 );
