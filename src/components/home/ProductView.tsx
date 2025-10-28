@@ -155,7 +155,6 @@ const ProductView: React.FC<ProductViewProps> = ({
   category,
   title,
   maxProducts,
-  showNavigation = true,
 }) => {
   const { section, isLoading } = useSectionData(
     status,
@@ -177,7 +176,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       </div>
 
       {viewMode === "slider" ? (
-        <ProductSlider section={section} showNavigation={showNavigation} />
+        <ProductSlider section={section} />
       ) : (
         <ProductGrid section={section} />
       )}
