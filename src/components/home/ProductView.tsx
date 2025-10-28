@@ -254,11 +254,6 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
       new Swiper(`.${section.swiperClass}`, {
         ...SWIPER_CONFIG,
         loop: section.products.length > 4,
-        autoplay: {
-          delay: SWIPER_CONFIG.autoplayDelay,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        },
         grabCursor: true,
         breakpoints: SWIPER_CONFIG.breakpoints,
         navigation: {
