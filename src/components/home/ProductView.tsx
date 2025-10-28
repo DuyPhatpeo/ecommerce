@@ -79,6 +79,10 @@ const STATUS_CONFIG: Record<
 };
 
 const ANIMATION_DURATION = 500;
+const SWIPER_CDN = {
+  CSS: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css",
+  JS: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js",
+};
 
 // =======================
 // 🔹 Utility Functions
@@ -109,17 +113,11 @@ const filterProductsByStatus = (
   return maxProducts ? filtered.slice(0, maxProducts) : filtered;
 };
 
-const chunkProducts = (
-  products: Product[],
-  itemsPerPage: number
-): Product[][] => {
-  if (!products.length || itemsPerPage <= 0) return [];
-
-  const chunks: Product[][] = [];
-  for (let i = 0; i < products.length; i += itemsPerPage) {
-    chunks.push(products.slice(i, i + itemsPerPage));
-  }
-  return chunks;
+const chunkArray = <T,>(arr: T[], size: number): T[][] => {
+  if (!arr.length || size <= 0) return [];
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    arr.slice(i * size, i * size + size)
+  );
 };
 
 // =======================
@@ -136,7 +134,7 @@ const NavButton = memo<{
   ({
     direction,
     onClick,
-    disabled,
+    disabled = false,
     className = "",
     ariaLabel,
     size = "default",
@@ -331,19 +329,28 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
     let script: HTMLScriptElement | null = null;
     let swiperInstance: any = null;
 
-    const initSwiper = () => {
+    const loadScript = (src: string): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    const initSwiper = async () => {
+      // Load CSS
       swiperCSS = document.createElement("link");
       swiperCSS.rel = "stylesheet";
-      swiperCSS.href =
-        "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
+      swiperCSS.href = SWIPER_CDN.CSS;
       document.head.appendChild(swiperCSS);
 
-      script = document.createElement("script");
-      script.src =
-        "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js";
-      script.async = true;
+      // Load JS
+      try {
+        await loadScript(SWIPER_CDN.JS);
 
-      script.onload = () => {
         const Swiper = (window as any).Swiper;
         if (!Swiper || !section) return;
 
@@ -361,46 +368,34 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
             dynamicBullets: true,
           },
         });
-      };
-
-      document.body.appendChild(script);
+      } catch (error) {
+        console.error("Failed to load Swiper:", error);
+      }
     };
 
     initSwiper();
 
     return () => {
-      if (swiperInstance?.destroy) {
-        swiperInstance.destroy(true, true);
-      }
-      if (script && document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-      if (swiperCSS && document.head.contains(swiperCSS)) {
-        document.head.removeChild(swiperCSS);
-      }
+      swiperInstance?.destroy?.(true, true);
+      script?.remove();
+      swiperCSS?.remove();
     };
   }, [viewMode, section]);
 };
 
 // =======================
-// 🔹 Main Component
+// 🔹 Custom Hook for Section Data
 // =======================
-const ProductView: React.FC<ProductViewProps> = ({
-  viewMode = "slider",
-  status,
-  title,
-  subtitle,
-  icon,
-  maxProducts,
-  showNavigation = true,
-  itemsPerPage = 8,
-}) => {
+const useSectionData = (
+  status?: string | string[],
+  maxProducts?: number,
+  title?: string,
+  subtitle?: string,
+  icon?: React.ReactNode
+) => {
   const [section, setSection] = useState<Section | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
 
-  // Fetch products
   useEffect(() => {
     let isMounted = true;
 
@@ -411,7 +406,9 @@ const ProductView: React.FC<ProductViewProps> = ({
 
         if (!isMounted) return;
 
-        if (!Array.isArray(data)) throw new Error("Invalid product data");
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid product data");
+        }
 
         const filteredProducts = filterProductsByStatus(
           data,
@@ -419,7 +416,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           maxProducts
         );
 
-        if (filteredProducts.length === 0) {
+        if (!filteredProducts.length) {
           setSection(null);
           return;
         }
@@ -427,17 +424,14 @@ const ProductView: React.FC<ProductViewProps> = ({
         const defaultConfig =
           status && !Array.isArray(status) ? STATUS_CONFIG[status] : null;
 
-        const newSection: Section = {
+        setSection({
           title: title || defaultConfig?.title || "Products",
           subtitle:
             subtitle || defaultConfig?.subtitle || "Browse our collection",
           icon: icon || defaultConfig?.icon || <Sparkles size={18} />,
           products: filteredProducts,
           swiperClass: `product-swiper-${status || "default"}`,
-        };
-
-        setSection(newSection);
-        setCurrentPage(0);
+        });
       } catch (err) {
         console.error("Failed to fetch products:", err);
         if (isMounted) setSection(null);
@@ -453,18 +447,16 @@ const ProductView: React.FC<ProductViewProps> = ({
     };
   }, [status, maxProducts, title, subtitle, icon]);
 
-  useSwiper(section, viewMode);
+  return { section, isLoading };
+};
 
-  // Memoize product pages
-  const productPages = useMemo(() => {
-    if (!section || viewMode !== "grid") return [];
-    return chunkProducts(section.products, itemsPerPage);
-  }, [section, viewMode, itemsPerPage]);
+// =======================
+// 🔹 Custom Hook for Pagination
+// =======================
+const usePagination = (totalPages: number) => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const totalPages = productPages.length;
-  const currentProducts = productPages[currentPage] || [];
-
-  // Navigation handlers
   const handlePageChange = useCallback(
     (newPage: number) => {
       if (isAnimating || newPage < 0 || newPage >= totalPages) return;
@@ -477,28 +469,65 @@ const ProductView: React.FC<ProductViewProps> = ({
   );
 
   const handleNext = useCallback(() => {
-    const nextPage = (currentPage + 1) % totalPages;
-    handlePageChange(nextPage);
+    handlePageChange((currentPage + 1) % totalPages);
   }, [currentPage, totalPages, handlePageChange]);
 
   const handlePrev = useCallback(() => {
-    const prevPage = currentPage === 0 ? totalPages - 1 : currentPage - 1;
-    handlePageChange(prevPage);
+    handlePageChange(currentPage === 0 ? totalPages - 1 : currentPage - 1);
   }, [currentPage, totalPages, handlePageChange]);
 
   const handleDotClick = useCallback(
     (idx: number) => {
-      if (idx !== currentPage) {
-        handlePageChange(idx);
-      }
+      if (idx !== currentPage) handlePageChange(idx);
     },
     [currentPage, handlePageChange]
   );
 
-  // Loading state
-  if (isLoading) return <LoadingState />;
+  return {
+    currentPage,
+    isAnimating,
+    handleNext,
+    handlePrev,
+    handleDotClick,
+  };
+};
 
-  // Empty state
+// =======================
+// 🔹 Main Component
+// =======================
+const ProductView: React.FC<ProductViewProps> = ({
+  viewMode = "slider",
+  status,
+  title,
+  subtitle,
+  icon,
+  maxProducts,
+  showNavigation = true,
+  itemsPerPage = 8,
+}) => {
+  const { section, isLoading } = useSectionData(
+    status,
+    maxProducts,
+    title,
+    subtitle,
+    icon
+  );
+
+  const productPages = useMemo(() => {
+    if (!section || viewMode !== "grid") return [];
+    return chunkArray(section.products, itemsPerPage);
+  }, [section, viewMode, itemsPerPage]);
+
+  const totalPages = productPages.length;
+
+  const { currentPage, isAnimating, handleNext, handlePrev, handleDotClick } =
+    usePagination(totalPages);
+
+  const currentProducts = productPages[currentPage] || [];
+
+  useSwiper(section, viewMode);
+
+  if (isLoading) return <LoadingState />;
   if (!section || !section.products.length) return <EmptyState />;
 
   return (
@@ -507,17 +536,15 @@ const ProductView: React.FC<ProductViewProps> = ({
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
 
-      {/* Header Section - Common for both modes */}
+      {/* Header */}
       <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-        <div className="flex flex-col items-center md:items-start gap-4">
-          <SectionHeaderContent section={section} />
-        </div>
+        <SectionHeaderContent section={section} />
       </div>
 
       {viewMode === "slider" ? (
         <>
           {/* Swiper Products */}
-          <div className="relative px-4">
+          <div className="relative px-6 md:px-16">
             <div className={`${section.swiperClass} overflow-hidden`}>
               <div className="swiper-wrapper">
                 {section.products.map((p) => (
@@ -529,7 +556,6 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* Navigation Controls - Below Products */}
           {showNavigation && (
             <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
               <SliderNavigation swiperClass={section.swiperClass} />
@@ -543,7 +569,6 @@ const ProductView: React.FC<ProductViewProps> = ({
             <ProductGrid products={currentProducts} isAnimating={isAnimating} />
           </div>
 
-          {/* Navigation Controls - Below Products */}
           {totalPages > 1 && showNavigation && (
             <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
               <ListNavigation
