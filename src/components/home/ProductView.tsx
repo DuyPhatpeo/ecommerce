@@ -236,9 +236,9 @@ const SliderNavigation = memo<{ swiperClass: string }>(({ swiperClass }) => (
 SliderNavigation.displayName = "SliderNavigation";
 
 // =======================
-// 🔹 List Navigation (Memoized)
+// 🔹 Grid Navigation (Memoized)
 // =======================
-const ListNavigation = memo<{
+const GridNavigation = memo<{
   current: number;
   total: number;
   onPrev: () => void;
@@ -276,7 +276,7 @@ const ListNavigation = memo<{
     />
   </div>
 ));
-ListNavigation.displayName = "ListNavigation";
+GridNavigation.displayName = "GridNavigation";
 
 // =======================
 // 🔹 Loading State
@@ -544,7 +544,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       {viewMode === "slider" ? (
         <>
           {/* Swiper Products */}
-          <div className="relative px-6 md:px-16">
+          <div className="relative px-6 md:px-14">
             <div className={`${section.swiperClass} overflow-hidden`}>
               <div className="swiper-wrapper">
                 {section.products.map((p) => (
@@ -571,7 +571,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
           {totalPages > 1 && showNavigation && (
             <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
-              <ListNavigation
+              <GridNavigation
                 current={currentPage}
                 total={totalPages}
                 onPrev={handlePrev}
