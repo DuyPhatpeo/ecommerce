@@ -1,5 +1,5 @@
 // src/hooks/useAppConfig.ts
-export type ViewMode = "slider" | "list";
+export type ViewMode = "slider" | "grid";
 
 interface AppConfig {
   viewModeDefault: ViewMode;
@@ -15,7 +15,7 @@ export function normalizeViewMode(value: any): ViewMode {
     .trim();
 
   if (["true", "1", "slider"].includes(val)) return "slider";
-  if (["false", "0", "list"].includes(val)) return "list";
+  if (["false", "0", "grid"].includes(val)) return "grid";
 
   return DEFAULT_CONFIG.viewModeDefault;
 }
