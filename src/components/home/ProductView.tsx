@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ProductSlider from "./ProductSlider";
 import ProductGrid from "./ProductGrid";
 
+// =======================
+// 🔹 Types
+// =======================
 interface Product {
   id: number;
   title: string;
@@ -14,12 +17,11 @@ interface Product {
   stock?: number;
   images?: string[];
   status?: string;
+  category?: string;
 }
 
 export interface Section {
   title: string;
-  subtitle: string;
-  icon: React.ReactNode;
   products: Product[];
   swiperClass: string;
 }
@@ -29,60 +31,65 @@ type ViewMode = "slider" | "grid";
 interface ProductViewProps {
   viewMode?: ViewMode;
   status?: string | string[];
+  category?: string | string[];
   title?: string;
-  subtitle?: string;
-  icon?: React.ReactNode;
   maxProducts?: number;
   showNavigation?: boolean;
   itemsPerPage?: number;
 }
 
-// Config tiêu đề / icon theo status
-const STATUS_CONFIG: Record<
-  string,
-  { title: string; subtitle: string; icon: React.ReactNode }
-> = {
-  latest: {
-    title: "Latest Products",
-    subtitle: "Discover our newest arrivals with exclusive deals",
-    icon: <TrendingUp size={18} />,
-  },
-  coming: {
-    title: "Coming Soon",
-    subtitle: "Pre-order exclusive releases",
-    icon: <Sparkles size={18} />,
-  },
+// =======================
+// 🔹 Status config fallback
+// =======================
+const STATUS_CONFIG: Record<string, { title: string }> = {
+  latest: { title: "Latest Products" },
+  coming: { title: "Coming Soon" },
 };
 
-// Lọc sản phẩm theo status, stock > 0 và maxProducts
-const filterProductsByStatus = (
+// =======================
+// 🔹 Filter function
+// =======================
+const filterProducts = (
   products: Product[],
-  status?: string | string[],
-  maxProducts?: number
+  options?: {
+    status?: string | string[];
+    category?: string | string[];
+    maxProducts?: number;
+  }
 ) => {
   if (!products.length) return [];
 
-  let filtered = products;
+  let filtered = products.filter((p) => (p.stock ?? 0) > 0);
 
-  if (status) {
-    const statuses = Array.isArray(status) ? status : [status];
-    filtered = products.filter(
-      (p) => p.status && statuses.includes(p.status) && (p.stock ?? 0) > 0
-    );
-  } else {
-    filtered = products.filter((p) => (p.stock ?? 0) > 0);
+  if (options?.status) {
+    const statuses = Array.isArray(options.status)
+      ? options.status
+      : [options.status];
+    filtered = filtered.filter((p) => p.status && statuses.includes(p.status));
   }
 
-  return maxProducts ? filtered.slice(0, maxProducts) : filtered;
+  if (options?.category) {
+    const categories = Array.isArray(options.category)
+      ? options.category
+      : [options.category];
+    filtered = filtered.filter(
+      (p) => p.category && categories.includes(p.category)
+    );
+  }
+
+  return options?.maxProducts
+    ? filtered.slice(0, options.maxProducts)
+    : filtered;
 };
 
-// Hook fetch sản phẩm và tạo section
+// =======================
+// 🔹 Hook fetch & tạo section
+// =======================
 const useSectionData = (
   status?: string | string[],
+  category?: string | string[],
   maxProducts?: number,
-  title?: string,
-  subtitle?: string,
-  icon?: React.ReactNode
+  title?: string
 ) => {
   const [section, setSection] = useState<Section | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -97,21 +104,20 @@ const useSectionData = (
         if (!isMounted) return;
         if (!Array.isArray(data)) throw new Error("Invalid product data");
 
-        const filteredProducts = filterProductsByStatus(
-          data,
+        const filteredProducts = filterProducts(data, {
           status,
-          maxProducts
-        );
+          category,
+          maxProducts,
+        });
         if (!filteredProducts.length) return setSection(null);
 
-        const defaultConfig =
-          status && !Array.isArray(status) ? STATUS_CONFIG[status] : null;
+        const defaultTitle =
+          status && !Array.isArray(status)
+            ? STATUS_CONFIG[status]?.title
+            : undefined;
 
         setSection({
-          title: title || defaultConfig?.title || "Products",
-          subtitle:
-            subtitle || defaultConfig?.subtitle || "Browse our collection",
-          icon: icon || defaultConfig?.icon || <Sparkles size={18} />,
+          title: title || defaultTitle || "Products",
           products: filteredProducts,
           swiperClass: `product-swiper-${status || "default"}`,
         });
@@ -124,15 +130,18 @@ const useSectionData = (
     };
 
     fetchProducts();
+
     return () => {
       isMounted = false;
     };
-  }, [status, maxProducts, title, subtitle, icon]);
+  }, [status, category, maxProducts, title]);
 
   return { section, isLoading };
 };
 
-// Loading / Empty states
+// =======================
+// 🔹 UI Components
+// =======================
 const LoadingState = () => (
   <div className="w-full py-12 md:py-20 text-center text-gray-500">
     <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -147,38 +156,34 @@ const EmptyState = () => (
   </div>
 );
 
-// Header hiển thị tiêu đề, icon, subtitle
+// =======================
+// 🔹 Section Header (title only)
+// =======================
 const SectionHeaderContent = ({ section }: { section: Section }) => (
   <div className="flex-1 text-center md:text-left">
-    <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
-      {section.icon}
-      <span>Special Collection</span>
-    </div>
-    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
+    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight pb-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800 bg-clip-text text-transparent">
       {section.title}
     </h2>
-    <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
-      {section.subtitle}
-    </p>
   </div>
 );
 
+// =======================
+// 🔹 ProductView Component
+// =======================
 const ProductView: React.FC<ProductViewProps> = ({
   viewMode = "slider",
   status,
+  category,
   title,
-  subtitle,
-  icon,
   maxProducts,
   showNavigation = true,
   itemsPerPage = 8,
 }) => {
   const { section, isLoading } = useSectionData(
     status,
+    category,
     maxProducts,
-    title,
-    subtitle,
-    icon
+    title
   );
 
   if (isLoading) return <LoadingState />;

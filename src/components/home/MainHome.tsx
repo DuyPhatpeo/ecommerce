@@ -9,13 +9,30 @@ import ProductView from "./ProductView";
 import { useAppConfig } from "../../hooks/useAppConfig";
 
 const MainHome = () => {
-  // Config backend
+  // Config backend: order và props từng section
   const remoteConfig = {
     sectionOrder: {
-      Features: { order: 3 },
-      ProductView_1: { order: 2, props: { viewMode: true, status: "latest" } },
-      ProductView_2: { order: 4, props: { viewMode: false, status: "latest" } },
       Promo: { order: 1 },
+      ProductView_1: {
+        order: 2,
+        props: {
+          status: "latest",
+          viewMode: "slider",
+          maxProducts: 8,
+          title: "Last Products",
+        },
+      },
+      Features: { order: 3 },
+      ProductView_2: {
+        order: 4,
+        props: {
+          category: "running",
+          viewMode: "grid",
+          maxProducts: 8,
+          itemsPerPage: 8,
+          title: "Running Products",
+        },
+      },
       HotDeal: { order: 7 },
       BrandStrip: { order: 8 },
     },
