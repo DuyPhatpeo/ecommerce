@@ -58,7 +58,7 @@ interface ProductViewProps {
   icon?: React.ReactNode;
   maxProducts?: number;
   showNavigation?: boolean;
-  itemsPerPage?: number; // 🆕 Số sản phẩm mỗi trang
+  itemsPerPage?: number;
 }
 
 // =======================
@@ -71,7 +71,7 @@ const SWIPER_CONFIG = {
   autoplayDelay: 3500,
   animationDuration: 600,
   breakpoints: {
-    640: { slidesPerView: 3, spaceBetween: 20 },
+    640: { slidesPerView: 3, spaceBetween: 16 },
     1024: { slidesPerView: 4, spaceBetween: 24 },
     1280: { slidesPerView: 6, spaceBetween: 24 },
   },
@@ -120,7 +120,6 @@ const filterProductsByStatus = (
   return maxProducts ? filtered.slice(0, maxProducts) : filtered;
 };
 
-// 🆕 Chunk products thành các trang
 const chunkProducts = (
   products: Product[],
   itemsPerPage: number
@@ -137,44 +136,44 @@ const chunkProducts = (
 // =======================
 const SectionHeader = memo<SectionHeaderProps>(
   ({ section, swiperClass, isSliderMode }) => (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-16 mb-12">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
         <div className="flex-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
             {section.icon}
             <span>Special Collection</span>
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
             {section.title}
           </h2>
 
-          <p className="text-gray-600 text-base max-w-xl mx-auto md:mx-0 mt-2">
+          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
             {section.subtitle}
           </p>
         </div>
 
         {isSliderMode && (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <button
-              className={`${swiperClass}-prev w-12 h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
+              className={`${swiperClass}-prev w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
               aria-label="Previous"
             >
               <ChevronLeft
-                size={24}
-                className="group-hover:scale-110 transition-transform"
+                size={20}
+                className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
               />
             </button>
 
             <div className={`${swiperClass}-pagination flex gap-2`} />
 
             <button
-              className={`${swiperClass}-next w-12 h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
+              className={`${swiperClass}-next w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
               aria-label="Next"
             >
               <ChevronRight
-                size={24}
-                className="group-hover:scale-110 transition-transform"
+                size={20}
+                className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
               />
             </button>
           </div>
@@ -190,26 +189,28 @@ SectionHeader.displayName = "SectionHeader";
 // =======================
 const ListNavigation = memo<ListNavigationProps>(
   ({ current, total, onPrev, onNext, onDotClick, isAnimating }) => (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-3 md:gap-4">
       <button
         onClick={onPrev}
         disabled={isAnimating || total <= 1}
-        className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl md:rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+        aria-label="Previous page"
       >
-        <ArrowLeft size={20} />
+        <ArrowLeft size={18} className="md:w-5 md:h-5" />
       </button>
 
       <div className="flex flex-col items-center gap-2">
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 md:gap-2">
           {Array.from({ length: total }).map((_, idx) => (
             <button
               key={idx}
               onClick={() => onDotClick(idx)}
               disabled={isAnimating}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              aria-label={`Go to page ${idx + 1}`}
+              className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
                 idx === current
-                  ? "w-12 bg-gradient-to-r from-orange-500 to-red-500"
-                  : "w-2 bg-gray-300 hover:bg-gray-400"
+                  ? "w-8 md:w-12 bg-gradient-to-r from-orange-500 to-red-500"
+                  : "w-1.5 md:w-2 bg-gray-300 hover:bg-gray-400"
               }`}
             />
           ))}
@@ -222,9 +223,10 @@ const ListNavigation = memo<ListNavigationProps>(
       <button
         onClick={onNext}
         disabled={isAnimating || total <= 1}
-        className="w-14 h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl md:rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+        aria-label="Next page"
       >
-        <ArrowRight size={20} />
+        <ArrowRight size={18} className="md:w-5 md:h-5" />
       </button>
     </div>
   )
@@ -250,6 +252,7 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
 
     script.onload = () => {
       const Swiper = (window as any).Swiper;
+      if (!Swiper) return;
 
       new Swiper(`.${section.swiperClass}`, {
         ...SWIPER_CONFIG,
@@ -271,8 +274,12 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
-      document.head.removeChild(swiperCSS);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      if (document.head.contains(swiperCSS)) {
+        document.head.removeChild(swiperCSS);
+      }
     };
   }, [viewMode, section]);
 };
@@ -288,11 +295,11 @@ const ProductView: React.FC<ProductViewProps> = ({
   icon,
   maxProducts,
   showNavigation = true,
-  itemsPerPage = 8, // 🆕 Mặc định 8 sản phẩm mỗi trang
+  itemsPerPage = 8,
 }) => {
   const [section, setSection] = useState<Section | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0); // 🆕 Trang hiện tại
+  const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -326,9 +333,10 @@ const ProductView: React.FC<ProductViewProps> = ({
         };
 
         setSection(newSection);
-        setCurrentPage(0); // Reset về trang đầu khi data thay đổi
+        setCurrentPage(0);
       } catch (err) {
         console.error("Failed to fetch products:", err);
+        setSection(null);
       } finally {
         setIsLoading(false);
       }
@@ -338,7 +346,6 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   useSwiper(section, viewMode);
 
-  // 🆕 Tính toán phân trang
   const productPages = useMemo(() => {
     if (!section || viewMode !== "list") return [];
     return chunkProducts(section.products, itemsPerPage);
@@ -347,7 +354,6 @@ const ProductView: React.FC<ProductViewProps> = ({
   const totalPages = productPages.length;
   const currentProducts = productPages[currentPage] || [];
 
-  // 🆕 Xử lý chuyển trang
   const handleNext = useCallback(() => {
     if (isAnimating || currentPage >= totalPages - 1) return;
     setIsAnimating(true);
@@ -364,33 +370,37 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const handleDotClick = useCallback(
     (idx: number) => {
-      if (!isAnimating && idx !== currentPage) {
+      if (!isAnimating && idx !== currentPage && idx >= 0 && idx < totalPages) {
         setIsAnimating(true);
         setCurrentPage(idx);
         setTimeout(() => setIsAnimating(false), 500);
       }
     },
-    [isAnimating, currentPage]
+    [isAnimating, currentPage, totalPages]
   );
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className="w-full py-20 text-center text-gray-500 animate-pulse">
-        Loading products...
+      <div className="w-full py-12 md:py-20 text-center text-gray-500">
+        <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <p className="mt-4 text-sm md:text-base">Loading products...</p>
       </div>
     );
+  }
 
-  if (!section || !section.products.length)
+  if (!section || !section.products.length) {
     return (
-      <div className="w-full py-20 text-center text-gray-500">
-        No products available.
+      <div className="w-full py-12 md:py-20 text-center text-gray-500">
+        <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
+        <p className="text-sm md:text-base">No products available.</p>
       </div>
     );
+  }
 
   return (
-    <section className="w-full py-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
+    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
 
       {viewMode === "slider" && (
         <div>
@@ -399,7 +409,7 @@ const ProductView: React.FC<ProductViewProps> = ({
             swiperClass={section.swiperClass}
             isSliderMode={showNavigation}
           />
-          <div className="relative px-4 sm:px-6 md:px-8">
+          <div className="relative px-4">
             <div className={`${section.swiperClass} overflow-hidden`}>
               <div className="swiper-wrapper">
                 {section.products.map((p) => (
@@ -415,23 +425,23 @@ const ProductView: React.FC<ProductViewProps> = ({
 
       {viewMode === "list" && (
         <>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-16 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
             <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
                 {section.icon}
                 <span>Special Collection</span>
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
                 {section.title}
               </h2>
 
-              <p className="text-gray-600 text-base max-w-xl mx-auto md:mx-0 mt-2">
+              <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
                 {section.subtitle}
               </p>
             </div>
 
-            {totalPages > 1 && (
+            {totalPages > 1 && showNavigation && (
               <ListNavigation
                 current={currentPage}
                 total={totalPages}
@@ -443,9 +453,9 @@ const ProductView: React.FC<ProductViewProps> = ({
             )}
           </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-16 mb-12">
+          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
             <div
-              className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 transition-all duration-500 ease-in-out ${
+              className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
                 isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
               }`}
             >
@@ -459,19 +469,38 @@ const ProductView: React.FC<ProductViewProps> = ({
 
       <style>{`
         .swiper-pagination-bullet {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           background: #d1d5db;
           opacity: 1;
           transition: all 0.3s;
         }
+        @media (min-width: 768px) {
+          .swiper-pagination-bullet {
+            width: 8px;
+            height: 8px;
+          }
+        }
         .swiper-pagination-bullet-active {
-          width: 32px;
+          width: 24px;
           border-radius: 4px;
           background: linear-gradient(to right, #f97316, #ef4444);
         }
-        .swiper-slide { height: auto; }
-        [class*="product-swiper-"] { padding: 8px 0; }
+        @media (min-width: 768px) {
+          .swiper-pagination-bullet-active {
+            width: 32px;
+          }
+        }
+        .swiper-slide { 
+          height: auto; 
+          display: flex;
+        }
+        .swiper-slide > * {
+          width: 100%;
+        }
+        [class*="product-swiper-"] { 
+          padding: 8px 0; 
+        }
       `}</style>
     </section>
   );
