@@ -86,7 +86,7 @@ const MainSearch: React.FC = () => {
     const mapped: Product[] = filtered.map((p: any) => ({
       id: p.id,
       title: p.title,
-      salePrice: p.salePrice ?? p.price ?? 0,
+      salePrice: p.salePrice ?? p.price,
       regularPrice: p.regularPrice ?? p.oldPrice,
       stock: p.stock,
       images: Array.isArray(p.images) ? p.images : [p.image || "/no-image.png"],
