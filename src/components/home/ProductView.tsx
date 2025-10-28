@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from "react";
-import {
-  Sparkles,
-  ChevronLeft,
-  ChevronRight,
-  TrendingUp,
-  ArrowLeft,
-  ArrowRight,
-} from "lucide-react";
-import ProductCard from "../section/ProductCard";
+import React, { useEffect, useState } from "react";
+import { Sparkles, TrendingUp } from "lucide-react";
+
 import { getProducts } from "../../api/productApi";
+import ProductSlider from "./ProductSlider";
+import ProductGrid from "./ProductGrid";
 
 // =======================
 // 🔹 Types
@@ -25,7 +20,7 @@ interface Product {
   status?: string;
 }
 
-interface Section {
+export interface Section {
   title: string;
   subtitle: string;
   icon: React.ReactNode;
@@ -49,19 +44,6 @@ interface ProductViewProps {
 // =======================
 // 🔹 Constants
 // =======================
-const SWIPER_CONFIG = {
-  slidesPerView: 2,
-  spaceBetween: 16,
-  speed: 800,
-  autoplayDelay: 3500,
-  animationDuration: 600,
-  breakpoints: {
-    640: { slidesPerView: 3, spaceBetween: 16 },
-    1024: { slidesPerView: 4, spaceBetween: 24 },
-    1280: { slidesPerView: 6, spaceBetween: 24 },
-  },
-} as const;
-
 const STATUS_CONFIG: Record<
   string,
   { title: string; subtitle: string; icon: React.ReactNode }
@@ -78,24 +60,9 @@ const STATUS_CONFIG: Record<
   },
 };
 
-const ANIMATION_DURATION = 500;
-const SWIPER_CDN = {
-  CSS: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css",
-  JS: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js",
-};
-
 // =======================
 // 🔹 Utility Functions
 // =======================
-const mapProductData = (product: Product) => ({
-  id: product.id,
-  img: product.images?.[0] || "no-image.png",
-  title: product.title,
-  salePrice: product.salePrice ?? product.price,
-  regularPrice: product.regularPrice ?? product.oldPrice,
-  stock: product.stock,
-});
-
 const filterProductsByStatus = (
   products: Product[],
   status?: string | string[],
@@ -111,276 +78,6 @@ const filterProductsByStatus = (
   }
 
   return maxProducts ? filtered.slice(0, maxProducts) : filtered;
-};
-
-const chunkArray = <T,>(arr: T[], size: number): T[][] => {
-  if (!arr.length || size <= 0) return [];
-  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  );
-};
-
-// =======================
-// 🔹 Navigation Button (Memoized & Reusable)
-// =======================
-const NavButton = memo<{
-  direction: "prev" | "next";
-  onClick?: () => void;
-  disabled?: boolean;
-  className?: string;
-  ariaLabel: string;
-  size?: "default" | "large";
-}>(
-  ({
-    direction,
-    onClick,
-    disabled = false,
-    className = "",
-    ariaLabel,
-    size = "default",
-  }) => {
-    const iconMap = {
-      prev: { default: ChevronLeft, large: ArrowLeft },
-      next: { default: ChevronRight, large: ArrowRight },
-    };
-
-    const Icon = iconMap[direction][size];
-    const sizeClass =
-      size === "large"
-        ? "w-12 h-12 md:w-14 md:h-14 md:rounded-2xl"
-        : "w-10 h-10 md:w-12 md:h-12";
-
-    return (
-      <button
-        onClick={onClick}
-        disabled={disabled}
-        className={`${sizeClass} bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-        aria-label={ariaLabel}
-      >
-        <Icon
-          size={size === "large" ? 18 : 20}
-          className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
-        />
-      </button>
-    );
-  }
-);
-NavButton.displayName = "NavButton";
-
-// =======================
-// 🔹 Pagination Dots (Memoized & Reusable)
-// =======================
-const PaginationDots = memo<{
-  total: number;
-  current: number;
-  onDotClick: (idx: number) => void;
-  isAnimating: boolean;
-}>(({ total, current, onDotClick, isAnimating }) => (
-  <div className="flex gap-1.5 md:gap-2">
-    {Array.from({ length: total }, (_, idx) => (
-      <button
-        key={idx}
-        onClick={() => onDotClick(idx)}
-        disabled={isAnimating}
-        aria-label={`Go to page ${idx + 1}`}
-        className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
-          idx === current
-            ? "w-8 md:w-12 bg-gradient-to-r from-orange-500 to-red-500"
-            : "w-1.5 md:w-2 bg-gray-300 hover:bg-gray-400"
-        }`}
-      />
-    ))}
-  </div>
-));
-PaginationDots.displayName = "PaginationDots";
-
-// =======================
-// 🔹 Section Header Content (Memoized & Reusable)
-// =======================
-const SectionHeaderContent = memo<{ section: Section }>(({ section }) => (
-  <div className="flex-1 text-center md:text-left">
-    <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
-      {section.icon}
-      <span>Special Collection</span>
-    </div>
-
-    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
-      {section.title}
-    </h2>
-
-    <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
-      {section.subtitle}
-    </p>
-  </div>
-));
-SectionHeaderContent.displayName = "SectionHeaderContent";
-
-// =======================
-// 🔹 Slider Navigation (Memoized)
-// =======================
-const SliderNavigation = memo<{ swiperClass: string }>(({ swiperClass }) => (
-  <div className="flex items-center gap-2 md:gap-4">
-    <NavButton
-      direction="prev"
-      className={`${swiperClass}-prev`}
-      ariaLabel="Previous"
-    />
-    <div className={`${swiperClass}-pagination flex gap-2`} />
-    <NavButton
-      direction="next"
-      className={`${swiperClass}-next`}
-      ariaLabel="Next"
-    />
-  </div>
-));
-SliderNavigation.displayName = "SliderNavigation";
-
-// =======================
-// 🔹 Grid Navigation (Memoized)
-// =======================
-const GridNavigation = memo<{
-  current: number;
-  total: number;
-  onPrev: () => void;
-  onNext: () => void;
-  onDotClick: (idx: number) => void;
-  isAnimating: boolean;
-}>(({ current, total, onPrev, onNext, onDotClick, isAnimating }) => (
-  <div className="flex items-center gap-3 md:gap-4">
-    <NavButton
-      direction="prev"
-      onClick={onPrev}
-      disabled={isAnimating || total <= 1}
-      size="large"
-      ariaLabel="Previous page"
-    />
-
-    <div className="flex flex-col items-center gap-2">
-      <PaginationDots
-        total={total}
-        current={current}
-        onDotClick={onDotClick}
-        isAnimating={isAnimating}
-      />
-      <span className="text-xs text-gray-500 font-medium">
-        {current + 1} / {total}
-      </span>
-    </div>
-
-    <NavButton
-      direction="next"
-      onClick={onNext}
-      disabled={isAnimating || total <= 1}
-      size="large"
-      ariaLabel="Next page"
-    />
-  </div>
-));
-GridNavigation.displayName = "GridNavigation";
-
-// =======================
-// 🔹 Loading State
-// =======================
-const LoadingState = memo(() => (
-  <div className="w-full py-12 md:py-20 text-center text-gray-500">
-    <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-    <p className="mt-4 text-sm md:text-base">Loading products...</p>
-  </div>
-));
-LoadingState.displayName = "LoadingState";
-
-// =======================
-// 🔹 Empty State
-// =======================
-const EmptyState = memo(() => (
-  <div className="w-full py-12 md:py-20 text-center text-gray-500">
-    <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
-    <p className="text-sm md:text-base">No products available.</p>
-  </div>
-));
-EmptyState.displayName = "EmptyState";
-
-// =======================
-// 🔹 Product Grid (Memoized)
-// =======================
-const ProductGrid = memo<{ products: Product[]; isAnimating: boolean }>(
-  ({ products, isAnimating }) => (
-    <div
-      className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
-        isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
-      }`}
-    >
-      {products.map((p) => (
-        <ProductCard key={p.id} data={mapProductData(p)} />
-      ))}
-    </div>
-  )
-);
-ProductGrid.displayName = "ProductGrid";
-
-// =======================
-// 🔹 Custom Hook for Swiper
-// =======================
-const useSwiper = (section: Section | null, viewMode: ViewMode) => {
-  useEffect(() => {
-    if (viewMode !== "slider" || !section?.products.length) return;
-
-    let swiperCSS: HTMLLinkElement | null = null;
-    let script: HTMLScriptElement | null = null;
-    let swiperInstance: any = null;
-
-    const loadScript = (src: string): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = src;
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = reject;
-        document.body.appendChild(script);
-      });
-    };
-
-    const initSwiper = async () => {
-      // Load CSS
-      swiperCSS = document.createElement("link");
-      swiperCSS.rel = "stylesheet";
-      swiperCSS.href = SWIPER_CDN.CSS;
-      document.head.appendChild(swiperCSS);
-
-      // Load JS
-      try {
-        await loadScript(SWIPER_CDN.JS);
-
-        const Swiper = (window as any).Swiper;
-        if (!Swiper || !section) return;
-
-        swiperInstance = new Swiper(`.${section.swiperClass}`, {
-          ...SWIPER_CONFIG,
-          loop: section.products.length > 4,
-          grabCursor: true,
-          navigation: {
-            nextEl: `.${section.swiperClass}-next`,
-            prevEl: `.${section.swiperClass}-prev`,
-          },
-          pagination: {
-            el: `.${section.swiperClass}-pagination`,
-            clickable: true,
-            dynamicBullets: true,
-          },
-        });
-      } catch (error) {
-        console.error("Failed to load Swiper:", error);
-      }
-    };
-
-    initSwiper();
-
-    return () => {
-      swiperInstance?.destroy?.(true, true);
-      script?.remove();
-      swiperCSS?.remove();
-    };
-  }, [viewMode, section]);
 };
 
 // =======================
@@ -451,46 +148,44 @@ const useSectionData = (
 };
 
 // =======================
-// 🔹 Custom Hook for Pagination
+// 🔹 Loading State
 // =======================
-const usePagination = (totalPages: number) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+const LoadingState = () => (
+  <div className="w-full py-12 md:py-20 text-center text-gray-500">
+    <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+    <p className="mt-4 text-sm md:text-base">Loading products...</p>
+  </div>
+);
 
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      if (isAnimating || newPage < 0 || newPage >= totalPages) return;
+// =======================
+// 🔹 Empty State
+// =======================
+const EmptyState = () => (
+  <div className="w-full py-12 md:py-20 text-center text-gray-500">
+    <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
+    <p className="text-sm md:text-base">No products available.</p>
+  </div>
+);
 
-      setIsAnimating(true);
-      setCurrentPage(newPage);
-      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION);
-    },
-    [isAnimating, totalPages]
-  );
+// =======================
+// 🔹 Section Header Content
+// =======================
+const SectionHeaderContent = ({ section }: { section: Section }) => (
+  <div className="flex-1 text-center md:text-left">
+    <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
+      {section.icon}
+      <span>Special Collection</span>
+    </div>
 
-  const handleNext = useCallback(() => {
-    handlePageChange((currentPage + 1) % totalPages);
-  }, [currentPage, totalPages, handlePageChange]);
+    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
+      {section.title}
+    </h2>
 
-  const handlePrev = useCallback(() => {
-    handlePageChange(currentPage === 0 ? totalPages - 1 : currentPage - 1);
-  }, [currentPage, totalPages, handlePageChange]);
-
-  const handleDotClick = useCallback(
-    (idx: number) => {
-      if (idx !== currentPage) handlePageChange(idx);
-    },
-    [currentPage, handlePageChange]
-  );
-
-  return {
-    currentPage,
-    isAnimating,
-    handleNext,
-    handlePrev,
-    handleDotClick,
-  };
-};
+    <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
+      {section.subtitle}
+    </p>
+  </div>
+);
 
 // =======================
 // 🔹 Main Component
@@ -513,28 +208,14 @@ const ProductView: React.FC<ProductViewProps> = ({
     icon
   );
 
-  const productPages = useMemo(() => {
-    if (!section || viewMode !== "grid") return [];
-    return chunkArray(section.products, itemsPerPage);
-  }, [section, viewMode, itemsPerPage]);
-
-  const totalPages = productPages.length;
-
-  const { currentPage, isAnimating, handleNext, handlePrev, handleDotClick } =
-    usePagination(totalPages);
-
-  const currentProducts = productPages[currentPage] || [];
-
-  useSwiper(section, viewMode);
-
   if (isLoading) return <LoadingState />;
   if (!section || !section.products.length) return <EmptyState />;
 
   return (
-    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 relative overflow-hidden">
+    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white-50/30 relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
+      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-9 rounded-full blur-3xl -z-10" />
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
@@ -542,84 +223,14 @@ const ProductView: React.FC<ProductViewProps> = ({
       </div>
 
       {viewMode === "slider" ? (
-        <>
-          {/* Swiper Products */}
-          <div className="relative px-6 md:px-14">
-            <div className={`${section.swiperClass} overflow-hidden`}>
-              <div className="swiper-wrapper">
-                {section.products.map((p) => (
-                  <div key={p.id} className="swiper-slide">
-                    <ProductCard data={mapProductData(p)} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {showNavigation && (
-            <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
-              <SliderNavigation swiperClass={section.swiperClass} />
-            </div>
-          )}
-        </>
+        <ProductSlider section={section} showNavigation={showNavigation} />
       ) : (
-        <>
-          {/* Product Grid */}
-          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-            <ProductGrid products={currentProducts} isAnimating={isAnimating} />
-          </div>
-
-          {totalPages > 1 && showNavigation && (
-            <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
-              <GridNavigation
-                current={currentPage}
-                total={totalPages}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                onDotClick={handleDotClick}
-                isAnimating={isAnimating}
-              />
-            </div>
-          )}
-        </>
+        <ProductGrid
+          section={section}
+          showNavigation={showNavigation}
+          itemsPerPage={itemsPerPage}
+        />
       )}
-
-      {/* Custom Swiper Styles */}
-      <style>{`
-        .swiper-pagination-bullet {
-          width: 6px;
-          height: 6px;
-          background: #d1d5db;
-          opacity: 1;
-          transition: all 0.3s;
-        }
-        @media (min-width: 768px) {
-          .swiper-pagination-bullet {
-            width: 8px;
-            height: 8px;
-          }
-        }
-        .swiper-pagination-bullet-active {
-          width: 24px;
-          border-radius: 4px;
-          background: linear-gradient(to right, #f97316, #ef4444);
-        }
-        @media (min-width: 768px) {
-          .swiper-pagination-bullet-active {
-            width: 32px;
-          }
-        }
-        .swiper-slide { 
-          height: auto; 
-          display: flex;
-        }
-        .swiper-slide > * {
-          width: 100%;
-        }
-        [class*="product-swiper-"] { 
-          padding: 8px 0; 
-        }
-      `}</style>
     </section>
   );
 };
