@@ -33,21 +33,6 @@ interface Section {
   swiperClass: string;
 }
 
-interface SectionHeaderProps {
-  section: Section;
-  swiperClass: string;
-  isSliderMode: boolean;
-}
-
-interface ListNavigationProps {
-  current: number;
-  total: number;
-  onPrev: () => void;
-  onNext: () => void;
-  onDotClick: (idx: number) => void;
-  isAnimating: boolean;
-}
-
 type ViewMode = "slider" | "list";
 
 interface ProductViewProps {
@@ -75,7 +60,7 @@ const SWIPER_CONFIG = {
     1024: { slidesPerView: 4, spaceBetween: 24 },
     1280: { slidesPerView: 6, spaceBetween: 24 },
   },
-};
+} as const;
 
 const STATUS_CONFIG: Record<
   string,
@@ -92,6 +77,8 @@ const STATUS_CONFIG: Record<
     icon: <Sparkles size={18} />,
   },
 };
+
+const ANIMATION_DURATION = 500;
 
 // =======================
 // 🔹 Utility Functions
@@ -110,6 +97,8 @@ const filterProductsByStatus = (
   status?: string | string[],
   maxProducts?: number
 ) => {
+  if (!products.length) return [];
+
   let filtered = products;
 
   if (status) {
@@ -124,6 +113,8 @@ const chunkProducts = (
   products: Product[],
   itemsPerPage: number
 ): Product[][] => {
+  if (!products.length || itemsPerPage <= 0) return [];
+
   const chunks: Product[][] = [];
   for (let i = 0; i < products.length; i += itemsPerPage) {
     chunks.push(products.slice(i, i + itemsPerPage));
@@ -132,106 +123,202 @@ const chunkProducts = (
 };
 
 // =======================
-// 🔹 Section Header (Memoized)
+// 🔹 Navigation Button (Memoized & Reusable)
 // =======================
-const SectionHeader = memo<SectionHeaderProps>(
-  ({ section, swiperClass, isSliderMode }) => (
-    <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-        <div className="flex-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
-            {section.icon}
-            <span>Special Collection</span>
-          </div>
+const NavButton = memo<{
+  direction: "prev" | "next";
+  onClick?: () => void;
+  disabled?: boolean;
+  className?: string;
+  ariaLabel: string;
+  size?: "default" | "large";
+}>(
+  ({
+    direction,
+    onClick,
+    disabled,
+    className = "",
+    ariaLabel,
+    size = "default",
+  }) => {
+    const iconMap = {
+      prev: { default: ChevronLeft, large: ArrowLeft },
+      next: { default: ChevronRight, large: ArrowRight },
+    };
 
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
-            {section.title}
-          </h2>
+    const Icon = iconMap[direction][size];
+    const sizeClass =
+      size === "large"
+        ? "w-12 h-12 md:w-14 md:h-14 md:rounded-2xl"
+        : "w-10 h-10 md:w-12 md:h-12";
 
-          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
-            {section.subtitle}
-          </p>
-        </div>
-
-        {isSliderMode && (
-          <div className="flex items-center gap-2 md:gap-4">
-            <button
-              className={`${swiperClass}-prev w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
-              aria-label="Previous"
-            >
-              <ChevronLeft
-                size={20}
-                className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
-              />
-            </button>
-
-            <div className={`${swiperClass}-pagination flex gap-2`} />
-
-            <button
-              className={`${swiperClass}-next w-10 h-10 md:w-12 md:h-12 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group`}
-              aria-label="Next"
-            >
-              <ChevronRight
-                size={20}
-                className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
-              />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  )
+    return (
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        className={`${sizeClass} bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        aria-label={ariaLabel}
+      >
+        <Icon
+          size={size === "large" ? 18 : 20}
+          className="md:w-6 md:h-6 group-hover:scale-110 transition-transform"
+        />
+      </button>
+    );
+  }
 );
-SectionHeader.displayName = "SectionHeader";
+NavButton.displayName = "NavButton";
+
+// =======================
+// 🔹 Pagination Dots (Memoized & Reusable)
+// =======================
+const PaginationDots = memo<{
+  total: number;
+  current: number;
+  onDotClick: (idx: number) => void;
+  isAnimating: boolean;
+}>(({ total, current, onDotClick, isAnimating }) => (
+  <div className="flex gap-1.5 md:gap-2">
+    {Array.from({ length: total }, (_, idx) => (
+      <button
+        key={idx}
+        onClick={() => onDotClick(idx)}
+        disabled={isAnimating}
+        aria-label={`Go to page ${idx + 1}`}
+        className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
+          idx === current
+            ? "w-8 md:w-12 bg-gradient-to-r from-orange-500 to-red-500"
+            : "w-1.5 md:w-2 bg-gray-300 hover:bg-gray-400"
+        }`}
+      />
+    ))}
+  </div>
+));
+PaginationDots.displayName = "PaginationDots";
+
+// =======================
+// 🔹 Section Header Content (Memoized & Reusable)
+// =======================
+const SectionHeaderContent = memo<{ section: Section }>(({ section }) => (
+  <div className="flex-1 text-center md:text-left">
+    <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
+      {section.icon}
+      <span>Special Collection</span>
+    </div>
+
+    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
+      {section.title}
+    </h2>
+
+    <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
+      {section.subtitle}
+    </p>
+  </div>
+));
+SectionHeaderContent.displayName = "SectionHeaderContent";
+
+// =======================
+// 🔹 Slider Navigation (Memoized)
+// =======================
+const SliderNavigation = memo<{ swiperClass: string }>(({ swiperClass }) => (
+  <div className="flex items-center gap-2 md:gap-4">
+    <NavButton
+      direction="prev"
+      className={`${swiperClass}-prev`}
+      ariaLabel="Previous"
+    />
+    <div className={`${swiperClass}-pagination flex gap-2`} />
+    <NavButton
+      direction="next"
+      className={`${swiperClass}-next`}
+      ariaLabel="Next"
+    />
+  </div>
+));
+SliderNavigation.displayName = "SliderNavigation";
 
 // =======================
 // 🔹 List Navigation (Memoized)
 // =======================
-const ListNavigation = memo<ListNavigationProps>(
-  ({ current, total, onPrev, onNext, onDotClick, isAnimating }) => (
-    <div className="flex items-center gap-3 md:gap-4">
-      <button
-        onClick={onPrev}
-        disabled={isAnimating || total <= 1}
-        className="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl md:rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
-        aria-label="Previous page"
-      >
-        <ArrowLeft size={18} className="md:w-5 md:h-5" />
-      </button>
+const ListNavigation = memo<{
+  current: number;
+  total: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onDotClick: (idx: number) => void;
+  isAnimating: boolean;
+}>(({ current, total, onPrev, onNext, onDotClick, isAnimating }) => (
+  <div className="flex items-center gap-3 md:gap-4">
+    <NavButton
+      direction="prev"
+      onClick={onPrev}
+      disabled={isAnimating || total <= 1}
+      size="large"
+      ariaLabel="Previous page"
+    />
 
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex gap-1.5 md:gap-2">
-          {Array.from({ length: total }).map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => onDotClick(idx)}
-              disabled={isAnimating}
-              aria-label={`Go to page ${idx + 1}`}
-              className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
-                idx === current
-                  ? "w-8 md:w-12 bg-gradient-to-r from-orange-500 to-red-500"
-                  : "w-1.5 md:w-2 bg-gray-300 hover:bg-gray-400"
-              }`}
-            />
-          ))}
-        </div>
-        <span className="text-xs text-gray-500 font-medium">
-          {current + 1} / {total}
-        </span>
-      </div>
+    <div className="flex flex-col items-center gap-2">
+      <PaginationDots
+        total={total}
+        current={current}
+        onDotClick={onDotClick}
+        isAnimating={isAnimating}
+      />
+      <span className="text-xs text-gray-500 font-medium">
+        {current + 1} / {total}
+      </span>
+    </div>
 
-      <button
-        onClick={onNext}
-        disabled={isAnimating || total <= 1}
-        className="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-gray-200 text-gray-600 hover:text-white hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 hover:border-transparent rounded-xl md:rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
-        aria-label="Next page"
-      >
-        <ArrowRight size={18} className="md:w-5 md:h-5" />
-      </button>
+    <NavButton
+      direction="next"
+      onClick={onNext}
+      disabled={isAnimating || total <= 1}
+      size="large"
+      ariaLabel="Next page"
+    />
+  </div>
+));
+ListNavigation.displayName = "ListNavigation";
+
+// =======================
+// 🔹 Loading State
+// =======================
+const LoadingState = memo(() => (
+  <div className="w-full py-12 md:py-20 text-center text-gray-500">
+    <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+    <p className="mt-4 text-sm md:text-base">Loading products...</p>
+  </div>
+));
+LoadingState.displayName = "LoadingState";
+
+// =======================
+// 🔹 Empty State
+// =======================
+const EmptyState = memo(() => (
+  <div className="w-full py-12 md:py-20 text-center text-gray-500">
+    <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
+    <p className="text-sm md:text-base">No products available.</p>
+  </div>
+));
+EmptyState.displayName = "EmptyState";
+
+// =======================
+// 🔹 Product Grid (Memoized)
+// =======================
+const ProductGrid = memo<{ products: Product[]; isAnimating: boolean }>(
+  ({ products, isAnimating }) => (
+    <div
+      className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
+        isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
+      }`}
+    >
+      {products.map((p) => (
+        <ProductCard key={p.id} data={mapProductData(p)} />
+      ))}
     </div>
   )
 );
-ListNavigation.displayName = "ListNavigation";
+ProductGrid.displayName = "ProductGrid";
 
 // =======================
 // 🔹 Custom Hook for Swiper
@@ -240,44 +327,55 @@ const useSwiper = (section: Section | null, viewMode: ViewMode) => {
   useEffect(() => {
     if (viewMode !== "slider" || !section?.products.length) return;
 
-    const swiperCSS = document.createElement("link");
-    swiperCSS.rel = "stylesheet";
-    swiperCSS.href =
-      "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
-    document.head.appendChild(swiperCSS);
+    let swiperCSS: HTMLLinkElement | null = null;
+    let script: HTMLScriptElement | null = null;
+    let swiperInstance: any = null;
 
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js";
-    script.async = true;
+    const initSwiper = () => {
+      swiperCSS = document.createElement("link");
+      swiperCSS.rel = "stylesheet";
+      swiperCSS.href =
+        "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css";
+      document.head.appendChild(swiperCSS);
 
-    script.onload = () => {
-      const Swiper = (window as any).Swiper;
-      if (!Swiper) return;
+      script = document.createElement("script");
+      script.src =
+        "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js";
+      script.async = true;
 
-      new Swiper(`.${section.swiperClass}`, {
-        ...SWIPER_CONFIG,
-        loop: section.products.length > 4,
-        grabCursor: true,
-        breakpoints: SWIPER_CONFIG.breakpoints,
-        navigation: {
-          nextEl: `.${section.swiperClass}-next`,
-          prevEl: `.${section.swiperClass}-prev`,
-        },
-        pagination: {
-          el: `.${section.swiperClass}-pagination`,
-          clickable: true,
-          dynamicBullets: true,
-        },
-      });
+      script.onload = () => {
+        const Swiper = (window as any).Swiper;
+        if (!Swiper || !section) return;
+
+        swiperInstance = new Swiper(`.${section.swiperClass}`, {
+          ...SWIPER_CONFIG,
+          loop: section.products.length > 4,
+          grabCursor: true,
+          navigation: {
+            nextEl: `.${section.swiperClass}-next`,
+            prevEl: `.${section.swiperClass}-prev`,
+          },
+          pagination: {
+            el: `.${section.swiperClass}-pagination`,
+            clickable: true,
+            dynamicBullets: true,
+          },
+        });
+      };
+
+      document.body.appendChild(script);
     };
 
-    document.body.appendChild(script);
+    initSwiper();
 
     return () => {
-      if (document.body.contains(script)) {
+      if (swiperInstance?.destroy) {
+        swiperInstance.destroy(true, true);
+      }
+      if (script && document.body.contains(script)) {
         document.body.removeChild(script);
       }
-      if (document.head.contains(swiperCSS)) {
+      if (swiperCSS && document.head.contains(swiperCSS)) {
         document.head.removeChild(swiperCSS);
       }
     };
@@ -302,11 +400,17 @@ const ProductView: React.FC<ProductViewProps> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Fetch products
   useEffect(() => {
+    let isMounted = true;
+
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
         const data = await getProducts();
+
+        if (!isMounted) return;
+
         if (!Array.isArray(data)) throw new Error("Invalid product data");
 
         const filteredProducts = filterProductsByStatus(
@@ -336,16 +440,22 @@ const ProductView: React.FC<ProductViewProps> = ({
         setCurrentPage(0);
       } catch (err) {
         console.error("Failed to fetch products:", err);
-        setSection(null);
+        if (isMounted) setSection(null);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
+
     fetchProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, [status, maxProducts, title, subtitle, icon]);
 
   useSwiper(section, viewMode);
 
+  // Memoize product pages
   const productPages = useMemo(() => {
     if (!section || viewMode !== "list") return [];
     return chunkProducts(section.products, itemsPerPage);
@@ -354,61 +464,56 @@ const ProductView: React.FC<ProductViewProps> = ({
   const totalPages = productPages.length;
   const currentProducts = productPages[currentPage] || [];
 
+  // Navigation handlers
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      if (isAnimating || newPage < 0 || newPage >= totalPages) return;
+
+      setIsAnimating(true);
+      setCurrentPage(newPage);
+      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION);
+    },
+    [isAnimating, totalPages]
+  );
+
   const handleNext = useCallback(() => {
-    if (isAnimating || currentPage >= totalPages - 1) return;
-    setIsAnimating(true);
-    setCurrentPage((p) => p + 1);
-    setTimeout(() => setIsAnimating(false), 500);
-  }, [isAnimating, currentPage, totalPages]);
+    handlePageChange(currentPage + 1);
+  }, [currentPage, handlePageChange]);
 
   const handlePrev = useCallback(() => {
-    if (isAnimating || currentPage <= 0) return;
-    setIsAnimating(true);
-    setCurrentPage((p) => p - 1);
-    setTimeout(() => setIsAnimating(false), 500);
-  }, [isAnimating, currentPage]);
+    handlePageChange(currentPage - 1);
+  }, [currentPage, handlePageChange]);
 
   const handleDotClick = useCallback(
     (idx: number) => {
-      if (!isAnimating && idx !== currentPage && idx >= 0 && idx < totalPages) {
-        setIsAnimating(true);
-        setCurrentPage(idx);
-        setTimeout(() => setIsAnimating(false), 500);
+      if (idx !== currentPage) {
+        handlePageChange(idx);
       }
     },
-    [isAnimating, currentPage, totalPages]
+    [currentPage, handlePageChange]
   );
 
-  if (isLoading) {
-    return (
-      <div className="w-full py-12 md:py-20 text-center text-gray-500">
-        <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-        <p className="mt-4 text-sm md:text-base">Loading products...</p>
-      </div>
-    );
-  }
+  // Loading state
+  if (isLoading) return <LoadingState />;
 
-  if (!section || !section.products.length) {
-    return (
-      <div className="w-full py-12 md:py-20 text-center text-gray-500">
-        <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
-        <p className="text-sm md:text-base">No products available.</p>
-      </div>
-    );
-  }
+  // Empty state
+  if (!section || !section.products.length) return <EmptyState />;
 
   return (
     <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
 
-      {viewMode === "slider" && (
-        <div>
-          <SectionHeader
-            section={section}
-            swiperClass={section.swiperClass}
-            isSliderMode={showNavigation}
-          />
+      {viewMode === "slider" ? (
+        <>
+          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
+              <SectionHeaderContent section={section} />
+              {showNavigation && (
+                <SliderNavigation swiperClass={section.swiperClass} />
+              )}
+            </div>
+          </div>
           <div className="relative px-4">
             <div className={`${section.swiperClass} overflow-hidden`}>
               <div className="swiper-wrapper">
@@ -420,27 +525,11 @@ const ProductView: React.FC<ProductViewProps> = ({
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {viewMode === "list" && (
+        </>
+      ) : (
         <>
           <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
-                {section.icon}
-                <span>Special Collection</span>
-              </div>
-
-              <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
-                {section.title}
-              </h2>
-
-              <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto md:mx-0 mt-2">
-                {section.subtitle}
-              </p>
-            </div>
-
+            <SectionHeaderContent section={section} />
             {totalPages > 1 && showNavigation && (
               <ListNavigation
                 current={currentPage}
@@ -454,15 +543,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           </div>
 
           <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-            <div
-              className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-500 ease-in-out ${
-                isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
-              }`}
-            >
-              {currentProducts.map((p) => (
-                <ProductCard key={p.id} data={mapProductData(p)} />
-              ))}
-            </div>
+            <ProductGrid products={currentProducts} isAnimating={isAnimating} />
           </div>
         </>
       )}
