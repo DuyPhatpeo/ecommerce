@@ -31,6 +31,8 @@ const SWIPER_CONFIG = {
   speed: 800,
   autoplayDelay: 3500,
   animationDuration: 600,
+  centeredSlides: false,
+  centeredSlidesBounds: true,
   breakpoints: {
     640: { slidesPerView: 3, spaceBetween: 16 },
     1024: { slidesPerView: 4, spaceBetween: 24 },

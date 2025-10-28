@@ -177,7 +177,11 @@ const SectionHeaderContent = ({ section }: { section: Section }) => (
       <span>Special Collection</span>
     </div>
 
-    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-orange-600 to-gray-900 bg-clip-text text-transparent">
+    <h2
+      className="text-2xl md:text-4xl lg:text-5xl font-extrabold 
+  bg-gradient-to-r from-orange-500 via-orange-600 to-orange-800
+  bg-clip-text text-transparent"
+    >
       {section.title}
     </h2>
 
