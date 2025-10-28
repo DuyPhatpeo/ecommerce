@@ -477,12 +477,14 @@ const ProductView: React.FC<ProductViewProps> = ({
   );
 
   const handleNext = useCallback(() => {
-    handlePageChange(currentPage + 1);
-  }, [currentPage, handlePageChange]);
+    const nextPage = (currentPage + 1) % totalPages;
+    handlePageChange(nextPage);
+  }, [currentPage, totalPages, handlePageChange]);
 
   const handlePrev = useCallback(() => {
-    handlePageChange(currentPage - 1);
-  }, [currentPage, handlePageChange]);
+    const prevPage = currentPage === 0 ? totalPages - 1 : currentPage - 1;
+    handlePageChange(prevPage);
+  }, [currentPage, totalPages, handlePageChange]);
 
   const handleDotClick = useCallback(
     (idx: number) => {
@@ -501,19 +503,20 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   return (
     <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 relative overflow-hidden">
+      {/* Background decorations */}
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/40 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-blue-100/30 rounded-full blur-3xl -z-10" />
 
+      {/* Header Section - Common for both modes */}
+      <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <SectionHeaderContent section={section} />
+        </div>
+      </div>
+
       {viewMode === "slider" ? (
         <>
-          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-              <SectionHeaderContent section={section} />
-              {showNavigation && (
-                <SliderNavigation swiperClass={section.swiperClass} />
-              )}
-            </div>
-          </div>
+          {/* Swiper Products */}
           <div className="relative px-4">
             <div className={`${section.swiperClass} overflow-hidden`}>
               <div className="swiper-wrapper">
@@ -525,12 +528,24 @@ const ProductView: React.FC<ProductViewProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Navigation Controls - Below Products */}
+          {showNavigation && (
+            <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
+              <SliderNavigation swiperClass={section.swiperClass} />
+            </div>
+          )}
         </>
       ) : (
         <>
-          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-            <SectionHeaderContent section={section} />
-            {totalPages > 1 && showNavigation && (
+          {/* Product Grid */}
+          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
+            <ProductGrid products={currentProducts} isAnimating={isAnimating} />
+          </div>
+
+          {/* Navigation Controls - Below Products */}
+          {totalPages > 1 && showNavigation && (
+            <div className="max-w-7xl mx-auto px-4 md:px-16 mt-8 md:mt-12 flex justify-center">
               <ListNavigation
                 current={currentPage}
                 total={totalPages}
@@ -539,15 +554,12 @@ const ProductView: React.FC<ProductViewProps> = ({
                 onDotClick={handleDotClick}
                 isAnimating={isAnimating}
               />
-            )}
-          </div>
-
-          <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-            <ProductGrid products={currentProducts} isAnimating={isAnimating} />
-          </div>
+            </div>
+          )}
         </>
       )}
 
+      {/* Custom Swiper Styles */}
       <style>{`
         .swiper-pagination-bullet {
           width: 6px;
