@@ -18,16 +18,9 @@ const MainHome = () => {
       },
       ProductView_2: {
         order: 3,
-        props: { viewMode: false, status: "coming" },
+        props: { viewMode: false, status: "latest" },
       },
-      ProductView_3: {
-        order: 4,
-        props: { viewMode: "1", status: "coming" },
-      },
-      ProductView_4: {
-        order: 5,
-        props: { viewMode: "0", status: "latest" },
-      },
+
       Promo: { order: 6 },
       HotDeal: { order: 7 },
       BrandStrip: { order: 8 },
