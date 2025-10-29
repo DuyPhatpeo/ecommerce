@@ -72,10 +72,10 @@ const CategoryProducts: React.FC = () => {
   const brandOptions = [
     ...new Set(products.map((p) => p.brand).filter(Boolean)),
   ];
-  const colorOptions = [
-    ...new Set(products.map((p) => p.color).filter(Boolean)),
-  ];
-  const sizeOptions = [...new Set(products.map((p) => p.size).filter(Boolean))];
+  // const colorOptions = [
+  //   ...new Set(products.map((p) => p.color).filter(Boolean)),
+  // ];
+  // const sizeOptions = [...new Set(products.map((p) => p.size).filter(Boolean))];
 
   // --- Cập nhật URL mỗi khi filter thay đổi ---
   useEffect(() => {
