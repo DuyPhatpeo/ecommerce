@@ -244,18 +244,20 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       </NavLink>
 
       <div className="p-3 sm:p-4 flex flex-col flex-1">
-        <NavLink to={`/product/${id}`}>
-          <h3
-            title={title}
-            className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
-              group-hover:text-orange-600 mb-2 leading-snug 
-              line-clamp-2 overflow-hidden break-normal whitespace-normal min-h-[3.2rem]"
-          >
-            {title}
-          </h3>
-        </NavLink>
+        <div className="relative group w-full">
+          <NavLink to={`/product/${id}`}>
+            <h3
+              title={title}
+              className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
+        mb-2 leading-snug break-words whitespace-normal 
+        line-clamp-2 overflow-hidden transition-all duration-300"
+            >
+              {title}
+            </h3>
+          </NavLink>
+        </div>
 
-        <div className="flex flex-wrap sm:flex-nowrap items-baseline gap-2 mb-2 text-center sm:text-left">
+        <div className="flex flex-wrap md:flex-nowrap items-baseline gap-2 mb-2 text-center md:text-left">
           <span className="font-bold text-base sm:text-lg text-orange-600 whitespace-nowrap">
             {formatVND(price)}
           </span>
