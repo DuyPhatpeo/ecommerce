@@ -7,7 +7,7 @@ import ProductTabs from "./ProductTabs";
 import { getProductById } from "../../api/productApi";
 
 interface Review {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   comment: string;
@@ -15,7 +15,7 @@ interface Review {
 }
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   images: string[];
   category: string;

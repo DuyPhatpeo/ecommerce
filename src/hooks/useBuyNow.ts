@@ -18,7 +18,7 @@ export const useBuyNow = () => {
       price,
       stock,
     }: {
-      id: number;
+      id: string;
       quantity: number;
       salePrice?: number; // 👈 thêm trường này để linh hoạt
       price?: number;

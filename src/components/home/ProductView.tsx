@@ -5,7 +5,7 @@ import ProductSlider from "./ProductSlider";
 import ProductGrid from "./ProductGrid";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   price?: number;
   salePrice?: number | null;

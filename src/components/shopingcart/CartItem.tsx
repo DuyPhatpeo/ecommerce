@@ -5,7 +5,7 @@ import Checkbox from "../ui/Checkbox";
 import Button from "../ui/Button";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   regularPrice?: number; // Original price
   salePrice?: number; // Discounted price
@@ -16,7 +16,7 @@ interface Product {
 }
 
 interface CartItemData {
-  id: number;
+  id: string;
   product: Product;
   quantity: number;
 }

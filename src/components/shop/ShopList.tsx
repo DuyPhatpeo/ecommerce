@@ -4,7 +4,7 @@ import ProductCard from "../section/ProductCard";
 import Button from "../ui/Button";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   salePrice: number;
   regularPrice?: number;

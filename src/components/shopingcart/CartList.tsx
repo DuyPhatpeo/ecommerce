@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import Checkbox from "../ui/Checkbox";
 
 interface ProductType {
-  id: number;
+  id: string;
   title: string;
   image: string;
   price?: number; // regular price
@@ -14,8 +14,8 @@ interface ProductType {
 }
 
 interface CartItemType {
-  id: number; // cart item id
-  productId: number; // product id
+  id: string; // cart item id
+  productid: string; // product id
   quantity: number;
   product: ProductType; // full product info
 }

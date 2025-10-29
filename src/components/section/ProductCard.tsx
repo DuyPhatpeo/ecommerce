@@ -7,7 +7,7 @@ import { useAddToCart } from "../../hooks/useAddToCart";
 import { useWishlist } from "../../hooks/useWishlist";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   img: string;
   images?: string[];

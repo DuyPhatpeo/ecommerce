@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   salePrice: number;
   regularPrice?: number;

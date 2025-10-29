@@ -20,7 +20,7 @@ export type SortOption =
   | "discount-high";
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   salePrice: number;
   regularPrice?: number;

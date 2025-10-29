@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 
 interface WishlistItem {
-  id: number;
+  id: string;
   title: string;
   img: string;
   price: number;

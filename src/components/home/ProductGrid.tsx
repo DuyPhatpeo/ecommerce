@@ -3,7 +3,7 @@ import ProductCard from "../section/ProductCard";
 import type { Section } from "./ProductView";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   price?: number;
   salePrice?: number | null;

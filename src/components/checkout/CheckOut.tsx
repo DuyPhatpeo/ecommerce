@@ -9,7 +9,7 @@ import CheckoutSummary from "./CheckoutSummary";
 import toast from "react-hot-toast";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   price?: number;
   salePrice?: number;
@@ -21,7 +21,7 @@ interface CheckoutData {
   tax?: number;
   shipping?: number;
   total?: number;
-  selectedItems?: { id: number; quantity: number }[];
+  selectedItems?: { id: string; quantity: number }[];
   productId?: number;
   quantity?: number;
 }

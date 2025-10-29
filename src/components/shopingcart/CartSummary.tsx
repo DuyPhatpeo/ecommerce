@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 
 interface ProductType {
-  id: number;
+  id: string;
   title: string;
   regularPrice?: number; // Giá gốc
   salePrice?: number; // Giá giảm (nếu có)
@@ -20,8 +20,8 @@ interface ProductType {
 }
 
 interface CartItemType {
-  id: number;
-  productId: number;
+  id: string;
+  productid: string;
   quantity: number;
   product: ProductType;
 }

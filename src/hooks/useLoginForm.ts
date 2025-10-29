@@ -15,7 +15,7 @@ interface FormErrors {
 
 // 👇 Mở rộng kiểu User để đảm bảo fullName không gây lỗi
 interface User {
-  id: number;
+  id: string;
   email: string;
   password: string;
   fullName?: string;

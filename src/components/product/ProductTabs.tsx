@@ -5,7 +5,7 @@ import ProductSpecification from "./ProductSpecification";
 import ProductReviews from "./ProductReviews";
 
 interface Review {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   comment: string;

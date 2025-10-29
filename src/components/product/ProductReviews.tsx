@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MessageSquare, Star } from "lucide-react";
 
 interface Review {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   comment: string;

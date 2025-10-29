@@ -15,7 +15,7 @@ import { useWishlist } from "../../hooks/useWishlist";
 
 /* ------------------- Types ------------------- */
 interface ProductInfoProps {
-  id: number;
+  id: string;
   title: string;
   salePrice?: number;
   regularPrice?: number;
@@ -28,7 +28,7 @@ interface ProductInfoProps {
 }
 
 interface BuyNowPayload {
-  id: number;
+  id: string;
   quantity: number;
   price: number;
   stock: number;

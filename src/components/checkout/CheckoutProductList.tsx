@@ -2,7 +2,7 @@ import React from "react";
 import { ShoppingBag } from "lucide-react";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   images?: string[];
   quantity: number;

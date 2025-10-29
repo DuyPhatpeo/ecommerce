@@ -8,7 +8,7 @@ import { useShopFilter } from "../../hooks/useFilter";
 import { useSort } from "../../hooks/useSort";
 
 interface Product {
-  id: number;
+  id: string;
   title: string;
   salePrice: number;
   regularPrice?: number;
