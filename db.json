@@ -23,13 +23,14 @@
       "quantity": 1
     }
   ],
+
   "products": [
     {
       "id": "111",
       "status": "latest",
       "category": "running",
       "brand": "Nike",
-      "title": "NIKE AIR MAX 270 REACT (Red/White)",
+      "title": "NIKE AIR MAX 270 REACT",
       "salePrice": null,
       "regularPrice": 5250000,
       "stock": 20,
@@ -42,10 +43,11 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
+      "colors": ["Red / White", "Blue / Black", "Black"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Air Max 270 React",
         "material": "Mesh, synthetic fabric, rubber sole",
-        "color": "Red / White",
         "weight": "0.9 kg",
         "origin": "Vietnam"
       },
@@ -56,7 +58,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Adidas",
-      "title": "ADIDAS ULTRABOOST 21 (White/Black)",
+      "title": "ADIDAS ULTRABOOST 21",
       "salePrice": 4500000,
       "regularPrice": 6250000,
       "stock": 12,
@@ -69,10 +71,11 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
+      "colors": ["White / Black"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Ultraboost 21",
         "material": "Primeknit textile upper, rubber sole",
-        "color": "White / Black",
         "weight": "0.95 kg",
         "origin": "Indonesia"
       },
@@ -83,7 +86,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Vans",
-      "title": "VANS OLD SKOOL CLASSIC (Black/White)",
+      "title": "VANS OLD SKOOL CLASSIC",
       "salePrice": 3000000,
       "regularPrice": 4000000,
       "stock": 15,
@@ -94,10 +97,11 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
+      "colors": ["Black / White", "Navy", "Red", "White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Old Skool Classic",
         "material": "Canvas upper, rubber sole",
-        "color": "Black / White",
         "weight": "0.85 kg",
         "origin": "China"
       },
@@ -108,7 +112,7 @@
       "status": "sold-out",
       "category": "casual",
       "brand": "New Balance",
-      "title": "NEW BALANCE 574 CORE (Gray)",
+      "title": "NEW BALANCE 574 CORE",
       "salePrice": 4250000,
       "regularPrice": 5750000,
       "stock": 0,
@@ -119,10 +123,11 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
+      "colors": ["Gray", "Navy", "Burgundy"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "574 Core",
         "material": "Suede and mesh upper, EVA foam sole",
-        "color": "Gray",
         "weight": "0.92 kg",
         "origin": "USA"
       },
@@ -133,7 +138,7 @@
       "status": "latest",
       "category": "sport",
       "brand": "Puma",
-      "title": "PUMA RS-X REINVENTION (Blue/White)",
+      "title": "PUMA RS-X REINVENTION",
       "salePrice": 4750000,
       "regularPrice": 6000000,
       "stock": 10,
@@ -145,10 +150,11 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
+      "colors": ["Blue / White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "RS-X Reinvention",
         "material": "Mesh, suede, and rubber sole",
-        "color": "Blue / White",
         "weight": "0.88 kg",
         "origin": "Vietnam"
       },
@@ -159,7 +165,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Reebok",
-      "title": "REEBOK CLASSIC LEATHER (White)",
+      "title": "REEBOK CLASSIC LEATHER",
       "salePrice": 4375000,
       "regularPrice": 5500000,
       "stock": 9,
@@ -170,10 +176,11 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
+      "colors": ["White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Classic Leather",
         "material": "Leather upper, rubber sole",
-        "color": "White",
         "weight": "0.9 kg",
         "origin": "Thailand"
       },
@@ -184,7 +191,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Converse",
-      "title": "CONVERSE CHUCK 70 HIGH (Beige/Black)",
+      "title": "CONVERSE CHUCK 70 HIGH",
       "salePrice": 4000000,
       "regularPrice": 5000000,
       "stock": 11,
@@ -195,10 +202,11 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["Beige / Black"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Chuck 70 High",
         "material": "Canvas upper, rubber sole",
-        "color": "Beige / Black",
         "weight": "0.8 kg",
         "origin": "Vietnam"
       },
@@ -209,7 +217,7 @@
       "status": "sold-out",
       "category": "running",
       "brand": "Under Armour",
-      "title": "UNDER ARMOUR HOVR PHANTOM (Gray/Orange)",
+      "title": "UNDER ARMOUR HOVR PHANTOM",
       "salePrice": 5250000,
       "regularPrice": 6500000,
       "stock": 0,
@@ -220,10 +228,11 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
       ],
+      "colors": ["Gray / Orange"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "HOVR Phantom",
         "material": "Knit textile upper, rubber sole",
-        "color": "Gray / Orange",
         "weight": "0.93 kg",
         "origin": "China"
       },
@@ -234,7 +243,7 @@
       "status": "coming",
       "category": "running",
       "brand": "Nike",
-      "title": "NIKE ZOOMX INVINCIBLE (Black/White)",
+      "title": "NIKE ZOOMX INVINCIBLE",
       "salePrice": 4875000,
       "regularPrice": 6250000,
       "stock": 5,
@@ -245,10 +254,11 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
+      "colors": ["Black / White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "ZoomX Invincible",
         "material": "Flyknit upper, foam sole",
-        "color": "Black / White",
         "weight": "0.89 kg",
         "origin": "Vietnam"
       },
@@ -259,7 +269,7 @@
       "status": "coming",
       "category": "training",
       "brand": "Reebok",
-      "title": "REEBOK NANO X1 (White/Red)",
+      "title": "REEBOK NANO X1",
       "salePrice": 4500000,
       "regularPrice": 5750000,
       "stock": 10,
@@ -271,10 +281,11 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=70",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=70"
       ],
+      "colors": ["White / Red"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Nano X1",
         "material": "Flexweave knit upper, rubber outsole",
-        "color": "White / Red",
         "weight": "0.9 kg",
         "origin": "Thailand"
       },
@@ -285,7 +296,7 @@
       "status": "coming",
       "category": "running",
       "brand": "Asics",
-      "title": "ASICS GEL-NIMBUS 25 (Blue/Lime)",
+      "title": "ASICS GEL-NIMBUS 25",
       "salePrice": 4875000,
       "regularPrice": 6250000,
       "stock": 15,
@@ -299,10 +310,11 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
       ],
+      "colors": ["Blue / Lime"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "GEL-NIMBUS 25",
         "material": "Engineered knit upper, PureGEL™ technology",
-        "color": "Blue / Lime",
         "weight": "0.82 kg",
         "origin": "Vietnam"
       },
@@ -313,7 +325,7 @@
       "status": "limited",
       "category": "casual",
       "brand": "Jordan",
-      "title": "JORDAN AIR JORDAN 1 RETRO HIGH OG (Red/Black/White)",
+      "title": "JORDAN AIR JORDAN 1 RETRO HIGH OG",
       "salePrice": 5500000,
       "regularPrice": 7500000,
       "stock": 5,
@@ -328,10 +340,11 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=90",
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=90"
       ],
+      "colors": ["Red / Black / White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Air Jordan 1 Retro High OG",
         "material": "Premium leather upper, rubber sole",
-        "color": "Red / Black / White",
         "weight": "1.1 kg",
         "origin": "China"
       },
@@ -342,7 +355,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Dr. Martens",
-      "title": "DR. MARTENS 1460 SMOOTH LEATHER BOOT (Black)",
+      "title": "DR. MARTENS 1460 SMOOTH LEATHER BOOT",
       "salePrice": 4000000,
       "regularPrice": 5000000,
       "stock": 22,
@@ -355,10 +368,11 @@
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=50",
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=90"
       ],
+      "colors": ["Black", "Cherry Red", "White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "1460 Smooth Leather Boot",
         "material": "Smooth leather, AirWair™ sole",
-        "color": "Black",
         "weight": "1.5 kg",
         "origin": "Thailand"
       },
@@ -369,7 +383,7 @@
       "status": "coming",
       "category": "sport",
       "brand": "Converse",
-      "title": "CONVERSE ALL STAR BB SHIFT (Purple/Neon)",
+      "title": "CONVERSE ALL STAR BB SHIFT",
       "salePrice": 3375000,
       "regularPrice": 4500000,
       "stock": 9,
@@ -382,10 +396,11 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
+      "colors": ["Purple / Neon"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "All Star BB Shift",
         "material": "Textile upper, Nike React cushioning",
-        "color": "Purple / Neon",
         "weight": "0.9 kg",
         "origin": "Vietnam"
       },
@@ -396,7 +411,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Saucony",
-      "title": "SAUCONY KINVARA 14 (Green/White)",
+      "title": "SAUCONY KINVARA 14",
       "salePrice": 3500000,
       "regularPrice": 4750000,
       "stock": 18,
@@ -409,10 +424,11 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["Green / White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Kinvara 14",
         "material": "Mesh upper, PWRRUN cushioning",
-        "color": "Green / White",
         "weight": "0.78 kg",
         "origin": "Indonesia"
       },
@@ -423,7 +439,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Asics",
-      "title": "ASICS GEL-LYTE III OG (White/Orange)",
+      "title": "ASICS GEL-LYTE III OG",
       "salePrice": 3750000,
       "regularPrice": 4750000,
       "stock": 14,
@@ -435,10 +451,11 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["White / Orange"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "GEL-Lyte III OG",
         "material": "Suede and mesh upper, GEL™ technology",
-        "color": "White / Orange",
         "weight": "0.85 kg",
         "origin": "China"
       },
@@ -449,7 +466,7 @@
       "status": "latest",
       "category": "training",
       "brand": "Under Armour",
-      "title": "UNDER ARMOUR UA PROJECT ROCK 5 (Black/Yellow)",
+      "title": "UNDER ARMOUR UA PROJECT ROCK 5",
       "salePrice": 4250000,
       "regularPrice": 5500000,
       "stock": 11,
@@ -460,10 +477,11 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["Black / Yellow"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Project Rock 5",
         "material": "Mesh upper, UA HOVR™ cushioning",
-        "color": "Black / Yellow",
         "weight": "1.0 kg",
         "origin": "Vietnam"
       },
@@ -474,7 +492,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Puma",
-      "title": "PUMA SUEDE CLASSIC XXI (Burgundy)",
+      "title": "PUMA SUEDE CLASSIC XXI",
       "salePrice": 2750000,
       "regularPrice": 3750000,
       "stock": 25,
@@ -485,10 +503,11 @@
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80"
       ],
+      "colors": ["Burgundy"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Suede Classic XXI",
         "material": "Suede upper, rubber sole",
-        "color": "Burgundy",
         "weight": "0.9 kg",
         "origin": "Indonesia"
       },
@@ -499,7 +518,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Adidas",
-      "title": "ADIDAS ADIZERO ADIOS PRO 3 (Solar Red)",
+      "title": "ADIDAS ADIZERO ADIOS PRO 3",
       "salePrice": 6250000,
       "regularPrice": 8000000,
       "stock": 7,
@@ -512,10 +531,11 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
+      "colors": ["Solar Red"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Adizero Adios Pro 3",
         "material": "Textile upper, Lightstrike Pro cushioning, Carbon rods",
-        "color": "Solar Red",
         "weight": "0.7 kg",
         "origin": "China"
       },
@@ -526,7 +546,7 @@
       "status": "coming",
       "category": "casual",
       "brand": "New Balance",
-      "title": "NEW BALANCE 990V6 (Navy/Gray)",
+      "title": "NEW BALANCE 990V6",
       "salePrice": 5250000,
       "regularPrice": 6500000,
       "stock": 13,
@@ -537,10 +557,11 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
+      "colors": ["Navy / Gray"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "990v6",
         "material": "Suede and mesh upper, FuelCell cushioning",
-        "color": "Navy / Gray",
         "weight": "1.0 kg",
         "origin": "USA"
       },
@@ -551,7 +572,7 @@
       "status": "latest",
       "category": "sport",
       "brand": "Nike",
-      "title": "NIKE LEBRON XX (Violet/Gold)",
+      "title": "NIKE LEBRON XX",
       "salePrice": 5000000,
       "regularPrice": 6250000,
       "stock": 8,
@@ -563,10 +584,11 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
       ],
+      "colors": ["Violet / Gold"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "LeBron XX",
         "material": "Knit upper, Zoom Air cushioning",
-        "color": "Violet / Gold",
         "weight": "0.98 kg",
         "origin": "Vietnam"
       },
@@ -577,7 +599,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Adidas",
-      "title": "ADIDAS SAMBA OG (Black/White)",
+      "title": "ADIDAS SAMBA OG",
       "salePrice": 2500000,
       "regularPrice": 3500000,
       "stock": 30,
@@ -589,10 +611,11 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
+      "colors": ["Black / White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Samba OG",
         "material": "Leather and suede upper, rubber gumsole",
-        "color": "Black / White",
         "weight": "0.8 kg",
         "origin": "Indonesia"
       },
@@ -603,7 +626,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Hoka",
-      "title": "HOKA CLIFTON 9 (Gray/Pink)",
+      "title": "HOKA CLIFTON 9",
       "salePrice": 4250000,
       "regularPrice": 5250000,
       "stock": 16,
@@ -616,10 +639,11 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["Gray / Pink"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Clifton 9",
         "material": "Engineered knit upper, EVA foam midsole",
-        "color": "Gray / Pink",
         "weight": "0.75 kg",
         "origin": "Vietnam"
       },
@@ -630,7 +654,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Vans",
-      "title": "VANS SLIP-ON CHECKERBOARD (Black/White)",
+      "title": "VANS SLIP-ON CHECKERBOARD",
       "salePrice": 2250000,
       "regularPrice": 3000000,
       "stock": 40,
@@ -641,10 +665,11 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
+      "colors": ["Black / White Checker"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Slip-On Checkerboard",
         "material": "Canvas upper, rubber waffle outsole",
-        "color": "Black / White Checker",
         "weight": "0.7 kg",
         "origin": "China"
       },
@@ -655,7 +680,7 @@
       "status": "latest",
       "category": "training",
       "brand": "Reebok",
-      "title": "REEBOK LEGACY LIFTER II (White/Blue)",
+      "title": "REEBOK LEGACY LIFTER II",
       "salePrice": 4125000,
       "regularPrice": 5250000,
       "stock": 10,
@@ -666,10 +691,11 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["White / Blue"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Legacy Lifter II",
         "material": "Textile and synthetic upper, rubber outsole",
-        "color": "White / Blue",
         "weight": "1.2 kg",
         "origin": "Thailand"
       },
@@ -680,7 +706,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Puma",
-      "title": "PUMA VELOCITY NITRO 2 (Pink/Black)",
+      "title": "PUMA VELOCITY NITRO 2",
       "salePrice": 3500000,
       "regularPrice": 4500000,
       "stock": 17,
@@ -691,10 +717,11 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
       ],
+      "colors": ["Pink / Black"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Velocity Nitro 2",
         "material": "Engineered mesh, NITRO foam midsole",
-        "color": "Pink / Black",
         "weight": "0.8 kg",
         "origin": "Vietnam"
       },
@@ -705,7 +732,7 @@
       "status": "limited",
       "category": "casual",
       "brand": "Jordan",
-      "title": "JORDAN AIR JORDAN 4 RETRO 'SE' (Yellow/Black)",
+      "title": "JORDAN AIR JORDAN 4 RETRO 'SE'",
       "salePrice": 7000000,
       "regularPrice": 8750000,
       "stock": 3,
@@ -718,10 +745,11 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90"
       ],
+      "colors": ["Yellow / Black"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Air Jordan 4 Retro SE",
         "material": "Leather and synthetic upper, Air-Sole unit",
-        "color": "Yellow / Black",
         "weight": "1.2 kg",
         "origin": "China"
       },
@@ -732,7 +760,7 @@
       "status": "latest",
       "category": "casual",
       "brand": "Converse",
-      "title": "CONVERSE CHUCK TAYLOR ALL STAR LIFT (White)",
+      "title": "CONVERSE CHUCK TAYLOR ALL STAR LIFT",
       "salePrice": 3250000,
       "regularPrice": 4250000,
       "stock": 19,
@@ -743,10 +771,11 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "httpsS://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["White"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Chuck Taylor All Star Lift",
         "material": "Canvas upper, rubber platform sole",
-        "color": "White",
         "weight": "0.9 kg",
         "origin": "Vietnam"
       },
@@ -757,7 +786,7 @@
       "status": "latest",
       "category": "running",
       "brand": "Brooks",
-      "title": "BROOKS GHOST 15 (Black/Blue)",
+      "title": "BROOKS GHOST 15",
       "salePrice": 4000000,
       "regularPrice": 5000000,
       "stock": 20,
@@ -769,10 +798,11 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
+      "colors": ["Black / Blue"],
+      "sizes": ["39", "40", "41", "42", "43", "44"],
       "specs": {
         "model": "Ghost 15",
         "material": "Engineered mesh, DNA LOFT cushioning",
-        "color": "Black / Blue",
         "weight": "0.85 kg",
         "origin": "Vietnam"
       },
