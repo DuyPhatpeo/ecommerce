@@ -20,7 +20,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
   const [thumbIndex, setThumbIndex] = useState(0);
   const maxThumbIndex = Math.max(0, images.length - visibleThumbs);
 
-  const safeImages = images.length ? images : ["no-image.png"];
+  const safeImages = images.length ? images : ["placeholder.jpg"];
 
   /** Responsive thumbnails */
   useEffect(() => {
@@ -156,9 +156,9 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             }`}
           >
             <img
-              src={safeImages[selectedImage] || "no-image.png"}
+              src={safeImages[selectedImage] || "placeholder.jpg"}
               alt={title}
-              onError={(e) => (e.currentTarget.src = "no-image.png")}
+              onError={(e) => (e.currentTarget.src = "placeholder.jpg")}
               loading="lazy"
               className="w-full h-full object-cover object-center select-none"
             />
@@ -233,9 +233,11 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   >
                     <div className="aspect-[3/4] w-16 sm:w-20 bg-gray-100">
                       <img
-                        src={img || "no-image.png"}
+                        src={img || "placeholder.jpg"}
                         alt={`${title} ${actualIndex + 1}`}
-                        onError={(e) => (e.currentTarget.src = "no-image.png")}
+                        onError={(e) =>
+                          (e.currentTarget.src = "placeholder.jpg")
+                        }
                         loading="lazy"
                         className="w-full h-full object-cover"
                       />
@@ -282,8 +284,8 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             className="relative max-w-[90vw] sm:max-w-5xl max-h-[85vh]"
           >
             <img
-              src={safeImages[selectedImage] || "no-image.png"}
-              onError={(e) => (e.currentTarget.src = "no-image.png")}
+              src={safeImages[selectedImage] || "placeholder.jpg"}
+              onError={(e) => (e.currentTarget.src = "placeholder.jpg")}
               alt={title}
               style={{
                 transform: `scale(${zoom}) translate(${position.x / zoom}px, ${

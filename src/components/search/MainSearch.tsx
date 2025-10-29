@@ -89,7 +89,9 @@ const MainSearch: React.FC = () => {
       salePrice: p.salePrice ?? p.price,
       regularPrice: p.regularPrice ?? p.oldPrice,
       stock: p.stock,
-      images: Array.isArray(p.images) ? p.images : [p.image || "/no-image.png"],
+      images: Array.isArray(p.images)
+        ? p.images
+        : [p.image || "/placeholder.jpg"],
       category: p.category,
       brand: p.brand,
     }));
@@ -163,7 +165,7 @@ const MainSearch: React.FC = () => {
                       key={p.id}
                       data={{
                         id: p.id,
-                        img: p.images?.[0] || "/no-image.png",
+                        img: p.images?.[0] || "/placeholder.jpg",
                         title: p.title,
                         salePrice: p.salePrice,
                         regularPrice: p.regularPrice,

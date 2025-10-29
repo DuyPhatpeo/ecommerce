@@ -57,7 +57,7 @@ const ShopList: React.FC<ShopListProps> = ({
                 key={p.id}
                 data={{
                   id: p.id,
-                  img: p.images?.[0] || "/no-image.png",
+                  img: p.images?.[0] || "/placeholder.jpg",
                   title: p.title,
                   salePrice: p.salePrice ?? (p as any).price,
                   regularPrice: p.regularPrice ?? (p as any).oldPrice,

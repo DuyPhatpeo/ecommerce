@@ -19,7 +19,7 @@ interface ProductGridProps {
 
 const mapProductData = (product: Product) => ({
   id: product.id,
-  img: product.images?.[0] || "no-image.png",
+  img: product.images?.[0] || "placeholder.jpg",
   title: product.title,
   salePrice: product.salePrice ?? product.price,
   regularPrice: product.regularPrice ?? product.oldPrice,
