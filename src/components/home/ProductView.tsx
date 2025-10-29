@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ProductCard from "../section/ProductCard";
+import Button from "../ui/Button"; // ✅ import Button component
 
 interface Product {
   id: string;
@@ -40,7 +41,10 @@ const ProductView: React.FC<ProductViewProps> = ({
   // 🔹 Responsive số lượng card
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
-    return w < 640 ? 2 : w < 1024 ? 3 : 6; // 👈 Desktop 6
+    if (w < 640) return 2; // mobile
+    if (w < 1024) return 3; // tablet
+    if (w < 1280) return 4; // màn hình nhỏ
+    return 6; // desktop lớn
   }, []);
 
   useEffect(() => {
@@ -93,7 +97,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     ] as HTMLElement;
     if (target)
       sliderRef.current.scrollTo({
-        left: target.offsetLeft - 16, // 👈 trừ nhẹ để không bị sát
+        left: target.offsetLeft - 16,
         behavior: "smooth",
       });
   };
@@ -101,7 +105,7 @@ const ProductView: React.FC<ProductViewProps> = ({
   const canLeft = currentIndex > 0;
   const canRight = currentIndex < maxIndex;
 
-  // 🔹 Giao diện
+  // 🔹 Loading / Empty
   if (isLoading)
     return (
       <div className="py-16 text-center text-gray-500">
@@ -118,6 +122,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       </div>
     );
 
+  // 🔹 JSX chính
   return (
     <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40 relative overflow-hidden">
       {/* 🔸 Hiệu ứng nền */}
@@ -136,7 +141,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       <div
         className={`mt-10 ${
           mode === "slider"
-            ? "px-6 sm:px-8 md:px-10"
+            ? "px-6 sm:px-8 md:px-10" // 👈 có padding 2 bên
             : "max-w-7xl mx-auto px-4 md:px-16"
         }`}
       >
@@ -159,7 +164,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                   key={p.id}
                   className={
                     mode === "slider"
-                      ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-18px)]"
+                      ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-14px)] lg:w-[calc(25%-14px)] xl:w-[calc(16.666%-16px)]"
                       : ""
                   }
                 >
@@ -178,23 +183,19 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* 🔸 Nút điều hướng */}
+          {/* 🔸 Nút điều hướng (dùng Button component) */}
           {mode === "slider" && products.length > visibleCount && (
             <div className="flex justify-center gap-4 mt-8">
-              <button
+              <Button
+                icon={<ArrowLeft size={22} />}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
                 className={`p-3 rounded-full bg-white shadow-lg transition-all ${
                   canLeft
-                    ? "hover:bg-orange-50 hover:scale-110"
-                    : "opacity-40 cursor-not-allowed"
+                    ? "hover:bg-orange-50 hover:scale-110 text-orange-600"
+                    : "opacity-40 cursor-not-allowed text-gray-400"
                 }`}
-              >
-                <ArrowLeft
-                  size={22}
-                  className={canLeft ? "text-orange-600" : "text-gray-400"}
-                />
-              </button>
+              />
 
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
                 <span className="text-sm text-orange-600 font-medium">
@@ -206,20 +207,16 @@ const ProductView: React.FC<ProductViewProps> = ({
                 </span>
               </div>
 
-              <button
+              <Button
+                icon={<ArrowRight size={22} />}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
                 className={`p-3 rounded-full bg-white shadow-lg transition-all ${
                   canRight
-                    ? "hover:bg-orange-50 hover:scale-110"
-                    : "opacity-40 cursor-not-allowed"
+                    ? "hover:bg-orange-50 hover:scale-110 text-orange-600"
+                    : "opacity-40 cursor-not-allowed text-gray-400"
                 }`}
-              >
-                <ArrowRight
-                  size={22}
-                  className={canRight ? "text-orange-600" : "text-gray-400"}
-                />
-              </button>
+              />
             </div>
           )}
         </div>
