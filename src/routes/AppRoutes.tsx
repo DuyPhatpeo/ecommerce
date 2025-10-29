@@ -42,7 +42,7 @@ const AppRoutes = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/shop/:category" element={<CategoryPage />} />
+        <Route path="/shop/category/:category" element={<CategoryPage />} />
 
         {/* 404 */}
         <Route

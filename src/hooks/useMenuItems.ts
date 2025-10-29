@@ -1,9 +1,10 @@
-// hooks/useMenuItems.ts
+import { useEffect, useState } from "react";
+import { getCategories } from "../api/categoryApi";
+
 export const useMenuItems = () => {
-  const menuItems = [
+  const [menuItems, setMenuItems] = useState([
     { label: "HOME", path: "/" },
     { label: "SHOP", path: "/shop" },
-    { label: "BLOG", path: "/blog" },
     {
       label: "PAGES",
       subMenu: [
@@ -15,7 +16,37 @@ export const useMenuItems = () => {
       ],
     },
     { label: "CONTACT", path: "/contact" },
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await getCategories();
+        if (!Array.isArray(categories) || categories.length === 0) return;
+
+        const categoryMenu = {
+          label: "CATEGORY",
+          subMenu: categories,
+        };
+
+        setMenuItems((prev) => {
+          // ❗ Kiểm tra xem đã có CATEGORY chưa
+          if (prev.some((item) => item.label === "CATEGORY")) {
+            return prev; // Không thêm nữa
+          }
+
+          const newMenu = [...prev];
+          const shopIndex = newMenu.findIndex((m) => m.label === "SHOP");
+          newMenu.splice(shopIndex + 1, 0, categoryMenu);
+          return newMenu;
+        });
+      } catch (error) {
+        console.error("❌ Lỗi khi fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   return { menuItems };
 };
