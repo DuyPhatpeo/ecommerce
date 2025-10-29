@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ProductCard from "../section/ProductCard";
@@ -40,13 +34,13 @@ const ProductView: React.FC<ProductViewProps> = ({
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(4);
+  const [visibleCount, setVisibleCount] = useState(6);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // 🔹 Responsive card count
+  // 🔹 Responsive số lượng card
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
-    return w < 640 ? 2 : w < 1024 ? 3 : 4;
+    return w < 640 ? 2 : w < 1024 ? 3 : 6; // 👈 Desktop 6
   }, []);
 
   useEffect(() => {
@@ -56,7 +50,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     return () => window.removeEventListener("resize", onResize);
   }, [computeVisible]);
 
-  // 🔹 Fetch + filter
+  // 🔹 Lấy dữ liệu sản phẩm
   useEffect(() => {
     (async () => {
       try {
@@ -84,7 +78,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     })();
   }, [status, category, maxProducts]);
 
-  // 🔹 Slider logic
+  // 🔹 Logic slider
   const maxIndex = Math.max(products.length - visibleCount, 0);
 
   const handleSlide = (dir: "left" | "right") => {
@@ -99,7 +93,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     ] as HTMLElement;
     if (target)
       sliderRef.current.scrollTo({
-        left: target.offsetLeft,
+        left: target.offsetLeft - 16, // 👈 trừ nhẹ để không bị sát
         behavior: "smooth",
       });
   };
@@ -107,7 +101,7 @@ const ProductView: React.FC<ProductViewProps> = ({
   const canLeft = currentIndex > 0;
   const canRight = currentIndex < maxIndex;
 
-  // 🔹 Render states
+  // 🔹 Giao diện
   if (isLoading)
     return (
       <div className="py-16 text-center text-gray-500">
@@ -124,19 +118,29 @@ const ProductView: React.FC<ProductViewProps> = ({
       </div>
     );
 
-  // 🔹 JSX chính
   return (
     <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40 relative overflow-hidden">
+      {/* 🔸 Hiệu ứng nền */}
       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/30 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-orange-50/40 rounded-full blur-3xl -z-10" />
 
+      {/* 🔸 Tiêu đề */}
       <div className="max-w-7xl mx-auto px-4 md:px-16">
         <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent">
           {title}
           <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700" />
         </h2>
+      </div>
 
-        <div className="relative mt-10">
+      {/* 🔸 Slider hoặc Grid */}
+      <div
+        className={`mt-10 ${
+          mode === "slider"
+            ? "px-6 sm:px-8 md:px-10"
+            : "max-w-7xl mx-auto px-4 md:px-16"
+        }`}
+      >
+        <div className="relative">
           <div
             ref={sliderRef}
             className={
@@ -146,7 +150,7 @@ const ProductView: React.FC<ProductViewProps> = ({
             <div
               className={
                 mode === "slider"
-                  ? "flex gap-6"
+                  ? "flex gap-5"
                   : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
               }
             >
@@ -155,7 +159,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                   key={p.id}
                   className={
                     mode === "slider"
-                      ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)]"
+                      ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-18px)]"
                       : ""
                   }
                 >
@@ -174,6 +178,7 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
+          {/* 🔸 Nút điều hướng */}
           {mode === "slider" && products.length > visibleCount && (
             <div className="flex justify-center gap-4 mt-8">
               <button
