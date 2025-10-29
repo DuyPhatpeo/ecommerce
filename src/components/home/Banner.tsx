@@ -75,9 +75,11 @@ const Banner: React.FC = () => {
         className="absolute inset-0 bg-center bg-no-repeat bg-cover transition-all duration-700 ease-in-out"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
 
-      {/* Content (canh lề giống ProductList header) */}
+      {/* 👉 Bỏ overlay ở đây để hình sáng rõ, không còn lớp mờ */}
+      {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" /> */}
+
+      {/* Content */}
       <div className="relative z-10 w-full max-w-6xl mx-auto px-2 sm:px-6 md:px-16 overflow-hidden">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
