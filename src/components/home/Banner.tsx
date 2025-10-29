@@ -76,11 +76,8 @@ const Banner: React.FC = () => {
         style={{ backgroundImage: `url(${bgImage})` }}
       />
 
-      {/* 👉 Bỏ overlay ở đây để hình sáng rõ, không còn lớp mờ */}
-      {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" /> */}
-
       {/* Content */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-2 sm:px-6 md:px-16 overflow-hidden">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
             key={banners[current].title}
@@ -89,10 +86,10 @@ const Banner: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 lg:gap-10"
+            className="flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-10"
           >
             {/* LEFT CONTENT */}
-            <div className="max-w-xl text-center md:text-left">
+            <div className="max-w-xl text-left">
               <motion.h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight"
                 initial={{ y: 40, opacity: 0 }}
@@ -112,7 +109,7 @@ const Banner: React.FC = () => {
               </motion.p>
 
               <motion.div
-                className="mt-6 sm:mt-10 flex items-center justify-center md:justify-start"
+                className="mt-6 sm:mt-10 flex items-center justify-start"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}

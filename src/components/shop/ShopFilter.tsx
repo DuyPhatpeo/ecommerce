@@ -9,6 +9,7 @@ import AvailabilityFilter from "./filters/AvailabilityFilter";
 import PriceFilter from "./filters/PriceFilter";
 
 interface Props {
+  context?: "shop" | "category"; // 👈 thêm context
   showFilters: boolean;
   toggleFilters: () => void;
   stockFilter: "all" | "in" | "out";
@@ -33,6 +34,7 @@ interface Props {
 }
 
 const ShopFilter: React.FC<Props> = ({
+  context = "shop",
   showFilters,
   toggleFilters,
   stockFilter,
@@ -59,8 +61,8 @@ const ShopFilter: React.FC<Props> = ({
   const MAX = priceMax;
 
   const [open, setOpen] = useState({
-    category: true,
-    brand: false,
+    category: context === "shop",
+    brand: true,
     color: false,
     size: false,
     availability: false,
@@ -69,11 +71,12 @@ const ShopFilter: React.FC<Props> = ({
   const toggleSection = (name: keyof typeof open) =>
     setOpen((prev) => ({ ...prev, [name]: !prev[name] }));
 
-  // colorFilter and sizeFilter are managed by parent `Shop.tsx`
-
+  // --- Tổng hợp các filter đang được chọn ---
   const activeFilters = useMemo(
     () => [
-      ...categoryFilter.map((c) => ({ label: c, type: "category" })),
+      ...(context === "shop"
+        ? categoryFilter.map((c) => ({ label: c, type: "category" }))
+        : []),
       ...brandFilter.map((b) => ({ label: b, type: "brand" })),
       ...colorFilter.map((c) => ({ label: c, type: "color" })),
       ...sizeFilter.map((s) => ({ label: s, type: "size" })),
@@ -95,6 +98,7 @@ const ShopFilter: React.FC<Props> = ({
         : []),
     ],
     [
+      context,
       categoryFilter,
       brandFilter,
       colorFilter,
@@ -106,6 +110,7 @@ const ShopFilter: React.FC<Props> = ({
     ]
   );
 
+  // --- Xử lý xóa từng filter ---
   const handleRemoveFilter = (f: { label: string; type: string }) => {
     if (f.type === "category")
       setCategoryFilter(categoryFilter.filter((c) => c !== f.label));
@@ -125,7 +130,7 @@ const ShopFilter: React.FC<Props> = ({
         showFilters ? "translate-x-0" : "translate-x-full"
       } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-none lg:rounded-xl border border-orange-100 flex flex-col`}
     >
-      {/* Header */}
+      {/* --- Header --- */}
       <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
           <Filter size={18} className="text-orange-500" /> Filters
@@ -138,7 +143,7 @@ const ShopFilter: React.FC<Props> = ({
         />
       </div>
 
-      {/* Active filters */}
+      {/* --- Active Filters --- */}
       {hasActiveFilters && (
         <div className="p-3 border-b border-orange-100 bg-orange-50/50">
           <div className="flex justify-between items-center mb-2">
@@ -170,8 +175,9 @@ const ShopFilter: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Filters */}
+      {/* --- Filters --- */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-50">
+        {/* Giá */}
         <PriceFilter
           priceRange={priceRange}
           setPriceRange={setPriceRange}
@@ -180,13 +186,18 @@ const ShopFilter: React.FC<Props> = ({
           step={priceStep}
         />
 
-        <CategoryFilter
-          open={open.category}
-          toggle={() => toggleSection("category")}
-          options={categoryOptions}
-          selected={categoryFilter}
-          onChange={setCategoryFilter}
-        />
+        {/* Danh mục (ẩn khi context=category) */}
+        {context === "shop" && (
+          <CategoryFilter
+            open={open.category}
+            toggle={() => toggleSection("category")}
+            options={categoryOptions}
+            selected={categoryFilter}
+            onChange={setCategoryFilter}
+          />
+        )}
+
+        {/* Thương hiệu */}
         <BrandFilter
           open={open.brand}
           toggle={() => toggleSection("brand")}
@@ -194,18 +205,24 @@ const ShopFilter: React.FC<Props> = ({
           selected={brandFilter}
           onChange={setBrandFilter}
         />
+
+        {/* Màu sắc */}
         <ColorFilter
           open={open.color}
           toggle={() => toggleSection("color")}
           selected={colorFilter}
           onChange={setColorFilter}
         />
+
+        {/* Kích thước */}
         <SizeFilter
           open={open.size}
           toggle={() => toggleSection("size")}
           selected={sizeFilter}
           onChange={setSizeFilter}
         />
+
+        {/* Tình trạng hàng */}
         <AvailabilityFilter
           open={open.availability}
           toggle={() => toggleSection("availability")}

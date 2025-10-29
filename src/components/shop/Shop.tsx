@@ -98,7 +98,7 @@ const Shop: React.FC = () => {
             <span>All products</span>
             <ShoppingBag size={18} />
           </div>
-          <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-gray-900 via-orange-600 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             Our Collection
           </h2>
         </div>
@@ -143,6 +143,7 @@ const Shop: React.FC = () => {
           {/* Sidebar Filter */}
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
+              context="shop"
               showFilters={showFilters}
               toggleFilters={toggleFilters}
               stockFilter={stockFilter}
