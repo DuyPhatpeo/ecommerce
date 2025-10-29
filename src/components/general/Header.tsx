@@ -69,16 +69,23 @@ const Header = () => {
                 onMouseEnter={() => handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >
-                <Link
-                  to={item.path ?? "/"}
-                  className={`px-2 transition-colors ${
-                    location.pathname === item.path
-                      ? "text-orange-500"
-                      : "text-gray-800 hover:text-orange-500"
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                {item.path ? (
+                  <Link
+                    to={item.path}
+                    className={`px-2 transition-colors ${
+                      location.pathname === item.path
+                        ? "text-orange-500"
+                        : "text-gray-800 hover:text-orange-500"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <span className="px-2 text-gray-800 cursor-default">
+                    {item.label}
+                  </span>
+                )}
+
                 {/* Submenu (Desktop) */}
                 <AnimatePresence>
                   {item.subMenu && activeMenu === item.label && (
