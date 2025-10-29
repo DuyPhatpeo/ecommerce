@@ -17,7 +17,7 @@ const MainHome = () => {
         order: 2,
         props: {
           status: "latest",
-          viewMode: "slider",
+          mode: "slider",
           maxProducts: 12,
           title: "Last Products",
         },
@@ -27,7 +27,7 @@ const MainHome = () => {
         order: 4,
         props: {
           category: "running",
-          viewMode: "grid",
+          mode: "grid",
           maxProducts: 8,
           title: "Running Products",
         },
@@ -36,7 +36,7 @@ const MainHome = () => {
         order: 5,
         props: {
           category: "casual",
-          viewMode: "grid",
+          mode: "grid",
           maxProducts: 8,
           title: "Casual Products",
         },
@@ -46,7 +46,7 @@ const MainHome = () => {
     },
   };
 
-  const { normalizeViewMode, viewModeDefault } = useAppConfig(remoteConfig);
+  const { normalizemode, modeDefault } = useAppConfig(remoteConfig);
 
   // Danh sách component có thể render
   const sectionMap: Record<string, React.FC<any>> = {
@@ -82,7 +82,7 @@ const MainHome = () => {
           baseKey === "ProductView"
             ? {
                 ...props,
-                viewMode: normalizeViewMode(props?.viewMode ?? viewModeDefault),
+                mode: normalizemode(props?.mode ?? modeDefault),
               }
             : props;
 

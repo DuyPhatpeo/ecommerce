@@ -1,15 +1,15 @@
 // src/hooks/useAppConfig.ts
-export type ViewMode = "slider" | "grid";
+export type mode = "slider" | "grid";
 
 interface AppConfig {
-  viewModeDefault: ViewMode;
+  modeDefault: mode;
 }
 
 const DEFAULT_CONFIG: AppConfig = {
-  viewModeDefault: "slider",
+  modeDefault: "slider",
 };
 
-export function normalizeViewMode(value: any): ViewMode {
+export function normalizemode(value: any): mode {
   const val = String(value ?? "")
     .toLowerCase()
     .trim();
@@ -17,22 +17,22 @@ export function normalizeViewMode(value: any): ViewMode {
   if (["true", "1", "slider"].includes(val)) return "slider";
   if (["false", "0", "grid"].includes(val)) return "grid";
 
-  return DEFAULT_CONFIG.viewModeDefault;
+  return DEFAULT_CONFIG.modeDefault;
 }
 
 export function useAppConfig(remoteConfig?: Record<string, any>) {
-  const nestedViewMode =
-    remoteConfig?.viewMode ??
+  const nestedmode =
+    remoteConfig?.mode ??
     Object.values(remoteConfig?.sectionOrder ?? {}).find(
-      (v): v is { props?: { viewMode?: any } } =>
+      (v): v is { props?: { mode?: any } } =>
         !!v && typeof v === "object" && "props" in v
-    )?.props?.viewMode;
+    )?.props?.mode;
 
-  const normalizedViewMode = normalizeViewMode(nestedViewMode);
+  const normalizedmode = normalizemode(nestedmode);
 
   return {
     ...DEFAULT_CONFIG,
-    viewModeDefault: normalizedViewMode,
-    normalizeViewMode,
+    modeDefault: normalizedmode,
+    normalizemode,
   };
 }

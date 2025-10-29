@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
+import { Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
 import { getProducts } from "../../api/productApi";
-import ProductSlider from "./ProductSlider";
-import ProductGrid from "./ProductGrid";
+import ProductCard from "../section/ProductCard";
 
 interface Product {
   id: string;
@@ -17,176 +22,203 @@ interface Product {
   category?: string;
 }
 
-export interface Section {
-  title: string;
-  products: Product[];
-  swiperClass: string;
-}
-
-type ViewMode = "slider" | "grid";
-
 interface ProductViewProps {
-  viewMode?: ViewMode;
   status?: string | string[];
   category?: string | string[];
   title?: string;
   maxProducts?: number;
-  showNavigation?: boolean;
-  itemsPerPage?: number;
+  mode?: "grid" | "slider";
 }
 
-const STATUS_CONFIG: Record<string, { title: string }> = {
-  latest: { title: "Latest Products" },
-  coming: { title: "Coming Soon" },
-};
-
-const filterProducts = (
-  products: Product[],
-  options?: {
-    status?: string | string[];
-    category?: string | string[];
-    maxProducts?: number;
-  }
-) => {
-  if (!products.length) return [];
-
-  let filtered = products.filter((p) => (p.stock ?? 0) > 0);
-
-  if (options?.status) {
-    const statuses = Array.isArray(options.status)
-      ? options.status
-      : [options.status];
-    filtered = filtered.filter((p) => p.status && statuses.includes(p.status));
-  }
-
-  if (options?.category) {
-    const categories = Array.isArray(options.category)
-      ? options.category
-      : [options.category];
-    filtered = filtered.filter(
-      (p) => p.category && categories.includes(p.category)
-    );
-  }
-
-  return options?.maxProducts
-    ? filtered.slice(0, options.maxProducts)
-    : filtered;
-};
-
-const useSectionData = (
-  status?: string | string[],
-  category?: string | string[],
-  maxProducts?: number,
-  title?: string
-) => {
-  const [section, setSection] = useState<Section | null>(null);
+const ProductView: React.FC<ProductViewProps> = ({
+  status,
+  category,
+  title = "Sản phẩm",
+  maxProducts,
+  mode = "grid",
+}) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(4);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  // 🔹 Responsive card count
+  const computeVisible = useCallback(() => {
+    const w = window.innerWidth;
+    return w < 640 ? 2 : w < 1024 ? 3 : 4;
+  }, []);
 
   useEffect(() => {
-    let isMounted = true;
+    setVisibleCount(computeVisible());
+    const onResize = () => setVisibleCount(computeVisible());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [computeVisible]);
 
-    const fetchProducts = async () => {
+  // 🔹 Fetch + filter
+  useEffect(() => {
+    (async () => {
       try {
         setIsLoading(true);
         const data = await getProducts();
-        if (!isMounted) return;
-        if (!Array.isArray(data)) throw new Error("Invalid product data");
+        if (!Array.isArray(data)) throw new Error("Invalid data");
 
-        const filteredProducts = filterProducts(data, {
-          status,
-          category,
-          maxProducts,
-        });
-        if (!filteredProducts.length) return setSection(null);
+        const filtered = data
+          .filter((p) => (p.stock ?? 0) > 0)
+          .filter((p) =>
+            status ? [status].flat().includes(p.status || "") : true
+          )
+          .filter((p) =>
+            category ? [category].flat().includes(p.category || "") : true
+          )
+          .slice(0, maxProducts || data.length);
 
-        const defaultTitle =
-          status && !Array.isArray(status)
-            ? STATUS_CONFIG[status]?.title
-            : undefined;
-
-        setSection({
-          title: title || defaultTitle || "Products",
-          products: filteredProducts,
-          swiperClass: `product-swiper-${status || "default"}`,
-        });
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-        if (isMounted) setSection(null);
+        setProducts(filtered);
+      } catch (e) {
+        console.error("Lỗi khi tải sản phẩm:", e);
+        setProducts([]);
       } finally {
-        if (isMounted) setIsLoading(false);
+        setIsLoading(false);
       }
-    };
+    })();
+  }, [status, category, maxProducts]);
 
-    fetchProducts();
+  // 🔹 Slider logic
+  const maxIndex = Math.max(products.length - visibleCount, 0);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [status, category, maxProducts, title]);
+  const handleSlide = (dir: "left" | "right") => {
+    if (!sliderRef.current) return;
+    const next =
+      dir === "left"
+        ? Math.max(0, currentIndex - 1)
+        : Math.min(maxIndex, currentIndex + 1);
+    setCurrentIndex(next);
+    const target = sliderRef.current.querySelectorAll(".product-card-item")[
+      next
+    ] as HTMLElement;
+    if (target)
+      sliderRef.current.scrollTo({
+        left: target.offsetLeft,
+        behavior: "smooth",
+      });
+  };
 
-  return { section, isLoading };
-};
+  const canLeft = currentIndex > 0;
+  const canRight = currentIndex < maxIndex;
 
-const LoadingState = () => (
-  <div className="w-full py-12 md:py-20 text-center text-gray-500">
-    <div className="inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-    <p className="mt-4 text-sm md:text-base">Loading products...</p>
-  </div>
-);
-
-const EmptyState = () => (
-  <div className="w-full py-12 md:py-20 text-center text-gray-500">
-    <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
-    <p className="text-sm md:text-base">No products available.</p>
-  </div>
-);
-
-const SectionHeaderContent = ({ section }: { section: Section }) => (
-  <div className="flex-1 text-left overflow-visible">
-    <h2
-      className="relative inline-block text-3xl md:text-5xl lg:text-6xl 
-                 font-extrabold leading-tight tracking-tight 
-                 bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 
-                 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(249,115,22,0.35)]"
-    >
-      {section.title}
-      {/* gạch gradient nhỏ bên dưới */}
-      <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700"></span>
-    </h2>
-  </div>
-);
-
-const ProductView: React.FC<ProductViewProps> = ({
-  viewMode = "slider",
-  status,
-  category,
-  title,
-  maxProducts,
-}) => {
-  const { section, isLoading } = useSectionData(
-    status,
-    category,
-    maxProducts,
-    title
-  );
-
-  if (isLoading) return <LoadingState />;
-  if (!section || !section.products.length) return <EmptyState />;
-
-  return (
-    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white-50/30 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-9 rounded-full blur-3xl -z-10" />
-
-      <div className="max-w-7xl mx-auto px-4 md:px-16 mb-8 md:mb-12">
-        <SectionHeaderContent section={section} />
+  // 🔹 Render states
+  if (isLoading)
+    return (
+      <div className="py-16 text-center text-gray-500">
+        <div className="w-8 h-8 mx-auto border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <p className="mt-3 text-sm">Loading product...</p>
       </div>
+    );
 
-      {viewMode === "slider" ? (
-        <ProductSlider section={section} />
-      ) : (
-        <ProductGrid section={section} />
-      )}
+  if (!products.length)
+    return (
+      <div className="py-16 text-center text-gray-500">
+        <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
+        <p>There are no products.</p>
+      </div>
+    );
+
+  // 🔹 JSX chính
+  return (
+    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/30 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-orange-50/40 rounded-full blur-3xl -z-10" />
+
+      <div className="max-w-7xl mx-auto px-4 md:px-16">
+        <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent">
+          {title}
+          <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700" />
+        </h2>
+
+        <div className="relative mt-10">
+          <div
+            ref={sliderRef}
+            className={
+              mode === "slider" ? "overflow-x-hidden scroll-smooth" : ""
+            }
+          >
+            <div
+              className={
+                mode === "slider"
+                  ? "flex gap-6"
+                  : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
+              }
+            >
+              {products.map((p) => (
+                <div
+                  key={p.id}
+                  className={
+                    mode === "slider"
+                      ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)]"
+                      : ""
+                  }
+                >
+                  <ProductCard
+                    data={{
+                      id: p.id,
+                      img: p.images?.[0] || "placeholder.jpg",
+                      title: p.title,
+                      salePrice: p.salePrice ?? p.price,
+                      regularPrice: p.regularPrice ?? p.oldPrice,
+                      stock: p.stock,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {mode === "slider" && products.length > visibleCount && (
+            <div className="flex justify-center gap-4 mt-8">
+              <button
+                onClick={() => handleSlide("left")}
+                disabled={!canLeft}
+                className={`p-3 rounded-full bg-white shadow-lg transition-all ${
+                  canLeft
+                    ? "hover:bg-orange-50 hover:scale-110"
+                    : "opacity-40 cursor-not-allowed"
+                }`}
+              >
+                <ArrowLeft
+                  size={22}
+                  className={canLeft ? "text-orange-600" : "text-gray-400"}
+                />
+              </button>
+
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
+                <span className="text-sm text-orange-600 font-medium">
+                  {currentIndex + 1}
+                </span>
+                <span className="text-sm text-gray-400">/</span>
+                <span className="text-sm text-gray-600 font-medium">
+                  {maxIndex + 1}
+                </span>
+              </div>
+
+              <button
+                onClick={() => handleSlide("right")}
+                disabled={!canRight}
+                className={`p-3 rounded-full bg-white shadow-lg transition-all ${
+                  canRight
+                    ? "hover:bg-orange-50 hover:scale-110"
+                    : "opacity-40 cursor-not-allowed"
+                }`}
+              >
+                <ArrowRight
+                  size={22}
+                  className={canRight ? "text-orange-600" : "text-gray-400"}
+                />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </section>
   );
 };
