@@ -7,12 +7,11 @@ const ShoppingCartPage = lazy(() => import("../pages/ShopingCartPage"));
 const CheckOutPage = lazy(() => import("../pages/CheckOutPage"));
 const OrderSuccessPage = lazy(() => import("../pages/OrderSuccessPage"));
 const ShopPage = lazy(() => import("../pages/ShopPage"));
-const SearchPage = lazy(() => import("../pages/SearchPage.tsx"));
-const LoginPage = lazy(() => import("../pages/LoginPage.tsx"));
-const RegisterPage = lazy(() => import("../pages/RegisterPage.tsx"));
-const ForgotPasswordPage = lazy(
-  () => import("../pages/ForgotPasswordPage.tsx")
-);
+const SearchPage = lazy(() => import("../pages/SearchPage"));
+const ContactPage = lazy(() => import("../pages/ContactPage"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -41,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* 404 */}
         <Route
