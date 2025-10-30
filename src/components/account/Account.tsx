@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AccountSidebar from "./AccountSidebar";
 import ProfileTab from "./ProfileTab";
@@ -9,8 +9,8 @@ import SettingsTab from "./SettingsTab";
 
 const Account = () => {
   const navigate = useNavigate();
-  const { tab } = useParams(); // 👉 lấy param "tab" từ URL
-  const activeTab = tab || "profile";
+  const { tab } = useParams();
+  const activeTab = tab || "";
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -19,7 +19,49 @@ const Account = () => {
     phone: "+1 234 567 8900",
   });
   const [editedProfile, setEditedProfile] = useState(profile);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
 
+  // Theo dõi kích thước màn hình
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // ✅ Xử lý routing: Mobile hiện menu, Desktop auto redirect
+  useEffect(() => {
+    if (!tab) {
+      // Đang ở /account (không có tab)
+      if (isMobile) {
+        // Mobile: hiển thị sidebar để chọn
+        setShowSidebar(true);
+      } else {
+        // Desktop: tự động chuyển sang profile
+        navigate("/account/profile", { replace: true });
+      }
+    } else {
+      // Đã có tab (/account/profile, /account/orders, etc.)
+      if (isMobile) {
+        // Mobile: ẩn sidebar, hiện nội dung
+        setShowSidebar(false);
+      } else {
+        // Desktop: luôn hiện sidebar
+        setShowSidebar(true);
+      }
+    }
+  }, [tab, isMobile, navigate]);
+
+  const handleTabChange = (tabId: string) => {
+    navigate(`/account/${tabId}`);
+  };
+
+  const handleBackToMenu = () => {
+    navigate("/account");
+  };
+
+  // Demo data
   const orders = [
     {
       id: "ORD-001",
@@ -48,20 +90,19 @@ const Account = () => {
     {
       id: 1,
       name: "Home",
-      address: "123 Main Street, Downtown, New York, NY 10001",
+      address: "123 Main Street, Downtown, NY",
       phone: "+1 234 567 8900",
       isDefault: true,
     },
     {
       id: 2,
       name: "Office",
-      address: "456 Business Ave, Midtown, New York, NY 10017",
+      address: "456 Business Ave, Midtown, NY",
       phone: "+1 987 654 3210",
       isDefault: false,
     },
   ];
 
-  // 🔥 Dữ liệu wishlist demo (giả lập từ API hoặc local)
   const wishlist = [
     {
       id: "1",
@@ -86,24 +127,33 @@ const Account = () => {
     },
   ];
 
-  const handleTabChange = (tabId: string) => {
-    navigate(`/account/${tabId}`); // 👉 chuyển URL
-  };
-
   return (
     <div className="px-2 py-8 mx-auto max-w-7xl sm:px-6 md:px-16">
-      <div className="flex gap-6">
-        <div className="w-full h-full lg:w-1/4">
-          <AccountSidebar
-            profile={profile}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-            onLogout={() => console.log("Logout")}
-          />
-        </div>
+      <div className="flex flex-col-reverse gap-6 lg:flex-row">
+        {/* Sidebar */}
+        {showSidebar && (
+          <div className="w-full h-full lg:w-1/4">
+            <AccountSidebar
+              profile={profile}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onLogout={() => console.log("Logout")}
+            />
+          </div>
+        )}
 
-        <div className="w-full lg:w-3/4">
-          <div className="p-6">
+        {/* Nội dung chính */}
+        {(!isMobile || !showSidebar) && tab && (
+          <div className="w-full lg:w-3/4">
+            {isMobile && (
+              <button
+                onClick={handleBackToMenu}
+                className="flex items-center mb-4 text-sm text-orange-600 hover:underline"
+              >
+                ← Quay lại tài khoản
+              </button>
+            )}
+
             {activeTab === "profile" && (
               <ProfileTab
                 profile={profile}
@@ -138,7 +188,7 @@ const Account = () => {
             )}
             {activeTab === "settings" && <SettingsTab />}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 const HomePage = lazy(() => import("../pages/HomPage"));
 const ProductDetailPage = lazy(() => import("../pages/ProductDetailPage"));
@@ -45,11 +45,7 @@ const AppRoutes = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop/category/:category" element={<CategoryPage />} />
 
-        {/* ✅ Account Routes */}
-        <Route
-          path="/account"
-          element={<Navigate to="/account/profile" replace />}
-        />
+        <Route path="/account" element={<AccountPage />} />
         <Route path="/account/:tab" element={<AccountPage />} />
 
         {/* 404 Page */}

@@ -85,48 +85,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ onPasswordChange }) => {
             </button>
           </div>
         </div>
-
-        {/* 🔸 Notifications */}
-        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-2xl dark:bg-gray-900 dark:border-gray-800">
-          <h3 className="flex items-center gap-2 mb-6 text-xl font-semibold text-gray-800 dark:text-gray-100">
-            <Bell size={18} className="text-pink-500" />
-            Notifications
-          </h3>
-
-          <div className="space-y-3">
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                defaultChecked
-                className="w-5 h-5 text-orange-500 accent-orange-500"
-              />
-              <span className="text-gray-700 dark:text-gray-300">
-                Receive email about new orders
-              </span>
-            </label>
-
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                defaultChecked
-                className="w-5 h-5 text-orange-500 accent-orange-500"
-              />
-              <span className="text-gray-700 dark:text-gray-300">
-                Receive email about promotions
-              </span>
-            </label>
-
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                className="w-5 h-5 text-orange-500 accent-orange-500"
-              />
-              <span className="text-gray-700 dark:text-gray-300">
-                Receive SMS notifications
-              </span>
-            </label>
-          </div>
-        </div>
       </div>
     </div>
   );
