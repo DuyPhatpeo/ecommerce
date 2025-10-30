@@ -1,5 +1,13 @@
 import React from "react";
-import { User, Package, MapPin, Heart, LogOut, Sparkles } from "lucide-react";
+import {
+  User,
+  Package,
+  MapPin,
+  Heart,
+  LogOut,
+  Sparkles,
+  ChevronRight,
+} from "lucide-react";
 
 interface Tab {
   id: string;
@@ -39,14 +47,16 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       .toUpperCase()
       .slice(0, 2);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
-    <div className="p-6 border border-gray-100 shadow-md rounded-2xl bg-white/60 backdrop-blur-sm">
+    <div className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-white/70 backdrop-blur-sm">
       {/* 🔹 Profile Header */}
-      <div className="flex flex-col items-center mb-8">
-        <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white bg-orange-500 rounded-full shadow-lg">
+      <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
+        <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white bg-gradient-to-br from-orange-500 to-orange-600 rounded-full shadow-md">
           {getInitials(profile.name)}
         </div>
-        <h3 className="mt-3 text-lg font-semibold text-orange-600">
+        <h3 className="mt-3 text-lg font-semibold text-gray-800">
           {profile.name}
         </h3>
         <p className="text-sm text-gray-500">{profile.email}</p>
@@ -57,24 +67,38 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
+
           return (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200
+              className={`group relative w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-all duration-200
                 ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-md"
+                    ? "bg-orange-500 text-white shadow-sm"
                     : "text-gray-700 hover:bg-orange-50 hover:text-orange-600"
                 }`}
             >
-              <Icon size={20} />
-              <span>{tab.label}</span>
+              <div className="flex items-center gap-3">
+                <Icon size={20} />
+                <span>{tab.label}</span>
+              </div>
+
+              {/* Mũi tên cuối (hiện cả khi chưa active) */}
+              <ChevronRight
+                size={18}
+                className={`${
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-orange-500"
+                } transition-colors duration-200`}
+              />
             </button>
           );
         })}
 
-        <div className="my-3 border-t border-gray-100"></div>
+        {/* 🔹 Divider */}
+        <div className="my-4 border-t border-gray-200"></div>
 
         {/* 🔹 Logout */}
         <button
@@ -83,10 +107,11 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
         >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
+          {isMobile && <ChevronRight size={18} className="text-gray-400" />}
         </button>
       </nav>
 
-      {/* 🔹 Footer flair */}
+      {/* 🔹 Footer */}
       <div className="flex justify-center mt-8 text-sm text-gray-400">
         <Sparkles size={16} className="mr-1 text-orange-400" />
         <span>Stay stylish, {profile.name.split(" ")[0]} ✨</span>
