@@ -8,7 +8,6 @@ import {
   ChevronRight,
   ChevronDown,
   User,
-  LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../ui/Button";
@@ -31,7 +30,6 @@ const Header = () => {
     setSearchOpen,
     setSearchQuery,
     handleSearchSubmit,
-    handleLogout,
     handleMouseEnter,
     handleMouseLeave,
     toggleSubMenu,
@@ -56,7 +54,7 @@ const Header = () => {
             <img
               src="/logo.png"
               alt="Logo"
-              className="h-8 xs:h-9 sm:h-10 md:h-11 lg:h-12 object-contain cursor-pointer transition-transform hover:scale-105"
+              className="h-10 xs:h-9 sm:h-10 md:h-11 lg:h-12 object-contain cursor-pointer transition-transform hover:scale-105"
             />
           </Link>
 
@@ -290,44 +288,6 @@ const Header = () => {
                   )}
                 </div>
               ))}
-
-              {/* User Menu Mobile - Responsive sizing */}
-              {!user ? (
-                <div className="border-b border-gray-100">
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="block w-full text-left px-4 xs:px-5 py-2.5 xs:py-3 text-[13px] xs:text-[14px] font-semibold text-orange-500 hover:bg-orange-500 hover:text-white transition-colors"
-                  >
-                    Login
-                  </Link>
-                </div>
-              ) : (
-                <>
-                  <div className="border-b border-gray-100">
-                    <Link
-                      to="/account"
-                      onClick={() => setMobileOpen(false)}
-                      className="block w-full text-left px-4 xs:px-5 py-2.5 xs:py-3 text-[13px] xs:text-[14px] font-semibold text-gray-800 hover:text-orange-500 hover:bg-orange-50 flex items-center gap-2 transition-colors"
-                    >
-                      <User size={16} className="xs:w-[18px] xs:h-[18px]" />
-                      My Account
-                    </Link>
-                  </div>
-                  <div className="border-b border-gray-100">
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setMobileOpen(false);
-                      }}
-                      className="block w-full text-left px-4 xs:px-5 py-2.5 xs:py-3 text-[13px] xs:text-[14px] font-semibold text-gray-800 hover:text-orange-500 hover:bg-orange-50 flex items-center gap-2 transition-colors"
-                    >
-                      <LogOut size={16} className="xs:w-[18px] xs:h-[18px]" />
-                      Log out
-                    </button>
-                  </div>
-                </>
-              )}
             </motion.div>
           )}
         </AnimatePresence>
