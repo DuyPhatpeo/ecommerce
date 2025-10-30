@@ -149,7 +149,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                   className="flex items-center gap-2 px-4 py-2 text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-90"
                 >
                   <Edit2 size={16} />
-                  Change Password
+                  Change
                 </button>
               )}
             </div>
@@ -191,7 +191,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                         className="flex items-center gap-2 px-5 py-2 mt-2 text-white rounded-lg shadow-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
                       >
                         <CheckCircle size={18} />
-                        Confirm Change
+                        Confirm
                       </button>
 
                       <button
