@@ -109,7 +109,7 @@ const ProductView: React.FC<ProductViewProps> = ({
   if (isLoading)
     return (
       <div className="py-16 text-center text-gray-500">
-        <div className="w-8 h-8 mx-auto border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 mx-auto border-4 border-orange-500 rounded-full border-t-transparent animate-spin" />
         <p className="mt-3 text-sm">Loading product...</p>
       </div>
     );
@@ -124,14 +124,14 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   // 🔹 JSX chính
   return (
-    <section className="w-full py-8 md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40 relative overflow-hidden">
+    <section className="relative w-full py-8 overflow-hidden md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40">
       {/* 🔸 Hiệu ứng nền */}
-      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100/30 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-orange-50/40 rounded-full blur-3xl -z-10" />
+      <div className="absolute top-0 right-0 w-64 h-64 rounded-full md:w-96 md:h-96 bg-orange-100/30 blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full md:w-96 md:h-96 bg-orange-50/40 blur-3xl -z-10" />
 
       {/* 🔸 Tiêu đề */}
-      <div className="max-w-7xl mx-auto px-4 md:px-16">
-        <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent">
+      <div className="px-4 mx-auto max-w-7xl md:px-16">
+        <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent leading-[1.1] pb-2">
           {title}
           <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700" />
         </h2>
@@ -198,11 +198,11 @@ const ProductView: React.FC<ProductViewProps> = ({
               />
 
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
-                <span className="text-sm text-orange-600 font-medium">
+                <span className="text-sm font-medium text-orange-600">
                   {currentIndex + 1}
                 </span>
                 <span className="text-sm text-gray-400">/</span>
-                <span className="text-sm text-gray-600 font-medium">
+                <span className="text-sm font-medium text-gray-600">
                   {maxIndex + 1}
                 </span>
               </div>
