@@ -116,6 +116,30 @@ const Account = () => {
         price: 899000,
         img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
       },
+      {
+        id: "4",
+        title: "White Sneakers",
+        price: 899000,
+        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+      },
+      {
+        id: "5",
+        title: "White Sneakers",
+        price: 899000,
+        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+      },
+      {
+        id: "6",
+        title: "White Sneakers",
+        price: 899000,
+        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+      },
+      {
+        id: "7",
+        title: "White Sneakers",
+        price: 899000,
+        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+      },
     ],
     []
   );
