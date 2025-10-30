@@ -152,7 +152,11 @@ const CheckOut: React.FC = () => {
       const response = await createOrder(orderData);
       toast.dismiss(loadingToast);
       toast.success("🎉 Đặt hàng thành công!");
-      navigate("/order-success", { state: { order: response } });
+
+      // 🔹 Xoá checkoutItem khỏi localStorage
+      localStorage.removeItem("checkoutItems");
+
+      navigate("/order-success", { state: { order: response }, replace: true });
     } catch {
       toast.dismiss();
       toast.error("Đặt hàng thất bại, vui lòng thử lại.");
@@ -162,11 +166,11 @@ const CheckOut: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
+    <div className="min-h-screen px-4 py-12 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50">
+      <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">
+          <h1 className="mb-2 text-4xl font-bold text-transparent bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text">
             Checkout
           </h1>
           <p className="text-gray-600 pading">
@@ -174,9 +178,9 @@ const CheckOut: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Form + Product list */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
@@ -205,7 +209,7 @@ const CheckOut: React.FC = () => {
               onPlaceOrder={handlePlaceOrder}
             />
             {placingOrder && (
-              <p className="text-center text-orange-500 mt-3 animate-pulse">
+              <p className="mt-3 text-center text-orange-500 animate-pulse">
                 Processing your order...
               </p>
             )}
