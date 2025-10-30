@@ -1,3 +1,4 @@
+// Account.tsx
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -6,11 +7,13 @@ import ProfileTab from "./ProfileTab";
 import OrdersTab from "./OrdersTab";
 import AddressesTab from "./AddressesTab";
 import WishlistTab from "./WishlistTab";
+import { useLogout } from "../../hooks/useLogout";
 
 const Account = () => {
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
   const activeTab = tab || "";
+  const { logout } = useLogout(); // 🔹 lấy logout từ hook
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -31,14 +34,10 @@ const Account = () => {
 
   useEffect(() => {
     if (!tab) {
-      if (isMobile) {
-        setShowSidebar(true);
-      } else {
-        navigate("/account/profile", { replace: true });
-      }
+      if (isMobile) setShowSidebar(true);
+      else navigate("/account/profile", { replace: true });
       return;
     }
-
     setShowSidebar(!isMobile);
   }, [tab, isMobile]);
 
@@ -116,30 +115,6 @@ const Account = () => {
         price: 899000,
         img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
       },
-      {
-        id: "4",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "5",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "6",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "7",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
     ],
     []
   );
@@ -177,7 +152,6 @@ const Account = () => {
             }))}
           />
         );
-
       default:
         return null;
     }
@@ -192,7 +166,7 @@ const Account = () => {
               profile={profile}
               activeTab={activeTab}
               onTabChange={handleTabChange}
-              onLogout={() => console.log("Logout")}
+              onLogout={logout} // 🔹 truyền logout trực tiếp
             />
           </div>
         )}
