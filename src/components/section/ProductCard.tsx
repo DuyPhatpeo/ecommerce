@@ -16,21 +16,22 @@ interface Product {
   stock?: number;
 }
 
-interface DesktopButtonsProps {
-  handleAddToCart: (e?: React.MouseEvent) => void;
-  handleShare: () => void;
-  loading: boolean;
-  isOutOfStock: boolean;
-}
-
+/* ===============================
+   🔹 Nút Desktop (hover hiện)
+=============================== */
 const DesktopButtons = memo(
   ({
     handleAddToCart,
     handleShare,
     loading,
     isOutOfStock,
-  }: DesktopButtonsProps) => (
-    <div className="absolute top-16 right-3 flex flex-col gap-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 opacity-0 translate-x-4">
+  }: {
+    handleAddToCart: (e?: React.MouseEvent) => void;
+    handleShare: () => void;
+    loading: boolean;
+    isOutOfStock: boolean;
+  }) => (
+    <div className="absolute top-16 right-3 flex flex-col gap-2 opacity-0 translate-x-4 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
       {[
         {
           icon: <ShoppingBag size={18} />,
@@ -52,7 +53,7 @@ const DesktopButtons = memo(
               btn.onClick(e);
             }}
             disabled={(btn as any).disabled}
-            className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full
+            className="w-10 h-10 flex items-center justify-center rounded-full
               bg-black/30 text-white border border-white/40 backdrop-blur-md
               hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500
               transition-all hover:scale-105 active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
@@ -72,14 +73,19 @@ const DesktopButtons = memo(
   )
 );
 
-interface WishlistButtonProps {
-  isWishlisted: boolean;
-  handleToggleWishlist: () => void;
-  isMobile: boolean;
-}
-
+/* ===============================
+   🔹 Wishlist Button
+=============================== */
 const WishlistButton = memo(
-  ({ isWishlisted, handleToggleWishlist, isMobile }: WishlistButtonProps) => (
+  ({
+    isWishlisted,
+    handleToggleWishlist,
+    isMobile,
+  }: {
+    isWishlisted: boolean;
+    handleToggleWishlist: () => void;
+    isMobile: boolean;
+  }) => (
     <div
       className={`absolute top-3 right-3 transition-all duration-300 ${
         isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
@@ -92,7 +98,7 @@ const WishlistButton = memo(
             e.stopPropagation();
             handleToggleWishlist();
           }}
-          className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all cursor-pointer
+          className={`w-10 h-10 flex items-center justify-center rounded-full border backdrop-blur-md shadow-md transition-all
             ${
               isWishlisted
                 ? "text-red-500 bg-white/40 border-white/70"
@@ -113,13 +119,15 @@ const WishlistButton = memo(
   )
 );
 
+/* ===============================
+   🔹 Product Card chính
+=============================== */
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { handleAddToCart } = useAddToCart();
-
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
 
   const price = salePrice ?? regularPrice ?? 0;
@@ -201,75 +209,72 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
-      <NavLink
-        to={`/product/${id}`}
-        className="relative block aspect-[3/4] overflow-hidden bg-gray-50"
-      >
-        <img
-          src={img}
-          alt={title}
-          className={`w-full h-full object-cover transition-transform duration-700 ${
-            isHovered ? "scale-105" : "scale-100"
-          } ${isOutOfStock ? "grayscale-[40%]" : ""}`}
-        />
-
-        {discountPercent > 0 && (
-          <span className="absolute top-3 left-3 bg-orange-500 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-full shadow-md">
-            -{discountPercent}%
-          </span>
-        )}
-
-        {isOutOfStock && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-white text-gray-800 font-semibold px-4 py-2 rounded-lg text-sm shadow">
-              OUT OF STOCK
-            </span>
-          </div>
-        )}
-
-        <WishlistButton
-          isWishlisted={isWishlisted}
-          handleToggleWishlist={handleToggleWishlist}
-          isMobile={isMobile}
-        />
-
-        {!isMobile && (
-          <DesktopButtons
-            handleAddToCart={handleAdd}
-            handleShare={handleShare}
-            loading={loading}
-            isOutOfStock={isOutOfStock}
+      <div className="relative block aspect-[3/4] overflow-hidden bg-gray-50">
+        <NavLink to={`/product/${id}`}>
+          <img
+            src={img}
+            alt={title}
+            className={`w-full h-full object-cover transition-transform duration-700 ${
+              isHovered ? "scale-105" : "scale-100"
+            } ${isOutOfStock ? "grayscale-[40%]" : ""}`}
           />
-        )}
-      </NavLink>
 
+          {/* 🔹 Discount Badge */}
+          {discountPercent > 0 && (
+            <span className="absolute top-3 left-3 bg-orange-500 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-full shadow-md">
+              -{discountPercent}%
+            </span>
+          )}
+
+          {/* 🔹 Out of stock overlay */}
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span className="bg-white text-gray-800 font-semibold px-4 py-2 rounded-lg text-sm shadow">
+                OUT OF STOCK
+              </span>
+            </div>
+          )}
+
+          <WishlistButton
+            isWishlisted={isWishlisted}
+            handleToggleWishlist={handleToggleWishlist}
+            isMobile={isMobile}
+          />
+
+          {!isMobile && (
+            <DesktopButtons
+              handleAddToCart={handleAdd}
+              handleShare={handleShare}
+              loading={loading}
+              isOutOfStock={isOutOfStock}
+            />
+          )}
+        </NavLink>
+      </div>
+
+      {/* 🔹 Info section */}
       <div className="p-3 sm:p-4 flex flex-col flex-1">
-        <div className="relative group w-full">
-          <NavLink to={`/product/${id}`}>
-            <h3
-              title={title}
-              className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 
-        mb-2 leading-snug break-words whitespace-normal 
-        line-clamp-2 overflow-hidden transition-all duration-300"
-            >
-              {title}
-            </h3>
-          </NavLink>
-        </div>
+        <NavLink to={`/product/${id}`}>
+          <h3
+            title={title}
+            className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 mb-2 leading-snug line-clamp-2 transition-all duration-300 min-h-[48px]"
+          >
+            {title}
+          </h3>
+        </NavLink>
 
-        <div className="flex flex-row lg:flex-col items-baseline gap-1 lg:gap-0 mb-2 text-center lg:text-left">
-          <span className="font-bold text-base sm:text-lg text-orange-600 whitespace-nowrap">
+        <div className="flex items-baseline gap-2 mb-2">
+          <span className="font-bold text-base sm:text-lg text-orange-600">
             {formatVND(price)}
           </span>
-
           {oldPrice && (
-            <span className="text-gray-400 line-through text-xs sm:text-sm whitespace-nowrap">
+            <span className="text-gray-400 line-through text-sm">
               {formatVND(oldPrice)}
             </span>
           )}
         </div>
 
-        <div className="min-h-[20px] mb-3 sm:mb-4">
+        <div className="min-h-[20px] mb-4">
           {isOutOfStock ? (
             <span className="text-red-500 text-xs font-bold">Out of stock</span>
           ) : stock <= 5 ? (

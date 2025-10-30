@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  User,
-  Package,
-  MapPin,
-  Settings,
-  Heart,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { User, Package, MapPin, Heart, LogOut, Sparkles } from "lucide-react";
 
 interface Tab {
   id: string;
@@ -37,7 +29,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
     { id: "orders", label: "Orders", icon: Package },
     { id: "addresses", label: "Addresses", icon: MapPin },
     { id: "wishlist", label: "Wishlist", icon: Heart },
-    { id: "settings", label: "Settings", icon: Settings },
   ];
 
   const getInitials = (name: string): string =>

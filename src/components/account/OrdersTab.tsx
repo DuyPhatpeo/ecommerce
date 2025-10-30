@@ -1,5 +1,4 @@
 import React from "react";
-import { Sparkles, Package } from "lucide-react";
 
 interface Order {
   id: string;
@@ -46,12 +45,6 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
       <div className="max-w-6xl p-6 mx-auto bg-white rounded-2xl md:border md:border-gray-200 md:shadow-sm">
         {/* Header */}
         <div className="mb-10 text-center">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
-            <Sparkles size={18} />
-            <span>Orders</span>
-            <Package size={18} />
-          </div>
-
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
             My Orders
           </h2>

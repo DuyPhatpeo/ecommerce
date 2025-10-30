@@ -176,7 +176,7 @@ const Account = () => {
         {(!isMobile || !showSidebar) && tab && (
           <div className="w-full lg:w-3/4">
             {isMobile && (
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-start mb-1">
                 <button
                   onClick={handleBack}
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
