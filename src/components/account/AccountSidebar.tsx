@@ -1,5 +1,4 @@
-// AccountSidebar.tsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   Package,
@@ -9,6 +8,7 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Tab {
   id: string;
@@ -17,18 +17,36 @@ interface Tab {
 }
 
 interface AccountSidebarProps {
-  profile: { name: string; email: string; phone: string };
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onLogout: () => void;
+  onLogout?: () => void;
 }
 
 const AccountSidebar: React.FC<AccountSidebarProps> = ({
-  profile,
   activeTab,
   onTabChange,
   onLogout,
 }) => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<{
+    fullName: string;
+    email: string;
+    phone?: string;
+  } | null>(null);
+
+  // 🔹 Lấy thông tin user từ localStorage khi component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error("Invalid user data in localStorage");
+        setUser(null);
+      }
+    }
+  }, []);
+
   const tabs: Tab[] = [
     { id: "profile", label: "Profile", icon: User },
     { id: "orders", label: "Orders", icon: Package },
@@ -46,17 +64,27 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // nếu có token
+    setUser(null);
+    navigate("/");
+    if (onLogout) onLogout();
+  };
+
+  if (!user) return null; // fallback nếu chưa có user
+
   return (
     <div className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-white/70 backdrop-blur-sm">
       {/* Profile */}
       <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
         <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-br from-orange-500 to-orange-600">
-          {getInitials(profile.name)}
+          {getInitials(user.fullName)}
         </div>
         <h3 className="mt-3 text-lg font-semibold text-gray-800">
-          {profile.name}
+          {user.fullName}
         </h3>
-        <p className="text-sm text-gray-500">{profile.email}</p>
+        <p className="text-sm text-gray-500">{user.email}</p>
       </div>
 
       {/* Tabs */}
@@ -94,7 +122,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
         {/* Logout */}
         <button
-          onClick={onLogout}
+          onClick={handleLogout}
           className="flex items-center w-full gap-3 px-4 py-3 text-red-600 transition-colors rounded-lg hover:bg-red-50"
         >
           <LogOut size={20} />
@@ -106,7 +134,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       {/* Footer */}
       <div className="flex justify-center mt-8 text-sm text-gray-400">
         <Sparkles size={16} className="mr-1 text-orange-400" />
-        <span>Stay stylish, {profile.name.split(" ")[0]} ✨</span>
+        <span>Stay stylish, {user.fullName.split(" ")[0]} ✨</span>
       </div>
     </div>
   );

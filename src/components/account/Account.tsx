@@ -17,7 +17,7 @@ const Account = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "John Doe",
+    fullName: "John Doe",
     email: "johndoe@email.com",
     phone: "+1 234 567 8900",
   });

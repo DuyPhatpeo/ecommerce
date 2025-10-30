@@ -3,12 +3,12 @@ import { Edit2, Save, X, Lock, CheckCircle } from "lucide-react";
 
 interface ProfileTabProps {
   profile: {
-    name: string;
+    fullName: string;
     email: string;
     phone: string;
   };
   editedProfile: {
-    name: string;
+    fullName: string;
     email: string;
     phone: string;
   };
@@ -101,8 +101,8 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
               </label>
               <input
                 type="text"
-                value={isEditing ? editedProfile.name : profile.name}
-                onChange={(e) => onChange("name", e.target.value)}
+                value={isEditing ? editedProfile.fullName : profile.fullName}
+                onChange={(e) => onChange("fullName", e.target.value)}
                 disabled={!isEditing}
                 className="box-border w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
               />
@@ -154,7 +154,6 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
               )}
             </div>
 
-            {/* Password form (toggle) */}
             <div className="transition-all duration-300">
               <div
                 className={`overflow-hidden transition-all duration-300 ${
