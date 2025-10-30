@@ -2,24 +2,27 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCart } from "../api/cartApi";
+import { useLogout } from "./useLogout";
 
 export const useHeader = () => {
+  const { user, setUser, logout: handleLogout } = useLogout(); // 🔹 Sử dụng hook logout
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<{ name: string } | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
-  // Fetch cart count
+  // 🔹 Fetch cart count
   const fetchCartCount = async () => {
     try {
       const { data } = await getCart();
@@ -29,7 +32,7 @@ export const useHeader = () => {
     }
   };
 
-  // Handle search submit
+  // 🔹 Search submit
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
@@ -37,14 +40,7 @@ export const useHeader = () => {
     }
   };
 
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    navigate("/");
-  };
-
-  // Mouse enter/leave handlers
+  // 🔹 Mouse enter / leave for desktop menus
   const handleMouseEnter = (label: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(label);
@@ -54,39 +50,41 @@ export const useHeader = () => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
   };
 
-  // Toggle submenu for mobile
+  // 🔹 Toggle submenu for mobile
   const toggleSubMenu = (label: string) => {
     setActiveMenu((prev) => (prev === label ? null : label));
   };
 
-  // Initialize user and cart
+  // 🔹 Initialize cart count and user
   useEffect(() => {
     fetchCartCount();
+
+    // Nếu muốn khởi tạo user từ localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch {
-        console.error("Invalid user data");
+        console.error("Invalid user data in localStorage");
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname, setUser]);
 
-  // Handle scroll
+  // 🔹 Handle scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Focus search input when opened
+  // 🔹 Focus search input when opened
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       setTimeout(() => searchInputRef.current?.focus(), 120);
     }
   }, [searchOpen]);
 
-  // Handle click outside
+  // 🔹 Handle click outside for search and mobile menu
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -112,22 +110,27 @@ export const useHeader = () => {
     cartCount,
     searchQuery,
     user,
+
     // Refs
     timeoutRef,
     searchInputRef,
     searchBoxRef,
     mobileMenuRef,
+
     // Setters
     setActiveMenu,
     setMobileOpen,
     setSearchOpen,
     setSearchQuery,
+    setUser,
+
     // Handlers
     handleSearchSubmit,
-    handleLogout,
+    handleLogout, // 🔹 logout dùng chung
     handleMouseEnter,
     handleMouseLeave,
     toggleSubMenu,
+
     // Navigation
     location,
     navigate,

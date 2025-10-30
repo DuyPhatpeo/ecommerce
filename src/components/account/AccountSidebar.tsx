@@ -8,6 +8,7 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Tab {
   id: string;
@@ -23,15 +24,15 @@ interface AccountSidebarProps {
   };
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onLogout?: () => void;
 }
 
 const AccountSidebar: React.FC<AccountSidebarProps> = ({
   profile,
   activeTab,
   onTabChange,
-  onLogout,
 }) => {
+  const navigate = useNavigate();
+
   const tabs: Tab[] = [
     { id: "profile", label: "Profile", icon: User },
     { id: "orders", label: "Orders", icon: Package },
@@ -49,11 +50,22 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
+  // 🔹 Xử lý logout trực tiếp trong component
+  const handleLogout = () => {
+    // Xóa thông tin user
+    localStorage.removeItem("user");
+    // Có thể xóa thêm token nếu bạn có
+    localStorage.removeItem("token");
+
+    // Redirect về home hoặc login
+    navigate("/"); // hoặc "/login"
+  };
+
   return (
     <div className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-white/70 backdrop-blur-sm">
       {/* 🔹 Profile Header */}
       <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
-        <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white bg-gradient-to-br from-orange-500 to-orange-600 rounded-full shadow-md">
+        <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-br from-orange-500 to-orange-600">
           {getInitials(profile.name)}
         </div>
         <h3 className="mt-3 text-lg font-semibold text-gray-800">
@@ -83,8 +95,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
                 <Icon size={20} />
                 <span>{tab.label}</span>
               </div>
-
-              {/* Mũi tên cuối (hiện cả khi chưa active) */}
               <ChevronRight
                 size={18}
                 className={`${
@@ -102,7 +112,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
         {/* 🔹 Logout */}
         <button
-          onClick={onLogout}
+          onClick={handleLogout}
           className="flex items-center w-full gap-3 px-4 py-3 text-red-600 transition-colors rounded-lg hover:bg-red-50"
         >
           <LogOut size={20} />
