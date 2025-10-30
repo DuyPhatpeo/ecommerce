@@ -6,7 +6,6 @@ import ProfileTab from "./ProfileTab";
 import OrdersTab from "./OrdersTab";
 import AddressesTab from "./AddressesTab";
 import WishlistTab from "./WishlistTab";
-import SettingsTab from "./SettingsTab";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -154,8 +153,7 @@ const Account = () => {
             }))}
           />
         );
-      case "settings":
-        return <SettingsTab />;
+
       default:
         return null;
     }
