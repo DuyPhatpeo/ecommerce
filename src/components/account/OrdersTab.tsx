@@ -5,7 +5,7 @@ interface Order {
   id: string;
   date: string;
   status: string;
-  total: string;
+  total: string | number;
   items: number;
 }
 
@@ -30,10 +30,21 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
     }
   };
 
+  // ✅ Hàm định dạng tiền VNĐ
+  const formatCurrency = (amount: string | number): string => {
+    const value = typeof amount === "string" ? parseFloat(amount) : amount;
+    if (isNaN(value)) return amount.toString();
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl p-6 mx-auto bg-white rounded-2xl md:border md:border-gray-200 md:shadow-sm">
-        {/* 🔹 Header */}
+        {/* Header */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
@@ -46,7 +57,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
           </h2>
         </div>
 
-        {/* 🔹 Orders List */}
+        {/* Orders List */}
         {orders.length === 0 ? (
           <div className="py-12 text-center text-gray-500">
             You haven’t placed any orders yet 🛒
@@ -78,7 +89,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
                   <div>
                     <p className="text-sm text-gray-600">{order.items} items</p>
                     <p className="text-lg font-semibold text-gray-800">
-                      {order.total}
+                      {formatCurrency(order.total)}
                     </p>
                   </div>
                   <button
