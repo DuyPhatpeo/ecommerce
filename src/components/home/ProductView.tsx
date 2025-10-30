@@ -141,7 +141,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       <div
         className={`mt-10 ${
           mode === "slider"
-            ? "px-6 sm:px-8 md:px-10" // 👈 có padding 2 bên
+            ? "px-6 sm:px-8 md:px-12 "
             : "max-w-7xl mx-auto px-4 md:px-16"
         }`}
       >
