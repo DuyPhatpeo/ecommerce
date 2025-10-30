@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 const HomePage = lazy(() => import("../pages/HomPage"));
 const ProductDetailPage = lazy(() => import("../pages/ProductDetailPage"));
@@ -25,7 +25,7 @@ const AppRoutes = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center min-h-screen text-gray-500 text-lg">
+        <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">
           Đang tải trang...
         </div>
       }
@@ -44,13 +44,19 @@ const AppRoutes = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop/category/:category" element={<CategoryPage />} />
-        <Route path="/account" element={<AccountPage />} />
 
-        {/* 404 */}
+        {/* ✅ Account Routes */}
+        <Route
+          path="/account"
+          element={<Navigate to="/account/profile" replace />}
+        />
+        <Route path="/account/:tab" element={<AccountPage />} />
+
+        {/* 404 Page */}
         <Route
           path="*"
           element={
-            <div className="flex items-center justify-center min-h-screen text-gray-500 text-xl">
+            <div className="flex items-center justify-center min-h-screen text-xl text-gray-500">
               404 - Trang không tồn tại 😢
             </div>
           }

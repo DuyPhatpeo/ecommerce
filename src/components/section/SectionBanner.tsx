@@ -18,7 +18,7 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
   return (
     <div
       className={`relative w-full flex items-center justify-center overflow-hidden 
-      ${height} sm:h-[300px] md:h-[380px] lg:h-[450px] xl:h-[400px]`}
+      ${height} sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-[350px]`}
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : undefined,
         backgroundSize: "cover",
@@ -32,20 +32,13 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
       ></div>
 
       {/* Content */}
-      <div className="relative z-10 text-white text-center max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        <h1
-          className="font-bold mb-3 
-          text-2xl sm:text-3xl md:text-5xl lg:text-6xl 
-          leading-tight overflow-hidden text-ellipsis line-clamp-2"
-        >
+      <div className="relative z-10 px-2 mx-auto text-center text-white max-w-7xl sm:px-6 md:px-16">
+        <h1 className="mb-3 overflow-hidden text-2xl font-bold leading-tight sm:text-3xl md:text-5xl lg:text-6xl text-ellipsis line-clamp-2">
           {title}
         </h1>
 
         {subtitle && (
-          <p
-            className="text-sm sm:text-base md:text-lg lg:text-xl 
-            opacity-90 max-w-2xl mx-auto overflow-hidden text-ellipsis line-clamp-3"
-          >
+          <p className="max-w-2xl mx-auto overflow-hidden text-sm sm:text-base md:text-lg lg:text-xl opacity-90 text-ellipsis line-clamp-3">
             {subtitle}
           </p>
         )}
