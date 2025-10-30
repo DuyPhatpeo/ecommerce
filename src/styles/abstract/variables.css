@@ -1,58 +1,44 @@
 /* ===============================
-   🎨 CSS Variables - Theme Colors
+   🎨 CSS Variables - Orange Theme
    =============================== */
 @layer theme {
   :root {
     --neutral: #ffffff;
-    --primary: #207dff;
-    --primary-deep: #0069f6;
-    --primary-mild: #4996ff;
-    --primary-subtle: #207dff1a;
-    --error: #ff6a55;
-    --error-subtle: #ff6a551a;
+    --primary: #ff7a00;
+    --primary-deep: #e56700;
+    --primary-mild: #ffa94d;
+    --primary-subtle: #ff7a001a;
+
+    --error: #ff4d4d;
+    --error-subtle: #ff4d4d1a;
+
     --success: #10b981;
     --success-subtle: #05eb7624;
-    --info: #207dff;
-    --info-subtle: #207dff1a;
+
+    --info: #3b82f6;
+    --info-subtle: #3b82f61a;
+
     --warning: #f59e0b;
-    --warning-subtle: #ffd40045;
-    --gray-50: #fafafa;
-    --gray-100: #f5f5f5;
-    --gray-200: #e5e5e5;
-    --gray-300: #d4d4d4;
-    --gray-400: #a3a3a3;
-    --gray-500: #6c757d;
-    --gray-600: #525252;
-    --gray-700: #404040;
-    --gray-800: #262626;
-    --gray-900: #171717;
-    --gray-950: #0a0a0a;
+    --warning-subtle: #f59e0b1a;
   }
 
   .dark {
-    --neutral: #ffffff;
-    --primary: #207dff;
-    --primary-deep: #0069f6;
-    --primary-mild: #4996ff;
-    --primary-subtle: #207dff1a;
-    --error: #ff6a55;
-    --error-subtle: #ff6a551a;
-    --success: #10b981;
-    --success-subtle: #05eb7624;
-    --info: #207dff;
-    --info-subtle: #207dff1a;
-    --warning: #f59e0b;
-    --warning-subtle: #ffd40045;
-    --gray-50: #fafafa;
-    --gray-100: #f5f5f5;
-    --gray-200: #e5e5e5;
-    --gray-300: #d4d4d4;
-    --gray-400: #a3a3a3;
-    --gray-500: #737373;
-    --gray-600: #525252;
-    --gray-700: #404040;
-    --gray-800: #262626;
-    --gray-900: #171717;
-    --gray-950: #0a0a0a;
+    --neutral: #0f0f0f;
+    --primary: #ff8c1a;
+    --primary-deep: #cc6e00;
+    --primary-mild: #ffb366;
+    --primary-subtle: #ff8c1a1a;
+
+    --error: #ff5c5c;
+    --error-subtle: #ff5c5c1a;
+
+    --success: #22c55e;
+    --success-subtle: #22c55e1a;
+
+    --info: #60a5fa;
+    --info-subtle: #60a5fa1a;
+
+    --warning: #fbbf24;
+    --warning-subtle: #fbbf241a;
   }
 }
