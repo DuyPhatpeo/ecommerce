@@ -263,12 +263,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </h3>
         </NavLink>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="font-bold text-base sm:text-lg text-orange-600">
+        <div className="flex flex-wrap items-center gap-x-2 mb-2">
+          <span className="font-bold text-base sm:text-lg text-orange-600 leading-none">
             {formatVND(price)}
           </span>
           {oldPrice && (
-            <span className="text-gray-400 line-through text-sm">
+            <span className="text-gray-400 line-through text-xs sm:text-sm leading-none mt-[2px]">
               {formatVND(oldPrice)}
             </span>
           )}
