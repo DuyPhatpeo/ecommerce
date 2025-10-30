@@ -2,17 +2,15 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCart } from "../api/cartApi";
-import { useLogout } from "./useLogout";
 
 export const useHeader = () => {
-  const { user, setUser, logout: handleLogout } = useLogout(); // 🔹 Sử dụng hook logout
-
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<{ name: string } | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +20,7 @@ export const useHeader = () => {
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔹 Fetch cart count
+  // Fetch cart count
   const fetchCartCount = async () => {
     try {
       const { data } = await getCart();
@@ -32,7 +30,7 @@ export const useHeader = () => {
     }
   };
 
-  // 🔹 Search submit
+  // Handle search submit
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
@@ -40,26 +38,23 @@ export const useHeader = () => {
     }
   };
 
-  // 🔹 Mouse enter / leave for desktop menus
+  // Desktop menu hover
   const handleMouseEnter = (label: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(label);
   };
-
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
   };
 
-  // 🔹 Toggle submenu for mobile
+  // Mobile submenu toggle
   const toggleSubMenu = (label: string) => {
     setActiveMenu((prev) => (prev === label ? null : label));
   };
 
-  // 🔹 Initialize cart count and user
+  // Initialize cart count and user
   useEffect(() => {
     fetchCartCount();
-
-    // Nếu muốn khởi tạo user từ localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -68,23 +63,23 @@ export const useHeader = () => {
         console.error("Invalid user data in localStorage");
       }
     }
-  }, [location.pathname, setUser]);
+  }, [location.pathname]);
 
-  // 🔹 Handle scroll
+  // Scroll listener
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 🔹 Focus search input when opened
+  // Focus search input
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       setTimeout(() => searchInputRef.current?.focus(), 120);
     }
   }, [searchOpen]);
 
-  // 🔹 Handle click outside for search and mobile menu
+  // Click outside to close search or mobile menu
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -126,7 +121,6 @@ export const useHeader = () => {
 
     // Handlers
     handleSearchSubmit,
-    handleLogout, // 🔹 logout dùng chung
     handleMouseEnter,
     handleMouseLeave,
     toggleSubMenu,

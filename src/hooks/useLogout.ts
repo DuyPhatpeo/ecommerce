@@ -1,6 +1,5 @@
-// hooks/useLogout.ts
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -9,11 +8,20 @@ export const useLogout = () => {
     return stored ? JSON.parse(stored) : null;
   });
 
+  // Sync across tabs
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "user") {
+        setUser(e.newValue ? JSON.parse(e.newValue) : null);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const logout = () => {
-    // 🔹 Xóa user khỏi localStorage
     localStorage.removeItem("user");
     setUser(null);
-    // 🔹 Redirect về trang home
     navigate("/");
   };
 
