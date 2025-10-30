@@ -50,7 +50,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl p-6 mx-auto bg-white rounded-2xl md:border md:border-gray-200 md:shadow-sm">
+      <div className="max-w-6xl p-6 mx-auto bg-white">
         {/* Header */}
         <div className="mb-10 text-center">
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
@@ -104,7 +104,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                 value={isEditing ? editedProfile.name : profile.name}
                 onChange={(e) => onChange("name", e.target.value)}
                 disabled={!isEditing}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg box-border focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
+                className="box-border w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
               />
             </div>
 
@@ -117,7 +117,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                 value={isEditing ? editedProfile.email : profile.email}
                 onChange={(e) => onChange("email", e.target.value)}
                 disabled={!isEditing}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg box-border focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
+                className="box-border w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
               />
             </div>
 
@@ -130,7 +130,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                 value={isEditing ? editedProfile.phone : profile.phone}
                 onChange={(e) => onChange("phone", e.target.value)}
                 disabled={!isEditing}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg box-border focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
+                className="box-border w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100"
               />
             </div>
           </div>
@@ -163,7 +163,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div className="p-4 mt-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
                   <div className="space-y-4">
                     {[
                       { placeholder: "Current Password", field: "current" },
@@ -181,7 +181,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                             [field]: e.target.value,
                           })
                         }
-                        className="w-full box-border px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                        className="box-border w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none"
                       />
                     ))}
 
@@ -199,7 +199,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                           setShowPasswordForm(false);
                           setPasswords({ current: "", new: "", confirm: "" });
                         }}
-                        className="flex items-center gap-2 px-5 py-2 mt-2 text-gray-700 rounded-lg bg-gray-200 hover:bg-gray-300"
+                        className="flex items-center gap-2 px-5 py-2 mt-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
                       >
                         <X size={18} />
                         Cancel

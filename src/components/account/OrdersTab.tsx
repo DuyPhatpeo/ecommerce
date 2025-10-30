@@ -42,7 +42,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl p-6 mx-auto bg-white rounded-2xl md:border md:border-gray-200 md:shadow-sm">
+      <div className="max-w-6xl p-6 mx-auto bg-white">
         {/* Header */}
         <div className="mb-10 text-center">
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
