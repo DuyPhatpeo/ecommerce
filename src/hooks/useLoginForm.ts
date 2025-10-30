@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getUsers } from "../api/userApi";
+import { getUsers } from "../api/authApi";
 
 interface LoginFormData {
   email: string;
