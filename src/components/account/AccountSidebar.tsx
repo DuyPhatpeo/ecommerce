@@ -5,7 +5,6 @@ import {
   MapPin,
   Heart,
   LogOut,
-  Sparkles,
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -130,12 +129,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
           {isMobile && <ChevronRight size={18} className="text-gray-400" />}
         </button>
       </nav>
-
-      {/* Footer */}
-      <div className="flex justify-center mt-8 text-sm text-gray-400">
-        <Sparkles size={16} className="mr-1 text-orange-400" />
-        <span>Stay stylish, {user.fullName.split(" ")[0]} ✨</span>
-      </div>
     </div>
   );
 };
