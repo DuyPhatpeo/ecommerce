@@ -21,13 +21,69 @@ const Account = () => {
   const [editedProfile, setEditedProfile] = useState(profile);
 
   const orders = [
-    /* ... */
+    {
+      id: "ORD-001",
+      date: "2025-10-25",
+      status: "Shipping",
+      total: "$125.00",
+      items: 3,
+    },
+    {
+      id: "ORD-002",
+      date: "2025-10-20",
+      status: "Completed",
+      total: "$85.00",
+      items: 2,
+    },
+    {
+      id: "ORD-003",
+      date: "2025-10-15",
+      status: "Completed",
+      total: "$210.00",
+      items: 5,
+    },
   ];
+
   const addresses = [
-    /* ... */
+    {
+      id: 1,
+      name: "Home",
+      address: "123 Main Street, Downtown, New York, NY 10001",
+      phone: "+1 234 567 8900",
+      isDefault: true,
+    },
+    {
+      id: 2,
+      name: "Office",
+      address: "456 Business Ave, Midtown, New York, NY 10017",
+      phone: "+1 987 654 3210",
+      isDefault: false,
+    },
   ];
+
+  // 🔥 Dữ liệu wishlist demo (giả lập từ API hoặc local)
   const wishlist = [
-    /* ... */
+    {
+      id: "1",
+      name: "Premium Cotton T-Shirt",
+      price: 299000,
+      image:
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    },
+    {
+      id: "2",
+      name: "Slim Fit Jeans",
+      price: 599000,
+      image:
+        "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
+    },
+    {
+      id: "3",
+      name: "White Sneakers",
+      price: 899000,
+      image:
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+    },
   ];
 
   const handleTabChange = (tabId: string) => {
