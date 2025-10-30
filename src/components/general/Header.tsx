@@ -135,43 +135,15 @@ const Header = () => {
               />
             </button>
 
-            {/* User Dropdown (Desktop - only if logged in) */}
+            {/* User Icon (Desktop - click to go to /account) */}
             {user && (
-              <div
-                className="hidden lg:block relative"
-                onMouseEnter={() => handleMouseEnter("USER")}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button className="hover:text-orange-500 transition-colors">
+              <div className="hidden lg:block">
+                <Link
+                  to="/account"
+                  className="hover:text-orange-500 transition-colors flex items-center"
+                >
                   <User size={22} />
-                </button>
-
-                <AnimatePresence>
-                  {activeMenu === "USER" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute left-1/2 -translate-x-1/2 top-[50px] w-[180px] bg-white shadow-lg border border-gray-100 z-40 rounded"
-                    >
-                      <Link
-                        to="/account"
-                        className="block px-5 py-2 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-700 hover:bg-orange-500 hover:text-white flex items-center gap-2"
-                      >
-                        <User size={16} />
-                        My Account
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left block px-5 py-2 text-[13px] border-t border-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white flex items-center gap-2"
-                      >
-                        <LogOut size={16} />
-                        Log out
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                </Link>
               </div>
             )}
 
