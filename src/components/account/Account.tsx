@@ -22,23 +22,22 @@ const Account = () => {
   const [editedProfile, setEditedProfile] = useState(profile);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(!tab); // chỉ hiện sidebar nếu chưa chọn tab
 
-  // Detect screen size
+  // Theo dõi kích thước màn hình
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setShowSidebar(true); // Desktop: luôn hiển thị cả hai
+      } else {
+        setShowSidebar(!tab); // Mobile: chỉ hiện sidebar nếu chưa chọn tab
+      }
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Ensure default tab
-  useEffect(() => {
-    if (!tab) {
-      navigate("/account/profile", { replace: true });
-      return;
-    }
-    setShowSidebar(!isMobile); // Mobile: hide sidebar when tab selected
-  }, [tab, isMobile, navigate]);
+  }, [tab]);
 
   const handleSaveProfile = () => {
     setProfile(editedProfile);
@@ -47,14 +46,21 @@ const Account = () => {
 
   const handleTabChange = (tabId: string) => {
     navigate(`/account/${tabId}`);
-    if (isMobile) setShowSidebar(false); // Mobile: hide sidebar when tab selected
+    if (isMobile) setShowSidebar(false); // Mobile: vào tab -> ẩn sidebar
   };
 
   const handleBack = () => {
     if (isMobile) {
-      setShowSidebar(true); // Mobile: show sidebar
-    } else {
-      navigate("/account");
+      navigate("/account"); // Quay lại sidebar
+      setShowSidebar(true);
+    }
+  };
+
+  // ✅ Khi người dùng đang ở /account/:tab mà bấm icon mở sidebar (hoặc vào sidebar bằng back)
+  const handleOpenSidebar = () => {
+    if (isMobile) {
+      navigate("/account"); // luôn trở lại URL /account
+      setShowSidebar(true);
     }
   };
 
@@ -92,20 +98,20 @@ const Account = () => {
         {showSidebar && (
           <div className="w-full lg:w-1/4">
             <AccountSidebar
-              activeTab={tab || "profile"}
+              activeTab={tab || ""}
               onTabChange={handleTabChange}
               onLogout={logout}
             />
           </div>
         )}
 
-        {/* Content */}
-        {tab && (!isMobile || !showSidebar) && (
+        {/* Nội dung tab */}
+        {!showSidebar && tab && (
           <div className="w-full lg:w-3/4">
             {isMobile && (
               <div className="flex justify-start mb-2">
                 <button
-                  onClick={handleBack}
+                  onClick={handleOpenSidebar}
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
                 >
                   <ArrowLeft size={16} />
@@ -116,6 +122,9 @@ const Account = () => {
             {renderTab()}
           </div>
         )}
+
+        {/* Desktop: luôn hiển thị song song */}
+        {!isMobile && <div className="w-full lg:w-3/4">{renderTab()}</div>}
       </div>
     </div>
   );
