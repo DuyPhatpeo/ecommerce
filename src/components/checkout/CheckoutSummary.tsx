@@ -122,7 +122,7 @@ const CheckoutSummary: React.FC<Props> = ({
           className="px-5 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 flex items-center gap-2 shadow-md"
         >
           <ShieldCheck className="w-5 h-5" />
-          Checkout
+          Place Order
         </button>
       </div>
     </>
