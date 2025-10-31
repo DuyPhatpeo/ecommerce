@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getCategories } from "../api/categoryApi";
 
 export const useMenuItems = () => {
-  const [menuItems, setMenuItems] = useState([
+  const baseMenu = [
     { label: "HOME", path: "/" },
     { label: "SHOP", path: "/shop" },
     {
@@ -16,7 +16,9 @@ export const useMenuItems = () => {
       ],
     },
     { label: "CONTACT", path: "/contact" },
-  ]);
+  ];
+
+  const [menuItems, setMenuItems] = useState(baseMenu);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,24 +26,26 @@ export const useMenuItems = () => {
         const categories = await getCategories();
         if (!Array.isArray(categories) || categories.length === 0) return;
 
+        // 🔹 Format lại category thành { label, path }
         const categoryMenu = {
           label: "CATEGORY",
-          subMenu: categories,
+          subMenu: categories.map((cat) => ({
+            label: cat.charAt(0).toUpperCase() + cat.slice(1),
+            path: `/shop/${cat.toLowerCase().replace(/\s+/g, "-")}`,
+          })),
         };
 
         setMenuItems((prev) => {
-          // ❗ Kiểm tra xem đã có CATEGORY chưa
-          if (prev.some((item) => item.label === "CATEGORY")) {
-            return prev; // Không thêm nữa
-          }
+          // Nếu đã có CATEGORY thì không thêm nữa
+          if (prev.some((item) => item.label === "CATEGORY")) return prev;
 
-          const newMenu = [...prev];
-          const shopIndex = newMenu.findIndex((m) => m.label === "SHOP");
-          newMenu.splice(shopIndex + 1, 0, categoryMenu);
-          return newMenu;
+          const updated = [...prev];
+          const shopIndex = updated.findIndex((m) => m.label === "SHOP");
+          updated.splice(shopIndex + 1, 0, categoryMenu);
+          return updated;
         });
       } catch (error) {
-        console.error("❌ Lỗi khi fetch categories:", error);
+        console.error("❌ Fetch categories failed:", error);
       }
     };
 
