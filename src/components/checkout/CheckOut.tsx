@@ -137,7 +137,7 @@ const CheckOut: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-12 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50">
+    <div className="min-h-screen px-4 py-12">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
         <div className="grid grid-cols-1 lg:gap-8 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
