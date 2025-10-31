@@ -138,7 +138,7 @@ export default function ShoppingCart() {
         {/* 🧱 Layout:
             - Mobile/Tablet: hiển thị liền khối (1 cột)
             - Desktop (≥lg): chia 2 khối (CartList + CartSummary) */}
-        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-0 lg:gap-6">
           {/* Cart List */}
           <div className="w-full lg:col-span-2">
             <CartList

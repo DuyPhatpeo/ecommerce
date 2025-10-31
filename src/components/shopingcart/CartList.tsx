@@ -78,12 +78,12 @@ export default function CartList({
   });
 
   return (
-    <div className="lg:col-span-2">
+    <div className="lg:col-span-2 mb-0 lg:mb-6">
       <div
         className="
-          bg-white shadow-2xl border border-orange-100 overflow-hidden 
-          rounded-none sm:rounded-none md:rounded-none lg:rounded-3xl
-        "
+      bg-white shadow-2xl border border-orange-100 overflow-hidden 
+      rounded-none sm:rounded-none md:rounded-none lg:rounded-3xl
+    "
       >
         {/* ===== HEADER ===== */}
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white">
