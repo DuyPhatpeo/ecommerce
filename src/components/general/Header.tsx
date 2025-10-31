@@ -186,8 +186,9 @@ const Header = () => {
                     onKeyDown={handleSearchSubmit}
                     placeholder="Search products..."
                     autoFocus
-                    className="w-full pl-12 pr-10 py-2.5 rounded-lg border border-orange-300 focus:ring-2 focus:ring-orange-400 text-sm"
+                    className="w-full pl-12 pr-10 py-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
                   />
+
                   <Button
                     onClick={() => setSearchOpen(false)}
                     className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500"
