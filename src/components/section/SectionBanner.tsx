@@ -13,12 +13,12 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
   subtitle,
   bgImage,
   bgColor = "bg-orange-500",
-  height = "h-[220px]", // mặc định hợp lý
+  height = "h-[200px]", // mặc định hợp lý
 }) => {
   return (
     <div
       className={`relative w-full flex items-center justify-center overflow-hidden 
-      ${height} sm:h-[260px] md:h-[300px] lg:h-[320px] xl:h-[300px]`} // responsive vừa đủ
+  ${height} sm:h-[250px] md:h-[300px] lg:h-[300px] xl:h-[300px] pt-20`}
       style={{
         backgroundImage: bgImage ? `url(${bgImage})` : undefined,
         backgroundSize: "cover",
