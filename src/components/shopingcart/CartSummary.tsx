@@ -75,25 +75,19 @@ export default function CartSummary({
     localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
 
     navigate("/checkout", {
-      state: {
-        subtotal,
-        tax,
-        shipping,
-        total,
-        selectedItems: checkoutItems,
-      },
+      state: { subtotal, tax, shipping, total, selectedItems: checkoutItems },
     });
   };
 
   return (
     <>
-      {/* ===== ORDER SUMMARY (VISIBLE ON ALL DEVICES) ===== */}
+      {/* ===== DESKTOP ORDER SUMMARY ===== */}
       <div
         className="
-    w-full bg-white lg:shadow-2xl overflow-hidden 
-    rounded-none lg:rounded-3xl
-    lg:col-span-1 lg:sticky lg:top-20
-  "
+          w-full bg-white lg:shadow-2xl overflow-hidden 
+          rounded-none lg:rounded-3xl
+          lg:col-span-1 lg:sticky lg:top-20
+        "
       >
         {/* HEADER */}
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white">
@@ -133,37 +127,29 @@ export default function CartSummary({
 
           {/* 💰 Price breakdown */}
           <div className="space-y-4 mb-6">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600 flex items-center gap-2">
-                <Tag className="w-4 h-4 text-orange-500" /> Subtotal
-              </span>
-              <span className="font-semibold text-gray-800">
-                {formatPrice(subtotal)}
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600 flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
-              </span>
-              <span className="font-semibold text-gray-800">
-                {formatPrice(tax)}
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600 flex items-center gap-2">
-                <Truck className="w-4 h-4 text-blue-500" /> Shipping Fee
-              </span>
-              <span className="font-semibold">
-                {shipping === 0 ? (
+            <SummaryRow
+              icon={<Tag className="w-4 h-4 text-orange-500" />}
+              label="Subtotal"
+              value={formatPrice(subtotal)}
+            />
+            <SummaryRow
+              icon={<DollarSign className="w-4 h-4 text-green-500" />}
+              label="Tax (10%)"
+              value={formatPrice(tax)}
+            />
+            <SummaryRow
+              icon={<Truck className="w-4 h-4 text-blue-500" />}
+              label="Shipping Fee"
+              value={
+                shipping === 0 ? (
                   <span className="text-green-600 font-bold">FREE</span>
                 ) : (
                   <span className="text-gray-800">{formatPrice(shipping)}</span>
-                )}
-              </span>
-            </div>
+                )
+              }
+            />
 
+            {/* FREE SHIPPING PROGRESS */}
             {subtotal > 0 && subtotal < 25 && (
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-3">
                 <div className="flex items-start gap-2 mb-2">
@@ -173,8 +159,7 @@ export default function CartSummary({
                     <strong className="font-bold">
                       {formatPrice(25 - subtotal)}
                     </strong>{" "}
-                    more to get{" "}
-                    <strong className="font-bold">FREE SHIPPING</strong>!
+                    more to get <strong>FREE SHIPPING</strong>!
                   </p>
                 </div>
                 <div className="w-full bg-blue-100 rounded-full h-2 overflow-hidden">
@@ -208,9 +193,14 @@ export default function CartSummary({
                 )}
               </div>
             </div>
+
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-5 pt-5 border-t border-gray-100">
+              <ShieldCheck className="w-5 h-5 text-green-500" />
+              <span>Secure and encrypted payment</span>
+            </div>
           </div>
 
-          {/* 🧡 Checkout button (only on desktop) */}
+          {/* 🧡 Checkout button (Desktop only) */}
           <div className="hidden lg:block">
             <Button
               onClick={handleCheckout}
@@ -228,7 +218,7 @@ export default function CartSummary({
       </div>
 
       {/* ===== MOBILE/TABLET TASKBAR ===== */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg px-5 py-4 flex justify-between items-center lg:hidden z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl px-6 py-4 flex justify-between items-center lg:hidden z-50 rounded-t-3xl">
         <div>
           <p className="text-sm text-gray-500">Total</p>
           <p className="text-xl font-bold text-orange-600">
@@ -251,3 +241,21 @@ export default function CartSummary({
     </>
   );
 }
+
+const SummaryRow = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) => (
+  <div className="flex justify-between items-center">
+    <div className="flex items-center gap-2 text-gray-700">
+      {icon}
+      <span>{label}</span>
+    </div>
+    <span className="font-semibold text-gray-800">{value}</span>
+  </div>
+);
