@@ -30,12 +30,12 @@ const Footer: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/75 to-black/90"></div>
 
       {/* Nội dung chính */}
-      <div className="relative z-10 py-24 max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
+      <div className="relative z-10 py-14 sm:py-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
         {/* Top Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
           {/* About */}
           <div className="space-y-4">
-            <h3 className="text-white font-bold text-xl mb-5 relative inline-block">
+            <h3 className="text-white font-bold text-lg sm:text-xl mb-5 relative inline-block">
               About
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]" />
             </h3>
@@ -47,14 +47,14 @@ const Footer: React.FC = () => {
 
           {/* Newsletter */}
           <div className="space-y-4">
-            <h3 className="text-white font-bold text-xl mb-5 relative inline-block">
+            <h3 className="text-white font-bold text-lg sm:text-xl mb-5 relative inline-block">
               Newsletter
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]" />
             </h3>
             <p className="text-sm text-gray-400 mb-4">
               Stay updated with our latest news and offers
             </p>
-            <form className="group">
+            <form className="group w-full max-w-md">
               <div className="flex overflow-hidden rounded-lg border border-gray-700 group-hover:border-[#ff9f00] transition-all duration-300 shadow-lg">
                 <input
                   type="email"
@@ -76,25 +76,26 @@ const Footer: React.FC = () => {
 
           {/* Instagram Feed */}
           <div className="space-y-4">
-            <h3 className="text-white font-bold text-xl mb-5 relative inline-block">
+            <h3 className="text-white font-bold text-lg sm:text-xl mb-5 relative inline-block">
               Instagram
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]" />
             </h3>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-2 max-w-[240px] sm:max-w-[260px]">
               {instaImages.map((src, index) => (
                 <div
                   key={index}
-                  className="relative w-full overflow-hidden group cursor-pointer transform hover:scale-105 transition-transform duration-300"
+                  className="relative w-[55px] h-[55px] sm:w-[65px] sm:h-[65px] overflow-hidden 
+                             group cursor-pointer transform hover:scale-105 transition-transform duration-300"
                 >
                   <img
                     src={src}
                     alt={`insta-${index}`}
-                    className="w-full aspect-square object-cover"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#ff9f00]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <Instagram
-                      size={24}
+                      size={20}
                       className="text-white transform scale-0 group-hover:scale-100 transition-transform duration-300"
                     />
                   </div>
@@ -105,15 +106,15 @@ const Footer: React.FC = () => {
 
           {/* Follow Us */}
           <div className="space-y-4">
-            <h3 className="text-white font-bold text-xl mb-5 relative inline-block">
+            <h3 className="text-white font-bold text-lg sm:text-xl mb-5 relative inline-block">
               Follow
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]" />
             </h3>
 
-            <div className="overflow-hidden mb-2">
+            <div className="overflow-hidden mb-2 max-w-[250px]">
               <iframe
                 src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fsweetsoftvn&tabs=&width=250&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
-                width="250"
+                width="100%"
                 height="130"
                 style={{ border: "none", overflow: "hidden" }}
                 scrolling="no"
@@ -128,7 +129,7 @@ const Footer: React.FC = () => {
                 <Button
                   key={i}
                   icon={<Icon size={18} />}
-                  className="w-11 h-11 border border-gray-700 text-gray-300 
+                  className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 
                              hover:border-transparent hover:text-white
                              rounded-full bg-transparent transition-all duration-300
                              hover:scale-110 hover:shadow-lg"
@@ -139,12 +140,12 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Line */}
-        <div className="mt-14 pt-8 border-t border-gray-800">
+        <div className="mt-12 sm:mt-14 pt-6 sm:pt-8 border-t border-gray-800">
           <div className="text-center">
-            <div className="text-xs sm:text-sm text-gray-400 flex flex-row items-center justify-center gap-1 flex-wrap">
+            <div className="text-xs sm:text-sm text-gray-400 flex flex-row items-center justify-center gap-1 flex-wrap px-2">
               <span>Copyright ©2025 All rights reserved | Made with</span>
               <Heart
-                size={16}
+                size={14}
                 strokeWidth={2}
                 fill="#ff9f00"
                 className="text-[#ff9f00] mx-1 animate-pulse"
