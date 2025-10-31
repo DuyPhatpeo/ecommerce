@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { ShoppingBag } from "lucide-react";
 import toast from "react-hot-toast";
 import {
   getCart,
@@ -13,9 +12,9 @@ import CartSummary from "./CartSummary";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]); // ✅ đổi sang string[]
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState<string | null>(null); // ✅ id dạng string
+  const [updating, setUpdating] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
 
   // ✅ Fetch cart
@@ -35,7 +34,7 @@ export default function ShoppingCart() {
 
       const merged = cart.map((item: any, i: number) => ({
         ...item,
-        id: String(item.id), // ✅ ép id về string luôn cho chắc
+        id: String(item.id),
         product:
           products[i].status === "fulfilled"
             ? products[i].value
@@ -72,7 +71,6 @@ export default function ShoppingCart() {
       await updateCartItem(id, newQty);
       toast.success("✅ Quantity updated!");
     } catch {
-      // rollback
       setCartItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, quantity: item.quantity } : i))
       );
@@ -123,11 +121,11 @@ export default function ShoppingCart() {
     );
   };
 
-  // ✅ Select all (only valid items)
+  // ✅ Select all
   const toggleSelectAll = () => {
     const validIds = cartItems
       .filter((i) => i.product?.stock > 0 && i.quantity <= i.product.stock)
-      .map((i) => String(i.id)); // ✅ đảm bảo id là string
+      .map((i) => String(i.id));
 
     setSelectedItems((prev) =>
       validIds.every((id) => prev.includes(id)) ? [] : validIds
@@ -137,48 +135,30 @@ export default function ShoppingCart() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-t-3xl shadow-2xl p-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24" />
-
-          <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                <ShoppingBag className="w-10 h-10 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-white mb-1">
-                  Shopping Cart
-                </h1>
-                <p className="text-orange-100 text-sm">
-                  Manage your selected items
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white text-orange-600 px-5 py-2.5 rounded-full font-bold shadow-lg whitespace-nowrap">
-              {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
-            </div>
+        {/* 🧱 Layout:
+            - Mobile/Tablet: hiển thị liền khối (1 cột)
+            - Desktop (≥lg): chia 2 khối (CartList + CartSummary) */}
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-3">
+          {/* Cart List */}
+          <div className="w-full lg:col-span-2">
+            <CartList
+              cartItems={cartItems}
+              selectedItems={selectedItems}
+              loading={loading}
+              updating={updating}
+              updateQuantity={updateQuantity}
+              removeItem={removeItem}
+              toggleSelect={toggleSelect}
+              toggleSelectAll={toggleSelectAll}
+              clearAll={removeAll}
+              clearing={clearing}
+            />
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="grid lg:grid-cols-3 gap-6 mt-6">
-          <CartList
-            cartItems={cartItems}
-            selectedItems={selectedItems}
-            loading={loading}
-            updating={updating}
-            updateQuantity={updateQuantity}
-            removeItem={removeItem}
-            toggleSelect={toggleSelect}
-            toggleSelectAll={toggleSelectAll}
-            clearAll={removeAll}
-            clearing={clearing}
-          />
-
-          <CartSummary cartItems={cartItems} selectedItems={selectedItems} />
+          {/* Cart Summary */}
+          <div className="w-full">
+            <CartSummary cartItems={cartItems} selectedItems={selectedItems} />
+          </div>
         </div>
       </div>
     </div>
