@@ -24,18 +24,20 @@ const Account = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [showSidebar, setShowSidebar] = useState(true);
 
+  // Detect screen size
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Ensure default tab
   useEffect(() => {
     if (!tab) {
       navigate("/account/profile", { replace: true });
       return;
     }
-    setShowSidebar(!isMobile);
+    setShowSidebar(!isMobile); // Mobile: hide sidebar when tab selected
   }, [tab, isMobile, navigate]);
 
   const handleSaveProfile = () => {
@@ -43,8 +45,18 @@ const Account = () => {
     setIsEditing(false);
   };
 
-  const handleTabChange = (tabId: string) => navigate(`/account/${tabId}`);
-  const handleBack = () => navigate("/account");
+  const handleTabChange = (tabId: string) => {
+    navigate(`/account/${tabId}`);
+    if (isMobile) setShowSidebar(false); // Mobile: hide sidebar when tab selected
+  };
+
+  const handleBack = () => {
+    if (isMobile) {
+      setShowSidebar(true); // Mobile: show sidebar
+    } else {
+      navigate("/account");
+    }
+  };
 
   const renderTab = () => {
     switch (tab) {
@@ -63,11 +75,11 @@ const Account = () => {
           />
         );
       case "orders":
-        return <OrdersTab />; // OrdersTab tự chứa data sample
+        return <OrdersTab />;
       case "addresses":
-        return <AddressesTab />; // AddressesTab tự chứa data sample
+        return <AddressesTab />;
       case "wishlist":
-        return <WishlistTab />; // WishlistTab tự chứa data sample
+        return <WishlistTab />;
       default:
         return null;
     }
