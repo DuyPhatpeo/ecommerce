@@ -162,7 +162,7 @@ const AddressesTab: React.FC = () => {
         <div className="flex justify-end">
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-90"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-orange-500  hover:opacity-90"
           >
             <Plus size={18} /> Add New Address
           </button>

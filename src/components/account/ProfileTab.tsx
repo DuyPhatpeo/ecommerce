@@ -53,7 +53,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
       <div className="max-w-6xl p-6 mx-auto bg-white">
         {/* Header */}
         <div className="mb-10 text-center">
-          <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
+          <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-orange-600  bg-clip-text text-transparent pb-1">
             Personal Information
           </h2>
         </div>
@@ -68,7 +68,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
             {!isEditing ? (
               <button
                 onClick={onEdit}
-                className="flex items-center gap-2 px-4 py-2 text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-90"
+                className="flex items-center gap-2 px-4 py-2 text-white transition-all rounded-lg shadow-sm bg-orange-500 hover:opacity-90"
               >
                 <Edit2 size={16} />
                 Edit
@@ -146,7 +146,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
               {!showPasswordForm && (
                 <button
                   onClick={() => setShowPasswordForm(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-90"
+                  className="flex items-center gap-2 px-4 py-2 text-white transition-all rounded-lg shadow-sm bg-orange-500 hover:opacity-90"
                 >
                   <Edit2 size={16} />
                   Change

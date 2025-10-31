@@ -15,12 +15,12 @@ interface OrdersTabProps {
 const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
   const [visibleCount, setVisibleCount] = useState(5);
 
-  // ✅ Sample data tự tạo
+  // ✅ Sample data
   const orders: Order[] = useMemo(() => {
     const statuses = ["Shipping", "Completed", "Cancelled", "Processing"];
     return Array.from({ length: 10 }).map((_, i) => ({
       id: `ORD-${String(i + 1).padStart(3, "0")}`,
-      createdAt: new Date(Date.now() - i * 86400000).toISOString(), // cách nhau 1 ngày
+      createdAt: new Date(Date.now() - i * 86400000).toISOString(),
       status: statuses[i % statuses.length],
       total: Math.floor(Math.random() * 2_000_000 + 500_000),
       items: Math.floor(Math.random() * 5) + 1,
@@ -85,9 +85,9 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
               {visibleOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="p-5 transition-shadow duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-lg"
+                  className="p-5 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-md"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
                         Order #{order.id}
@@ -105,7 +105,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-gray-100">
                     <div>
                       <p className="text-sm text-gray-600">
                         {order.items} items
@@ -116,7 +116,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
                     </div>
                     <button
                       onClick={() => onViewDetails?.(order.id)}
-                      className="px-4 py-2 text-orange-600 transition-colors duration-200 border border-orange-500 rounded-lg hover:bg-orange-50"
+                      className="px-5 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95 shadow-sm"
                     >
                       View Details
                     </button>
@@ -129,7 +129,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
               <div className="text-center mt-6">
                 <button
                   onClick={handleSeeMore}
-                  className="px-6 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition"
+                  className="px-6 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95"
                 >
                   See More
                 </button>
