@@ -80,22 +80,24 @@ export default function CheckoutForm({ onChange }: Props) {
             checked={selectedId === addr.id}
             onChange={(val) => setSelectedId(val)}
             label={
-              <div className="flex flex-col gap-1">
-                <p className="font-bold text-gray-900 flex items-center gap-2 text-lg">
-                  <User className="w-5 h-5 text-orange-500" /> {addr.fullName}
-                  {addr.isDefault && (
-                    <span className="ml-2 text-xs text-white bg-orange-500 px-2 py-0.5 rounded-full">
-                      Default
-                    </span>
-                  )}
-                </p>
-                <p className="text-sm text-gray-700 flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-orange-500" /> {addr.phone}
-                </p>
-                <p className="text-sm text-gray-600 mt-1 flex items-start gap-2 leading-relaxed">
-                  <Home className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                  <span>{addr.address}</span>
-                </p>
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex flex-col gap-1">
+                  <p className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                    <User className="w-5 h-5 text-orange-500" /> {addr.fullName}
+                  </p>
+                  <p className="text-sm text-gray-700 flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-orange-500" /> {addr.phone}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1 flex items-start gap-2 leading-relaxed">
+                    <Home className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <span>{addr.address}</span>
+                  </p>
+                </div>
+                {addr.isDefault && (
+                  <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full flex-shrink-0 self-start">
+                    Default
+                  </span>
+                )}
               </div>
             }
             className="flex justify-between items-start p-6 rounded-2xl transition-all"

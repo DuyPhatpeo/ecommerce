@@ -143,11 +143,7 @@ const AddressesTab: React.FC = () => {
   };
 
   const handleSetDefault = (id: string) => {
-    setAddresses((prev) => {
-      const updated = prev.map((a) => ({ ...a, isDefault: a.id === id }));
-      // ✅ Đưa địa chỉ mặc định lên đầu
-      return updated.sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0));
-    });
+    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
   };
 
   const handleDelete = (id: string) =>
@@ -203,25 +199,32 @@ const AddressesTab: React.FC = () => {
 
                 {/* Buttons */}
                 <div className="flex flex-wrap gap-2 mt-auto">
+                  {/* Edit */}
                   <button
                     onClick={() => openModal(addr)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all"
                   >
                     <Edit2 size={14} /> Edit
                   </button>
 
-                  {!addr.isDefault && (
-                    <button
-                      onClick={() => handleSetDefault(addr.id)}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-orange-600 border border-orange-500 rounded-lg hover:bg-orange-50"
-                    >
-                      <Check size={14} /> Set as Default
-                    </button>
-                  )}
+                  {/* Set Default */}
+                  <button
+                    onClick={() => handleSetDefault(addr.id)}
+                    disabled={addr.isDefault}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-all 
+                    ${
+                      addr.isDefault
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-green-500 text-white hover:bg-green-600"
+                    }`}
+                  >
+                    <Check size={14} /> Set as Default
+                  </button>
 
+                  {/* Delete */}
                   <button
                     onClick={() => handleDelete(addr.id)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-500 rounded-lg hover:bg-red-50"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all"
                   >
                     <Trash2 size={14} /> Delete
                   </button>
