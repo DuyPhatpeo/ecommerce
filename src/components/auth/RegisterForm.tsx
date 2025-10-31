@@ -2,7 +2,7 @@ import { useState } from "react";
 import { UserPlus, Mail, User, Phone } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import useRegisterForm from "../../hooks/useRegisterForm";
+import useRegisterForm from "../../hooks/useRegister";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";

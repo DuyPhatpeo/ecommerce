@@ -3,7 +3,7 @@ import { useState } from "react";
 import { LogIn, Mail } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import useLoginForm from "../../hooks/useLoginForm";
+import useLoginForm from "../../hooks/useLogin";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
