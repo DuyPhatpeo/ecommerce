@@ -17,7 +17,7 @@ interface Props {
 
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
   return (
-    <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-orange-100">
+    <div className="bg-white lg:rounded-3xl lg:shadow-lg overflow-hidden lg:mb-8 mb-0">
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
         <ShoppingBag className="w-6 h-6 text-white" />

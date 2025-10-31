@@ -54,21 +54,18 @@ export default function CheckoutForm({ onChange }: Props) {
   }, [selectedId, note, paymentMethod, addresses, onChange]);
 
   return (
-    <div className="bg-white rounded-3xl shadow-lg border border-orange-100 overflow-hidden">
+    <div className="bg-white lg:rounded-3xl lg:shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex justify-between items-center">
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
+        <MapPin className="w-6 h-6 text-white" />
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <MapPin className="w-6 h-6" />
+          <h2 className="text-2xl font-bold text-white">
             Shipping Information
           </h2>
           <p className="text-orange-100 mt-1 text-sm">
             {addresses.length} saved addresses
           </p>
         </div>
-        <button className="bg-white/20 hover:bg-white/30 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg">
-          <Plus size={18} /> Add New
-        </button>
       </div>
 
       {/* Address List */}
@@ -103,6 +100,13 @@ export default function CheckoutForm({ onChange }: Props) {
             className="flex justify-between items-start p-6 rounded-2xl transition-all"
           />
         ))}
+
+        {/* ✅ Move Add New button here */}
+        <div className="pt-4 flex justify-center lg:justify-end">
+          <button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md w-full sm:w-auto justify-center">
+            <Plus size={18} /> Add New Address
+          </button>
+        </div>
       </div>
 
       {/* Delivery Note */}
