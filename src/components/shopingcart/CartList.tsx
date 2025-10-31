@@ -81,7 +81,7 @@ export default function CartList({
     <div className="lg:col-span-2 mb-0 lg:mb-6">
       <div
         className="
-      bg-white shadow-2xl border border-orange-100 overflow-hidden 
+      bg-white lg:shadow-2xl  overflow-hidden 
       rounded-none sm:rounded-none md:rounded-none lg:rounded-3xl
     "
       >

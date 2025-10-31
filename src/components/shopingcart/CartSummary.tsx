@@ -90,8 +90,7 @@ export default function CartSummary({
       {/* ===== ORDER SUMMARY (VISIBLE ON ALL DEVICES) ===== */}
       <div
         className="
-    w-full bg-white shadow-2xl overflow-hidden border border-orange-100
-    mt-0 lg:mt-6
+    w-full bg-white lg:shadow-2xl overflow-hidden 
     rounded-none lg:rounded-3xl
     lg:col-span-1 lg:sticky lg:top-20
   "
