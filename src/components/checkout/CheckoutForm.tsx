@@ -36,9 +36,6 @@ interface Props {
 }
 
 export default function CheckoutForm({ onChange }: Props) {
-  // =============================
-  // 🔸 STATE
-  // =============================
   const [addresses, setAddresses] = useState<Address[]>(() => {
     const saved = localStorage.getItem("savedAddresses");
     return saved ? JSON.parse(saved) : [];
@@ -59,7 +56,7 @@ export default function CheckoutForm({ onChange }: Props) {
   });
 
   // =============================
-  // 🔸 EFFECTS
+  // 🔸 Effects
   // =============================
   useEffect(() => {
     localStorage.setItem("savedAddresses", JSON.stringify(addresses));
@@ -77,9 +74,8 @@ export default function CheckoutForm({ onChange }: Props) {
   }, [selectedId, note, paymentMethod, addresses, onChange]);
 
   // =============================
-  // 🔸 HANDLERS
+  // 🔸 Handlers
   // =============================
-
   const handleSaveAddress = () => {
     if (!formData.fullName || !formData.phone || !formData.address) {
       alert("Please fill in all required fields!");
@@ -152,9 +148,8 @@ export default function CheckoutForm({ onChange }: Props) {
   };
 
   // =============================
-  // 🔸 RENDER UI
+  // 🔸 Render
   // =============================
-
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-orange-100 overflow-hidden">
       {/* Header */}
@@ -261,7 +256,9 @@ export default function CheckoutForm({ onChange }: Props) {
         >
           <textarea
             value={note}
-            onChange={(e) => setNote(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setNote(e.target.value)
+            }
             placeholder="Add notes for the delivery person (e.g. call before arrival, gate code...)"
             rows={4}
             maxLength={500}
@@ -310,7 +307,9 @@ export default function CheckoutForm({ onChange }: Props) {
                 name="paymentMethod"
                 value={method.value}
                 checked={paymentMethod === method.value}
-                onChange={(e) => setPaymentMethod(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPaymentMethod(e.target.value)
+                }
                 className="w-5 h-5 text-orange-500 accent-orange-500 cursor-pointer"
               />
               <span className="ml-4 flex items-center gap-2 font-semibold text-gray-900">
@@ -334,7 +333,7 @@ export default function CheckoutForm({ onChange }: Props) {
               label="Full Name"
               required
               value={formData.fullName}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((p) => ({ ...p, fullName: e.target.value }))
               }
               placeholder="Enter your full name"
@@ -346,7 +345,7 @@ export default function CheckoutForm({ onChange }: Props) {
               type="tel"
               value={formData.phone}
               maxLength={11}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((p) => ({
                   ...p,
                   phone: e.target.value.replace(/[^0-9]/g, ""),
@@ -359,7 +358,7 @@ export default function CheckoutForm({ onChange }: Props) {
               label="Full Address"
               required
               value={formData.address}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setFormData((p) => ({ ...p, address: e.target.value }))
               }
               placeholder="House number, street, ward, district, city"
@@ -437,7 +436,17 @@ const Modal = ({
   </div>
 );
 
-const InputField = ({ icon, label, required, ...props }: any) => (
+const InputField = ({
+  icon,
+  label,
+  required,
+  ...props
+}: {
+  icon: React.ReactNode;
+  label: string;
+  required?: boolean;
+  [key: string]: any;
+}) => (
   <div>
     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
       {icon} {label} {required && <span className="text-red-500">*</span>}
@@ -449,7 +458,17 @@ const InputField = ({ icon, label, required, ...props }: any) => (
   </div>
 );
 
-const TextAreaField = ({ icon, label, required, ...props }: any) => (
+const TextAreaField = ({
+  icon,
+  label,
+  required,
+  ...props
+}: {
+  icon: React.ReactNode;
+  label: string;
+  required?: boolean;
+  [key: string]: any;
+}) => (
   <div>
     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
       {icon} {label} {required && <span className="text-red-500">*</span>}

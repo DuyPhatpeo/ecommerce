@@ -30,7 +30,6 @@ const CheckoutSummary: React.FC<Props> = ({
   tax,
   shipping,
   total,
-  customerInfo,
   onPlaceOrder,
 }) => {
   const formatVND = (value: number) =>

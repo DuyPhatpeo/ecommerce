@@ -1,4 +1,4 @@
-// components/Header.tsx
+// components/general/Header.tsx
 import { Link } from "react-router-dom";
 import {
   ShoppingBag,
@@ -49,7 +49,7 @@ const Header = () => {
         }`}
       >
         <div className="flex items-center justify-between max-w-[1200px] mx-auto h-[60px] xs:h-[65px] sm:h-[75px] lg:h-[80px] px-3 xs:px-4 sm:px-6 gap-2 xs:gap-4 sm:gap-6 lg:gap-8">
-          {/* Logo - Responsive sizing */}
+          {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img
               src="/logo.png"
@@ -58,7 +58,7 @@ const Header = () => {
             />
           </Link>
 
-          {/* Desktop Menu - Hidden on tablet and below */}
+          {/* Desktop Menu */}
           <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[13px] font-semibold tracking-wide flex-1 justify-center">
             {menuItems.map((item, i) => (
               <div
@@ -84,7 +84,7 @@ const Header = () => {
                   </span>
                 )}
 
-                {/* Submenu (Desktop) */}
+                {/* Submenu Desktop */}
                 <AnimatePresence>
                   {item.subMenu && activeMenu === item.label && (
                     <motion.div
@@ -94,15 +94,24 @@ const Header = () => {
                       transition={{ duration: 0.2 }}
                       className="absolute left-1/2 -translate-x-1/2 top-[45px] w-[220px] bg-white shadow-lg border border-gray-100 z-40 rounded-lg overflow-hidden"
                     >
-                      {item.subMenu.map((sub, j) => (
-                        <Link
-                          key={j}
-                          to={sub.path}
-                          className="block px-5 py-2.5 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
+                      {item.subMenu.map((sub, j) =>
+                        sub.path ? (
+                          <Link
+                            key={j}
+                            to={sub.path}
+                            className="block px-5 py-2.5 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
+                          >
+                            {sub.label}
+                          </Link>
+                        ) : (
+                          <span
+                            key={j}
+                            className="block px-5 py-2.5 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-400 cursor-not-allowed"
+                          >
+                            {sub.label}
+                          </span>
+                        )
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -110,9 +119,8 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Right Icons - Responsive spacing and sizing */}
+          {/* Right Icons */}
           <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 lg:gap-5 xl:gap-6 text-gray-800">
-            {/* Login Button (Desktop - only if not logged in) */}
             {!user && (
               <Link
                 to="/login"
@@ -122,7 +130,6 @@ const Header = () => {
               </Link>
             )}
 
-            {/* Search - Responsive icon size */}
             <button
               onClick={() => setSearchOpen((prev) => !prev)}
               className="group hover:text-orange-500 transition-colors p-1"
@@ -134,7 +141,6 @@ const Header = () => {
               />
             </button>
 
-            {/* User Icon (Desktop - click to go to /account) */}
             {user && (
               <Link
                 to="/account"
@@ -148,7 +154,6 @@ const Header = () => {
               </Link>
             )}
 
-            {/* Cart - Responsive sizing */}
             <Link
               to="/cart"
               className="relative group hover:text-orange-500 transition-colors p-1"
@@ -165,7 +170,7 @@ const Header = () => {
               )}
             </Link>
 
-            {/* Mobile Toggle - Show on tablet and below */}
+            {/* Mobile Toggle */}
             <div className="xl:hidden">
               {mobileOpen ? (
                 <X
@@ -184,7 +189,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Search Bar (Animated) - Responsive padding and sizing */}
+        {/* Search Box */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -220,7 +225,7 @@ const Header = () => {
           )}
         </AnimatePresence>
 
-        {/* Mobile Menu (Animated) - Responsive height and padding */}
+        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -261,16 +266,25 @@ const Header = () => {
                             transition={{ duration: 0.2 }}
                             className="bg-gray-50"
                           >
-                            {item.subMenu.map((sub, j) => (
-                              <Link
-                                key={j}
-                                to={sub.path}
-                                onClick={() => setMobileOpen(false)}
-                                className="block px-6 xs:px-8 py-2 xs:py-2.5 text-[12px] xs:text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
-                              >
-                                {sub.label}
-                              </Link>
-                            ))}
+                            {item.subMenu.map((sub, j) =>
+                              sub.path ? (
+                                <Link
+                                  key={j}
+                                  to={sub.path}
+                                  onClick={() => setMobileOpen(false)}
+                                  className="block px-6 xs:px-8 py-2 xs:py-2.5 text-[12px] xs:text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
+                                >
+                                  {sub.label}
+                                </Link>
+                              ) : (
+                                <span
+                                  key={j}
+                                  className="block px-6 xs:px-8 py-2 xs:py-2.5 text-[12px] xs:text-[13px] text-gray-400 cursor-not-allowed"
+                                >
+                                  {sub.label}
+                                </span>
+                              )
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -278,7 +292,7 @@ const Header = () => {
                   ) : (
                     <button
                       onClick={() => {
-                        navigate(item.path);
+                        if (item.path) navigate(item.path);
                         setMobileOpen(false);
                       }}
                       className="w-full text-left px-4 xs:px-5 py-2.5 xs:py-3 text-[13px] xs:text-[14px] font-semibold text-gray-800 hover:text-orange-500 hover:bg-orange-50 transition-colors"
