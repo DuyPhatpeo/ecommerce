@@ -108,7 +108,7 @@ const CheckOut: React.FC = () => {
     };
 
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [state, navigate]);
 
   // 🔸 Handle place order
