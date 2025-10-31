@@ -5,15 +5,12 @@ import {
   Plus,
   User,
   Phone,
-  Edit3,
   StickyNote,
-  X,
-  Trash2,
   CreditCard,
   Wallet,
   Banknote,
-  Star,
 } from "lucide-react";
+import Radio from "../ui/Radio";
 
 interface CustomerInfo {
   fullName: string;
@@ -46,110 +43,16 @@ export default function CheckoutForm({ onChange }: Props) {
   );
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-  const [formData, setFormData] = useState({
-    id: "",
-    fullName: "",
-    phone: "",
-    address: "",
-  });
 
-  // =============================
-  // 🔸 Effects
-  // =============================
   useEffect(() => {
     localStorage.setItem("savedAddresses", JSON.stringify(addresses));
   }, [addresses]);
 
   useEffect(() => {
     const selected = addresses.find((a) => a.id === selectedId);
-    if (selected) {
-      onChange({
-        ...selected,
-        note,
-        paymentMethod,
-      });
-    }
+    if (selected) onChange({ ...selected, note, paymentMethod });
   }, [selectedId, note, paymentMethod, addresses, onChange]);
 
-  // =============================
-  // 🔸 Handlers
-  // =============================
-  const handleSaveAddress = () => {
-    if (!formData.fullName || !formData.phone || !formData.address) {
-      alert("Please fill in all required fields!");
-      return;
-    }
-
-    const phoneRegex = /^[0-9]{10,11}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      alert("Invalid phone number format!");
-      return;
-    }
-
-    if (editingAddress) {
-      setAddresses((prev) =>
-        prev.map((a) =>
-          a.id === editingAddress.id ? { ...a, ...formData } : a
-        )
-      );
-    } else {
-      const newAddress: Address = {
-        ...formData,
-        id: Date.now().toString(),
-        isDefault: addresses.length === 0, // first address = default
-      };
-      setAddresses((prev) => [...prev, newAddress]);
-      setSelectedId(newAddress.id);
-    }
-
-    closeModal();
-  };
-
-  const handleDeleteAddress = (id: string) => {
-    if (addresses.length === 1) {
-      alert("You cannot delete your only address!");
-      return;
-    }
-
-    if (window.confirm("Are you sure you want to delete this address?")) {
-      const remaining = addresses.filter((a) => a.id !== id);
-      setAddresses(remaining);
-
-      if (selectedId === id) {
-        const next = remaining.find((a) => a.isDefault) || remaining[0];
-        setSelectedId(next.id);
-      }
-    }
-  };
-
-  const handleSetDefault = (id: string) => {
-    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
-    setSelectedId(id);
-  };
-
-  const openAddModal = () => {
-    setEditingAddress(null);
-    setFormData({ id: "", fullName: "", phone: "", address: "" });
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (addr: Address) => {
-    setEditingAddress(addr);
-    setFormData(addr);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingAddress(null);
-    setFormData({ id: "", fullName: "", phone: "", address: "" });
-  };
-
-  // =============================
-  // 🔸 Render
-  // =============================
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-orange-100 overflow-hidden">
       {/* Header */}
@@ -163,10 +66,7 @@ export default function CheckoutForm({ onChange }: Props) {
             {addresses.length} saved addresses
           </p>
         </div>
-        <button
-          onClick={openAddModal}
-          className="bg-white/20 hover:bg-white/30 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg"
-        >
+        <button className="bg-white/20 hover:bg-white/30 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg">
           <Plus size={18} /> Add New
         </button>
       </div>
@@ -174,24 +74,13 @@ export default function CheckoutForm({ onChange }: Props) {
       {/* Address List */}
       <div className="p-8 space-y-4">
         {addresses.map((addr) => (
-          <label
+          <Radio
             key={addr.id}
-            className={`flex justify-between items-start p-6 border-2 rounded-2xl cursor-pointer transition-all ${
-              selectedId === addr.id
-                ? "border-orange-400 bg-gradient-to-br from-orange-50 to-amber-50 shadow-md"
-                : "border-gray-200 hover:border-orange-300 hover:shadow-sm"
-            }`}
-          >
-            <div className="flex items-start gap-4 flex-1">
-              <input
-                type="radio"
-                name="selectedAddress"
-                value={addr.id}
-                checked={selectedId === addr.id}
-                onChange={() => setSelectedId(addr.id)}
-                className="mt-1.5 w-5 h-5 text-orange-500 accent-orange-500 cursor-pointer"
-              />
-              <div className="flex-1 min-w-0 space-y-2">
+            value={addr.id}
+            checked={selectedId === addr.id}
+            onChange={(val) => setSelectedId(val)}
+            label={
+              <div className="flex flex-col gap-1">
                 <p className="font-bold text-gray-900 flex items-center gap-2 text-lg">
                   <User className="w-5 h-5 text-orange-500" /> {addr.fullName}
                   {addr.isDefault && (
@@ -203,47 +92,14 @@ export default function CheckoutForm({ onChange }: Props) {
                 <p className="text-sm text-gray-700 flex items-center gap-2">
                   <Phone className="w-4 h-4 text-orange-500" /> {addr.phone}
                 </p>
-                <p className="text-sm text-gray-600 mt-2 flex items-start gap-2 leading-relaxed">
+                <p className="text-sm text-gray-600 mt-1 flex items-start gap-2 leading-relaxed">
                   <Home className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
                   <span>{addr.address}</span>
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-2 ml-3">
-              {!addr.isDefault && (
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSetDefault(addr.id);
-                  }}
-                  className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 px-3 py-1 rounded-lg text-sm font-semibold flex items-center gap-1 transition-all"
-                >
-                  <Star size={16} /> Set Default
-                </button>
-              )}
-              <div className="flex gap-2 justify-end">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openEditModal(addr);
-                  }}
-                  className="p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
-                >
-                  <Edit3 size={18} />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleDeleteAddress(addr.id);
-                  }}
-                  className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            </div>
-          </label>
+            }
+            className="flex justify-between items-start p-6 rounded-2xl transition-all"
+          />
         ))}
       </div>
 
@@ -256,10 +112,8 @@ export default function CheckoutForm({ onChange }: Props) {
         >
           <textarea
             value={note}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setNote(e.target.value)
-            }
-            placeholder="Add notes for the delivery person (e.g. call before arrival, gate code...)"
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Add notes for the delivery person"
             rows={4}
             maxLength={500}
             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none resize-none bg-white shadow-sm transition-all text-gray-700"
@@ -294,99 +148,28 @@ export default function CheckoutForm({ onChange }: Props) {
               icon: <Wallet className="text-pink-500" />,
             },
           ].map((method) => (
-            <label
+            <Radio
               key={method.value}
-              className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all mb-3 ${
-                paymentMethod === method.value
-                  ? "border-orange-400 bg-gradient-to-br from-orange-50 to-amber-50 shadow-sm"
-                  : "border-gray-200 hover:border-orange-300"
-              }`}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value={method.value}
-                checked={paymentMethod === method.value}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPaymentMethod(e.target.value)
-                }
-                className="w-5 h-5 text-orange-500 accent-orange-500 cursor-pointer"
-              />
-              <span className="ml-4 flex items-center gap-2 font-semibold text-gray-900">
-                {method.icon}
-                {method.label}
-              </span>
-            </label>
+              value={method.value}
+              checked={paymentMethod === method.value}
+              onChange={(val) => setPaymentMethod(val)}
+              label={
+                <span className="flex items-center gap-2 font-semibold text-gray-900">
+                  {method.icon}
+                  {method.label}
+                </span>
+              }
+              className="mb-3"
+            />
           ))}
         </Section>
-      )}
-
-      {/* Modal Add/Edit */}
-      {isModalOpen && (
-        <Modal
-          title={editingAddress ? "Edit Address" : "Add New Address"}
-          onClose={closeModal}
-        >
-          <div className="space-y-6">
-            <InputField
-              icon={<User className="w-4 h-4 text-orange-500" />}
-              label="Full Name"
-              required
-              value={formData.fullName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFormData((p) => ({ ...p, fullName: e.target.value }))
-              }
-              placeholder="Enter your full name"
-            />
-            <InputField
-              icon={<Phone className="w-4 h-4 text-orange-500" />}
-              label="Phone Number"
-              required
-              type="tel"
-              value={formData.phone}
-              maxLength={11}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFormData((p) => ({
-                  ...p,
-                  phone: e.target.value.replace(/[^0-9]/g, ""),
-                }))
-              }
-              placeholder="Enter 10-11 digits"
-            />
-            <TextAreaField
-              icon={<Home className="w-4 h-4 text-orange-500" />}
-              label="Full Address"
-              required
-              value={formData.address}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setFormData((p) => ({ ...p, address: e.target.value }))
-              }
-              placeholder="House number, street, ward, district, city"
-            />
-
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={handleSaveAddress}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all"
-              >
-                {editingAddress ? "Save Changes" : "Add Address"}
-              </button>
-              <button
-                onClick={closeModal}
-                className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </Modal>
       )}
     </div>
   );
 }
 
 // =============================
-// 🔹 Sub Components
+// 🔹 Sub Component Section
 // =============================
 const Section = ({
   icon,
@@ -406,77 +189,5 @@ const Section = ({
       {subtitle && <span className="text-sm text-gray-500">{subtitle}</span>}
     </div>
     <div className="p-8">{children}</div>
-  </div>
-);
-
-const Modal = ({
-  title,
-  children,
-  onClose,
-}: {
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-}) => (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex justify-between items-center rounded-t-3xl">
-        <h3 className="text-2xl font-bold text-white flex items-center gap-3">
-          <MapPin className="w-6 h-6" /> {title}
-        </h3>
-        <button
-          onClick={onClose}
-          className="text-white hover:bg-white/20 p-2 rounded-full transition-all"
-        >
-          <X size={24} />
-        </button>
-      </div>
-      <div className="p-8">{children}</div>
-    </div>
-  </div>
-);
-
-const InputField = ({
-  icon,
-  label,
-  required,
-  ...props
-}: {
-  icon: React.ReactNode;
-  label: string;
-  required?: boolean;
-  [key: string]: any;
-}) => (
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-      {icon} {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <input
-      {...props}
-      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none bg-white shadow-sm transition-all"
-    />
-  </div>
-);
-
-const TextAreaField = ({
-  icon,
-  label,
-  required,
-  ...props
-}: {
-  icon: React.ReactNode;
-  label: string;
-  required?: boolean;
-  [key: string]: any;
-}) => (
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-      {icon} {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <textarea
-      {...props}
-      rows={3}
-      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none bg-white shadow-sm transition-all resize-none"
-    />
   </div>
 );
