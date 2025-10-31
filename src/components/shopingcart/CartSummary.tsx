@@ -28,7 +28,7 @@ interface CartItemType {
 
 interface CartSummaryProps {
   cartItems: CartItemType[];
-  selectedItems: number[];
+  selectedItems: string[];
 }
 
 export default function CartSummary({
