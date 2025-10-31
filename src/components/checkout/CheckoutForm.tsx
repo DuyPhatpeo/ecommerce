@@ -9,6 +9,7 @@ import {
   CreditCard,
   Wallet,
   Banknote,
+  X,
 } from "lucide-react";
 import Radio from "../ui/Radio";
 
@@ -43,15 +44,47 @@ export default function CheckoutForm({ onChange }: Props) {
   );
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [showAddForm, setShowAddForm] = useState(false);
 
+  const [newAddress, setNewAddress] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+    isDefault: false,
+  });
+
+  // Save to localStorage
   useEffect(() => {
     localStorage.setItem("savedAddresses", JSON.stringify(addresses));
   }, [addresses]);
 
+  // Notify parent when selection changes
   useEffect(() => {
     const selected = addresses.find((a) => a.id === selectedId);
     if (selected) onChange({ ...selected, note, paymentMethod });
   }, [selectedId, note, paymentMethod, addresses, onChange]);
+
+  // Handle adding new address
+  const handleAddAddress = () => {
+    if (!newAddress.fullName || !newAddress.phone || !newAddress.address) {
+      alert("Please fill in all required fields!");
+      return;
+    }
+
+    const newItem: Address = {
+      id: crypto.randomUUID(),
+      fullName: newAddress.fullName,
+      phone: newAddress.phone,
+      address: newAddress.address,
+      isDefault: addresses.length === 0, // first one is default
+    };
+
+    const updated = [...addresses, newItem];
+    setAddresses(updated);
+    setSelectedId(newItem.id);
+    setNewAddress({ fullName: "", phone: "", address: "", isDefault: false });
+    setShowAddForm(false);
+  };
 
   return (
     <div className="bg-white lg:rounded-3xl lg:shadow-lg overflow-hidden">
@@ -101,9 +134,12 @@ export default function CheckoutForm({ onChange }: Props) {
           />
         ))}
 
-        {/* ✅ Move Add New button here */}
+        {/* Add New Address Button */}
         <div className="pt-4 flex justify-center lg:justify-end">
-          <button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md w-full sm:w-auto justify-center">
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md w-full sm:w-auto justify-center"
+          >
             <Plus size={18} /> Add New Address
           </button>
         </div>
@@ -169,6 +205,68 @@ export default function CheckoutForm({ onChange }: Props) {
             />
           ))}
         </Section>
+      )}
+
+      {/* Popup Add New Address */}
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl relative">
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
+              <MapPin className="text-orange-500" /> Add New Address
+            </h3>
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Full name"
+                value={newAddress.fullName}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, fullName: e.target.value })
+                }
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Phone number"
+                value={newAddress.phone}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, phone: e.target.value })
+                }
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none"
+              />
+              <textarea
+                placeholder="Address"
+                rows={3}
+                value={newAddress.address}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, address: e.target.value })
+                }
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none resize-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddAddress}
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold hover:from-orange-600 hover:to-amber-600"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
