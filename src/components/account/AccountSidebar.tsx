@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 interface Tab {
   id: string;
   label: string;
-  icon: any;
+  icon: React.ElementType;
 }
 
 interface AccountSidebarProps {
@@ -33,16 +33,16 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
     phone?: string;
   } | null>(null);
 
-  // 🔹 Lấy thông tin user từ localStorage khi component mount
+  // ✅ Lấy thông tin user từ localStorage an toàn
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error("Invalid user data in localStorage");
-        setUser(null);
       }
+    } catch (err) {
+      console.error("Error parsing user from localStorage:", err);
+      setUser(null);
     }
   }, []);
 
@@ -56,26 +56,36 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
   const getInitials = (name: string) =>
     name
       .split(" ")
-      .map((part) => part.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      .map((part) => part.charAt(0).toUpperCase())
+      .slice(0, 2)
+      .join("");
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("token"); // nếu có token
+    localStorage.removeItem("token");
     setUser(null);
-    navigate("/");
     if (onLogout) onLogout();
+    navigate("/");
   };
 
-  if (!user) return null; // fallback nếu chưa có user
+  // ⛔ Fallback khi chưa có user
+  if (!user) {
+    return (
+      <div className="p-6 text-center text-gray-500 border border-gray-200 rounded-2xl bg-white/70">
+        <p className="mb-3">You are not logged in.</p>
+        <button
+          onClick={() => navigate("/login")}
+          className="text-orange-600 font-semibold hover:underline"
+        >
+          Go to Login
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 border border-gray-200 shadow-sm rounded-2xl bg-white/70 backdrop-blur-sm">
-      {/* Profile */}
+      {/* 🔹 Profile Info */}
       <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
         <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-br from-orange-500 to-orange-600">
           {getInitials(user.fullName)}
@@ -86,7 +96,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
         <p className="text-sm text-gray-500">{user.email}</p>
       </div>
 
-      {/* Tabs */}
+      {/* 🔹 Tabs */}
       <nav className="space-y-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -95,7 +105,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`group relative w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+              className={`group w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                 isActive
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-gray-700 hover:bg-orange-50 hover:text-orange-600"
@@ -117,16 +127,15 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
           );
         })}
 
-        <div className="my-4 border-t border-gray-200"></div>
+        <div className="my-4 border-t border-gray-200" />
 
-        {/* Logout */}
+        {/* 🔹 Logout */}
         <button
           onClick={handleLogout}
           className="flex items-center w-full gap-3 px-4 py-3 text-red-600 transition-colors rounded-lg hover:bg-red-50"
         >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
-          {isMobile && <ChevronRight size={18} className="text-gray-400" />}
         </button>
       </nav>
     </div>

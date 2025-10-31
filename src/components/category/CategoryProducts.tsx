@@ -57,6 +57,7 @@ const CategoryProducts: React.FC = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        setError(null);
         const data: Product[] = await getProducts({ category });
         setProducts(data || []);
       } catch {
@@ -70,12 +71,20 @@ const CategoryProducts: React.FC = () => {
 
   // --- Danh sách tùy chọn filter ---
   const brandOptions = [
-    ...new Set(products.map((p) => p.brand).filter(Boolean)),
+    ...new Set(
+      products.map((p) => p.brand).filter((b): b is string => Boolean(b))
+    ),
   ];
   // const colorOptions = [
-  //   ...new Set(products.map((p) => p.color).filter(Boolean)),
+  //   ...new Set(
+  //     products.map((p) => p.color).filter((c): c is string => Boolean(c))
+  //   ),
   // ];
-  // const sizeOptions = [...new Set(products.map((p) => p.size).filter(Boolean))];
+  // const sizeOptions = [
+  //   ...new Set(
+  //     products.map((p) => p.size).filter((s): s is string => Boolean(s))
+  //   ),
+  // ];
 
   // --- Cập nhật URL mỗi khi filter thay đổi ---
   useEffect(() => {
@@ -251,7 +260,13 @@ const CategoryProducts: React.FC = () => {
               </div>
             )}
 
-            {!loading && sortedProducts.length === 0 && (
+            {!loading && error && (
+              <div className="text-center py-8 text-red-600 font-semibold bg-white rounded-2xl shadow border border-red-200">
+                {error}
+              </div>
+            )}
+
+            {!loading && !error && sortedProducts.length === 0 && (
               <div className="text-center py-20 bg-white rounded-2xl shadow-md border border-dashed border-gray-300">
                 <h3 className="text-lg font-semibold text-gray-700 mb-2">
                   No products found
@@ -262,30 +277,34 @@ const CategoryProducts: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-5">
-              {visibleProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  data={{
-                    id: p.id,
-                    img: p.images?.[0] || "/placeholder.jpg",
-                    title: p.title,
-                    salePrice: p.salePrice,
-                    regularPrice: p.regularPrice,
-                    stock: p.stock,
-                  }}
-                />
-              ))}
-            </div>
+            {!loading && !error && (
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-5">
+                  {visibleProducts.map((p) => (
+                    <ProductCard
+                      key={p.id}
+                      data={{
+                        id: p.id,
+                        img: p.images?.[0] || "/placeholder.jpg",
+                        title: p.title,
+                        salePrice: p.salePrice,
+                        regularPrice: p.regularPrice,
+                        stock: p.stock,
+                      }}
+                    />
+                  ))}
+                </div>
 
-            {visibleCount < sortedProducts.length && (
-              <div className="flex justify-center mt-10">
-                <Button
-                  onClick={() => setVisibleCount((prev) => prev + 8)}
-                  label="See More"
-                  className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all hover:scale-105"
-                />
-              </div>
+                {visibleCount < sortedProducts.length && (
+                  <div className="flex justify-center mt-10">
+                    <Button
+                      onClick={() => setVisibleCount((prev) => prev + 8)}
+                      label="See More"
+                      className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all hover:scale-105"
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

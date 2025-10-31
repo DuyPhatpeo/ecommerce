@@ -4,18 +4,18 @@ import api from "../lib/axios";
 export const getCart = () => api.get("/cart");
 
 // 🛒 Lấy 1 item trong giỏ hàng theo id
-export const getCartItem = (id: number) => api.get(`/cart/${id}`);
+export const getCartItem = (id: string) => api.get(`/cart/${id}`);
 
 // 🔄 Cập nhật số lượng của 1 item
-export const updateCartItem = (id: number, quantity: number) => {
+export const updateCartItem = (id: string, quantity: number) => {
   return api.patch(`/cart/${id}`, { quantity });
 };
 
 // ❌ Xóa 1 item khỏi giỏ hàng
-export const deleteCartItem = (id: number) => api.delete(`/cart/${id}`);
+export const deleteCartItem = (id: string) => api.delete(`/cart/${id}`);
 
 // ➕ Thêm sản phẩm vào giỏ hàng (hoặc tăng số lượng nếu đã tồn tại)
-export const addToCart = async (productId: number, quantity = 1) => {
+export const addToCart = async (productId: string, quantity = 1) => {
   const { data: cart } = await api.get("/cart");
   const existingItem = cart.find((item: any) => item.productId === productId);
 

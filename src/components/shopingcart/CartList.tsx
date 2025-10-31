@@ -22,13 +22,13 @@ interface CartItemType {
 
 interface CartListProps {
   cartItems: CartItemType[];
-  selectedItems: number[];
+  selectedItems: string[]; // ✅ string array
   loading: boolean;
-  updating: number | null;
-  updateQuantity: (id: number, change: number) => void;
-  removeItem: (id: number) => void;
-  toggleSelect: (id: number) => void;
-  toggleSelectAll: (validIds: number[]) => void;
+  updating: string | null; // ✅ still string
+  updateQuantity: (id: string, change: number) => void;
+  removeItem: (id: string) => void;
+  toggleSelect: (id: string) => void;
+  toggleSelectAll: (validIds: string[]) => void; // ✅ string array
   clearAll: () => void;
   clearing: boolean;
 }
@@ -45,7 +45,7 @@ export default function CartList({
   clearAll,
   clearing,
 }: CartListProps) {
-  // ✅ Filter valid products (in stock and within stock limit)
+  // ✅ Filter valid products
   const validItems = cartItems.filter(
     (item) => item.product?.stock > 0 && item.quantity <= item.product?.stock
   );
@@ -168,7 +168,7 @@ export default function CartList({
               <CartItem
                 key={item.id}
                 item={item}
-                selected={selectedItems.includes(item.id)}
+                selected={selectedItems.includes(item.id)} // ✅ string-safe
                 updating={updating}
                 updateQuantity={updateQuantity}
                 removeItem={removeItem}

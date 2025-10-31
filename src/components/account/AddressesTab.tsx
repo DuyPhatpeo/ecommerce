@@ -2,7 +2,7 @@ import React from "react";
 import { Plus, Edit2, Check } from "lucide-react";
 
 interface Address {
-  id: number;
+  id: string;
   name: string;
   address: string;
   phone: string;
@@ -12,8 +12,8 @@ interface Address {
 interface AddressesTabProps {
   addresses: Address[];
   onAddNew?: () => void;
-  onEdit?: (addressId: number) => void;
-  onSetDefault?: (addressId: number) => void;
+  onEdit?: (addressid: string) => void;
+  onSetDefault?: (addressid: string) => void;
 }
 
 const AddressesTab: React.FC<AddressesTabProps> = ({

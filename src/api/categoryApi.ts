@@ -8,10 +8,10 @@ export const getCategories = async () => {
   const products = res.data;
 
   // 🔹 Lấy các category duy nhất (và còn hàng)
-  const uniqueCategories = Array.from(
+  const uniqueCategories: string[] = Array.from(
     new Set(
       products
-        .filter((p: any) => p.stock > 0 && p.category)
+        .filter((p: any) => p.stock > 0 && typeof p.category === "string")
         .map((p: any) => p.category)
     )
   );

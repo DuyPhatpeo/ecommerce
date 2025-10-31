@@ -1,4 +1,3 @@
-// Account.tsx
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -12,8 +11,7 @@ import { useLogout } from "../../hooks/useLogout";
 const Account = () => {
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
-  const activeTab = tab || "";
-  const { logout } = useLogout(); // 🔹 lấy logout từ hook
+  const { logout } = useLogout();
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -26,115 +24,55 @@ const Account = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [showSidebar, setShowSidebar] = useState(true);
 
+  // ✅ Theo dõi kích thước màn hình
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // ✅ Điều hướng mặc định và xử lý ẩn/hiện sidebar
   useEffect(() => {
     if (!tab) {
-      if (isMobile) setShowSidebar(true);
-      else navigate("/account/profile", { replace: true });
+      navigate("/account/profile", { replace: true });
       return;
     }
     setShowSidebar(!isMobile);
-  }, [tab, isMobile]);
+  }, [tab, isMobile, navigate]);
 
-  const handleTabChange = (tabId: string) => navigate(`/account/${tabId}`);
-  const handleBack = () => navigate("/account");
+  // ✅ Cập nhật profile
   const handleSaveProfile = () => {
     setProfile(editedProfile);
     setIsEditing(false);
   };
 
+  const handleTabChange = (tabId: string) => navigate(`/account/${tabId}`);
+  const handleBack = () => navigate("/account");
+
+  // ✅ Data mẫu (có thể thay sau này bằng API)
   const orders = useMemo(
-    () => [
-      {
-        id: "ORD-001",
+    () =>
+      Array.from({ length: 10 }).map((_, i) => ({
+        id: `ORD-${String(i + 1).padStart(3, "0")}`,
         createdAt: "2025-10-25T10:30:00Z",
-        status: "Shipping",
-        total: "1250000",
-        items: 3,
-      },
-      {
-        id: "ORD-002",
-        createdAt: "2025-10-20T09:00:00Z",
-        status: "Completed",
-        total: "85000000",
-        items: 2,
-      },
-      {
-        id: "ORD-003",
-        createdAt: "2025-10-15T15:20:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-004",
-        createdAt: "2025-10-15T15:25:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-005",
-        createdAt: "2025-10-15T15:30:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-006",
-        createdAt: "2025-10-15T15:35:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-007",
-        createdAt: "2025-10-15T15:40:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-008",
-        createdAt: "2025-10-15T15:45:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-009",
-        createdAt: "2025-10-15T15:50:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-      {
-        id: "ORD-010",
-        createdAt: "2025-10-15T15:55:00Z",
-        status: "Completed",
-        total: "2100000",
-        items: 5,
-      },
-    ],
+        status: i === 0 ? "Shipping" : "Completed",
+        total: (Math.random() * 2_000_000 + 500_000).toFixed(0),
+        items: Math.floor(Math.random() * 5) + 1,
+      })),
     []
   );
 
   const addresses = useMemo(
     () => [
       {
-        id: 1,
+        id: "1",
         name: "Home",
         address: "123 Main Street, Downtown, NY",
         phone: "+1 234 567 8900",
         isDefault: true,
       },
       {
-        id: 2,
+        id: "2",
         name: "Office",
         address: "456 Business Ave, Midtown, NY",
         phone: "+1 987 654 3210",
@@ -145,56 +83,25 @@ const Account = () => {
   );
 
   const wishlist = useMemo(
-    () => [
-      {
-        id: "1",
-        title: "Premium Cotton T-Shirt",
-        price: 299000,
-        img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-      },
-      {
-        id: "2",
-        title: "Slim Fit Jeans",
-        price: 599000,
-        img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
-      },
-      {
-        id: "3",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-
-      {
-        id: "4",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "5",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "6",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-      {
-        id: "7",
-        title: "White Sneakers",
-        price: 899000,
-        img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-      },
-    ],
+    () =>
+      Array.from({ length: 7 }).map((_, i) => ({
+        id: String(i + 1),
+        title: ["Premium Cotton T-Shirt", "Slim Fit Jeans", "White Sneakers"][
+          i % 3
+        ],
+        price: [299000, 599000, 899000][i % 3],
+        img: [
+          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+          "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
+          "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+        ][i % 3],
+      })),
     []
   );
 
+  // ✅ Render tab tương ứng
   const renderTab = () => {
-    switch (activeTab) {
+    switch (tab) {
       case "profile":
         return (
           <ProfileTab
@@ -234,21 +141,22 @@ const Account = () => {
   return (
     <div className="px-2 py-8 mx-auto max-w-7xl sm:px-6 md:px-16">
       <div className="flex flex-col-reverse gap-6 lg:flex-row">
+        {/* 🔹 Sidebar */}
         {showSidebar && (
           <div className="w-full lg:w-1/4">
             <AccountSidebar
-              profile={profile}
-              activeTab={activeTab}
+              activeTab={tab || "profile"}
               onTabChange={handleTabChange}
-              onLogout={logout} // 🔹 truyền logout trực tiếp
+              onLogout={logout}
             />
           </div>
         )}
 
-        {(!isMobile || !showSidebar) && tab && (
+        {/* 🔹 Content */}
+        {tab && (!isMobile || !showSidebar) && (
           <div className="w-full lg:w-3/4">
             {isMobile && (
-              <div className="flex justify-start mb-1">
+              <div className="flex justify-start mb-2">
                 <button
                   onClick={handleBack}
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"

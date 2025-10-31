@@ -13,9 +13,9 @@ import CartSummary from "./CartSummary";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]); // ✅ đổi sang string[]
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState<number | null>(null);
+  const [updating, setUpdating] = useState<string | null>(null); // ✅ id dạng string
   const [clearing, setClearing] = useState(false);
 
   // ✅ Fetch cart
@@ -35,6 +35,7 @@ export default function ShoppingCart() {
 
       const merged = cart.map((item: any, i: number) => ({
         ...item,
+        id: String(item.id), // ✅ ép id về string luôn cho chắc
         product:
           products[i].status === "fulfilled"
             ? products[i].value
@@ -55,7 +56,7 @@ export default function ShoppingCart() {
   }, [fetchCart]);
 
   // ✅ Update quantity
-  const updateQuantity = async (id: number, change: number) => {
+  const updateQuantity = async (id: string, change: number) => {
     const item = cartItems.find((i) => i.id === id);
     if (!item) return;
 
@@ -82,7 +83,7 @@ export default function ShoppingCart() {
   };
 
   // ✅ Remove item
-  const removeItem = async (id: number) => {
+  const removeItem = async (id: string) => {
     const prev = [...cartItems];
     setCartItems((c) => c.filter((i) => i.id !== id));
     setSelectedItems((s) => s.filter((sid) => sid !== id));
@@ -116,7 +117,7 @@ export default function ShoppingCart() {
   };
 
   // ✅ Select toggle
-  const toggleSelect = (id: number) => {
+  const toggleSelect = (id: string) => {
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
@@ -126,7 +127,7 @@ export default function ShoppingCart() {
   const toggleSelectAll = () => {
     const validIds = cartItems
       .filter((i) => i.product?.stock > 0 && i.quantity <= i.product.stock)
-      .map((i) => i.id);
+      .map((i) => String(i.id)); // ✅ đảm bảo id là string
 
     setSelectedItems((prev) =>
       validIds.every((id) => prev.includes(id)) ? [] : validIds

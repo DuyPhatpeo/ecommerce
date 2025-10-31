@@ -24,10 +24,10 @@ interface CartItemData {
 interface CartItemProps {
   item: CartItemData;
   selected: boolean;
-  updating: number | null;
-  updateQuantity: (id: number, change: number) => void;
-  removeItem: (id: number) => void;
-  toggleSelect: (id: number) => void;
+  updating: string | null;
+  updateQuantity: (id: string, change: number) => void;
+  removeItem: (id: string) => void;
+  toggleSelect: (id: string) => void;
 }
 
 export default function CartItem({

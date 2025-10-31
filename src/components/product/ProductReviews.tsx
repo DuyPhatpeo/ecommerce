@@ -25,7 +25,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
     if (!name.trim() || !comment.trim() || rating === 0) return;
 
     const newReview: Review = {
-      id: Date.now(),
+      id: Date.now().toString(),
       name,
       rating,
       comment,

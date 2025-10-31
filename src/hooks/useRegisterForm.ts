@@ -31,7 +31,7 @@ export default function useRegisterForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false); // <-- trạng thái đăng ký thành công
+  const [success, setSuccess] = useState(false);
 
   // -----------------------------
   // Handle input change
@@ -66,6 +66,7 @@ export default function useRegisterForm() {
 
     if (password && password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
+
     if (password !== confirmPassword)
       newErrors.confirmPassword = "Passwords do not match.";
 
@@ -82,11 +83,12 @@ export default function useRegisterForm() {
 
     setLoading(true);
     try {
-      // Lấy danh sách user hiện tại
       const res = await getUsers();
-      const existingUser = res.data.find(
+      const users = res.data as User[];
+
+      const existingUser = users.find(
         (u) =>
-          u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
+          u.email?.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
 
       if (existingUser) {
@@ -94,13 +96,13 @@ export default function useRegisterForm() {
         return;
       }
 
-      // Tạo user mới
+      // ✅ id dạng string
       const newUser: User = {
-        id: Date.now(),
+        id: `${Date.now()}`,
         name: formData.fullName,
         email: formData.email,
-        password: formData.password,
         phone: formData.phone,
+        password: formData.password,
         role: "customer",
         avatar: "",
         createdAt: new Date().toISOString(),
@@ -109,9 +111,7 @@ export default function useRegisterForm() {
       await registerUser(newUser);
       toast.success("Account created successfully! 🎉");
 
-      setSuccess(true); // đánh dấu đăng ký thành công
-
-      // Reset form
+      setSuccess(true);
       setFormData({
         fullName: "",
         email: "",
@@ -120,16 +120,22 @@ export default function useRegisterForm() {
         confirmPassword: "",
       });
 
-      // Chuyển sang login ngay
-      navigate("/login");
+      setTimeout(() => navigate("/login"), 1000);
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong. Please try again.");
       setSuccess(false);
     } finally {
       setLoading(false);
     }
   };
 
-  return { formData, errors, loading, success, handleChange, handleSubmit };
+  return {
+    formData,
+    errors,
+    loading,
+    success,
+    handleChange,
+    handleSubmit,
+  };
 }

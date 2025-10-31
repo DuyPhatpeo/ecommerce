@@ -28,7 +28,7 @@ interface CartItemType {
 
 interface CartSummaryProps {
   cartItems: CartItemType[];
-  selectedItems: number[];
+  selectedItems: string[]; // ✅ đổi từ number[] sang string[]
 }
 
 export default function CartSummary({
@@ -37,7 +37,7 @@ export default function CartSummary({
 }: CartSummaryProps) {
   const navigate = useNavigate();
 
-  // Lọc sản phẩm hợp lệ
+  // ✅ Lọc sản phẩm hợp lệ
   const validSelectedItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
@@ -45,14 +45,14 @@ export default function CartSummary({
       item.quantity <= item.product.stock
   );
 
-  // Lọc sản phẩm không hợp lệ (để hiển thị cảnh báo)
+  // ✅ Lọc sản phẩm không hợp lệ
   const invalidSelectedItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       (item.product.stock === 0 || item.quantity > item.product.stock)
   );
 
-  // Tính subtotal — ưu tiên salePrice, nếu không có thì dùng regularPrice
+  // ✅ Tính subtotal
   const subtotal = validSelectedItems.reduce((sum, item) => {
     const unit = item.product.salePrice ?? item.product.regularPrice ?? 0;
     return sum + unit * item.quantity;
@@ -64,7 +64,7 @@ export default function CartSummary({
 
   const formatPrice = (price: number) => `${price.toLocaleString("vi-VN")} đ`;
 
-  // Checkout
+  // ✅ Checkout
   const handleCheckout = () => {
     if (validSelectedItems.length === 0) return;
 
