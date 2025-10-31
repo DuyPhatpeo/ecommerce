@@ -176,7 +176,9 @@ const Header = () => {
               className="overflow-hidden"
             >
               <div className="flex justify-center bg-orange-50 py-3 shadow-md rounded-b-lg">
-                <div className="relative w-full sm:w-3/5 lg:w-1/2 px-4">
+                <div className="relative px-4 w-[500px]">
+                  {" "}
+                  {/* 👈 cố định độ rộng */}
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-400" />
                   <input
                     ref={searchInputRef}
@@ -188,7 +190,6 @@ const Header = () => {
                     autoFocus
                     className="w-full pl-12 pr-10 py-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
                   />
-
                   <Button
                     onClick={() => setSearchOpen(false)}
                     className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500"
