@@ -10,14 +10,10 @@ import {
 
 interface CustomerInfo {
   fullName: string;
-  email: string;
   phone: string;
   address: string;
-  city: string;
-  district: string;
-  ward: string;
-  note: string;
-  paymentMethod: string;
+  note?: string;
+  paymentMethod?: string;
 }
 
 interface Props {
@@ -26,7 +22,7 @@ interface Props {
   shipping: number;
   total: number;
   customerInfo: CustomerInfo;
-  onPlaceOrder: (info: CustomerInfo) => void;
+  onPlaceOrder: () => void;
 }
 
 const CheckoutSummary: React.FC<Props> = ({
@@ -37,100 +33,54 @@ const CheckoutSummary: React.FC<Props> = ({
   customerInfo,
   onPlaceOrder,
 }) => {
-  const handlePlaceOrder = () => {
-    if (
-      !customerInfo.fullName ||
-      !customerInfo.email ||
-      !customerInfo.phone ||
-      !customerInfo.address ||
-      !customerInfo.city
-    ) {
-      alert(
-        "⚠️ Please fill in all required information before placing your order!"
-      );
-      return;
-    }
-    onPlaceOrder(customerInfo);
-  };
-
-  // Format helper
   const formatVND = (value: number) =>
     value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
   return (
-    <div className="sticky top-24 bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100 transition-all duration-300 hover:shadow-orange-200">
-      {/* Header */}
+    <div className="sticky top-24 bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100">
       <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-8 py-6 flex items-center gap-3">
-        <div className="bg-white/20 p-2 rounded-xl">
-          <ShoppingCart className="w-6 h-6 text-white" />
-        </div>
-        <h2 className="text-2xl font-bold text-white">Order Summary</h2>
+        <ShoppingCart className="w-6 h-6 text-white" />
+        <h2 className="text-2xl font-bold text-white">Tóm Tắt Đơn Hàng</h2>
       </div>
 
-      {/* Body */}
       <div className="p-8 space-y-5">
-        {/* Subtotal */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2 text-gray-700">
-            <Receipt className="w-5 h-5 text-orange-500 group-hover:scale-105 transition-transform" />
-            <span>Subtotal</span>
-          </div>
-          <span className="font-semibold text-gray-800">
-            {formatVND(subtotal)}
+        <SummaryRow
+          icon={<Receipt className="w-5 h-5 text-orange-500" />}
+          label="Tạm tính"
+          value={formatVND(subtotal)}
+        />
+        <SummaryRow
+          icon={<DollarSign className="w-5 h-5 text-green-500" />}
+          label="Thuế (10%)"
+          value={formatVND(tax)}
+        />
+        <SummaryRow
+          icon={<Truck className="w-5 h-5 text-blue-500" />}
+          label="Phí vận chuyển"
+          value={shipping === 0 ? "Miễn phí" : formatVND(shipping)}
+        />
+
+        <div className="h-px bg-gray-200 my-4" />
+        <div className="flex justify-between items-center font-bold text-lg">
+          <span className="text-gray-800 flex items-center gap-2">
+            <DollarSign className="w-6 h-6 text-orange-600" /> Tổng cộng
           </span>
-        </div>
-
-        {/* Tax */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2 text-gray-700">
-            <DollarSign className="w-5 h-5 text-green-500 group-hover:scale-105 transition-transform" />
-            <span>Tax (10%)</span>
-          </div>
-          <span className="font-semibold text-gray-800">{formatVND(tax)}</span>
-        </div>
-
-        {/* Shipping */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2 text-gray-700">
-            <Truck className="w-5 h-5 text-blue-500 group-hover:scale-105 transition-transform" />
-            <span>Shipping</span>
-          </div>
-          <span className="font-semibold">
-            {shipping === 0 ? (
-              <span className="text-green-600 font-bold">Free</span>
-            ) : (
-              formatVND(shipping)
-            )}
-          </span>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
-
-        {/* Total */}
-        <div className="flex justify-between items-center pt-2 font-bold text-lg">
-          <div className="flex items-center gap-2 text-gray-800">
-            <DollarSign className="w-6 h-6 text-orange-600" />
-            <span>Total</span>
-          </div>
           <span className="text-2xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             {formatVND(total)}
           </span>
         </div>
 
-        {/* Checkout Button */}
         <button
-          onClick={handlePlaceOrder}
-          className="w-full mt-6 flex justify-center items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:from-orange-600 hover:to-amber-600 hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          onClick={onPlaceOrder}
+          className="w-full mt-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:from-orange-600 hover:to-amber-600 transition-all"
         >
-          <CreditCard className="w-5 h-5" />
-          Place Order Now
+          <CreditCard className="inline w-5 h-5 mr-2" />
+          Đặt Hàng Ngay
         </button>
 
-        {/* Secure badge */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-5 pt-5 border-t border-gray-100">
           <ShieldCheck className="w-5 h-5 text-green-500" />
-          <span>Secure and encrypted payment</span>
+          <span>Thanh toán an toàn & mã hóa</span>
         </div>
       </div>
     </div>
@@ -138,3 +88,21 @@ const CheckoutSummary: React.FC<Props> = ({
 };
 
 export default CheckoutSummary;
+
+const SummaryRow = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) => (
+  <div className="flex justify-between items-center">
+    <div className="flex items-center gap-2 text-gray-700">
+      {icon}
+      <span>{label}</span>
+    </div>
+    <span className="font-semibold text-gray-800">{value}</span>
+  </div>
+);

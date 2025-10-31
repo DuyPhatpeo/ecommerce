@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCartItem } from "../../api/cartApi";
 import { getProductById } from "../../api/productApi";
@@ -28,14 +28,10 @@ interface CheckoutData {
 
 interface CustomerInfo {
   fullName: string;
-  email: string;
   phone: string;
   address: string;
-  city: string;
-  district: string;
-  ward: string;
-  note: string;
-  paymentMethod: string;
+  note?: string;
+  paymentMethod?: string;
 }
 
 const CheckOut: React.FC = () => {
@@ -50,33 +46,26 @@ const CheckOut: React.FC = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
-  const subtotal = state.subtotal || 0;
-  const tax = state.tax || 0;
-  const shipping = state.shipping || 0;
-  const total = state.total || 0;
+  const subtotal = useMemo(
+    () =>
+      state.subtotal ??
+      products.reduce(
+        (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
+        0
+      ),
+    [state.subtotal, products]
+  );
 
-  // Default empty customer info to satisfy CheckoutSummary type
-  const defaultCustomerInfo: CustomerInfo = {
-    fullName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    district: "",
-    ward: "",
-    note: "",
-    paymentMethod: "cod",
-  };
+  const tax = state.tax ?? 0;
+  const shipping = state.shipping ?? 0;
+  const total = state.total ?? subtotal + tax + shipping;
 
-  // 🔸 Fetch product(s)
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const results: (Product & { quantity: number })[] = [];
-
-        // 🛒 CASE 1: Checkout từ Cart
-        if (state.selectedItems && state.selectedItems.length > 0) {
+        if (state.selectedItems?.length) {
           for (const item of state.selectedItems) {
             const cartItemRes = await getCartItem(item.id);
             const cartItem = cartItemRes.data || cartItemRes;
@@ -84,21 +73,16 @@ const CheckOut: React.FC = () => {
             const product = productRes.data || productRes;
             results.push({ ...product, quantity: item.quantity });
           }
-        }
-
-        // 🧡 CASE 2: Checkout trực tiếp từ Product detail
-        else if (state.productId && state.quantity) {
+        } else if (state.productId && state.quantity) {
           const productRes = await getProductById(state.productId);
           const product = productRes.data || productRes;
           results.push({ ...product, quantity: state.quantity });
         }
-
-        if (results.length === 0) {
+        if (!results.length) {
           toast.error("Không có sản phẩm nào để thanh toán!");
           navigate("/");
           return;
         }
-
         setProducts(results);
       } catch {
         toast.error("Không thể tải dữ liệu sản phẩm.");
@@ -106,30 +90,20 @@ const CheckOut: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchProducts();
-     
   }, [state, navigate]);
 
-  // 🔸 Handle place order
   const handlePlaceOrder = async () => {
     if (!customerInfo) {
-      toast.error("⚠️ Vui lòng điền thông tin khách hàng trước!");
+      toast.error("⚠️ Vui lòng chọn hoặc nhập thông tin giao hàng!");
       return;
     }
 
-    const { fullName, email, phone, address, city } = customerInfo;
-    if (!fullName || !email || !phone || !address || !city) {
+    const { fullName, phone, address } = customerInfo;
+    if (!fullName || !phone || !address) {
       toast.error("❌ Vui lòng nhập đầy đủ thông tin bắt buộc!");
       return;
     }
-
-    const calculatedSubtotal =
-      subtotal ||
-      products.reduce(
-        (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
-        0
-      );
 
     const orderData = {
       customer: customerInfo,
@@ -139,10 +113,10 @@ const CheckOut: React.FC = () => {
         quantity: p.quantity,
         price: p.salePrice ?? p.price,
       })),
-      subtotal: calculatedSubtotal,
+      subtotal,
       tax,
       shipping,
-      total: total || calculatedSubtotal + tax + shipping,
+      total,
       createdAt: new Date().toISOString(),
     };
 
@@ -152,10 +126,7 @@ const CheckOut: React.FC = () => {
       const response = await createOrder(orderData);
       toast.dismiss(loadingToast);
       toast.success("🎉 Đặt hàng thành công!");
-
-      // 🔹 Xoá checkoutItem khỏi localStorage
       localStorage.removeItem("checkoutItems");
-
       navigate("/order-success", { state: { order: response }, replace: true });
     } catch {
       toast.dismiss();
@@ -168,49 +139,40 @@ const CheckOut: React.FC = () => {
   return (
     <div className="min-h-screen px-4 py-12 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2 text-4xl font-bold text-transparent bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text">
-            Checkout
+            Thanh Toán
           </h1>
-          <p className="text-gray-600 pading">
-            Review your order and complete your purchase
+          <p className="text-gray-600">
+            Kiểm tra thông tin đơn hàng trước khi thanh toán
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Form + Product list */}
           <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
 
-          {/* Summary */}
           <div className="lg:col-span-1">
             <CheckoutSummary
-              subtotal={
-                subtotal ||
-                products.reduce(
-                  (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
-                  0
-                )
-              }
+              subtotal={subtotal}
               tax={tax}
               shipping={shipping}
-              total={
-                total ||
-                products.reduce(
-                  (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
-                  0
-                )
+              total={total}
+              customerInfo={
+                customerInfo ?? {
+                  fullName: "",
+                  phone: "",
+                  address: "",
+                  paymentMethod: "cod",
+                }
               }
-              // pass default when customerInfo is null to satisfy typing and avoid runtime crashes
-              customerInfo={customerInfo ?? defaultCustomerInfo}
               onPlaceOrder={handlePlaceOrder}
             />
             {placingOrder && (
               <p className="mt-3 text-center text-orange-500 animate-pulse">
-                Processing your order...
+                Đang xử lý đơn hàng...
               </p>
             )}
           </div>
