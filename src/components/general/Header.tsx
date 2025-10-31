@@ -177,8 +177,6 @@ const Header = () => {
             >
               <div className="flex justify-center bg-orange-50 py-3 shadow-md rounded-b-lg">
                 <div className="relative px-4 w-[500px]">
-                  {" "}
-                  {/* 👈 cố định độ rộng */}
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-400" />
                   <input
                     ref={searchInputRef}
