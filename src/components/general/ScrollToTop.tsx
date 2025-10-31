@@ -35,7 +35,7 @@ const ScrollToTop = () => {
             lg:bottom-10 lg:right-10        
             bg-orange-500 hover:bg-orange-600
             text-white 
-            p-2 sm:p-4 
+            p-2 sm:p-3 
             rounded-xl                
             shadow-lg hover:shadow-xl 
             transition-all duration-300 
