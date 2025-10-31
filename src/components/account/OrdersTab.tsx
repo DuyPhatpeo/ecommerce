@@ -1,20 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 interface Order {
   id: string;
-  createdAt: string; // ✅ dùng createdAt thay cho date
+  createdAt: string;
   status: string;
-  total: string | number;
+  total: number;
   items: number;
 }
 
 interface OrdersTabProps {
-  orders: Order[];
   onViewDetails?: (orderId: string) => void;
 }
 
-const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
-  const [visibleCount, setVisibleCount] = useState(5); // hiển thị 5 đơn hàng đầu tiên
+const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  // ✅ Sample data tự tạo
+  const orders: Order[] = useMemo(() => {
+    const statuses = ["Shipping", "Completed", "Cancelled", "Processing"];
+    return Array.from({ length: 10 }).map((_, i) => ({
+      id: `ORD-${String(i + 1).padStart(3, "0")}`,
+      createdAt: new Date(Date.now() - i * 86400000).toISOString(), // cách nhau 1 ngày
+      status: statuses[i % statuses.length],
+      total: Math.floor(Math.random() * 2_000_000 + 500_000),
+      items: Math.floor(Math.random() * 5) + 1,
+    }));
+  }, []);
+
+  const sortedOrders = [...orders].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  const visibleOrders = sortedOrders.slice(0, visibleCount);
+
+  const handleSeeMore = () => setVisibleCount((prev) => prev + 5);
 
   const getStatusColor = (status: string): string => {
     switch (status) {
@@ -31,28 +50,14 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ orders, onViewDetails }) => {
     }
   };
 
-  const formatCurrency = (amount: string | number): string => {
-    const value = typeof amount === "string" ? parseFloat(amount) : amount;
-    if (isNaN(value)) return amount.toString();
-    return new Intl.NumberFormat("vi-VN", {
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
       maximumFractionDigits: 0,
-    }).format(value);
-  };
+    }).format(amount);
 
-  // ✅ Sắp xếp theo ngày mới nhất lên đầu
-  const sortedOrders = [...orders].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-
-  const visibleOrders = sortedOrders.slice(0, visibleCount);
-
-  const handleSeeMore = () => {
-    setVisibleCount((prev) => prev + 5); // load thêm 5 đơn hàng
-  };
-
-  const formatDate = (isoString: string): string =>
+  const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "2-digit",
