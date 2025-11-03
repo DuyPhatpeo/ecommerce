@@ -15,17 +15,17 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
     {
       label: "Confirmed",
       icon: <Check className="w-5 h-5" />,
-      color: "from-blue-400 to-blue-600",
+      color: "from-orange-400 to-orange-600",
     },
     {
       label: "In Transit",
       icon: <Truck className="w-5 h-5" />,
-      color: "from-amber-400 to-amber-600",
+      color: "from-orange-400 to-orange-600",
     },
     {
       label: "Delivered",
       icon: <CheckCircle className="w-5 h-5" />,
-      color: "from-green-400 to-green-600",
+      color: "from-orange-400 to-orange-600",
     },
   ];
 
@@ -35,11 +35,16 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
   return (
     <div className="relative w-full px-4 sm:px-8 py-8">
       <div className="relative">
+        {/* Đường nền */}
         <div className="absolute top-9 left-0 right-0 h-1.5 bg-gray-200 rounded-full" />
+
+        {/* Thanh tiến trình */}
         <div
-          className="absolute top-9 left-0 h-1.5 rounded-full transition-all duration-700 bg-gradient-to-r from-orange-400 via-amber-400 to-green-500"
+          className="absolute top-9 left-0 h-1.5 rounded-full transition-all duration-700 bg-gradient-to-r from-orange-400 to-orange-600"
           style={{ width: `${progressPercent}%` }}
         />
+
+        {/* Các bước */}
         <div className="relative flex justify-between items-start">
           {steps.map((step, i) => {
             const isActive = i === activeIndex;
@@ -50,31 +55,20 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
                 key={step.label}
                 className="flex flex-col items-center flex-1 relative"
               >
-                <div className="relative mb-4">
-                  <div
-                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
-                      isCompleted
-                        ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg"
-                        : isActive
-                        ? `bg-gradient-to-br ${step.color} text-white shadow-lg scale-110`
-                        : "bg-white text-gray-400 shadow-md border-2 border-gray-200"
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <Check className="w-6 h-6 stroke-[3]" />
-                    ) : (
-                      step.icon
-                    )}
-                  </div>
-                  <div
-                    className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md ${
-                      isCompleted || isActive
-                        ? "bg-white text-gray-700"
-                        : "bg-gray-200 text-gray-400"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
+                <div
+                  className={`relative mb-4 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
+                    isCompleted
+                      ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg"
+                      : isActive
+                      ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg scale-110"
+                      : "bg-white text-gray-400 shadow-md border-2 border-gray-200"
+                  }`}
+                >
+                  {isCompleted ? (
+                    <Check className="w-6 h-6 stroke-[3]" />
+                  ) : (
+                    step.icon
+                  )}
                 </div>
                 <div className="text-center px-2">
                   <p
@@ -82,7 +76,7 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
                       isActive
                         ? "text-orange-600"
                         : isCompleted
-                        ? "text-green-600"
+                        ? "text-orange-500"
                         : "text-gray-400"
                     }`}
                   >
