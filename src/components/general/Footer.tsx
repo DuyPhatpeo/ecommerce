@@ -140,7 +140,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Line */}
-        <div className="mt-12 sm:mt-14 pt-6 sm:pt-8 border-t border-gray-800">
+        <div className="mt-12 sm:mt-14 pt-6 sm:pt-8 pb-18 sm:pb-8 border-t border-gray-800">
           <div className="text-center">
             <div className="text-xs sm:text-sm text-gray-400 flex flex-row items-center justify-center gap-1 flex-wrap px-2">
               <span>Copyright ©2025 All rights reserved | Made with</span>

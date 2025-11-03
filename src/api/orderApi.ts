@@ -14,7 +14,7 @@ export const getAllOrders = async () => {
 };
 
 // Get order details by ID
-export const getOrderById = async (orderId: string) => {
-  const res = await api.get(`/orders/${orderId}`);
+export const getOrderById = async (id: string) => {
+  const res = await api.get(`/orders/${id}`);
   return res.data;
 };

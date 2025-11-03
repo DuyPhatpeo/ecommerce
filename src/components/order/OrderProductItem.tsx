@@ -16,25 +16,16 @@ const OrderProductItem: React.FC<Props> = ({ item }) => {
   const totalPrice = item.price * item.quantity;
 
   return (
-    <div
-      className="flex items-center justify-between border-2 border-gray-100 rounded-2xl p-4 
-                 bg-gradient-to-r from-white to-gray-50 hover:bg-orange-50/80 hover:border-orange-200 
-                 transition-all duration-300 group"
-    >
+    <div className="flex items-center justify-between border-2 border-gray-100 rounded-2xl p-4 bg-gradient-to-r from-white to-gray-50 hover:bg-orange-50/80 hover:border-orange-200 transition-all duration-300 group">
       {/* Left: Image + Info */}
       <div className="flex items-center gap-4">
         <div className="relative">
           <img
             src={item.image || "/placeholder.png"}
             alt={item.title}
-            className="w-24 h-24 rounded-xl object-cover border border-orange-100 
-                       shadow-sm group-hover:scale-105 transition-transform duration-300"
+            className="w-24 h-24 rounded-xl object-cover border border-orange-100 shadow-sm group-hover:scale-105 transition-transform duration-300"
           />
-          <div
-            className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-500 to-orange-600 
-                       text-white text-xs font-bold rounded-full w-7 h-7 flex items-center 
-                       justify-center shadow-lg border-2 border-white"
-          >
+          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center shadow-lg border-2 border-white">
             {item.quantity}
           </div>
         </div>

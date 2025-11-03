@@ -1,20 +1,17 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 import { createOrder } from "../api/orderApi";
 
-// Define product data type
 interface Product {
   id: string;
-  title: string;
   regularPrice?: number;
   salePrice?: number;
   images?: string[];
 }
 
-// Checkout data
 interface CheckoutData {
   subtotal?: number;
   tax?: number;
@@ -25,85 +22,72 @@ interface CheckoutData {
   quantity?: number;
 }
 
-// Customer information
 interface CustomerInfo {
   fullName: string;
   phone: string;
   address: string;
   note?: string;
-  paymentMethod?: "cod" | "online"; // COD or online payment
+  paymentMethod?: "cod" | "online";
 }
 
-// Hook input props
 interface UseCheckoutProps {
   state: CheckoutData;
 }
 
-// Checkout hook
 export const useCheckout = ({ state }: UseCheckoutProps) => {
   const navigate = useNavigate();
 
-  // State to store products for checkout
   const [products, setProducts] = useState<(Product & { quantity: number })[]>(
     []
   );
-  const [loading, setLoading] = useState(false); // Loading when fetching products
-  const [placingOrder, setPlacingOrder] = useState(false); // Loading when placing order
-  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null); // Customer info
+  const [loading, setLoading] = useState(false);
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
-  // Calculate subtotal
-  const subtotal = useMemo(
-    () =>
-      state.subtotal ??
-      products.reduce(
-        (sum, p) =>
-          sum +
-          ((p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice) ??
-            0) *
-            p.quantity,
-        0
-      ),
-    [state.subtotal, products]
-  );
+  const subtotal = useMemo(() => {
+    if (state.subtotal !== undefined) return state.subtotal;
+    return products.reduce((sum, p) => {
+      const price =
+        p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice || 0;
+      return sum + price * p.quantity;
+    }, 0);
+  }, [state.subtotal, products]);
 
   const tax = state.tax ?? 0;
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  // Fetch products based on selectedItems or productId/quantity
+  /* ------------------ Lấy dữ liệu sản phẩm ------------------ */
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const results: (Product & { quantity: number })[] = [];
+        const result: (Product & { quantity: number })[] = [];
 
         if (state.selectedItems?.length) {
-          // Get each product from cart
           for (const item of state.selectedItems) {
-            const cartItemRes = await getCartItem(item.id);
-            const cartItem = cartItemRes.data || cartItemRes;
-
-            const productRes = await getProductById(cartItem.productId);
-            const product = productRes.data || productRes;
-
-            results.push({ ...product, quantity: item.quantity });
+            const cartRes = await getCartItem(item.id);
+            const cart = cartRes?.data || cartRes;
+            const productRes = await getProductById(cart.productId);
+            const product = productRes?.data || productRes;
+            result.push({ ...product, quantity: item.quantity });
           }
         } else if (state.productId && state.quantity) {
-          // Direct checkout of a single product
           const productRes = await getProductById(state.productId);
-          const product = productRes.data || productRes;
-          results.push({ ...product, quantity: state.quantity });
+          const product = productRes?.data || productRes;
+          result.push({ ...product, quantity: state.quantity });
         }
 
-        if (!results.length) {
-          toast.error("No products available for checkout!");
-          navigate("/"); // If no products, redirect to home
+        if (!result.length) {
+          toast.error("Không có sản phẩm nào để thanh toán!");
+          navigate("/", { replace: true });
           return;
         }
 
-        setProducts(results);
-      } catch {
-        toast.error("Failed to fetch product data.");
+        setProducts(result);
+      } catch (error) {
+        console.error(error);
+        toast.error("Lỗi khi tải dữ liệu sản phẩm!");
       } finally {
         setLoading(false);
       }
@@ -112,28 +96,28 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     fetchProducts();
   }, [state, navigate]);
 
-  // Handle placing order
-  const handlePlaceOrder = async () => {
+  /* ------------------ Xử lý đặt hàng ------------------ */
+  const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) {
-      toast.error("Please select or enter shipping information!");
+      toast.error("Vui lòng nhập thông tin giao hàng!");
       return;
     }
 
     const { fullName, phone, address, paymentMethod } = customerInfo;
     if (!fullName || !phone || !address) {
-      toast.error("Please fill in all required fields!");
+      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
       return;
     }
 
     try {
       setPlacingOrder(true);
-      const loadingToast = toast.loading("Processing your order...");
+      const loadingToast = toast.loading("Đang xử lý đơn hàng...");
 
-      // Update product prices at checkout time
+      // Cập nhật giá mới nhất
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
-          const current = res.data || res;
+          const current = res?.data || res;
           return {
             ...p,
             regularPrice: current.regularPrice,
@@ -142,50 +126,39 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         })
       );
 
-      // Determine order status
-      // "paid" for online payment, "pending" for COD
       const status = paymentMethod === "online" ? "paid" : "pending";
 
-      // Prepare order data
+      // 🔹 Dữ liệu gửi đi chỉ gồm productId, quantity, price
       const orderData = {
         customer: customerInfo,
         items: updatedProducts.map((p) => ({
           productId: p.id,
-          title: p.title,
           quantity: p.quantity,
           price: p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice,
         })),
-        subtotal: updatedProducts.reduce(
-          (sum, p) =>
-            sum +
-            ((p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice) ??
-              0) *
-              p.quantity,
-          0
-        ),
+        subtotal,
         tax,
         shipping,
         total,
-        status, // Add order status
-        createdAt: new Date().toISOString(), // Order creation time
+        status,
+        createdAt: new Date().toISOString(),
       };
 
-      // Send order to server
-      const response = await createOrder(orderData);
+      const res = await createOrder(orderData);
       toast.dismiss(loadingToast);
-      toast.success("Order placed successfully!");
+      toast.success("Đặt hàng thành công!");
 
-      localStorage.removeItem("checkoutItems"); // Clear previous checkout data
-      navigate("/order-success", { state: { order: response }, replace: true }); // Navigate to success page
-    } catch {
+      localStorage.removeItem("checkoutItems");
+      navigate("/order-success", { state: { order: res }, replace: true });
+    } catch (error) {
+      console.error(error);
       toast.dismiss();
-      toast.error("Failed to place the order. Please try again.");
+      toast.error("Không thể đặt hàng, vui lòng thử lại!");
     } finally {
       setPlacingOrder(false);
     }
-  };
+  }, [customerInfo, products, subtotal, tax, shipping, total, navigate]);
 
-  // Return states and functions
   return {
     products,
     loading,
