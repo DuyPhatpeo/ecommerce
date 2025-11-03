@@ -1,11 +1,27 @@
 import React from "react";
-import { Package, CheckCircle, Truck, Check } from "lucide-react";
+import {
+  Package,
+  Check,
+  Truck,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+} from "lucide-react";
 
 interface Props {
   status: string;
 }
 
 const OrderTimeline: React.FC<Props> = ({ status }) => {
+  const statusMap: Record<string, string> = {
+    pending: "Order Placed",
+    processing: "Confirmed",
+    shipping: "In Transit",
+    completed: "Delivered",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+  };
+
   const steps = [
     { label: "Order Placed", icon: Package },
     { label: "Confirmed", icon: Check },
@@ -13,23 +29,53 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
     { label: "Delivered", icon: CheckCircle },
   ];
 
-  const activeIndex = steps.findIndex((s) => s.label === status);
-  const progressPercent = Math.max(
-    0,
-    Math.min((activeIndex / (steps.length - 1)) * 100, 100)
-  );
+  const currentLabel = statusMap[status] || "Order Placed";
+  const activeIndex = steps.findIndex((s) => s.label === currentLabel);
+
+  const isCancelled = status === "cancelled";
+  const isRefunded = status === "refunded";
+
+  // Tính toán % thanh tiến trình - chạy đến chính giữa icon của step hiện tại
+  const calculateProgress = () => {
+    if (isCancelled || isRefunded) return 0;
+    if (activeIndex === -1) return 0;
+
+    const totalSteps = steps.length;
+    // Mỗi step chiếm (100 / số step) % của thanh
+    // Thanh chạy đến giữa icon của step hiện tại
+    const stepWidth = 100 / (totalSteps - 1);
+    const progressToStep = activeIndex * stepWidth;
+
+    // Trả về % đến giữa icon của step
+    return progressToStep;
+  };
+
+  const progressPercent = calculateProgress();
 
   return (
-    <div className="relative w-full px-4 sm:px-8 py-8">
+    <div className="relative w-full max-w-4xl mx-auto px-6 sm:px-12 py-10">
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Status</h2>
+        <p className="text-gray-500 text-sm">
+          Track your order journey from placement to delivery
+        </p>
+      </div>
+
       <div className="relative">
         {/* Thanh nền */}
-        <div className="absolute top-9 left-0 right-0 h-1.5 bg-gray-200 rounded-full" />
+        <div className="absolute top-5 left-0 right-0 h-2 bg-gray-200 rounded-full" />
 
-        {/* Thanh tiến trình */}
-        <div
-          className="absolute top-9 left-0 h-1.5 rounded-full bg-gradient-to-r from-orange-400 to-orange-600"
-          style={{ width: `${progressPercent}%` }}
-        />
+        {/* Thanh tiến trình với animation mượt */}
+        {!isCancelled && !isRefunded && (
+          <div
+            className="absolute top-5 left-0 h-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 transition-all duration-1000 ease-out shadow-lg"
+            style={{
+              width: `${Math.max(progressPercent, 8)}%`, // Tối thiểu 8% để thấy thanh ngay từ bước đầu
+              boxShadow: "0 0 20px rgba(251, 146, 60, 0.4)",
+            }}
+          />
+        )}
 
         {/* Các bước */}
         <div className="relative flex justify-between items-start">
@@ -37,42 +83,100 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
             const isActive = i === activeIndex;
             const isCompleted = i < activeIndex;
 
+            let circleClasses = "";
+            let iconColor = "";
+            let labelClasses = "";
+
+            if (isCancelled || isRefunded) {
+              circleClasses = "bg-gray-200 border-2 border-gray-300";
+              iconColor = "text-gray-400";
+              labelClasses = "text-gray-400";
+            } else if (isCompleted) {
+              circleClasses =
+                "bg-gradient-to-br from-orange-400 to-orange-600 border-0 shadow-lg scale-100 hover:scale-110";
+              iconColor = "text-white";
+              labelClasses = "text-orange-600 font-semibold";
+            } else if (isActive) {
+              circleClasses =
+                "bg-white border-4 border-orange-500 shadow-xl ring-4 ring-orange-100 scale-110";
+              iconColor = "text-orange-600";
+              labelClasses = "text-orange-600 font-bold";
+            } else {
+              circleClasses = "bg-white border-2 border-gray-300";
+              iconColor = "text-gray-400";
+              labelClasses = "text-gray-500";
+            }
+
             return (
               <div
                 key={label}
-                className="flex flex-col items-center flex-1 text-center relative"
+                className="flex flex-col items-center flex-1 text-center relative z-10"
               >
+                {/* Circle icon */}
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full ${
-                    isCompleted
-                      ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-md"
-                      : isActive
-                      ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-md"
-                      : "bg-white text-gray-400 border-2 border-gray-200 shadow-sm"
-                  }`}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${circleClasses}`}
                 >
-                  {isCompleted ? (
-                    <Check className="w-6 h-6 stroke-[3]" />
-                  ) : (
-                    <Icon className="w-6 h-6" />
-                  )}
+                  <Icon
+                    size={20}
+                    className={`${iconColor} transition-colors duration-300`}
+                  />
                 </div>
+
+                {/* Label */}
                 <p
-                  className={`text-xs sm:text-sm font-semibold mt-2 ${
-                    isActive
-                      ? "text-orange-600"
-                      : isCompleted
-                      ? "text-orange-500"
-                      : "text-gray-400"
-                  }`}
+                  className={`text-xs sm:text-sm mt-3 transition-all duration-300 px-2 ${labelClasses}`}
                 >
                   {label}
                 </p>
+
+                {/* Active indicator pulse - hiệu ứng đập */}
+                {isActive && !isCancelled && !isRefunded && (
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                    <div className="w-12 h-12 rounded-full bg-orange-400 opacity-20 animate-ping" />
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* Trạng thái đặc biệt */}
+      {(isCancelled || isRefunded) && (
+        <div className="mt-8 text-center bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="flex justify-center items-center gap-3">
+            {isCancelled ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <XCircle className="text-red-600 w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-red-600 text-sm">
+                    Order Cancelled
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    This order has been cancelled
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <RotateCcw className="text-blue-600 w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-blue-600 text-sm">
+                    Order Refunded
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Your payment has been refunded
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
