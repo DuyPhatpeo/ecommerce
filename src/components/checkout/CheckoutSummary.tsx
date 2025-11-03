@@ -1,27 +1,18 @@
 import React from "react";
 import {
-  ShoppingCart,
-  Receipt,
+  CreditCard,
+  Tag,
   Truck,
   DollarSign,
-  CreditCard,
   ShieldCheck,
+  ShoppingCart,
 } from "lucide-react";
-
-interface CustomerInfo {
-  fullName: string;
-  phone: string;
-  address: string;
-  note?: string;
-  paymentMethod?: string;
-}
 
 interface Props {
   subtotal: number;
   tax: number;
   shipping: number;
   total: number;
-  customerInfo: CustomerInfo;
   onPlaceOrder: () => void;
 }
 
@@ -32,113 +23,132 @@ const CheckoutSummary: React.FC<Props> = ({
   total,
   onPlaceOrder,
 }) => {
-  const formatVND = (value: number) =>
-    value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  const formatVND = (value: number) => `${value.toLocaleString("vi-VN")}₫`;
 
   return (
     <>
-      {/* ===== DESKTOP SUMMARY ===== */}
-      <div className="bg-white border border-orange-100 rounded-3xl p-8 shadow-sm w-full lg:col-span-1 lg:sticky lg:top-20">
-        {/* HEADER (đồng bộ style) */}
-        <div className="flex items-center justify-between border-b border-orange-200 pb-3 mb-4">
+      {/* ================== Desktop Summary Card ================== */}
+      <div className="sticky top-20 bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">
-            <ShoppingCart className="text-orange-600 w-6 h-6" />
+            <CreditCard className="text-orange-600 w-6 h-6" />
             <h3 className="text-xl font-bold text-gray-900">Order Summary</h3>
           </div>
         </div>
 
-        {/* BODY */}
-        <div className="space-y-4">
-          <SummaryRow
-            icon={<Receipt className="w-5 h-5 text-orange-500" />}
-            label="Subtotal"
-            value={formatVND(subtotal)}
-          />
-          <SummaryRow
-            icon={<DollarSign className="w-5 h-5 text-green-500" />}
-            label="Tax (10%)"
-            value={formatVND(tax)}
-          />
-          <SummaryRow
-            icon={<Truck className="w-5 h-5 text-blue-500" />}
-            label="Shipping Fee"
-            value={shipping === 0 ? "Free" : formatVND(shipping)}
-          />
-
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
-
-          <div className="flex justify-between items-center pt-2">
-            <span className="text-xl font-bold flex items-center gap-2 text-gray-900">
-              <CreditCard className="w-5 h-5 text-orange-600" />
-              Total
+        {/* Price summary */}
+        <div className="text-gray-700 space-y-2">
+          <div className="flex justify-between">
+            <span className="flex items-center gap-2">
+              <Tag className="w-4 h-4 text-orange-500" /> Subtotal
             </span>
-            <div className="text-right">
-              <div className="text-3xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                {formatVND(total)}
-              </div>
-              {subtotal > 0 && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Including all taxes & fees
-                </p>
+            <span className="font-semibold">{formatVND(subtotal)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+            </span>
+            <span className="font-semibold">{formatVND(tax)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="flex items-center gap-2">
+              <Truck className="w-4 h-4 text-blue-500" /> Shipping
+            </span>
+            <span className="font-semibold">
+              {shipping === 0 ? (
+                <span className="text-green-600 font-semibold">Free</span>
+              ) : (
+                formatVND(shipping)
               )}
+            </span>
+          </div>
+        </div>
+
+        {/* Free shipping progress */}
+        {subtotal > 0 && subtotal < 25 && (
+          <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
+            <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
+              <ShoppingCart className="w-5 h-5 mt-0.5" />
+              <span>
+                Add <strong>{formatVND(25 - subtotal)}</strong> more for{" "}
+                <strong>FREE SHIPPING</strong>!
+              </span>
+            </div>
+            <div className="w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
+                style={{ width: `${(subtotal / 25) * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-orange-600 mt-1 text-right">
+              {Math.round((subtotal / 25) * 100)}% to free shipping
+            </p>
+          </div>
+        )}
+
+        {/* Total */}
+        <div className="flex justify-between items-center border-t border-orange-200 pt-5">
+          <span className="font-bold text-lg text-gray-800">Total</span>
+          <span className="font-extrabold text-2xl text-orange-600">
+            {formatVND(total)}
+          </span>
+        </div>
+
+        {/* Checkout Button - Desktop only */}
+        <div className="hidden lg:block">
+          <button
+            onClick={onPlaceOrder}
+            disabled={subtotal <= 0}
+            className={`w-full py-5 font-semibold text-lg rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+              subtotal > 0
+                ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
+                : "bg-gray-100 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <ShieldCheck className="w-6 h-6" />
+            Place Order
+          </button>
+        </div>
+
+        {/* Secure note */}
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 border-t border-gray-100 pt-3">
+          <ShieldCheck className="text-green-500 w-5 h-5" />
+          <span>Secure & encrypted payment</span>
+        </div>
+      </div>
+
+      {/* ================== Mobile + Tablet Taskbar ================== */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
+          {/* Total Price */}
+          <div className="text-start">
+            <div className="text-xs text-gray-500">Total</div>
+            <div className="text-xl font-bold text-orange-600">
+              {formatVND(total)}
             </div>
           </div>
 
-          {/* BUTTON (desktop only) */}
-          <div className="hidden lg:block">
-            <button
-              onClick={onPlaceOrder}
-              className="w-full font-bold text-lg py-5 mt-6 rounded-2xl transition-all duration-300 flex justify-center items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-md hover:shadow-lg"
-            >
-              <ShieldCheck className="w-6 h-6" />
-              Place Order Now
-            </button>
-          </div>
-
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-6 pt-4 border-t border-orange-100">
-            <ShieldCheck className="w-5 h-5 text-green-500" />
-            <span>Secure and encrypted payment</span>
-          </div>
+          {/* Checkout Button - Mobile & Tablet only */}
+          <button
+            onClick={onPlaceOrder}
+            disabled={subtotal <= 0}
+            className={`w-full py-5 rounded-lg font-semibold text-lg transition-all flex items-center justify-center gap-2 ${
+              subtotal > 0
+                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:from-orange-600 hover:to-amber-600"
+                : "bg-gray-100 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <CreditCard className="w-6 h-6" />
+            Place Order
+          </button>
         </div>
       </div>
 
-      {/* ===== MOBILE/TABLET TASKBAR ===== */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg px-5 py-4 flex justify-between items-center lg:hidden z-50">
-        <div>
-          <p className="text-sm text-gray-500">Total</p>
-          <p className="text-xl font-bold text-orange-600">
-            {formatVND(total)}
-          </p>
-        </div>
-        <button
-          onClick={onPlaceOrder}
-          className="px-5 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 flex items-center gap-2 shadow-md"
-        >
-          <ShieldCheck className="w-5 h-5" />
-          Place Order
-        </button>
-      </div>
+      {/* Spacer tránh che nội dung bởi taskbar */}
+      <div className="lg:hidden h-28" />
     </>
   );
 };
 
 export default CheckoutSummary;
-
-// 🔹 Subcomponent: SummaryRow
-const SummaryRow = ({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: React.ReactNode;
-}) => (
-  <div className="flex justify-between items-center">
-    <div className="flex items-center gap-2 text-gray-700">
-      {icon}
-      <span>{label}</span>
-    </div>
-    <span className="font-semibold text-gray-800">{value}</span>
-  </div>
-);

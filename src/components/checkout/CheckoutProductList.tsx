@@ -18,52 +18,38 @@ interface Props {
 
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
   return (
-    <div className="bg-white border border-orange-100 rounded-3xl p-8 shadow-md transition-all duration-300 hover:shadow-lg">
-      {/* ===== HEADER ===== */}
-      <div className="flex items-center justify-between border-b border-orange-200 pb-3">
-        <div className="flex items-center gap-2">
-          <ShoppingBag className="text-orange-600 w-6 h-6" />
-          <h3 className="text-xl font-bold text-gray-900">
-            Products in the Order
-          </h3>
-        </div>
-        <p className="text-sm text-gray-500">
-          {products.length} item{products.length !== 1 && "s"}
-        </p>
-      </div>
+    <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-orange-100 space-y-8">
+      <h2 className="font-bold text-xl mb-4 text-gray-900 flex items-center gap-2">
+        <ShoppingBag className="w-6 h-6 text-orange-600" />
+        Products in the Order ({products.length})
+      </h2>
 
-      {/* ===== BODY ===== */}
-      <div className="mt-6">
-        {loading ? (
-          // 🌀 Loading State
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-gray-500 text-lg font-medium">
-              Loading products...
-            </p>
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-orange-600 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg font-medium">
+            Loading products...
+          </p>
+        </div>
+      ) : products.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <ShoppingBag className="w-14 h-14 text-orange-500" />
           </div>
-        ) : products.length === 0 ? (
-          // ❌ Empty State
-          <div className="text-center py-16">
-            <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-              <ShoppingBag className="w-14 h-14 text-orange-500" />
+          <p className="text-gray-800 text-xl font-semibold mb-2">
+            No products found
+          </p>
+          <p className="text-gray-500">There are no products in this order.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {products.map((p) => (
+            <div key={p.id} className="transition-all duration-300 rounded-2xl">
+              <CheckoutProductItem product={p} />
             </div>
-            <p className="text-gray-800 text-xl font-semibold mb-2">
-              No products found
-            </p>
-            <p className="text-gray-500">
-              There are no products in this order.
-            </p>
-          </div>
-        ) : (
-          // 🛍 Product List
-          <div className="divide-y divide-orange-50">
-            {products.map((p) => (
-              <CheckoutProductItem key={p.id} product={p} />
-            ))}
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
