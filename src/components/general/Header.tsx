@@ -40,22 +40,23 @@ const Header = () => {
 
   const { menuItems } = useMenuItems();
 
-  // Lọc item xuất hiện ở taskbar (chỉ mobile)
-  const taskbarPaths = ["/", "/shop", "/cart", "/account", "/login"];
-  const mobileMenuItems = menuItems.filter(
-    (item) => !taskbarPaths.includes(item.path)
-  );
+  // 🎯 Taskbar items (chỉ hiển thị trên mobile)
+  const taskbarItems = [
+    { path: "/", icon: Home, label: "Home" },
+    { path: "/shop", icon: Store, label: "Shop" },
+    { path: "/cart", icon: ShoppingBag, label: "Cart", badge: cartCount },
+    {
+      path: user ? "/account" : "/login",
+      icon: User,
+      label: "Account",
+      activeCheck: ["/account", "/login"],
+    },
+  ];
 
-  const dropdownVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 },
-  };
-  const submenuVariants = {
-    hidden: { height: 0, opacity: 0 },
-    visible: { height: "auto", opacity: 1 },
-    exit: { height: 0, opacity: 0 },
-  };
+  // 🎯 Mobile menu items
+  // CHỈ loại bỏ taskbar items khi màn hình < lg (khi taskbar thực sự hiển thị)
+  const taskbarPaths = taskbarItems.map((item) => item.path);
+  const mobileMenuItems = menuItems;
 
   return (
     <>
@@ -70,16 +71,23 @@ const Header = () => {
           <div className="flex items-center justify-between max-w-[1200px] mx-auto h-[60px] xs:h-[65px] sm:h-[75px] lg:h-[80px] px-4 sm:px-6 gap-4 lg:gap-8">
             <Logo />
 
-            {/* Desktop full menu */}
-            <DesktopNav
-              menuItems={menuItems}
-              activeMenu={activeMenu}
-              handleMouseEnter={handleMouseEnter}
-              handleMouseLeave={handleMouseLeave}
-              location={location}
-            />
+            {/* Desktop Navigation - Hiển thị tất cả menu items */}
+            <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 text-[13px] font-semibold flex-1 justify-center">
+              <div className="flex items-center gap-4 2xl:gap-6 min-w-max">
+                {menuItems.map((item, i) => (
+                  <NavItem
+                    key={i}
+                    item={item}
+                    activeMenu={activeMenu}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseLeave={handleMouseLeave}
+                    location={location}
+                  />
+                ))}
+              </div>
+            </nav>
 
-            {/* Right actions */}
+            {/* Right Actions */}
             <RightActions
               user={user}
               cartCount={cartCount}
@@ -90,7 +98,7 @@ const Header = () => {
             />
           </div>
 
-          {/* Search box */}
+          {/* Search Box */}
           <SearchBox
             searchOpen={searchOpen}
             searchBoxRef={searchBoxRef}
@@ -99,10 +107,9 @@ const Header = () => {
             setSearchQuery={setSearchQuery}
             handleSearchSubmit={handleSearchSubmit}
             setSearchOpen={setSearchOpen}
-            variants={submenuVariants}
           />
 
-          {/* Mobile / tablet menu */}
+          {/* Mobile Menu - Hiển thị items không có trong taskbar (hoặc tất cả nếu màn hình lg+) */}
           <MobileMenu
             mobileOpen={mobileOpen}
             mobileMenuRef={mobileMenuRef}
@@ -111,25 +118,22 @@ const Header = () => {
             toggleSubMenu={toggleSubMenu}
             navigate={navigate}
             setMobileOpen={setMobileOpen}
-            variants={dropdownVariants}
           />
         </div>
       </header>
 
-      {/* Taskbar only mobile */}
+      {/* Mobile Bottom Taskbar */}
       <MobileBottomBar
+        taskbarItems={taskbarItems}
         location={location}
         navigate={navigate}
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
-        cartCount={cartCount}
-        user={user}
       />
     </>
   );
 };
 
-// ===== Sub Components =====
+// ========== SUB COMPONENTS ==========
+
 const Logo = () => (
   <Link to="/" className="flex-shrink-0">
     <img
@@ -146,20 +150,7 @@ const DesktopNav = ({
   handleMouseEnter,
   handleMouseLeave,
   location,
-}) => (
-  <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[13px] font-semibold flex-1 justify-center">
-    {menuItems.map((item, i) => (
-      <NavItem
-        key={i}
-        item={item}
-        activeMenu={activeMenu}
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        location={location}
-      />
-    ))}
-  </nav>
-);
+}) => null; // Component không còn được sử dụng
 
 const NavItem = ({
   item,
@@ -169,11 +160,13 @@ const NavItem = ({
   location,
 }) => {
   const isActive = location.pathname === item.path;
+  const hasSubMenu = item.subMenu && item.subMenu.length > 0;
+
   return (
     <div
       className="relative"
-      onMouseEnter={() => handleMouseEnter(item.label)}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => hasSubMenu && handleMouseEnter(item.label)}
+      onMouseLeave={hasSubMenu ? handleMouseLeave : undefined}
     >
       <SmartLink
         path={item.path}
@@ -183,8 +176,9 @@ const NavItem = ({
       >
         {item.label}
       </SmartLink>
+
       <AnimatePresence>
-        {item.subMenu && activeMenu === item.label && (
+        {hasSubMenu && activeMenu === item.label && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -236,10 +230,12 @@ const RightActions = ({
         Login
       </Link>
     )}
+
     <IconButton
       onClick={() => setSearchOpen(!searchOpen)}
       icon={<Search size={20} />}
     />
+
     {user && (
       <Link
         to="/account"
@@ -248,7 +244,9 @@ const RightActions = ({
         <User size={20} />
       </Link>
     )}
+
     <CartIcon count={cartCount} className="hidden lg:block" />
+
     <MobileToggle
       open={mobileOpen}
       onClick={() => setMobileOpen(!mobileOpen)}
@@ -264,15 +262,14 @@ const SearchBox = ({
   setSearchQuery,
   handleSearchSubmit,
   setSearchOpen,
-  variants,
 }) => (
   <AnimatePresence>
     {searchOpen && (
       <motion.div
         ref={searchBoxRef}
-        initial={variants.hidden}
-        animate={variants.visible}
-        exit={variants.exit}
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
         transition={{ duration: 0.3 }}
         className="overflow-hidden"
       >
@@ -309,15 +306,14 @@ const MobileMenu = ({
   toggleSubMenu,
   navigate,
   setMobileOpen,
-  variants,
 }) => (
   <AnimatePresence>
     {mobileOpen && (
       <motion.div
         ref={mobileMenuRef}
-        initial={variants.hidden}
-        animate={variants.visible}
-        exit={variants.exit}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.25 }}
         className="xl:hidden bg-white border-t border-gray-100 shadow-md max-h-[calc(100vh-80px)] overflow-y-auto"
       >
@@ -349,9 +345,9 @@ const MobileMenuWithSub = ({ item, activeMenu, toggleSubMenu }) => {
     <>
       <button
         onClick={() => toggleSubMenu(item.label)}
-        className="w-full flex justify-between items-center px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500"
+        className="w-full flex justify-between items-center px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500 transition-colors"
       >
-        {item.label}{" "}
+        {item.label}
         {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
       </button>
       <AnimatePresence>
@@ -361,13 +357,13 @@ const MobileMenuWithSub = ({ item, activeMenu, toggleSubMenu }) => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="bg-gray-50"
+            className="bg-gray-50 overflow-hidden"
           >
             {item.subMenu.map((sub, j) => (
               <SmartLink
                 key={j}
                 path={sub.path}
-                className="block px-8 py-2.5 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white"
+                className="block px-8 py-2.5 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
               >
                 {sub.label}
               </SmartLink>
@@ -382,54 +378,46 @@ const MobileMenuWithSub = ({ item, activeMenu, toggleSubMenu }) => {
 const MobileMenuItem = ({ item, navigate, setMobileOpen }) => (
   <button
     onClick={() => {
-      item.path && navigate(item.path);
+      if (item.path) navigate(item.path);
       setMobileOpen(false);
     }}
-    className="w-full text-left px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500"
+    className="w-full text-left px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500 transition-colors"
   >
     {item.label}
   </button>
 );
 
-const MobileBottomBar = ({
-  location,
-  navigate,
-  mobileOpen,
-  setMobileOpen,
-  cartCount,
-  user,
-}) => (
+const MobileBottomBar = ({ taskbarItems, location, navigate }) => (
   <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
     <div className="flex items-center justify-around h-16">
-      <TabButton
-        icon={<Home size={22} />}
-        label="Home"
-        path="/"
-        isActive={location.pathname === "/"}
-        navigate={navigate}
-      />
-      <TabButton
-        icon={<Store size={22} />}
-        label="Shop"
-        path="/shop"
-        isActive={location.pathname === "/shop"}
-        navigate={navigate}
-      />
-      <TabButton
-        icon={<ShoppingBag size={22} />}
-        label="Cart"
-        path="/cart"
-        isActive={location.pathname === "/cart"}
-        badge={cartCount}
-        navigate={navigate}
-      />
-      <TabButton
-        icon={<User size={22} />}
-        label="Account"
-        path={user ? "/account" : "/login"}
-        isActive={["/account", "/login"].includes(location.pathname)}
-        navigate={navigate}
-      />
+      {taskbarItems.map((item, i) => {
+        const Icon = item.icon;
+        const isActive = item.activeCheck
+          ? item.activeCheck.includes(location.pathname)
+          : location.pathname === item.path;
+
+        return (
+          <button
+            key={i}
+            onClick={() => navigate(item.path)}
+            className={`flex-1 ${
+              isActive ? "text-orange-500" : "text-gray-600"
+            } hover:text-orange-500 transition-colors active:scale-95`}
+          >
+            <div className="flex flex-col items-center justify-center gap-1 py-2">
+              <div className="relative">
+                <Icon size={22} />
+                {item.badge > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
+                    {item.badge > 99 ? "99+" : item.badge}
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </div>
+          </button>
+        );
+      })}
     </div>
   </div>
 );
@@ -465,43 +453,6 @@ const MobileToggle = ({ open, onClick }) => {
       onClick={onClick}
       className="xl:hidden cursor-pointer hover:text-orange-500 transition-colors"
     />
-  );
-};
-
-const TabButton = ({
-  icon,
-  label,
-  path,
-  onClick,
-  isActive,
-  badge,
-  navigate,
-}) => {
-  const className = `flex-1 ${
-    isActive ? "text-orange-500" : "text-gray-600"
-  } hover:text-orange-500 transition-colors active:scale-95`;
-  const content = (
-    <div className="flex flex-col items-center justify-center gap-1 py-2">
-      <div className="relative">
-        {icon}
-        {badge > 0 && (
-          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-            {badge > 99 ? "99+" : badge}
-          </span>
-        )}
-      </div>
-      <span className="text-[10px] font-medium">{label}</span>
-    </div>
-  );
-
-  return onClick ? (
-    <button onClick={onClick} className={className}>
-      {content}
-    </button>
-  ) : (
-    <Link to={path} onClick={() => navigate(path)} className={className}>
-      {content}
-    </Link>
   );
 };
 
