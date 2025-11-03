@@ -81,7 +81,7 @@ export default function CartSummary({
   return (
     <>
       {/* ================== Desktop Summary Card ================== */}
-      <div className="sticky top-20 bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
+      <div className="sticky top-25 bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">

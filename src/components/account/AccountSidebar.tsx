@@ -82,7 +82,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
   }
 
   return (
-    <div className="sticky top-20 p-6 border border-gray-200 shadow-md rounded-2xl bg-white/70 backdrop-blur-sm">
+    <div className="sticky top-25 p-6 border border-gray-200 shadow-md rounded-2xl bg-white/70 backdrop-blur-sm">
       {/* 🔹 Profile Info */}
       <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
         <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-br from-orange-500 to-orange-600">
