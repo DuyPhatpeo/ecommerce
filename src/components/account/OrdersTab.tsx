@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Order {
   id: string;
@@ -8,11 +9,8 @@ interface Order {
   items: number;
 }
 
-interface OrdersTabProps {
-  onViewDetails?: (orderId: string) => void;
-}
-
-const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
+const OrdersTab: React.FC = () => {
+  const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(5);
 
   // ✅ Sample data
@@ -115,7 +113,7 @@ const OrdersTab: React.FC<OrdersTabProps> = ({ onViewDetails }) => {
                       </p>
                     </div>
                     <button
-                      onClick={() => onViewDetails?.(order.id)}
+                      onClick={() => navigate(`/account/order/${order.id}`)}
                       className="px-5 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95 shadow-sm"
                     >
                       View Details
