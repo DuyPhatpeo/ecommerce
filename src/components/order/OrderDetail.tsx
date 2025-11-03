@@ -296,52 +296,56 @@ const OrderTimeline = ({ status }: { status: string }) => {
     { label: "In Transit", icon: <Truck className="w-5 h-5" /> },
     { label: "Delivered", icon: <CheckCircle className="w-5 h-5" /> },
   ];
+
   const activeIndex = steps.findIndex((s) => s.label === status);
 
   return (
-    <div className="relative py-4">
-      <div className="flex items-center justify-between">
-        {steps.map((step, i) => (
-          <div
-            key={step.label}
-            className="flex flex-col items-center text-center flex-1 relative"
-          >
-            {i < steps.length - 1 && (
-              <div className="absolute top-6 left-1/2 w-full h-1 -z-10">
-                <div className="h-full bg-gray-200 rounded-full">
-                  <div
-                    className={`h-full rounded-full transition-all duration-700 ${
-                      i < activeIndex
-                        ? "bg-gradient-to-r from-green-400 to-green-600 w-full"
-                        : "w-0"
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
+    <div className="relative w-full px-2 sm:px-4 py-8">
+      {/* Đường nền xám */}
+      <div className="absolute top-1/2 left-[8%] right-[8%] h-1 bg-gray-200 rounded-full transform -translate-y-1/2 z-0" />
+
+      {/* Đường gradient tiến độ */}
+      <div
+        className="absolute top-1/2 left-[8%] h-1 rounded-full bg-gradient-to-r from-orange-400 via-yellow-400 to-green-500 transition-all duration-700 z-0"
+        style={{
+          width: `${(activeIndex / (steps.length - 1)) * 84 + 8}%`, // khớp đều 4 bước
+        }}
+      />
+
+      {/* Các bước */}
+      <div className="relative flex justify-between items-center z-10">
+        {steps.map((step, i) => {
+          const isActive = i <= activeIndex;
+          const isCompleted = i < activeIndex;
+          return (
             <div
-              className={`w-14 h-14 flex items-center justify-center rounded-full border-4 transition-all duration-500 shadow-lg relative z-10 ${
-                i <= activeIndex
-                  ? "border-green-500 bg-gradient-to-br from-green-400 to-green-600 text-white scale-110"
-                  : "border-gray-300 bg-white text-gray-400"
-              }`}
+              key={step.label}
+              className="flex flex-col items-center text-center flex-1 relative"
             >
-              {step.icon}
-              {i < activeIndex && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-600 rounded-full flex items-center justify-center border-2 border-white">
-                  <Check className="w-3 h-3 text-white" />
-                </div>
-              )}
+              <div
+                className={`relative w-14 h-14 flex items-center justify-center rounded-full border-4 transition-all duration-500 shadow-sm ${
+                  isActive
+                    ? "border-green-500 bg-gradient-to-br from-green-400 to-green-600 text-white scale-105"
+                    : "border-gray-300 bg-white text-gray-400"
+                }`}
+              >
+                {step.icon}
+                {isCompleted && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-600 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                    <Check className="w-3 h-3 text-white" />
+                  </div>
+                )}
+              </div>
+              <p
+                className={`text-sm mt-3 font-semibold ${
+                  isActive ? "text-green-600" : "text-gray-500"
+                }`}
+              >
+                {step.label}
+              </p>
             </div>
-            <p
-              className={`text-xs sm:text-sm mt-3 font-semibold ${
-                i <= activeIndex ? "text-green-600" : "text-gray-500"
-              }`}
-            >
-              {step.label}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import {
-  Package,
   CreditCard,
   Tag,
   AlertCircle,
@@ -37,225 +36,137 @@ export default function CartSummary({
 }: CartSummaryProps) {
   const navigate = useNavigate();
 
-  // ===== Filter valid & invalid products =====
-  const validSelectedItems = cartItems.filter(
+  const validItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       item.product.stock > 0 &&
       item.quantity <= item.product.stock
   );
 
-  const invalidSelectedItems = cartItems.filter(
+  const invalidItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       (item.product.stock === 0 || item.quantity > item.product.stock)
   );
 
-  // ===== Calculate totals =====
-  const subtotal = validSelectedItems.reduce((sum, item) => {
-    const unit = item.product.salePrice ?? item.product.regularPrice ?? 0;
-    return sum + unit * item.quantity;
+  const subtotal = validItems.reduce((sum, item) => {
+    const price = item.product.salePrice ?? item.product.regularPrice ?? 0;
+    return sum + price * item.quantity;
   }, 0);
 
   const tax = subtotal * 0.1;
-  const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
+  const shipping = validItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;
 
-  const formatPrice = (price: number) => `${price.toLocaleString("en-US")} ₫`;
+  const format = (num: number) => `${num.toLocaleString("en-US")}₫`;
 
-  // ===== Handle checkout =====
   const handleCheckout = () => {
-    if (validSelectedItems.length === 0) return;
-
-    const checkoutItems = validSelectedItems.map((item) => ({
-      id: item.id,
-      quantity: item.quantity,
+    if (!validItems.length) return;
+    const checkoutItems = validItems.map((i) => ({
+      id: i.id,
+      quantity: i.quantity,
     }));
-
     localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
-
-    navigate("/checkout", {
-      state: { subtotal, tax, shipping, total, selectedItems: checkoutItems },
-    });
+    navigate("/checkout", { state: { subtotal, tax, shipping, total } });
   };
 
   return (
-    <>
-      {/* ===== DESKTOP ORDER SUMMARY ===== */}
-      <div
-        className="
-          w-full bg-white lg:shadow-2xl overflow-hidden 
-          rounded-none lg:rounded-3xl
-          lg:col-span-1 lg:sticky lg:top-20
-        "
-      >
-        {/* HEADER */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-2xl">
-              <Package className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Order Summary</h2>
-              <p className="text-orange-100 text-sm">
-                Review your items before checkout
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* BODY */}
-        <div className="p-6">
-          {/* ⚠️ Invalid items */}
-          {invalidSelectedItems.length > 0 && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-semibold text-red-800 mb-1">
-                    Some items cannot be checked out
-                  </p>
-                  <p className="text-red-600">
-                    {invalidSelectedItems.length} item
-                    {invalidSelectedItems.length !== 1 ? "s are" : " is"} out of
-                    stock or exceed available quantity
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 💰 Price breakdown */}
-          <div className="space-y-4 mb-6">
-            <SummaryRow
-              icon={<Tag className="w-4 h-4 text-orange-500" />}
-              label="Subtotal"
-              value={formatPrice(subtotal)}
-            />
-            <SummaryRow
-              icon={<DollarSign className="w-4 h-4 text-green-500" />}
-              label="Tax (10%)"
-              value={formatPrice(tax)}
-            />
-            <SummaryRow
-              icon={<Truck className="w-4 h-4 text-blue-500" />}
-              label="Shipping Fee"
-              value={
-                shipping === 0 ? (
-                  <span className="text-green-600 font-bold">FREE</span>
-                ) : (
-                  <span className="text-gray-800">{formatPrice(shipping)}</span>
-                )
-              }
-            />
-
-            {/* FREE SHIPPING PROGRESS */}
-            {subtotal > 0 && subtotal < 25 && (
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-3">
-                <div className="flex items-start gap-2 mb-2">
-                  <ShoppingCart className="w-4 h-4 text-blue-600 mt-0.5" />
-                  <p className="text-sm text-blue-800">
-                    Add{" "}
-                    <strong className="font-bold">
-                      {formatPrice(25 - subtotal)}
-                    </strong>{" "}
-                    more to get <strong>FREE SHIPPING</strong>!
-                  </p>
-                </div>
-                <div className="w-full bg-blue-100 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full transition-all duration-500 rounded-full"
-                    style={{ width: `${(subtotal / 25) * 100}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-blue-600 mt-1 text-right">
-                  {Math.round((subtotal / 25) * 100)}% to free shipping
-                </p>
-              </div>
-            )}
-
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
-
-            {/* 🧾 Total */}
-            <div className="flex justify-between items-center pt-2">
-              <span className="text-xl font-bold flex items-center gap-2 text-gray-900">
-                <CreditCard className="w-5 h-5 text-orange-600" />
-                Total
-              </span>
-              <div className="text-right">
-                <div className="text-3xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                  {formatPrice(total)}
-                </div>
-                {subtotal > 0 && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Including all taxes & fees
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-5 pt-5 border-t border-gray-100">
-              <ShieldCheck className="w-5 h-5 text-green-500" />
-              <span>Secure and encrypted payment</span>
-            </div>
-          </div>
-
-          {/* 🧡 Checkout button (Desktop only) */}
-          <div className="hidden lg:block">
-            <Button
-              onClick={handleCheckout}
-              disabled={validSelectedItems.length === 0}
-              icon={<ShieldCheck className="w-6 h-6" />}
-              label="Proceed to Checkout"
-              className={`w-full font-bold text-lg py-5 rounded-2xl transition-all duration-300 flex justify-center items-center gap-3 ${
-                validSelectedItems.length === 0
-                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl"
-              }`}
-            />
-          </div>
+    <div className="sticky top-20 bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-orange-200 pb-3">
+        <div className="flex items-center gap-2">
+          <CreditCard className="text-orange-600 w-6 h-6" />
+          <h3 className="text-xl font-bold text-gray-900">Order Summary</h3>
         </div>
       </div>
 
-      {/* ===== MOBILE/TABLET TASKBAR ===== */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl px-6 py-4 flex justify-between items-center lg:hidden z-50 rounded-t-3xl">
-        <div>
-          <p className="text-sm text-gray-500">Total</p>
-          <p className="text-xl font-bold text-orange-600">
-            {formatPrice(total)}
+      {/* Cảnh báo lỗi */}
+      {invalidItems.length > 0 && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
+          <AlertCircle className="text-red-600 w-5 h-5 mt-0.5" />
+          <p className="text-sm text-red-700">
+            {invalidItems.length} item
+            {invalidItems.length !== 1 ? "s" : ""} cannot be checked out.
           </p>
         </div>
-        <button
-          onClick={handleCheckout}
-          disabled={validSelectedItems.length === 0}
-          className={`px-5 py-3 rounded-xl font-semibold text-white transition-all duration-300 flex items-center gap-2 ${
-            validSelectedItems.length === 0
-              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-              : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md"
-          }`}
-        >
-          <ShieldCheck className="w-5 h-5" />
-          Checkout
-        </button>
+      )}
+
+      {/* Price summary dạng bảng */}
+      <div className="text-gray-700 space-y-2">
+        <div className="flex justify-between">
+          <span className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+          </span>
+          <span className="font-semibold">{format(subtotal)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+          </span>
+          <span className="font-semibold">{format(tax)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="flex items-center gap-2">
+            <Truck className="w-4 h-4 text-blue-500" /> Shipping
+          </span>
+          <span className="font-semibold">
+            {shipping === 0 ? (
+              <span className="text-green-600 font-semibold">Free</span>
+            ) : (
+              format(shipping)
+            )}
+          </span>
+        </div>
       </div>
-    </>
+
+      {/* Free shipping progress */}
+      {subtotal > 0 && subtotal < 25 && (
+        <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
+          <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
+            <ShoppingCart className="w-5 h-5 mt-0.5" />
+            <span>
+              Add <strong>{format(25 - subtotal)}</strong> more for{" "}
+              <strong>FREE SHIPPING</strong>!
+            </span>
+          </div>
+          <div className="w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
+              style={{ width: `${(subtotal / 25) * 100}%` }}
+            />
+          </div>
+          <p className="text-xs text-orange-600 mt-1 text-right">
+            {Math.round((subtotal / 25) * 100)}% to free shipping
+          </p>
+        </div>
+      )}
+
+      {/* Total */}
+      <div className="flex justify-between items-center border-t border-orange-200 pt-5">
+        <span className="font-bold text-lg text-gray-800">Total</span>
+        <span className="font-extrabold text-2xl text-orange-600">
+          {format(total)}
+        </span>
+      </div>
+
+      {/* Secure note */}
+      <div className="flex items-center justify-center gap-2 text-sm text-gray-500 border-t border-gray-100 pt-3">
+        <ShieldCheck className="text-green-500 w-5 h-5" />
+        <span>Secure & encrypted payment</span>
+      </div>
+
+      {/* Checkout Button */}
+      <Button
+        onClick={handleCheckout}
+        disabled={!validItems.length}
+        label="Proceed to Checkout"
+        icon={<ShieldCheck className="w-6 h-6" />}
+        className={`w-full py-5 font-semibold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
+          validItems.length
+            ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
+            : "bg-gray-100 text-gray-500 cursor-not-allowed"
+        }`}
+      />
+    </div>
   );
 }
-
-const SummaryRow = ({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: React.ReactNode;
-}) => (
-  <div className="flex justify-between items-center">
-    <div className="flex items-center gap-2 text-gray-700">
-      {icon}
-      <span>{label}</span>
-    </div>
-    <span className="font-semibold text-gray-800">{value}</span>
-  </div>
-);

@@ -78,31 +78,27 @@ export default function CartList({
   });
 
   return (
-    <div className="lg:col-span-2 mb-0 lg:mb-6">
-      <div
-        className="
-      bg-white lg:shadow-2xl  overflow-hidden 
-      rounded-none sm:rounded-none md:rounded-none lg:rounded-3xl
-    "
-      >
+    <div className="lg:col-span-2">
+      <div className="bg-white border border-orange-100 rounded-3xl shadow-sm overflow-hidden">
         {/* ===== HEADER ===== */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-2xl">
+        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white relative">
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
+          <div className="relative flex items-center gap-3">
+            <div className="bg-white/25 p-2.5 rounded-2xl shadow-inner">
               <ShoppingBag className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Your Cart</h2>
-              <p className="text-orange-100 text-sm">
-                Manage your items and update quantities
+              <h2 className="text-2xl font-bold tracking-tight">Your Cart</h2>
+              <p className="text-orange-50/80 text-sm">
+                Manage your products and quantities
               </p>
             </div>
           </div>
         </div>
 
-        {/* ===== CONTROL ROW ===== */}
+        {/* ===== CONTROL BAR ===== */}
         {!loading && cartItems.length > 0 && (
-          <div className="flex items-center justify-between flex-wrap gap-2 px-4 sm:px-6 py-4 border-b border-gray-100 bg-white">
+          <div className="flex items-center justify-between flex-wrap gap-3 px-6 py-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-amber-50/30">
             {/* Select all */}
             <div className="flex items-center gap-2">
               <Checkbox
@@ -119,10 +115,10 @@ export default function CartList({
               disabled={clearing || cartItems.length === 0}
               icon={<Trash2 className="w-4 h-4" />}
               label={clearing ? "Clearing..." : "Clear all"}
-              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap ${
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
                 clearing
-                  ? "bg-gray-200 text-gray-500 cursor-wait"
-                  : "text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                  ? "bg-gray-100 text-gray-500 cursor-wait"
+                  : "bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:shadow-md hover:text-red-700"
               }`}
             />
           </div>
@@ -132,9 +128,9 @@ export default function CartList({
         <div className="bg-white">
           {loading ? (
             <div className="p-16 text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-4"></div>
               <p className="text-gray-500 text-lg font-medium">
-                Loading cart...
+                Loading your cart...
               </p>
             </div>
           ) : cartItems.length === 0 ? (
@@ -146,23 +142,23 @@ export default function CartList({
                 Your cart is empty
               </p>
               <p className="text-gray-500">
-                Add some products to your cart to get started!
+                Add some items to your cart to get started.
               </p>
             </div>
           ) : outOfStockItems.length === cartItems.length ? (
             <div className="p-16 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto mb-4 bg-yellow-50 border border-yellow-200 rounded-full flex items-center justify-center shadow-inner">
                 <AlertTriangle className="w-10 h-10 text-yellow-500" />
               </div>
               <p className="text-gray-700 text-lg font-semibold mb-2">
                 All products are out of stock!
               </p>
               <p className="text-gray-500">
-                Please remove or check back later.
+                Please remove them or check back later.
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-orange-50">
               {sortedCartItems.map((item) => (
                 <CartItem
                   key={item.id}
