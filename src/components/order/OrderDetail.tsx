@@ -36,7 +36,7 @@ const OrderDetail: React.FC = () => {
   useEffect(() => {
     const mockData: OrderDetail = {
       id: "ORD-123456",
-      status: "In Transit",
+      status: "Confirmed",
       createdAt: "2025-10-30T12:35:00Z",
       total: 1_250_000,
       paymentMethod: "Cash on Delivery",
