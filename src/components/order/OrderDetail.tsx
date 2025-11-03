@@ -4,11 +4,10 @@ import {
   CreditCard,
   MapPin,
   Calendar,
-  CheckCircle,
-  Package,
   ClipboardList,
-  Check,
 } from "lucide-react";
+import OrderTimeline from "./OrderTimeline";
+import OrderProductList from "./OrderProductList";
 
 interface OrderItem {
   id: string;
@@ -85,18 +84,15 @@ const OrderDetail: React.FC = () => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shippingFee = 0;
   const discount = 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* LEFT: Main Content */}
+          {/* LEFT SIDE */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Order Info + Progress Combined Card */}
             <div className="bg-white rounded-3xl shadow-none lg:shadow-xl p-8 border-2 border-orange-100 space-y-8">
-              {/* Order ID */}
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-orange-200 pb-4">
                 <div>
                   <p className="text-sm text-gray-500">Order ID</p>
@@ -122,6 +118,7 @@ const OrderDetail: React.FC = () => {
                   </p>
                 )}
                 <OrderTimeline status={order.status} />
+
                 {order.estimatedDelivery && (
                   <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                     <p className="text-sm text-gray-600">
@@ -179,52 +176,10 @@ const OrderDetail: React.FC = () => {
               </div>
             </div>
 
-            {/* Product List */}
-            <div className="bg-white rounded-3xl shadow-none lg:shadow-xl p-8 border-2 border-orange-100 space-y-8">
-              <h2 className="font-bold text-xl mb-6 text-gray-900 flex items-center gap-2">
-                <Package className="w-6 h-6 text-orange-600" />
-                Items in this Order ({order.items.length})
-              </h2>
-
-              <div className="space-y-4">
-                {order.items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between border-2 border-gray-100 rounded-2xl p-4 hover:shadow-xl hover:border-orange-200 transition-all duration-300 bg-gradient-to-r from-white to-gray-50 group"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-24 h-24 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center shadow-lg border-2 border-white">
-                          {item.quantity}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-bold text-gray-900 text-lg mb-1">
-                          {item.name}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {item.price.toLocaleString("en-US")}₫ ×{" "}
-                          {item.quantity}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-orange-600 text-xl">
-                        {(item.price * item.quantity).toLocaleString("en-US")}₫
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <OrderProductList items={order.items} />
           </div>
 
-          {/* RIGHT: Summary */}
+          {/* RIGHT SIDE: Summary */}
           <div className="space-y-6">
             <div className="bg-white rounded-3xl shadow-none lg:shadow-xl p-8 border-2 border-orange-100 space-y-8">
               <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b-2 border-orange-200">
@@ -242,7 +197,6 @@ const OrderDetail: React.FC = () => {
                   label="Discount"
                   value={`-${discount.toLocaleString("en-US")}₫`}
                 />
-
                 <div className="border-t-2 border-orange-200 pt-4 flex justify-between items-center">
                   <span className="font-bold text-xl text-gray-900">Total</span>
                   <span className="font-bold text-2xl text-orange-600">
@@ -258,6 +212,14 @@ const OrderDetail: React.FC = () => {
   );
 };
 
+// ✅ Gộp các helper component ngay trong file
+const Row = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex justify-between items-center text-gray-700">
+    <span>{label}</span>
+    <span className="font-semibold">{value}</span>
+  </div>
+);
+
 const InfoItem = ({
   icon,
   label,
@@ -267,129 +229,13 @@ const InfoItem = ({
   label: string;
   value: string;
 }) => (
-  <div className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:shadow-lg hover:border-orange-200 transition-all duration-300 group bg-gradient-to-br from-white to-gray-50">
-    <div className="mt-1 p-2.5 bg-gradient-to-br from-orange-50 to-white rounded-lg group-hover:scale-110 transition-transform duration-300 border border-orange-100">
-      {icon}
-    </div>
-    <div className="flex-1 min-w-0">
-      <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wide">
-        {label}
-      </p>
-      <p className="font-semibold text-gray-900 text-sm leading-snug break-words">
-        {value}
-      </p>
+  <div className="flex items-start gap-3 bg-orange-50/30 hover:bg-orange-50 rounded-xl p-3 transition">
+    <div className="flex-shrink-0 mt-1">{icon}</div>
+    <div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900">{value}</p>
     </div>
   </div>
 );
-
-const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between items-center text-gray-700">
-    <span>{label}</span>
-    <span className="font-semibold">{value}</span>
-  </div>
-);
-
-const OrderTimeline = ({ status }: { status: string }) => {
-  const steps = [
-    {
-      label: "Order Placed",
-      icon: <Package className="w-5 h-5" />,
-      color: "from-orange-400 to-orange-600",
-    },
-    {
-      label: "Confirmed",
-      icon: <Check className="w-5 h-5" />,
-      color: "from-blue-400 to-blue-600",
-    },
-    {
-      label: "In Transit",
-      icon: <Truck className="w-5 h-5" />,
-      color: "from-amber-400 to-amber-600",
-    },
-    {
-      label: "Delivered",
-      icon: <CheckCircle className="w-5 h-5" />,
-      color: "from-green-400 to-green-600",
-    },
-  ];
-
-  const activeIndex = steps.findIndex((s) => s.label === status);
-  const progressPercent = (activeIndex / (steps.length - 1)) * 100;
-
-  return (
-    <div className="relative w-full px-4 sm:px-8 py-8">
-      <div className="relative">
-        {/* Đường nền */}
-        <div className="absolute top-9 left-0 right-0 h-1.5 bg-gray-200 rounded-full" />
-
-        {/* Đường tiến độ */}
-        <div
-          className="absolute top-9 left-0 h-1.5 rounded-full transition-all duration-700 bg-gradient-to-r from-orange-400 via-amber-400 to-green-500"
-          style={{ width: `${progressPercent}%` }}
-        />
-
-        {/* Các bước */}
-        <div className="relative flex justify-between items-start">
-          {steps.map((step, i) => {
-            const isActive = i === activeIndex;
-            const isCompleted = i < activeIndex;
-
-            return (
-              <div
-                key={step.label}
-                className="flex flex-col items-center flex-1 relative"
-              >
-                {/* Icon circle */}
-                <div className="relative mb-4">
-                  <div
-                    className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
-                      isCompleted
-                        ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg"
-                        : isActive
-                        ? `bg-gradient-to-br ${step.color} text-white shadow-lg scale-110`
-                        : "bg-white text-gray-400 shadow-md border-2 border-gray-200"
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <Check className="w-6 h-6 stroke-[3]" />
-                    ) : (
-                      step.icon
-                    )}
-                  </div>
-
-                  {/* Number badge */}
-                  <div
-                    className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md ${
-                      isCompleted || isActive
-                        ? "bg-white text-gray-700"
-                        : "bg-gray-200 text-gray-400"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                </div>
-
-                {/* Label */}
-                <div className="text-center px-2">
-                  <p
-                    className={`text-xs sm:text-sm font-semibold transition-colors ${
-                      isActive
-                        ? "text-orange-600"
-                        : isCompleted
-                        ? "text-green-600"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.label}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default OrderDetail;

@@ -1,20 +1,19 @@
 import React from "react";
 
-interface Product {
+interface ProductItem {
   id: string;
   title: string;
-  images?: string[];
+  image?: string;
   quantity: number;
-  regularPrice?: number;
-  salePrice?: number;
+  price: number;
 }
 
 interface Props {
-  product: Product;
+  item: ProductItem;
 }
 
-const CheckoutProductItem: React.FC<Props> = ({ product }) => {
-  const displayPrice = product.salePrice ?? product.regularPrice ?? 0;
+const OrderProductItem: React.FC<Props> = ({ item }) => {
+  const totalPrice = item.price * item.quantity;
 
   return (
     <div
@@ -22,16 +21,12 @@ const CheckoutProductItem: React.FC<Props> = ({ product }) => {
                  bg-gradient-to-r from-white to-gray-50 hover:bg-orange-50/80 hover:border-orange-200 
                  transition-all duration-300 group"
     >
-      {/* Left side: Image + Info */}
+      {/* Left: Image + Info */}
       <div className="flex items-center gap-4">
         <div className="relative">
           <img
-            src={
-              Array.isArray(product.images) && product.images.length > 0
-                ? product.images[0]
-                : "/placeholder.png"
-            }
-            alt={product.title}
+            src={item.image || "/placeholder.png"}
+            alt={item.title}
             className="w-24 h-24 rounded-xl object-cover border border-orange-100 
                        shadow-sm group-hover:scale-105 transition-transform duration-300"
           />
@@ -40,40 +35,38 @@ const CheckoutProductItem: React.FC<Props> = ({ product }) => {
                        text-white text-xs font-bold rounded-full w-7 h-7 flex items-center 
                        justify-center shadow-lg border-2 border-white"
           >
-            {product.quantity}
+            {item.quantity}
           </div>
         </div>
 
         <div className="min-w-0">
-          <h3
+          <p
             className="font-semibold text-lg text-gray-800 truncate max-w-[220px]"
-            title={product.title}
+            title={item.title}
           >
-            {product.title}
-          </h3>
+            {item.title}
+          </p>
           <p className="text-sm text-gray-500 mt-1">
             Quantity:{" "}
-            <span className="font-medium text-gray-700">
-              {product.quantity}
-            </span>
+            <span className="font-medium text-gray-700">{item.quantity}</span>
           </p>
         </div>
       </div>
 
-      {/* Right side: Price */}
+      {/* Right: Price */}
       <div className="text-right">
-        <p className="font-semibold text-orange-600 text-lg">
-          {displayPrice.toLocaleString("en-US")}₫
+        <p className="font-semibold text-gray-800 text-sm">
+          Unit:{" "}
+          <span className="text-orange-600">
+            {item.price.toLocaleString("en-US")}₫
+          </span>
         </p>
-
-        {product.salePrice && product.regularPrice && (
-          <p className="text-sm text-gray-400 line-through">
-            {product.regularPrice.toLocaleString("en-US")}₫
-          </p>
-        )}
+        <p className="font-bold text-orange-600 text-lg mt-1">
+          Total: {totalPrice.toLocaleString("en-US")}₫
+        </p>
       </div>
     </div>
   );
 };
 
-export default CheckoutProductItem;
+export default OrderProductItem;
