@@ -79,27 +79,18 @@ export default function CartList({
 
   return (
     <div className="lg:col-span-2">
-      <div className="bg-white border border-orange-100 rounded-3xl shadow-sm overflow-hidden">
-        {/* ===== HEADER ===== */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 pt-6 pb-5 text-white relative">
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
-          <div className="relative flex items-center gap-3">
-            <div className="bg-white/25 p-2.5 rounded-2xl shadow-inner">
-              <ShoppingBag className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">Your Cart</h2>
-              <p className="text-orange-50/80 text-sm">
-                Manage your products and quantities
-              </p>
-            </div>
+      <div className="bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
+        {/* ===== HEADER (đồng bộ CartSummary) ===== */}
+        <div className="flex items-center justify-between border-b border-orange-200 pb-3">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="text-orange-600 w-6 h-6" />
+            <h3 className="text-xl font-bold text-gray-900">Your Cart</h3>
           </div>
         </div>
 
-        {/* ===== CONTROL BAR ===== */}
+        {/* ===== CONTROL ROW ===== */}
         {!loading && cartItems.length > 0 && (
-          <div className="flex items-center justify-between flex-wrap gap-3 px-6 py-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-amber-50/30">
-            {/* Select all */}
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-orange-100 pb-4">
             <div className="flex items-center gap-2">
               <Checkbox
                 label="Select all"
@@ -109,52 +100,51 @@ export default function CartList({
               />
             </div>
 
-            {/* Clear all */}
             <Button
               onClick={clearAll}
               disabled={clearing || cartItems.length === 0}
               icon={<Trash2 className="w-4 h-4" />}
               label={clearing ? "Clearing..." : "Clear all"}
-              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap ${
                 clearing
-                  ? "bg-gray-100 text-gray-500 cursor-wait"
-                  : "bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:shadow-md hover:text-red-700"
+                  ? "bg-gray-100 text-gray-400 cursor-wait"
+                  : "text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
               }`}
             />
           </div>
         )}
 
         {/* ===== BODY ===== */}
-        <div className="bg-white">
+        <div>
           {loading ? (
-            <div className="p-16 text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-4"></div>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-orange-600 mx-auto mb-4"></div>
               <p className="text-gray-500 text-lg font-medium">
-                Loading your cart...
+                Loading cart...
               </p>
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="p-20 text-center">
-              <div className="bg-gradient-to-br from-orange-100 to-amber-100 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <ShoppingBag className="w-16 h-16 text-orange-400" />
+            <div className="text-center py-16">
+              <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <ShoppingBag className="w-14 h-14 text-orange-500" />
               </div>
-              <p className="text-gray-700 text-xl font-semibold mb-2">
+              <p className="text-gray-800 text-xl font-semibold mb-2">
                 Your cart is empty
               </p>
               <p className="text-gray-500">
-                Add some items to your cart to get started.
+                Add some products to your cart to get started!
               </p>
             </div>
           ) : outOfStockItems.length === cartItems.length ? (
-            <div className="p-16 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 bg-yellow-50 border border-yellow-200 rounded-full flex items-center justify-center shadow-inner">
+            <div className="text-center py-16">
+              <div className="w-20 h-20 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
                 <AlertTriangle className="w-10 h-10 text-yellow-500" />
               </div>
-              <p className="text-gray-700 text-lg font-semibold mb-2">
+              <p className="text-gray-800 text-lg font-semibold mb-2">
                 All products are out of stock!
               </p>
               <p className="text-gray-500">
-                Please remove them or check back later.
+                Please remove or check back later.
               </p>
             </div>
           ) : (

@@ -1,12 +1,13 @@
 import React from "react";
 import { ShoppingBag } from "lucide-react";
+import CheckoutProductItem from "./CheckoutProductItem";
 
 interface Product {
   id: string;
   title: string;
   images?: string[];
   quantity: number;
-  price?: number;
+  regularPrice?: number;
   salePrice?: number;
 }
 
@@ -17,73 +18,49 @@ interface Props {
 
 const CheckoutProductList: React.FC<Props> = ({ products, loading }) => {
   return (
-    <div className="bg-white lg:rounded-3xl lg:shadow-lg overflow-hidden lg:mb-8 mb-0">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
-        <ShoppingBag className="w-6 h-6 text-white" />
-        <div>
-          <h2 className="text-2xl font-bold text-white">
-            Products in the order
-          </h2>
-          <p className="text-orange-100 mt-1 text-sm">
-            {products.length} products in the order
-          </p>
+    <div className="bg-white border border-orange-100 rounded-3xl p-8 shadow-md transition-all duration-300 hover:shadow-lg">
+      {/* ===== HEADER ===== */}
+      <div className="flex items-center justify-between border-b border-orange-200 pb-3">
+        <div className="flex items-center gap-2">
+          <ShoppingBag className="text-orange-600 w-6 h-6" />
+          <h3 className="text-xl font-bold text-gray-900">
+            Products in the Order
+          </h3>
         </div>
+        <p className="text-sm text-gray-500">
+          {products.length} item{products.length !== 1 && "s"}
+        </p>
       </div>
 
-      {/* Body */}
-      <div className="p-8">
+      {/* ===== BODY ===== */}
+      <div className="mt-6">
         {loading ? (
-          // Loading skeleton
-          <div className="space-y-6">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="animate-pulse bg-orange-50 rounded-2xl p-6 flex items-center gap-6"
-              >
-                <div className="w-24 h-24 bg-orange-100 rounded-xl" />
-                <div className="flex-1 space-y-3">
-                  <div className="h-4 bg-orange-100 rounded w-1/2" />
-                  <div className="h-4 bg-orange-100 rounded w-1/3" />
-                </div>
-              </div>
-            ))}
+          // 🌀 Loading State
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-orange-600 mx-auto mb-4"></div>
+            <p className="text-gray-500 text-lg font-medium">
+              Loading products...
+            </p>
           </div>
-        ) : products.length > 0 ? (
-          // Product list
-          <div className="space-y-6">
-            {products.map((p) => (
-              <div
-                key={p.id}
-                className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-6"
-              >
-                {/* Product Image */}
-                <img
-                  src={
-                    Array.isArray(p.images) && p.images.length > 0
-                      ? p.images[0]
-                      : "/placeholder.png"
-                  }
-                  alt={p.title}
-                  className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
-                />
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <h3
-                    className="font-semibold text-lg text-gray-800 truncate"
-                    title={p.title}
-                  >
-                    {p.title}
-                  </h3>
-                  <p className="text-gray-500 mt-1">Quantity: {p.quantity}</p>
-                </div>
-              </div>
-            ))}
+        ) : products.length === 0 ? (
+          // ❌ Empty State
+          <div className="text-center py-16">
+            <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <ShoppingBag className="w-14 h-14 text-orange-500" />
+            </div>
+            <p className="text-gray-800 text-xl font-semibold mb-2">
+              No products found
+            </p>
+            <p className="text-gray-500">
+              There are no products in this order.
+            </p>
           </div>
         ) : (
-          <div className="text-center py-16 text-gray-500">
-            There are no products in the order
+          // 🛍 Product List
+          <div className="divide-y divide-orange-50">
+            {products.map((p) => (
+              <CheckoutProductItem key={p.id} product={p} />
+            ))}
           </div>
         )}
       </div>

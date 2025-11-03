@@ -53,50 +53,52 @@ const AddressModal: React.FC<AddressModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl w-full max-w-md p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white border border-orange-200 rounded-2xl w-full max-w-md p-6 relative shadow-xl">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
         >
           <X size={20} />
         </button>
-        <h3 className="mb-4 text-xl font-bold">
+        <h3 className="mb-4 text-xl font-bold text-gray-800 border-b border-orange-100 pb-2">
           {address ? "Edit Address" : "Add New Address"}
         </h3>
+
         <div className="space-y-3">
           <input
             type="text"
             placeholder="Full Name"
             value={form.fullName || ""}
             onChange={(e) => handleChange("fullName", e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
           <input
             type="text"
             placeholder="Address"
             value={form.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
           <input
             type="text"
             placeholder="Phone"
             value={form.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
         </div>
-        <div className="mt-4 flex justify-end gap-2">
+
+        <div className="mt-5 flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-100"
+            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveClick}
-            className="px-4 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600"
+            className="px-4 py-2 text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:opacity-90"
           >
             Save
           </button>
@@ -151,7 +153,7 @@ const AddressesTab: React.FC = () => {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white p-6 space-y-6">
+      <div className="max-w-6xl mx-auto bg-white border border-orange-100 rounded-3xl shadow-sm p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             My Addresses
@@ -162,7 +164,7 @@ const AddressesTab: React.FC = () => {
         <div className="flex justify-end">
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-orange-500  hover:opacity-90"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:opacity-90 shadow-sm"
           >
             <Plus size={18} /> Add New Address
           </button>
@@ -170,7 +172,7 @@ const AddressesTab: React.FC = () => {
 
         {/* Address List */}
         {addresses.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
             You haven’t added any addresses yet.
             <br />
             Start by adding your first one ✨
@@ -180,7 +182,11 @@ const AddressesTab: React.FC = () => {
             {addresses.map((addr) => (
               <div
                 key={addr.id}
-                className="p-5 border border-gray-200 rounded-2xl hover:shadow-lg transition-shadow flex flex-col"
+                className={`p-5 border-2 rounded-2xl transition-all ${
+                  addr.isDefault
+                    ? "border-green-400 shadow-md bg-green-50/50"
+                    : "border-gray-200 hover:shadow-md"
+                }`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-semibold text-gray-800">
@@ -192,14 +198,14 @@ const AddressesTab: React.FC = () => {
                     </span>
                   )}
                 </div>
+
                 <p className="mb-1 text-gray-600">{addr.address}</p>
                 <p className="mb-4 text-sm text-gray-500">
                   Phone: {addr.phone}
                 </p>
 
                 {/* Buttons */}
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {/* Edit */}
+                <div className="flex flex-wrap gap-2 mt-auto justify-end">
                   <button
                     onClick={() => openModal(addr)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all"
@@ -207,7 +213,6 @@ const AddressesTab: React.FC = () => {
                     <Edit2 size={14} /> Edit
                   </button>
 
-                  {/* Set Default */}
                   <button
                     onClick={() => handleSetDefault(addr.id)}
                     disabled={addr.isDefault}
@@ -221,7 +226,6 @@ const AddressesTab: React.FC = () => {
                     <Check size={14} /> Set as Default
                   </button>
 
-                  {/* Delete */}
                   <button
                     onClick={() => handleDelete(addr.id)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all"

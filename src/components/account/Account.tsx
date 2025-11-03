@@ -79,48 +79,50 @@ const Account = () => {
 
   // --- Render layout ---
   return (
-    <div className="px-2 py-8 mx-auto max-w-7xl sm:px-6 md:px-16">
-      <div className="flex flex-col-reverse gap-6 lg:flex-row">
-        {/* ✅ Desktop: luôn hiển thị sidebar */}
-        {!isMobile && (
-          <>
-            <div className="w-full lg:w-1/4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
+      <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
+        <div className="flex flex-col-reverse gap-1 lg:flex-row">
+          {/* ✅ Desktop: luôn hiển thị sidebar */}
+          {!isMobile && (
+            <>
+              <div className="w-full lg:w-1/4">
+                <AccountSidebar
+                  activeTab={tab || "profile"}
+                  onTabChange={handleTabChange}
+                  onLogout={logout}
+                />
+              </div>
+              <div className="w-full lg:w-3/4">{renderTab()}</div>
+            </>
+          )}
+
+          {/* ✅ Mobile: /account → sidebar */}
+          {isMobile && !tab && (
+            <div className="w-full">
               <AccountSidebar
-                activeTab={tab || "profile"}
+                activeTab=""
                 onTabChange={handleTabChange}
                 onLogout={logout}
               />
             </div>
-            <div className="w-full lg:w-3/4">{renderTab()}</div>
-          </>
-        )}
+          )}
 
-        {/* ✅ Mobile: /account → sidebar */}
-        {isMobile && !tab && (
-          <div className="w-full">
-            <AccountSidebar
-              activeTab=""
-              onTabChange={handleTabChange}
-              onLogout={logout}
-            />
-          </div>
-        )}
-
-        {/* ✅ Mobile: /account/:tab → nội dung + nút back */}
-        {isMobile && tab && (
-          <div className="w-full">
-            <div className="flex justify-start mb-3">
-              <button
-                onClick={handleBack}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
-              >
-                <ArrowLeft size={16} />
-                <span>Back</span>
-              </button>
+          {/* ✅ Mobile: /account/:tab → nội dung + nút back */}
+          {isMobile && tab && (
+            <div className="w-full">
+              <div className="flex justify-start mb-3">
+                <button
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Back</span>
+                </button>
+              </div>
+              {renderTab()}
             </div>
-            {renderTab()}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

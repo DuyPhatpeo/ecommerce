@@ -36,38 +36,46 @@ export default function CartSummary({
 }: CartSummaryProps) {
   const navigate = useNavigate();
 
-  const validItems = cartItems.filter(
+  // ===== Filter valid & invalid products =====
+  const validSelectedItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       item.product.stock > 0 &&
       item.quantity <= item.product.stock
   );
 
-  const invalidItems = cartItems.filter(
+  const invalidSelectedItems = cartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       (item.product.stock === 0 || item.quantity > item.product.stock)
   );
 
-  const subtotal = validItems.reduce((sum, item) => {
-    const price = item.product.salePrice ?? item.product.regularPrice ?? 0;
-    return sum + price * item.quantity;
+  // ===== Calculate totals =====
+  const subtotal = validSelectedItems.reduce((sum, item) => {
+    const unit = item.product.salePrice ?? item.product.regularPrice ?? 0;
+    return sum + unit * item.quantity;
   }, 0);
 
   const tax = subtotal * 0.1;
-  const shipping = validItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
+  const shipping = validSelectedItems.length > 0 ? (subtotal >= 25 ? 0 : 1) : 0;
   const total = subtotal + tax + shipping;
 
-  const format = (num: number) => `${num.toLocaleString("en-US")}₫`;
+  const formatPrice = (price: number) => `${price.toLocaleString("en-US")}₫`;
 
+  // ===== Handle checkout =====
   const handleCheckout = () => {
-    if (!validItems.length) return;
-    const checkoutItems = validItems.map((i) => ({
-      id: i.id,
-      quantity: i.quantity,
+    if (validSelectedItems.length === 0) return;
+
+    const checkoutItems = validSelectedItems.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
     }));
+
     localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
-    navigate("/checkout", { state: { subtotal, tax, shipping, total } });
+
+    navigate("/checkout", {
+      state: { subtotal, tax, shipping, total, selectedItems: checkoutItems },
+    });
   };
 
   return (
@@ -80,30 +88,31 @@ export default function CartSummary({
         </div>
       </div>
 
-      {/* Cảnh báo lỗi */}
-      {invalidItems.length > 0 && (
+      {/* Invalid warning */}
+      {invalidSelectedItems.length > 0 && (
         <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
           <AlertCircle className="text-red-600 w-5 h-5 mt-0.5" />
           <p className="text-sm text-red-700">
-            {invalidItems.length} item
-            {invalidItems.length !== 1 ? "s" : ""} cannot be checked out.
+            {invalidSelectedItems.length} item
+            {invalidSelectedItems.length !== 1 ? "s" : ""} cannot be checked
+            out.
           </p>
         </div>
       )}
 
-      {/* Price summary dạng bảng */}
+      {/* Price summary */}
       <div className="text-gray-700 space-y-2">
         <div className="flex justify-between">
           <span className="flex items-center gap-2">
             <Tag className="w-4 h-4 text-orange-500" /> Subtotal
           </span>
-          <span className="font-semibold">{format(subtotal)}</span>
+          <span className="font-semibold">{formatPrice(subtotal)}</span>
         </div>
         <div className="flex justify-between">
           <span className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
           </span>
-          <span className="font-semibold">{format(tax)}</span>
+          <span className="font-semibold">{formatPrice(tax)}</span>
         </div>
         <div className="flex justify-between">
           <span className="flex items-center gap-2">
@@ -113,7 +122,7 @@ export default function CartSummary({
             {shipping === 0 ? (
               <span className="text-green-600 font-semibold">Free</span>
             ) : (
-              format(shipping)
+              formatPrice(shipping)
             )}
           </span>
         </div>
@@ -125,7 +134,7 @@ export default function CartSummary({
           <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
             <ShoppingCart className="w-5 h-5 mt-0.5" />
             <span>
-              Add <strong>{format(25 - subtotal)}</strong> more for{" "}
+              Add <strong>{formatPrice(25 - subtotal)}</strong> more for{" "}
               <strong>FREE SHIPPING</strong>!
             </span>
           </div>
@@ -145,7 +154,7 @@ export default function CartSummary({
       <div className="flex justify-between items-center border-t border-orange-200 pt-5">
         <span className="font-bold text-lg text-gray-800">Total</span>
         <span className="font-extrabold text-2xl text-orange-600">
-          {format(total)}
+          {formatPrice(total)}
         </span>
       </div>
 
@@ -158,11 +167,11 @@ export default function CartSummary({
       {/* Checkout Button */}
       <Button
         onClick={handleCheckout}
-        disabled={!validItems.length}
+        disabled={!validSelectedItems.length}
         label="Proceed to Checkout"
         icon={<ShieldCheck className="w-6 h-6" />}
         className={`w-full py-5 font-semibold text-lg rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
-          validItems.length
+          validSelectedItems.length
             ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
             : "bg-gray-100 text-gray-500 cursor-not-allowed"
         }`}

@@ -42,7 +42,7 @@ const WishlistTab: React.FC = () => {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white">
+      <div className="max-w-6xl mx-auto bg-white border border-orange-100 rounded-3xl shadow-sm p-6 space-y-6">
         {/* Header */}
         <div className="mb-10 text-center">
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">

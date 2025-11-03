@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 interface Product {
   id: string;
   title: string;
-  price?: number;
+  regularPrice?: number;
   salePrice?: number;
   images?: string[];
 }
@@ -46,11 +46,16 @@ const CheckOut: React.FC = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
+  // 💰 Tính lại subtotal dựa trên giá hiện tại
   const subtotal = useMemo(
     () =>
       state.subtotal ??
       products.reduce(
-        (sum, p) => sum + (p.salePrice ?? p.price ?? 0) * p.quantity,
+        (sum, p) =>
+          sum +
+          ((p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice) ??
+            0) *
+            p.quantity,
         0
       ),
     [state.subtotal, products]
@@ -60,17 +65,21 @@ const CheckOut: React.FC = () => {
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
+  // 🛒 Lấy thông tin sản phẩm từ API
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const results: (Product & { quantity: number })[] = [];
+
         if (state.selectedItems?.length) {
           for (const item of state.selectedItems) {
             const cartItemRes = await getCartItem(item.id);
             const cartItem = cartItemRes.data || cartItemRes;
+
             const productRes = await getProductById(cartItem.productId);
             const product = productRes.data || productRes;
+
             results.push({ ...product, quantity: item.quantity });
           }
         } else if (state.productId && state.quantity) {
@@ -78,11 +87,13 @@ const CheckOut: React.FC = () => {
           const product = productRes.data || productRes;
           results.push({ ...product, quantity: state.quantity });
         }
+
         if (!results.length) {
           toast.error("Không có sản phẩm nào để thanh toán!");
           navigate("/");
           return;
         }
+
         setProducts(results);
       } catch {
         toast.error("Không thể tải dữ liệu sản phẩm.");
@@ -90,9 +101,11 @@ const CheckOut: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, [state, navigate]);
 
+  // 🧾 Xử lý đặt hàng
   const handlePlaceOrder = async () => {
     if (!customerInfo) {
       toast.error("⚠️ Vui lòng chọn hoặc nhập thông tin giao hàng!");
@@ -105,27 +118,51 @@ const CheckOut: React.FC = () => {
       return;
     }
 
-    const orderData = {
-      customer: customerInfo,
-      items: products.map((p) => ({
-        productId: p.id,
-        title: p.title,
-        quantity: p.quantity,
-        price: p.salePrice ?? p.price,
-      })),
-      subtotal,
-      tax,
-      shipping,
-      total,
-      createdAt: new Date().toISOString(),
-    };
-
     try {
       setPlacingOrder(true);
       const loadingToast = toast.loading("Đang xử lý đơn hàng...");
+
+      // 🧠 Cập nhật lại giá tại thời điểm checkout
+      const updatedProducts = await Promise.all(
+        products.map(async (p) => {
+          const res = await getProductById(p.id);
+          const current = res.data || res;
+          return {
+            ...p,
+            regularPrice: current.regularPrice,
+            salePrice: current.salePrice,
+          };
+        })
+      );
+
+      // 🧮 Chuẩn bị dữ liệu đơn hàng
+      const orderData = {
+        customer: customerInfo,
+        items: updatedProducts.map((p) => ({
+          productId: p.id,
+          title: p.title,
+          quantity: p.quantity,
+          price: p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice,
+        })),
+        subtotal: updatedProducts.reduce(
+          (sum, p) =>
+            sum +
+            ((p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice) ??
+              0) *
+              p.quantity,
+          0
+        ),
+        tax,
+        shipping,
+        total,
+        createdAt: new Date().toISOString(),
+      };
+
+      // 📦 Gửi đơn hàng
       const response = await createOrder(orderData);
       toast.dismiss(loadingToast);
       toast.success("🎉 Đặt hàng thành công!");
+
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: response }, replace: true });
     } catch {
@@ -137,14 +174,16 @@ const CheckOut: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
-        <div className="grid grid-cols-1 lg:gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* 🧾 Form + Sản phẩm */}
           <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
 
+          {/* 💰 Tổng kết đơn hàng */}
           <div className="lg:col-span-1">
             <CheckoutSummary
               subtotal={subtotal}
@@ -161,6 +200,7 @@ const CheckOut: React.FC = () => {
               }
               onPlaceOrder={handlePlaceOrder}
             />
+
             {placingOrder && (
               <p className="mt-3 text-center text-orange-500 animate-pulse">
                 Đang xử lý đơn hàng...

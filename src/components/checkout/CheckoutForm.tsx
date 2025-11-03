@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   MapPin,
   Home,
@@ -21,11 +21,8 @@ interface CustomerInfo {
   paymentMethod: string;
 }
 
-interface Address {
+interface Address extends Omit<CustomerInfo, "note" | "paymentMethod"> {
   id: string;
-  fullName: string;
-  phone: string;
-  address: string;
   isDefault: boolean;
 }
 
@@ -35,112 +32,122 @@ interface Props {
 
 export default function CheckoutForm({ onChange }: Props) {
   const [addresses, setAddresses] = useState<Address[]>(() => {
-    const saved = localStorage.getItem("savedAddresses");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      return JSON.parse(localStorage.getItem("savedAddresses") || "[]");
+    } catch {
+      return [];
+    }
   });
 
-  const [selectedId, setSelectedId] = useState(
-    addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || ""
+  const [selectedId, setSelectedId] = useState<string>(
+    () => addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || ""
   );
+
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const [newAddress, setNewAddress] = useState({
+  const [newAddress, setNewAddress] = useState<Omit<Address, "id">>({
     fullName: "",
     phone: "",
     address: "",
     isDefault: false,
   });
 
-  // Save to localStorage
+  /** 🧠 Ghi localStorage khi thay đổi */
   useEffect(() => {
     localStorage.setItem("savedAddresses", JSON.stringify(addresses));
   }, [addresses]);
 
-  // Notify parent when selection changes
-  useEffect(() => {
-    const selected = addresses.find((a) => a.id === selectedId);
-    if (selected) onChange({ ...selected, note, paymentMethod });
-  }, [selectedId, note, paymentMethod, addresses, onChange]);
+  /** 🔁 Gửi thông tin ra ngoài khi thay đổi */
+  const selectedAddress = useMemo(
+    () => addresses.find((a) => a.id === selectedId),
+    [addresses, selectedId]
+  );
 
-  // Handle adding new address
+  useEffect(() => {
+    if (selectedAddress) onChange({ ...selectedAddress, note, paymentMethod });
+  }, [selectedAddress, note, paymentMethod, onChange]);
+
+  /** ➕ Thêm địa chỉ mới */
   const handleAddAddress = () => {
-    if (!newAddress.fullName || !newAddress.phone || !newAddress.address) {
-      alert("Please fill in all required fields!");
-      return;
-    }
+    const { fullName, phone, address } = newAddress;
+    if (!fullName || !phone || !address)
+      return alert("Please fill in all required fields!");
 
     const newItem: Address = {
       id: crypto.randomUUID(),
-      fullName: newAddress.fullName,
-      phone: newAddress.phone,
-      address: newAddress.address,
-      isDefault: addresses.length === 0, // first one is default
+      ...newAddress,
+      isDefault: addresses.length === 0,
     };
 
-    const updated = [...addresses, newItem];
-    setAddresses(updated);
+    setAddresses((prev) => [...prev, newItem]);
     setSelectedId(newItem.id);
     setNewAddress({ fullName: "", phone: "", address: "", isDefault: false });
     setShowAddForm(false);
   };
 
+  /** 💳 Các phương thức thanh toán */
+  const paymentMethods = [
+    {
+      value: "cod",
+      label: "Cash on Delivery (COD)",
+      icon: <Banknote className="text-green-500" />,
+    },
+    {
+      value: "banking",
+      label: "Bank Transfer",
+      icon: <CreditCard className="text-blue-500" />,
+    },
+    {
+      value: "momo",
+      label: "E-Wallet (MoMo, ZaloPay...)",
+      icon: <Wallet className="text-pink-500" />,
+    },
+  ];
+
   return (
-    <div className="bg-white lg:rounded-3xl lg:shadow-lg overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-8 py-6 flex items-center gap-3">
-        <MapPin className="w-6 h-6 text-white" />
-        <div>
-          <h2 className="text-2xl font-bold text-white">
-            Shipping Information
-          </h2>
-          <p className="text-orange-100 mt-1 text-sm">
-            {addresses.length} saved addresses
-          </p>
-        </div>
-      </div>
+      <Header icon={<MapPin />} title="Shipping Information" />
 
       {/* Address List */}
-      <div className="p-8 space-y-4">
-        {addresses.map((addr) => (
-          <Radio
-            key={addr.id}
-            value={addr.id}
-            checked={selectedId === addr.id}
-            onChange={(val) => setSelectedId(val)}
-            label={
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="font-bold text-gray-900 text-lg flex items-center gap-2">
-                    <User className="w-5 h-5 text-orange-500" /> {addr.fullName}
-                  </p>
-                  <p className="text-sm text-gray-700 flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-orange-500" /> {addr.phone}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1 flex items-start gap-2 leading-relaxed">
-                    <Home className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                    <span>{addr.address}</span>
-                  </p>
+      <div className="p-6 space-y-4">
+        {addresses.length ? (
+          addresses.map((addr) => (
+            <Radio
+              key={addr.id}
+              value={addr.id}
+              checked={selectedId === addr.id}
+              onChange={setSelectedId}
+              className="p-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all"
+              label={
+                <div className="flex justify-between items-start gap-4">
+                  <div>
+                    <InfoRow icon={<User />} text={addr.fullName} bold />
+                    <InfoRow icon={<Phone />} text={addr.phone} />
+                    <InfoRow icon={<Home />} text={addr.address} multiline />
+                  </div>
+                  {addr.isDefault && (
+                    <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full">
+                      Default
+                    </span>
+                  )}
                 </div>
-                {addr.isDefault && (
-                  <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full flex-shrink-0 self-start">
-                    Default
-                  </span>
-                )}
-              </div>
-            }
-            className="flex justify-between items-start p-6 rounded-2xl transition-all"
-          />
-        ))}
+              }
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 italic py-4">
+            No saved addresses yet
+          </p>
+        )}
 
-        {/* Add New Address Button */}
-        <div className="pt-4 flex justify-center lg:justify-end">
+        <div className="pt-2 flex justify-end">
           <button
             onClick={() => setShowAddForm(true)}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md w-full sm:w-auto justify-center"
+            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600  text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
           >
-            <Plus size={18} /> Add New Address
+            <Plus size={16} /> Add New Address
           </button>
         </div>
       </div>
@@ -155,14 +162,14 @@ export default function CheckoutForm({ onChange }: Props) {
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Add notes for the delivery person"
-            rows={4}
-            maxLength={500}
-            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none resize-none bg-white shadow-sm transition-all text-gray-700"
+            placeholder="Add notes for the delivery person..."
+            rows={3}
+            maxLength={300}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 outline-none bg-white shadow-sm transition-all text-gray-700"
           />
-          <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-            <p>Helps the delivery find you easier</p>
-            <p>{note.length}/500</p>
+          <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
+            <p>Helps delivery find you easier</p>
+            <p>{note.length}/300</p>
           </div>
         </Section>
       )}
@@ -173,108 +180,87 @@ export default function CheckoutForm({ onChange }: Props) {
           icon={<CreditCard className="w-5 h-5 text-orange-500" />}
           title="Payment Method"
         >
-          {[
-            {
-              value: "cod",
-              label: "Cash on Delivery (COD)",
-              icon: <Banknote className="text-green-500" />,
-            },
-            {
-              value: "banking",
-              label: "Bank Transfer",
-              icon: <CreditCard className="text-blue-500" />,
-            },
-            {
-              value: "momo",
-              label: "E-Wallet (MoMo, ZaloPay...)",
-              icon: <Wallet className="text-pink-500" />,
-            },
-          ].map((method) => (
+          {paymentMethods.map((method) => (
             <Radio
               key={method.value}
               value={method.value}
               checked={paymentMethod === method.value}
-              onChange={(val) => setPaymentMethod(val)}
+              onChange={setPaymentMethod}
               label={
-                <span className="flex items-center gap-2 font-semibold text-gray-900">
+                <span className="flex items-center gap-2 font-medium text-gray-800">
                   {method.icon}
                   {method.label}
                 </span>
               }
-              className="mb-3"
+              className="mb-2"
             />
           ))}
         </Section>
       )}
 
-      {/* Popup Add New Address */}
+      {/* Modal thêm địa chỉ */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl relative">
+        <Modal onClose={() => setShowAddForm(false)}>
+          <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2">
+            <MapPin className="text-orange-500" /> Add New Address
+          </div>
+
+          <div className="space-y-3">
+            <Input
+              placeholder="Full name"
+              value={newAddress.fullName}
+              onChange={(e) =>
+                setNewAddress({ ...newAddress, fullName: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Phone number"
+              value={newAddress.phone}
+              onChange={(e) =>
+                setNewAddress({ ...newAddress, phone: e.target.value })
+              }
+            />
+            <textarea
+              placeholder="Address"
+              rows={3}
+              value={newAddress.address}
+              onChange={(e) =>
+                setNewAddress({ ...newAddress, address: e.target.value })
+              }
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-orange-400 outline-none resize-none"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 mt-6">
             <button
               onClick={() => setShowAddForm(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+              className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
-              <X className="w-5 h-5" />
+              Cancel
             </button>
-            <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-              <MapPin className="text-orange-500" /> Add New Address
-            </h3>
-
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Full name"
-                value={newAddress.fullName}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, fullName: e.target.value })
-                }
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none"
-              />
-              <input
-                type="text"
-                placeholder="Phone number"
-                value={newAddress.phone}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, phone: e.target.value })
-                }
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none"
-              />
-              <textarea
-                placeholder="Address"
-                rows={3}
-                value={newAddress.address}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, address: e.target.value })
-                }
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:border-orange-400 outline-none resize-none"
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setShowAddForm(false)}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddAddress}
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold hover:from-orange-600 hover:to-amber-600"
-              >
-                Save
-              </button>
-            </div>
+            <button
+              onClick={handleAddAddress}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold hover:from-orange-500 hover:to-amber-500 transition shadow-md"
+            >
+              Save
+            </button>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
 }
 
-// =============================
-// 🔹 Sub Component Section
-// =============================
+/* 🧩 Subcomponents */
+const Header = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+  <div className="px-6 py-5 flex items-center gap-3 border-b border-gray-200 bg-white">
+    {React.cloneElement(icon as React.ReactElement, {
+      className: "w-6 h-6 text-orange-500",
+    })}
+    <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+  </div>
+);
+
 const Section = ({
   icon,
   title,
@@ -286,12 +272,73 @@ const Section = ({
   subtitle?: string;
   children: React.ReactNode;
 }) => (
-  <div className="border-t border-orange-100 bg-gradient-to-br from-orange-50/30 to-amber-50/30">
-    <div className="px-8 py-4 flex items-center gap-3 border-b border-orange-100">
+  <div className="border-t border-gray-200 bg-white">
+    <div className="px-6 py-4 flex items-center gap-3 border-b border-gray-200 bg-white">
       {icon}
-      <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+      <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
       {subtitle && <span className="text-sm text-gray-500">{subtitle}</span>}
     </div>
-    <div className="p-8">{children}</div>
+    <div className="p-6">{children}</div>
   </div>
+);
+
+const Modal = ({
+  onClose,
+  children,
+}: {
+  onClose: () => void;
+  children: React.ReactNode;
+}) => (
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+      >
+        <X className="w-5 h-5" />
+      </button>
+      {children}
+    </div>
+  </div>
+);
+
+const Input = ({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    value={value}
+    onChange={onChange}
+    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-orange-400 outline-none"
+  />
+);
+
+const InfoRow = ({
+  icon,
+  text,
+  bold,
+  multiline,
+}: {
+  icon: React.ReactNode;
+  text: string;
+  bold?: boolean;
+  multiline?: boolean;
+}) => (
+  <p
+    className={`text-sm text-gray-700 flex items-start gap-2 ${
+      bold ? "font-semibold text-gray-900" : ""
+    } ${multiline ? "mt-1" : ""}`}
+  >
+    {React.cloneElement(icon as React.ReactElement, {
+      className: "w-4 h-4 text-orange-500 mt-[1px]",
+    })}
+    <span>{text}</span>
+  </p>
 );
