@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAllOrders } from "../../api/orderApi";
 
 interface Order {
   id: string;
@@ -12,17 +13,31 @@ interface Order {
 const OrdersTab: React.FC = () => {
   const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(5);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Sample data
-  const orders: Order[] = useMemo(() => {
-    const statuses = ["Shipping", "Completed", "Cancelled", "Processing"];
-    return Array.from({ length: 10 }).map((_, i) => ({
-      id: `ORD-${String(i + 1).padStart(3, "0")}`,
-      createdAt: new Date(Date.now() - i * 86400000).toISOString(),
-      status: statuses[i % statuses.length],
-      total: Math.floor(Math.random() * 2_000_000 + 500_000),
-      items: Math.floor(Math.random() * 5) + 1,
-    }));
+  // Fetch orders from API
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const data = await getAllOrders();
+        const formattedOrders = data.map((order: any) => ({
+          id: order.id,
+          createdAt: order.createdAt,
+          status: order.status || "pending",
+          total: order.total,
+          items: order.items?.length || 0,
+        }));
+        setOrders(formattedOrders);
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
   const sortedOrders = [...orders].sort(
@@ -30,19 +45,23 @@ const OrdersTab: React.FC = () => {
   );
 
   const visibleOrders = sortedOrders.slice(0, visibleCount);
-
   const handleSeeMore = () => setVisibleCount((prev) => prev + 5);
 
+  // Map trạng thái sang màu nền và chữ
   const getStatusColor = (status: string): string => {
-    switch (status) {
-      case "Shipping":
-        return "bg-blue-100 text-blue-700";
-      case "Completed":
-        return "bg-green-100 text-green-700";
-      case "Cancelled":
-        return "bg-red-100 text-red-700";
-      case "Processing":
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "bg-gray-100 text-gray-700";
+      case "processing":
         return "bg-yellow-100 text-yellow-700";
+      case "shipping":
+        return "bg-blue-100 text-blue-700";
+      case "completed":
+        return "bg-green-100 text-green-700";
+      case "cancelled":
+        return "bg-red-100 text-red-700";
+      case "refunded":
+        return "bg-purple-100 text-purple-700";
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -73,9 +92,13 @@ const OrdersTab: React.FC = () => {
           </h2>
         </div>
 
-        {visibleOrders.length === 0 ? (
+        {loading ? (
           <div className="py-12 text-center text-gray-500">
-            You haven’t placed any orders yet 🛒
+            Loading orders...
+          </div>
+        ) : visibleOrders.length === 0 ? (
+          <div className="py-12 text-center text-gray-500">
+            You haven’t placed any orders yet
           </div>
         ) : (
           <>
@@ -99,7 +122,8 @@ const OrdersTab: React.FC = () => {
                         order.status
                       )}`}
                     >
-                      {order.status}
+                      {order.status.charAt(0).toUpperCase() +
+                        order.status.slice(1)}
                     </span>
                   </div>
 
