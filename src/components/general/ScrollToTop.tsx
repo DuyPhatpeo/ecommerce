@@ -30,7 +30,7 @@ const ScrollToTop = () => {
           aria-label="Scroll to top"
           className="
             fixed 
-            bottom-30 right-5               
+            bottom-30 right-2               
             sm:bottom-28 sm:right-8         
             lg:bottom-10 lg:right-10        
             bg-orange-500 hover:bg-orange-600

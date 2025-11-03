@@ -184,11 +184,11 @@ export default function CartSummary({
 
       {/* ================== Mobile + Tablet Taskbar ================== */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
           {/* Total Price */}
           <div className="text-start">
-            <div className="text-xs text-gray-500">Total</div>
-            <div className="text-xl font-bold text-orange-600">
+            <div className="text-[11px] text-gray-500 leading-tight">Total</div>
+            <div className="text-base font-semibold text-orange-600">
               {formatPrice(total)}
             </div>
           </div>
@@ -198,10 +198,10 @@ export default function CartSummary({
             onClick={handleCheckout}
             disabled={!validSelectedItems.length}
             label="Proceed to Checkout"
-            icon={<ShieldCheck className="w-6 h-6" />}
-            className={`w-full py-5 font-semibold text-lg rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+            icon={<ShieldCheck className="w-4 h-4" />}
+            className={`w-full py-2.5 rounded-md font-semibold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all duration-200 ${
               validSelectedItems.length
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
+                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
                 : "bg-gray-100 text-gray-500 cursor-not-allowed"
             }`}
           />
