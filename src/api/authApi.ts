@@ -44,17 +44,39 @@ export const registerUser = async (data: User) => {
   return await api.post<User>("/users", data);
 };
 
+// Lấy profile
 export const getUserProfile = async (userId: string) => {
   return await api.get<User>(`/users/${userId}`);
 };
 
+// Lấy danh sách địa chỉ
 export const getUserAddresses = async (userId: string) => {
   return await api.get<Address[]>(`/users/${userId}/addresses`);
 };
 
+// Cập nhật thông tin user
 export const updateUserProfile = async (
   userId: string,
   data: Partial<User>
 ) => {
   return await api.put<User>(`/users/${userId}`, data);
+};
+
+// Thay vì changeUserPassword, dùng updateUserProfile
+export const changeUserPassword = async (
+  userId: string,
+  oldPassword: string,
+  newPassword: string
+) => {
+  // Lấy user hiện tại
+  const res = await api.get(`/users/${userId}`);
+  const user = res.data;
+
+  // Kiểm tra mật khẩu cũ
+  if (user.password !== oldPassword) {
+    throw new Error("Current password is incorrect");
+  }
+
+  // Update password
+  return await api.put(`/users/${userId}`, { ...user, password: newPassword });
 };
