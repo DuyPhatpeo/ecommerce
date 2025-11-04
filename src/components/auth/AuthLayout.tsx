@@ -43,11 +43,14 @@ export default function AuthLayout() {
         {/* LEFT FORM */}
         <div className="w-full lg:w-3/5 flex flex-col justify-between p-6 sm:p-10 lg:p-12 h-full">
           {/* Logo */}
-          <div className="flex justify-center lg:justify-start">
+          <div
+            className="flex justify-center lg:justify-start cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <img
               src="/logo.png"
               alt="Logo"
-              className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain drop-shadow-xl"
+              className="w-28 h-28 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain drop-shadow-xl"
             />
           </div>
 

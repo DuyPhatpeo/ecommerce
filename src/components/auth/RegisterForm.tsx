@@ -13,9 +13,9 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Full name & Phone */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
+      {/* Full Name & Phone */}
+      <div className="grid grid-cols-2 gap-4">
         <InputField
           label="Full Name"
           name="fullName"
@@ -38,32 +38,34 @@ export default function RegisterForm() {
         />
       </div>
 
-      {/* Email */}
-      <InputField
-        label="Email Address"
-        name="email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="you@example.com"
-        icon={<Mail size={20} />}
-        error={errors.email}
-      />
-
-      {/* Address */}
-      <InputField
-        label="Address"
-        name="address"
-        type="text"
-        value={formData.address}
-        onChange={handleChange}
-        placeholder="Your address"
-        icon={<MapPin size={20} />}
-        error={errors.address}
-      />
+      {/* Email & Address - 1 dòng */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <InputField
+          label="Email Address"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+          icon={<Mail size={20} />}
+          error={errors.email}
+          className="flex-1"
+        />
+        <InputField
+          label="Address"
+          name="address"
+          type="text"
+          value={formData.address}
+          onChange={handleChange}
+          placeholder="Your address"
+          icon={<MapPin size={20} />}
+          error={errors.address}
+          className="flex-1"
+        />
+      </div>
 
       {/* Password & Confirm Password */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <PasswordField
           label="Password"
           name="password"
@@ -86,7 +88,7 @@ export default function RegisterForm() {
         />
       </div>
 
-      {/* Submit */}
+      {/* Submit Button */}
       <Button
         type="submit"
         disabled={loading}
