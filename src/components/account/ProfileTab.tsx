@@ -1,119 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
-import {
-  getUserProfile,
-  updateUserProfile,
-  changeUserPassword,
-} from "../../api/authApi";
+import { User, Phone, Mail } from "lucide-react";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
-import { User, Phone, Mail } from "lucide-react";
-
-interface UserProfile {
-  id?: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  password?: string;
-}
+import { useProfile } from "../../hooks/useProfile";
 
 const ProfileTab: React.FC = () => {
-  const [profile, setProfile] = useState<UserProfile>({
-    fullName: "",
-    email: "",
-    phone: "",
-  });
-  const [editedProfile, setEditedProfile] = useState(profile);
-  const [isEditing, setIsEditing] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [showPassword, setShowPassword] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
-  const [passwords, setPasswords] = useState({
-    current: "",
-    new: "",
-    confirm: "",
-  });
-
-  // Fetch user profile
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) return;
-
-      try {
-        const res = await getUserProfile(userId);
-        setProfile(res.data);
-        setEditedProfile(res.data);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-        toast.error("Failed to load user information.");
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  const handleChange = (field: string, value: string) => {
-    setEditedProfile((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleEdit = () => setIsEditing(true);
-  const handleCancel = () => {
-    setEditedProfile(profile);
-    setIsEditing(false);
-  };
-
-  const handleSave = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return toast.error("User not found.");
-
-    try {
-      const res = await updateUserProfile(userId, editedProfile);
-      setProfile(res.data);
-      setIsEditing(false);
-      toast.success("Profile updated successfully!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update profile.");
-    }
-  };
-
-  const handlePasswordUpdate = async () => {
-    if (passwords.new !== passwords.confirm) {
-      return toast.error("New passwords do not match!");
-    }
-
-    if (!passwords.current || !passwords.new) {
-      return toast.error("Please fill in all password fields.");
-    }
-
-    const userId = localStorage.getItem("userId");
-    if (!userId) return toast.error("User not found.");
-
-    try {
-      await changeUserPassword(userId, passwords.current, passwords.new);
-      toast.success("Password updated successfully!");
-      setPasswords({ current: "", new: "", confirm: "" });
-      setShowModal(false);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(
-        error?.response?.data?.message || "Failed to update password."
-      );
-    }
-  };
+  const {
+    profile,
+    editedProfile,
+    isEditing,
+    showModal,
+    showPassword,
+    passwords,
+    setShowModal,
+    setShowPassword,
+    setPasswords,
+    handleChangeProfile,
+    handleEdit,
+    handleCancel,
+    handleSave,
+    handlePasswordUpdate,
+  } = useProfile();
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto p-8 bg-white border border-gray-200 rounded-2xl shadow-sm">
         {/* Title */}
         <div className="mb-10 text-center border-b border-orange-100 pb-4">
-          <h2 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 bg-clip-text text-transparent">
+          <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 bg-clip-text text-transparent">
             Personal Information
           </h2>
         </div>
@@ -145,19 +61,18 @@ const ProfileTab: React.FC = () => {
           )}
         </div>
 
-        {/* Email (disabled) */}
-        <div className="mb-6">
-          <InputField
-            label="Email"
-            name="email"
-            type="email"
-            value={profile.email}
-            onChange={() => {}}
-            placeholder="Enter your email"
-            icon={<Mail size={18} />}
-            disabled
-          />
-        </div>
+        {/* Email */}
+        <InputField
+          label="Email"
+          name="email"
+          type="email"
+          value={profile.email}
+          onChange={() => {}}
+          placeholder="Enter your email"
+          icon={<Mail size={18} />}
+          disabled
+          className="mb-6"
+        />
 
         {/* Full Name + Phone */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -165,7 +80,7 @@ const ProfileTab: React.FC = () => {
             label="Full Name"
             name="fullName"
             value={editedProfile.fullName}
-            onChange={(e) => handleChange("fullName", e.target.value)}
+            onChange={(e) => handleChangeProfile("fullName", e.target.value)}
             placeholder="Enter your full name"
             icon={<User size={18} />}
             disabled={!isEditing}
@@ -175,7 +90,7 @@ const ProfileTab: React.FC = () => {
             name="phone"
             type="tel"
             value={editedProfile.phone}
-            onChange={(e) => handleChange("phone", e.target.value)}
+            onChange={(e) => handleChangeProfile("phone", e.target.value)}
             placeholder="Enter your phone number"
             icon={<Phone size={18} />}
             disabled={!isEditing}
@@ -183,17 +98,15 @@ const ProfileTab: React.FC = () => {
         </div>
 
         {/* Change Password */}
-        <div className="mt-8 border-t border-orange-100 pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Change Password
-            </h3>
-            <Button
-              label="Change"
-              onClick={() => setShowModal(true)}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-            />
-          </div>
+        <div className="mt-8 border-t border-orange-100 pt-6 flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Change Password
+          </h3>
+          <Button
+            label="Change"
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          />
         </div>
       </div>
 
@@ -217,48 +130,32 @@ const ProfileTab: React.FC = () => {
                 <h3 className="mb-4 text-xl font-semibold text-gray-800 border-b border-gray-100 pb-2">
                   Update Password
                 </h3>
-
                 <div className="space-y-5 mt-4">
-                  <PasswordField
-                    label="Current Password"
-                    name="current"
-                    value={passwords.current}
-                    show={showPassword.current}
-                    toggle={() =>
-                      setShowPassword((p) => ({ ...p, current: !p.current }))
-                    }
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, current: e.target.value })
-                    }
-                  />
-
-                  <PasswordField
-                    label="New Password"
-                    name="new"
-                    value={passwords.new}
-                    show={showPassword.new}
-                    toggle={() =>
-                      setShowPassword((p) => ({ ...p, new: !p.new }))
-                    }
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, new: e.target.value })
-                    }
-                  />
-
-                  <PasswordField
-                    label="Confirm New Password"
-                    name="confirm"
-                    value={passwords.confirm}
-                    show={showPassword.confirm}
-                    toggle={() =>
-                      setShowPassword((p) => ({ ...p, confirm: !p.confirm }))
-                    }
-                    onChange={(e) =>
-                      setPasswords({ ...passwords, confirm: e.target.value })
-                    }
-                  />
+                  {["current", "new", "confirm"].map((field) => (
+                    <PasswordField
+                      key={field}
+                      label={
+                        field === "current"
+                          ? "Current Password"
+                          : field === "new"
+                          ? "New Password"
+                          : "Confirm New Password"
+                      }
+                      name={field}
+                      value={passwords[field as keyof typeof passwords]}
+                      show={showPassword[field as keyof typeof showPassword]}
+                      toggle={() =>
+                        setShowPassword((p) => ({
+                          ...p,
+                          [field]: !p[field as keyof typeof p],
+                        }))
+                      }
+                      onChange={(e) =>
+                        setPasswords((p) => ({ ...p, [field]: e.target.value }))
+                      }
+                    />
+                  ))}
                 </div>
-
                 <div className="flex justify-end gap-3 mt-6">
                   <Button
                     label="Confirm"
