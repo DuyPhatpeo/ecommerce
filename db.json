@@ -272,6 +272,34 @@
       "total": 15675000,
       "status": "pending",
       "createdAt": "2025-11-03T06:09:12.850Z"
+    },
+    {
+      "id": "de67",
+      "customer": {
+        "recipientName": "phat",
+        "phone": "0866482834",
+        "address": "1A A, Siu, Nha Trang, Khánh Hoà, Việt Nam",
+        "note": "",
+        "paymentMethod": "cod"
+      },
+      "items": [
+        {
+          "productId": "222",
+          "quantity": 2,
+          "price": 4500000
+        },
+        {
+          "productId": "111",
+          "quantity": 3,
+          "price": 5250000
+        }
+      ],
+      "subtotal": 24750000,
+      "tax": 2475000,
+      "shipping": 0,
+      "total": 27225000,
+      "status": "pending",
+      "createdAt": "2025-11-04T06:56:06.043Z"
     }
   ],
   "cart": [
