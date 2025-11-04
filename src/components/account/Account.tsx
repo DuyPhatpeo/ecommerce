@@ -12,60 +12,27 @@ const Account = () => {
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
   const { logout } = useLogout();
-
-  // --- State ---
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    fullName: "John Doe",
-    email: "johndoe@email.com",
-    phone: "+1 234 567 8900",
-  });
-  const [editedProfile, setEditedProfile] = useState(profile);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
-  // --- Xử lý resize ---
+  // --- Handle window resize ---
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // --- Desktop: nếu không có tab → tự động về profile ---
+  // --- Desktop default tab ---
   useEffect(() => {
     if (!isMobile && !tab) navigate("/account/profile", { replace: true });
   }, [isMobile, tab, navigate]);
 
-  // --- Lưu / chỉnh sửa thông tin ---
-  const handleSaveProfile = () => {
-    setProfile(editedProfile);
-    setIsEditing(false);
-  };
-
-  // --- Chuyển tab ---
-  const handleTabChange = (tabId: string) => {
-    navigate(`/account/${tabId}`);
-  };
-
-  // --- Quay lại sidebar (mobile) ---
+  const handleTabChange = (tabId: string) => navigate(`/account/${tabId}`);
   const handleBack = () => navigate("/account");
 
-  // --- Render tab ---
   const renderTab = () => {
     switch (tab) {
       case "profile":
-        return (
-          <ProfileTab
-            profile={profile}
-            editedProfile={editedProfile}
-            isEditing={isEditing}
-            onEdit={() => setIsEditing(true)}
-            onSave={handleSaveProfile}
-            onCancel={() => setIsEditing(false)}
-            onChange={(field, value) =>
-              setEditedProfile({ ...editedProfile, [field]: value })
-            }
-          />
-        );
+        return <ProfileTab />;
       case "orders":
         return <OrdersTab />;
       case "addresses":
@@ -77,50 +44,54 @@ const Account = () => {
     }
   };
 
-  // --- Render layout ---
+  const getTabTitle = (tab?: string) => {
+    switch (tab) {
+      case "profile":
+        return "Profile";
+      case "orders":
+        return "Orders";
+      case "addresses":
+        return "Addresses";
+      case "wishlist":
+        return "Wishlist";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
-        <div className="flex flex-col-reverse gap-1 lg:flex-row">
-          {/* ✅ Desktop: luôn hiển thị sidebar */}
-          {!isMobile && (
-            <>
-              <div className="w-full lg:w-1/4">
-                <AccountSidebar
-                  activeTab={tab || "profile"}
-                  onTabChange={handleTabChange}
-                  onLogout={logout}
-                />
-              </div>
-              <div className="w-full lg:w-3/4">{renderTab()}</div>
-            </>
-          )}
-
-          {/* ✅ Mobile: /account → sidebar */}
-          {isMobile && !tab && (
-            <div className="w-full">
+        <div className="flex flex-col-reverse gap-4 lg:flex-row">
+          {/* Sidebar */}
+          {(!isMobile || !tab) && (
+            <div className="w-full lg:w-1/4">
               <AccountSidebar
-                activeTab=""
+                activeTab={isMobile && !tab ? "" : tab || "profile"}
                 onTabChange={handleTabChange}
                 onLogout={logout}
               />
             </div>
           )}
 
-          {/* ✅ Mobile: /account/:tab → nội dung + nút back */}
-          {isMobile && tab && (
-            <div className="w-full">
-              <div className="flex justify-start mb-3">
+          {/* Tab content */}
+          <div className="w-full lg:w-3/4">
+            {/* Mobile: Back button with "Account" */}
+            {isMobile && tab && (
+              <div className="mb-4">
                 <button
                   onClick={handleBack}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
+                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-orange-400 text-white  hover:bg-orange-500 transition-colors font-medium"
+                  aria-label="Go back"
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={18} strokeWidth={2} />
+                  <span>Account</span>
                 </button>
               </div>
-              {renderTab()}
-            </div>
-          )}
+            )}
+
+            {renderTab()}
+          </div>
         </div>
       </div>
     </div>
