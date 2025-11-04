@@ -251,7 +251,7 @@
     {
       "id": "4670",
       "productId": "111",
-      "quantity": 1
+      "quantity": 3
     }
   ],
   "products": [
@@ -273,8 +273,19 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
-      "colors": ["Red / White", "Blue / Black", "Black"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Red / White",
+        "Blue / Black",
+        "Black"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Air Max 270 React",
         "material": "Mesh, synthetic fabric, rubber sole",
@@ -301,8 +312,17 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
-      "colors": ["White / Black"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White / Black"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Ultraboost 21",
         "material": "Primeknit textile upper, rubber sole",
@@ -327,8 +347,20 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
-      "colors": ["Black / White", "Navy", "Red", "White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / White",
+        "Navy",
+        "Red",
+        "White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Old Skool Classic",
         "material": "Canvas upper, rubber sole",
@@ -353,8 +385,19 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
-      "colors": ["Gray", "Navy", "Burgundy"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Gray",
+        "Navy",
+        "Burgundy"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "574 Core",
         "material": "Suede and mesh upper, EVA foam sole",
@@ -380,8 +423,17 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
-      "colors": ["Blue / White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Blue / White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "RS-X Reinvention",
         "material": "Mesh, suede, and rubber sole",
@@ -406,8 +458,17 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
-      "colors": ["White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Classic Leather",
         "material": "Leather upper, rubber sole",
@@ -432,8 +493,17 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["Beige / Black"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Beige / Black"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Chuck 70 High",
         "material": "Canvas upper, rubber sole",
@@ -458,8 +528,17 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
       ],
-      "colors": ["Gray / Orange"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Gray / Orange"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "HOVR Phantom",
         "material": "Knit textile upper, rubber sole",
@@ -484,8 +563,17 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
-      "colors": ["Black / White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "ZoomX Invincible",
         "material": "Flyknit upper, foam sole",
@@ -511,8 +599,17 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=70",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=70"
       ],
-      "colors": ["White / Red"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White / Red"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Nano X1",
         "material": "Flexweave knit upper, rubber outsole",
@@ -540,8 +637,17 @@
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80",
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
       ],
-      "colors": ["Blue / Lime"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Blue / Lime"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "GEL-NIMBUS 25",
         "material": "Engineered knit upper, PureGEL™ technology",
@@ -570,8 +676,17 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=90",
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=90"
       ],
-      "colors": ["Red / Black / White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Red / Black / White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Air Jordan 1 Retro High OG",
         "material": "Premium leather upper, rubber sole",
@@ -598,8 +713,19 @@
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=50",
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=90"
       ],
-      "colors": ["Black", "Cherry Red", "White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black",
+        "Cherry Red",
+        "White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "1460 Smooth Leather Boot",
         "material": "Smooth leather, AirWair™ sole",
@@ -626,8 +752,17 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
-      "colors": ["Purple / Neon"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Purple / Neon"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "All Star BB Shift",
         "material": "Textile upper, Nike React cushioning",
@@ -654,8 +789,17 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["Green / White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Green / White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Kinvara 14",
         "material": "Mesh upper, PWRRUN cushioning",
@@ -681,8 +825,17 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["White / Orange"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White / Orange"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "GEL-Lyte III OG",
         "material": "Suede and mesh upper, GEL™ technology",
@@ -707,8 +860,17 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["Black / Yellow"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / Yellow"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Project Rock 5",
         "material": "Mesh upper, UA HOVR™ cushioning",
@@ -733,8 +895,17 @@
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80"
       ],
-      "colors": ["Burgundy"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Burgundy"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Suede Classic XXI",
         "material": "Suede upper, rubber sole",
@@ -761,8 +932,17 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80"
       ],
-      "colors": ["Solar Red"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Solar Red"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Adizero Adios Pro 3",
         "material": "Textile upper, Lightstrike Pro cushioning, Carbon rods",
@@ -787,8 +967,17 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80"
       ],
-      "colors": ["Navy / Gray"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Navy / Gray"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "990v6",
         "material": "Suede and mesh upper, FuelCell cushioning",
@@ -814,8 +1003,17 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80"
       ],
-      "colors": ["Violet / Gold"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Violet / Gold"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "LeBron XX",
         "material": "Knit upper, Zoom Air cushioning",
@@ -841,8 +1039,17 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
-      "colors": ["Black / White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Samba OG",
         "material": "Leather and suede upper, rubber gumsole",
@@ -869,8 +1076,17 @@
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["Gray / Pink"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Gray / Pink"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Clifton 9",
         "material": "Engineered knit upper, EVA foam midsole",
@@ -895,8 +1111,17 @@
         "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80",
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80"
       ],
-      "colors": ["Black / White Checker"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / White Checker"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Slip-On Checkerboard",
         "material": "Canvas upper, rubber waffle outsole",
@@ -921,8 +1146,17 @@
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["White / Blue"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White / Blue"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Legacy Lifter II",
         "material": "Textile and synthetic upper, rubber outsole",
@@ -947,8 +1181,17 @@
         "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600&q=80",
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80"
       ],
-      "colors": ["Pink / Black"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Pink / Black"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Velocity Nitro 2",
         "material": "Engineered mesh, NITRO foam midsole",
@@ -975,8 +1218,17 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=90",
         "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&q=90"
       ],
-      "colors": ["Yellow / Black"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Yellow / Black"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Air Jordan 4 Retro SE",
         "material": "Leather and synthetic upper, Air-Sole unit",
@@ -1001,8 +1253,17 @@
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80",
         "httpsS://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["White"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "White"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Chuck Taylor All Star Lift",
         "material": "Canvas upper, rubber platform sole",
@@ -1028,8 +1289,17 @@
         "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=600&q=80",
         "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80"
       ],
-      "colors": ["Black / Blue"],
-      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": [
+        "Black / Blue"
+      ],
+      "sizes": [
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
       "specs": {
         "model": "Ghost 15",
         "material": "Engineered mesh, DNA LOFT cushioning",
