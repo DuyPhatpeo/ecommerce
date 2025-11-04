@@ -108,7 +108,7 @@ const OrdersTab: React.FC = () => {
                   key={order.id}
                   className="p-5 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-md"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                  <div className="flex flex-row flex-wrap items-center justify-between gap-3 mb-3">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
                         Order #{order.id}
@@ -117,8 +117,9 @@ const OrdersTab: React.FC = () => {
                         {formatDate(order.createdAt)}
                       </p>
                     </div>
+
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                      className={`px-3 py-1 rounded-full text-sm font-medium text-center whitespace-nowrap ${getStatusColor(
                         order.status
                       )}`}
                     >
@@ -128,7 +129,8 @@ const OrdersTab: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-gray-100">
-                    <div>
+                    {/* Bên trái: items + total (trên cùng dòng, total nằm bên phải) */}
+                    <div className="flex justify-between items-center w-full sm:w-auto sm:gap-6">
                       <p className="text-sm text-gray-600">
                         {order.items} items
                       </p>
@@ -136,6 +138,8 @@ const OrdersTab: React.FC = () => {
                         {formatCurrency(order.total)}
                       </p>
                     </div>
+
+                    {/* Nút bên phải */}
                     <button
                       onClick={() => navigate(`/account/order/${order.id}`)}
                       className="px-5 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95 shadow-sm"

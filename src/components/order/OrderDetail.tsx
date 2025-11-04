@@ -18,7 +18,7 @@ import { getProductById } from "../../api/productApi";
 /* ------------------ Interfaces ------------------ */
 interface Customer {
   id: string;
-  fullName: string;
+  recipientName: string;
   phone: string;
   address: string;
   isDefault: boolean;
@@ -173,7 +173,7 @@ const OrderDetail: React.FC = () => {
                   <InfoItem
                     icon={<User className="text-blue-500 w-5 h-5" />}
                     label="Full Name"
-                    value={order.customer.fullName}
+                    value={order.customer.recipientName}
                   />
                   <InfoItem
                     icon={<Phone className="text-green-500 w-5 h-5" />}
