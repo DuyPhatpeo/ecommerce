@@ -10,20 +10,14 @@ interface RegisterFormData {
   phone: string;
   password: string;
   confirmPassword: string;
-  address?: string;
+  address: string;
 }
 
-interface FormErrors {
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  password?: string;
-  confirmPassword?: string;
-  address?: string;
-}
+interface FormErrors extends Partial<Record<keyof RegisterFormData, string>> {}
 
 export default function useRegister() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: "",
     email: "",
@@ -32,143 +26,132 @@ export default function useRegister() {
     confirmPassword: "",
     address: "",
   });
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // ------------------------------------
-  // Handle input change
-  // ------------------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (errors[name as keyof FormErrors])
+      setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // ------------------------------------
-  // Helper: Parse address string
-  // ------------------------------------
   const parseAddress = (input: string) => {
-    const parts = input.split(",").map((p) => p.trim());
-    return {
-      street: parts[0] || "",
-      ward: parts[1] || "",
-      district: parts[2] || "",
-      city: parts[3] || "",
-      country: parts[4] || "Vietnam",
-      postalCode: "",
-    };
+    const [street, ward, district, city, country = "Vietnam"] = input
+      .split(",")
+      .map((p) => p.trim());
+    return { street, ward, district, city, country, postalCode: "" };
   };
 
-  // ------------------------------------
-  // Validate form
-  // ------------------------------------
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     const newErrors: FormErrors = {};
-    const { fullName, email, phone, password, confirmPassword } = formData;
+    const { fullName, email, phone, password, confirmPassword, address } =
+      formData;
 
-    if (!fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!email.trim()) newErrors.email = "Email is required.";
-    if (!phone.trim()) newErrors.phone = "Phone number is required.";
-    if (!password.trim()) newErrors.password = "Password is required.";
-    if (!confirmPassword.trim())
-      newErrors.confirmPassword = "Please confirm your password.";
+    const rules: [boolean, keyof RegisterFormData, string][] = [
+      [!fullName.trim(), "fullName", "Full name is required."],
+      [!email.trim(), "email", "Email is required."],
+      [!phone.trim(), "phone", "Phone number is required."],
+      [!address.trim(), "address", "Address is required."],
+      [!password.trim(), "password", "Password is required."],
+      [
+        !confirmPassword.trim(),
+        "confirmPassword",
+        "Please confirm your password.",
+      ],
+      [
+        email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+        "email",
+        "Invalid email format.",
+      ],
+      [
+        phone && !/^(0|\+84)[0-9]{9}$/.test(phone),
+        "phone",
+        "Invalid phone number.",
+      ],
+      [
+        password && password.length < 6,
+        "password",
+        "Password must be at least 6 characters.",
+      ],
+      [
+        password !== confirmPassword,
+        "confirmPassword",
+        "Passwords do not match.",
+      ],
+    ];
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email))
-      newErrors.email = "Invalid email format.";
-
-    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
-    if (phone && !phoneRegex.test(phone))
-      newErrors.phone = "Invalid phone number.";
-
-    if (password && password.length < 6)
-      newErrors.password = "Password must be at least 6 characters.";
-
-    if (password !== confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match.";
-
+    for (const [condition, field, message] of rules)
+      if (condition) newErrors[field] = message;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // ------------------------------------
-  // Submit handler
-  // ------------------------------------
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     try {
-      const res = await getUsers();
-      const users = res.data as User[];
-
-      const existingUser = users.find(
-        (u) =>
+      const { data } = await getUsers();
+      const existing = data.find(
+        (u: User) =>
           u.email?.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
+      if (existing) return toast.error("Email already exists.");
 
-      if (existingUser) {
-        toast.error("Email already exists.");
-        return;
-      }
-
-      // ✅ Tạo token giả lập
-      const token = {
-        accessToken: `access_${Math.random().toString(36).slice(2)}`,
-        refreshToken: `refresh_${Math.random().toString(36).slice(2)}`,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // 7 ngày
-      };
-
-      // ✅ Nếu có nhập địa chỉ -> tự động tách
-      const addresses =
-        formData.address && formData.address.trim() !== ""
-          ? [
-              {
-                id: `addr_${Date.now()}`,
-                recipientName: formData.fullName,
-                phone: formData.phone,
-                ...parseAddress(formData.address),
-                isDefault: true,
-                createdAt: new Date().toISOString(),
-              },
-            ]
-          : [];
-
-      // ✅ Dữ liệu người dùng chuẩn
       const newUser: User = {
-        id: `${Date.now()}`,
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
+        id: Date.now().toString(),
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
         password: formData.password,
         createdAt: new Date().toISOString(),
-        token,
-        addresses,
+        token: null,
+        addresses: [
+          {
+            id: `addr_${Date.now()}`,
+            recipientName: formData.fullName,
+            phone: formData.phone,
+            ...parseAddress(formData.address),
+            isDefault: true,
+            createdAt: new Date().toISOString(),
+          },
+        ],
       };
 
       await registerUser(newUser);
-      toast.success("Account created successfully! 🎉");
+      toast.success(
+        "Account created successfully! Please login to continue. 🔑"
+      );
 
       setSuccess(true);
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-        address: "",
-      });
+      resetForm();
 
-      setTimeout(() => navigate("/login"), 1000);
-    } catch (error) {
-      console.error(error);
+      // 👉 Chuyển sang trang đăng nhập
+      setTimeout(() => navigate("/login"), 1200);
+    } catch (err) {
+      console.error(err);
       toast.error("Something went wrong. Please try again.");
       setSuccess(false);
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      address: "",
+    });
+    setErrors({});
+    setSuccess(false);
   };
 
   return {
@@ -178,5 +161,6 @@ export default function useRegister() {
     success,
     handleChange,
     handleSubmit,
+    resetForm,
   };
 }
