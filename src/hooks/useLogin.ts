@@ -91,15 +91,8 @@ export default function useLogin() {
       const displayName =
         user.fullName || user.name || user.username || user.email;
 
-      // ✅ Lưu user vào localStorage (phiên đăng nhập)
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: user.id,
-          fullName: displayName,
-          email: user.email,
-        })
-      );
+      // ✅ Chỉ lưu id của user
+      localStorage.setItem("userId", user.id);
 
       // ✅ Lưu hoặc xóa email nhớ đăng nhập
       if (rememberMe) {

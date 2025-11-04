@@ -8,6 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "../../api/authApi"; // ✅ import API lấy thông tin user
 
 interface Tab {
   id: string;
@@ -21,29 +22,45 @@ interface AccountSidebarProps {
   onLogout?: () => void;
 }
 
+interface UserProfile {
+  id?: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+}
+
 const AccountSidebar: React.FC<AccountSidebarProps> = ({
   activeTab,
   onTabChange,
   onLogout,
 }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<{
-    fullName: string;
-    email: string;
-    phone?: string;
-  } | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  // ✅ Lấy userId và fetch thông tin user từ API
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const fetchUser = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        setUser(null);
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      console.error("Error parsing user from localStorage:", err);
-      setUser(null);
-    }
-  }, []);
+
+      try {
+        const res = await getUserProfile(userId);
+        setUser(res.data);
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []); // chạy 1 lần khi mount
 
   const tabs: Tab[] = [
     { id: "profile", label: "Profile", icon: User },
@@ -60,12 +77,21 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       .join("");
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("rememberMe");
+    localStorage.removeItem("email");
     setUser(null);
     if (onLogout) onLogout();
     navigate("/");
   };
+
+  if (loading) {
+    return (
+      <div className="sticky top-20 p-6 text-center text-gray-500 border border-gray-200 rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm">
+        Loading user info...
+      </div>
+    );
+  }
 
   if (!user) {
     return (

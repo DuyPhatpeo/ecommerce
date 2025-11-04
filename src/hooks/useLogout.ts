@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 export const useLogout = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<{ name: string } | null>(() => {
-    const stored = localStorage.getItem("user");
+    const stored = localStorage.getItem("userId");
     return stored ? JSON.parse(stored) : null;
   });
 
   // Sync across tabs
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
-      if (e.key === "user") {
+      if (e.key === "userId") {
         setUser(e.newValue ? JSON.parse(e.newValue) : null);
       }
     };
@@ -20,7 +20,7 @@ export const useLogout = () => {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("userId");
     setUser(null);
     navigate("/");
   };

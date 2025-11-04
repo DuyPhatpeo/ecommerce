@@ -164,14 +164,14 @@ const Header = () => {
   // Initialize cart & user
   useEffect(() => {
     fetchCartCount();
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("userId");
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
       } catch (error) {
         console.error("Invalid user data in localStorage", error);
-        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
       }
     }
   }, [fetchCartCount, location.pathname]);
