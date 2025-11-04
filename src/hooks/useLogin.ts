@@ -23,7 +23,7 @@ interface User {
   username?: string;
 }
 
-export default function useLoginForm() {
+export default function useLogin() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<LoginFormData>({

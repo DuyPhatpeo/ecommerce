@@ -1,15 +1,11 @@
-// src/components/auth/LoginForm.tsx
 import { useState } from "react";
-import { LogIn, Mail } from "lucide-react";
-import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
-import useLoginForm from "../../hooks/useLogin";
+import { Mail, LogIn } from "lucide-react";
+import useLogin from "../../hooks/useLogin";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
   const {
     formData,
     errors,
@@ -18,110 +14,82 @@ export default function LoginForm() {
     setRememberMe,
     handleChange,
     handleSubmit,
-  } = useLoginForm();
+  } = useLogin();
 
-  const handleGoogleSignIn = () => {
-    alert("Đăng nhập Google (OAuth 2.0) sẽ được thêm tại đây!");
-  };
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="w-full max-w-md space-y-6 sm:space-y-8">
-      <Toaster position="top-center" />
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Email */}
+      <InputField
+        label="Email Address"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="you@example.com"
+        icon={<Mail size={20} />}
+        error={errors.email}
+      />
 
-      {/* Logo */}
-      <div className="flex justify-center mb-4 sm:mb-6">
-        <Link to="/" className="inline-flex items-center">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="w-28 sm:w-32 h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
+      {/* Password */}
+      <PasswordField
+        label="Password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="Enter your password"
+        show={showPassword}
+        toggle={() => setShowPassword(!showPassword)}
+        error={errors.password}
+      />
+
+      {/* Remember + Forgot */}
+      <div className="flex items-center justify-between text-sm">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={() => setRememberMe(!rememberMe)}
+            className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
           />
-        </Link>
-      </div>
+          <span className="text-gray-600">Remember me</span>
+        </label>
 
-      {/* Heading */}
-      <div className="text-center mb-4 sm:mb-6">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
-          Welcome Back
-        </h1>
-      </div>
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        noValidate
-        className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(255,111,0,0.15)]
-                   p-5 sm:p-6 md:p-8 border border-orange-100 space-y-4 sm:space-y-5"
-      >
-        {/* Email */}
-        <InputField
-          label="Email Address"
-          name="email"
-          type="email"
-          icon={<Mail size={18} />}
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="you@example.com"
-          error={errors.email}
-        />
-
-        {/* Password */}
-        <PasswordField
-          label="Password"
-          name="password"
-          value={formData.password}
-          show={showPassword}
-          toggle={() => setShowPassword(!showPassword)}
-          onChange={handleChange}
-          placeholder="Enter your password"
-          error={errors.password}
-        />
-
-        {/* Remember me + Forgot password */}
-        <div className="flex justify-between items-center text-sm flex-wrap gap-y-2">
-          <label className="flex items-center gap-2 text-gray-600">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
-              className="rounded text-orange-500 focus:ring-orange-500"
-            />
-            Remember me
-          </label>
-          <Link
-            to="/forgot-password"
-            className="text-orange-600 hover:text-orange-700 font-medium whitespace-nowrap"
-          >
-            Forgot password?
-          </Link>
-        </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          disabled={loading}
-          icon={<LogIn size={18} />}
-          label={loading ? "Signing in..." : "Sign In"}
-          className={`w-full bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-        />
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 py-3 sm:py-4">
-          <div className="flex-1 border-t border-gray-300" />
-          <span className="text-xs sm:text-sm text-gray-500 font-medium whitespace-nowrap">
-            Or continue with
-          </span>
-          <div className="flex-1 border-t border-gray-300" />
-        </div>
-
-        {/* Google Sign In */}
         <button
           type="button"
-          onClick={handleGoogleSignIn}
-          className="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 shadow-sm flex items-center justify-center gap-2 sm:gap-3 transition-all text-sm sm:text-base"
+          className="text-orange-600 hover:text-orange-700 font-medium"
         >
+          Forgot password?
+        </button>
+      </div>
+
+      {/* Submit button */}
+      <Button
+        type="submit"
+        disabled={loading}
+        icon={<LogIn size={20} />}
+        label={loading ? "Signing in..." : "Sign In"}
+        justify="center"
+        className={`w-full py-4 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
+          loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"
+        }`}
+      />
+
+      {/* OR separator */}
+      <div className="relative text-center my-3">
+        <span className="absolute inset-x-0 top-1/2 border-t border-gray-200"></span>
+        <span className="relative bg-white px-4 text-sm text-gray-500">OR</span>
+      </div>
+
+      {/* Google login button */}
+      <Button
+        type="button"
+        onClick={() => (window.location.href = "https://accounts.google.com")}
+        label="Sign in with Google"
+        justify="center"
+        className="w-full border-2 border-orange-200 bg-white hover:bg-orange-50 text-gray-700 font-medium py-3.5 rounded-xl flex items-center gap-3 transition-all"
+        icon={
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -145,20 +113,8 @@ export default function LoginForm() {
               fill="#EA4335"
             />
           </svg>
-          Sign in with Google
-        </button>
-
-        {/* Register Link (moved into form, like RegisterForm) */}
-        <p className="text-center text-gray-600 text-sm sm:text-base pt-2">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
-          >
-            Create one
-          </Link>
-        </p>
-      </form>
-    </div>
+        }
+      />
+    </form>
   );
 }

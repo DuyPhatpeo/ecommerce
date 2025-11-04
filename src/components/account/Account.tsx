@@ -116,7 +116,6 @@ const Account = () => {
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all bg-orange-500 rounded-full shadow-md hover:bg-orange-600 active:scale-95"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back</span>
                 </button>
               </div>
               {renderTab()}
