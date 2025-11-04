@@ -1,19 +1,5 @@
 import api from "../lib/axios";
 
-export interface Address {
-  id: string;
-  recipientName: string;
-  phone: string;
-  street: string;
-  ward: string;
-  district: string;
-  city: string;
-  country: string;
-  postalCode?: string;
-  isDefault?: boolean;
-  createdAt?: string;
-}
-
 export interface User {
   id?: string;
   fullName: string;
@@ -26,7 +12,6 @@ export interface User {
     refreshToken: string;
     expiresAt: string;
   };
-  addresses?: Address[];
 }
 
 // Lấy toàn bộ user
@@ -47,11 +32,6 @@ export const registerUser = async (data: User) => {
 // Lấy profile
 export const getUserProfile = async (userId: string) => {
   return await api.get<User>(`/users/${userId}`);
-};
-
-// Lấy danh sách địa chỉ
-export const getUserAddresses = async (userId: string) => {
-  return await api.get<Address[]>(`/users/${userId}/addresses`);
 };
 
 // Cập nhật thông tin user

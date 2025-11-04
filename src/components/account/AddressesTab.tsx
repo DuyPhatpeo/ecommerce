@@ -1,30 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Check, Trash2, X } from "lucide-react";
-
-export interface Address {
-  id: string;
-  fullName: string;
-  address: string;
-  phone: string;
-  isDefault: boolean;
-}
-
-const sampleAddresses: Address[] = [
-  {
-    id: "1",
-    fullName: "John Doe",
-    address: "123 Main Street, NY",
-    phone: "+1 234 567 8900",
-    isDefault: true,
-  },
-  {
-    id: "2",
-    fullName: "Jane Smith",
-    address: "456 Business Ave, NY",
-    phone: "+1 987 654 3210",
-    isDefault: false,
-  },
-];
+import toast from "react-hot-toast";
+import type { Address } from "../../api/addressApi";
+import {
+  getUserAddresses,
+  addUserAddress,
+  updateUserAddress,
+  deleteUserAddress,
+  setDefaultUserAddress,
+} from "../../api/addressApi";
 
 // Modal Add/Edit
 interface AddressModalProps {
@@ -42,13 +26,19 @@ const AddressModal: React.FC<AddressModalProps> = ({
 }) => {
   const [form, setForm] = useState<Partial<Address>>(address || {});
 
+  useEffect(() => {
+    setForm(address || {});
+  }, [address]);
+
   if (!open) return null;
 
   const handleChange = (field: keyof Address, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
-  const handleSaveClick = () => {
-    if (!form.fullName && !form.address && !form.phone) return;
+  const handleSave = () => {
+    if (!form.recipientName || !form.street || !form.phone) {
+      return toast.error("Please fill all required fields");
+    }
     onSave(form);
   };
 
@@ -62,22 +52,21 @@ const AddressModal: React.FC<AddressModalProps> = ({
           <X size={20} />
         </button>
         <h3 className="mb-4 text-xl font-bold text-gray-800 border-b border-orange-100 pb-2">
-          {address ? "Edit Address" : "Add New Address"}
+          {address?.id ? "Edit Address" : "Add New Address"}
         </h3>
-
         <div className="space-y-3">
           <input
             type="text"
             placeholder="Full Name"
-            value={form.fullName || ""}
-            onChange={(e) => handleChange("fullName", e.target.value)}
+            value={form.recipientName || ""}
+            onChange={(e) => handleChange("recipientName", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
           <input
             type="text"
-            placeholder="Address"
-            value={form.address || ""}
-            onChange={(e) => handleChange("address", e.target.value)}
+            placeholder="Street / Address"
+            value={form.street || ""}
+            onChange={(e) => handleChange("street", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
           <input
@@ -88,7 +77,6 @@ const AddressModal: React.FC<AddressModalProps> = ({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
         </div>
-
         <div className="mt-5 flex justify-end gap-2">
           <button
             onClick={onClose}
@@ -97,7 +85,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
             Cancel
           </button>
           <button
-            onClick={handleSaveClick}
+            onClick={handleSave}
             className="px-4 py-2 text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:opacity-90"
           >
             Save
@@ -108,48 +96,123 @@ const AddressModal: React.FC<AddressModalProps> = ({
   );
 };
 
+// Card component
+const AddressCard: React.FC<{
+  address: Address;
+  onEdit: (addr: Address) => void;
+  onDelete: (id: string) => void;
+  onSetDefault: (id: string) => void;
+}> = ({ address, onEdit, onDelete, onSetDefault }) => (
+  <div
+    className={`p-5 border-2 rounded-2xl transition-all ${
+      address.isDefault
+        ? "border-green-400 shadow-md bg-green-50/50"
+        : "border-gray-200 hover:shadow-md"
+    }`}
+  >
+    <div className="flex justify-between items-start mb-2">
+      <h3 className="text-lg font-semibold text-gray-800">
+        {address.recipientName}
+      </h3>
+      {address.isDefault && (
+        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-white rounded-full bg-gradient-to-r from-green-400 to-emerald-500">
+          <Check size={14} /> Default
+        </span>
+      )}
+    </div>
+    <p className="mb-1 text-gray-600">{address.street}</p>
+    <p className="mb-4 text-sm text-gray-500">Phone: {address.phone}</p>
+
+    <div className="flex flex-wrap gap-2 justify-end">
+      <button
+        onClick={() => onEdit(address)}
+        className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all"
+      >
+        <Edit2 size={14} /> Edit
+      </button>
+      <button
+        onClick={() => onSetDefault(address.id!)}
+        disabled={address.isDefault}
+        className={`flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-all ${
+          address.isDefault
+            ? "bg-gray-400 text-white cursor-not-allowed"
+            : "bg-green-500 text-white hover:bg-green-600"
+        }`}
+      >
+        <Check size={14} /> Set as Default
+      </button>
+      <button
+        onClick={() => onDelete(address.id!)}
+        className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all"
+      >
+        <Trash2 size={14} /> Delete
+      </button>
+    </div>
+  </div>
+);
+
 // Main component
 const AddressesTab: React.FC = () => {
-  const [addresses, setAddresses] = useState<Address[]>(sampleAddresses);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [currentAddress, setCurrentAddress] = useState<Partial<Address> | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = (address?: Partial<Address>) => {
-    setCurrentAddress(address || null);
-    setIsModalOpen(true);
-  };
+  const userId = localStorage.getItem("userId") || "";
 
-  const handleSave = (data: Partial<Address>) => {
-    if (!data.fullName && !data.address && !data.phone) return;
-
-    if (data.id) {
-      // Edit
-      setAddresses((prev) =>
-        prev.map((a) => (a.id === data.id ? ({ ...a, ...data } as Address) : a))
-      );
-    } else {
-      // Add new
-      const newAddress: Address = {
-        id: Date.now().toString(),
-        fullName: data.fullName || "",
-        address: data.address || "",
-        phone: data.phone || "",
-        isDefault: false,
-      };
-      setAddresses((prev) => [...prev, newAddress]);
+  const fetchAddresses = async () => {
+    try {
+      const res = await getUserAddresses(userId);
+      setAddresses(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load addresses");
     }
-    setIsModalOpen(false);
-    setCurrentAddress(null);
   };
 
-  const handleSetDefault = (id: string) => {
-    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const handleSave = async (data: Partial<Address>) => {
+    try {
+      if (data.id) {
+        await updateUserAddress(userId, data.id, data);
+        toast.success("Address updated!");
+      } else {
+        await addUserAddress(userId, data as Address);
+        toast.success("Address added!");
+      }
+      setIsModalOpen(false);
+      fetchAddresses();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save address");
+    }
   };
 
-  const handleDelete = (id: string) =>
-    setAddresses((prev) => prev.filter((a) => a.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteUserAddress(userId, id);
+      toast.success("Address deleted!");
+      fetchAddresses();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete address");
+    }
+  };
+
+  const handleSetDefault = async (id: string) => {
+    try {
+      await setDefaultUserAddress(userId, id);
+      toast.success("Default address updated!");
+      fetchAddresses();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to set default address");
+    }
+  };
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -160,17 +223,18 @@ const AddressesTab: React.FC = () => {
           </h2>
         </div>
 
-        {/* Add button */}
         <div className="flex justify-end">
           <button
-            onClick={() => openModal()}
+            onClick={() => {
+              setCurrentAddress(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:opacity-90 shadow-sm"
           >
             <Plus size={18} /> Add New Address
           </button>
         </div>
 
-        {/* Address List */}
         {addresses.length === 0 ? (
           <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
             You haven’t added any addresses yet.
@@ -180,60 +244,16 @@ const AddressesTab: React.FC = () => {
         ) : (
           <div className="space-y-5">
             {addresses.map((addr) => (
-              <div
+              <AddressCard
                 key={addr.id}
-                className={`p-5 border-2 rounded-2xl transition-all ${
-                  addr.isDefault
-                    ? "border-green-400 shadow-md bg-green-50/50"
-                    : "border-gray-200 hover:shadow-md"
-                }`}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {addr.fullName}
-                  </h3>
-                  {addr.isDefault && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-white rounded-full bg-gradient-to-r from-green-400 to-emerald-500">
-                      <Check size={14} /> Default
-                    </span>
-                  )}
-                </div>
-
-                <p className="mb-1 text-gray-600">{addr.address}</p>
-                <p className="mb-4 text-sm text-gray-500">
-                  Phone: {addr.phone}
-                </p>
-
-                {/* Buttons */}
-                <div className="flex flex-wrap gap-2 mt-auto justify-end">
-                  <button
-                    onClick={() => openModal(addr)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all"
-                  >
-                    <Edit2 size={14} /> Edit
-                  </button>
-
-                  <button
-                    onClick={() => handleSetDefault(addr.id)}
-                    disabled={addr.isDefault}
-                    className={`flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-all 
-                    ${
-                      addr.isDefault
-                        ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-green-500 text-white hover:bg-green-600"
-                    }`}
-                  >
-                    <Check size={14} /> Set as Default
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(addr.id)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all"
-                  >
-                    <Trash2 size={14} /> Delete
-                  </button>
-                </div>
-              </div>
+                address={addr}
+                onEdit={(a) => {
+                  setCurrentAddress(a);
+                  setIsModalOpen(true);
+                }}
+                onDelete={handleDelete}
+                onSetDefault={handleSetDefault}
+              />
             ))}
           </div>
         )}
