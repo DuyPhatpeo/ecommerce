@@ -3,14 +3,20 @@ import { Plus } from "lucide-react";
 import AddressModal from "./Address/AddressModal";
 import AddressCard from "./Address/AddressCard";
 import { useAddresses } from "../../hooks/useAddresses";
+import type { Address } from "../../api/addressApi";
 
 const AddressesTab: React.FC = () => {
-  const { addresses, handleSave, handleDelete, handleSetDefault } =
+  const { addressesFormatted, handleSave, handleDelete, handleSetDefault } =
     useAddresses();
   const [currentAddress, setCurrentAddress] = useState<Partial<Address> | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (address?: Partial<Address>) => {
+    setCurrentAddress(address || null);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -23,17 +29,14 @@ const AddressesTab: React.FC = () => {
 
         <div className="flex justify-end">
           <button
-            onClick={() => {
-              setCurrentAddress(null);
-              setIsModalOpen(true);
-            }}
+            onClick={() => openModal()}
             className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:opacity-90 shadow-sm"
           >
             <Plus size={18} /> Add New Address
           </button>
         </div>
 
-        {addresses.length === 0 ? (
+        {addressesFormatted.length === 0 ? (
           <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
             You haven’t added any addresses yet.
             <br />
@@ -41,16 +44,14 @@ const AddressesTab: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-5">
-            {addresses.map((addr) => (
+            {addressesFormatted.map((addr) => (
               <AddressCard
                 key={addr.id}
                 address={addr}
-                onEdit={(a) => {
-                  setCurrentAddress(a);
-                  setIsModalOpen(true);
-                }}
-                onDelete={handleDelete}
-                onSetDefault={handleSetDefault}
+                onEdit={() => openModal(addr)}
+                onDelete={() => handleDelete(addr.id!)}
+                onSetDefault={() => handleSetDefault(addr.id!)}
+                // Sử dụng line để hiển thị địa chỉ gộp
               />
             ))}
           </div>

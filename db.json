@@ -14,25 +14,30 @@
       },
       "addresses": [
         {
-          "id": "addr_1762220431144",
+          "id": "1762238745859",
           "recipientName": "Trần Duy Phát",
           "phone": "0866482834",
           "street": "123 ABC",
           "ward": "ABC",
           "district": "Nha Trang",
           "city": "Khánh Hoà",
-          "country": "Việt Name",
+          "country": "Việt Nam",
           "postalCode": "",
-          "isDefault": false,
-          "createdAt": "2025-11-04T01:40:31.144Z"
+          "isDefault": true,
+          "createdAt": "2025-11-04T06:45:45.859Z"
         },
         {
-          "recipientName": "Trần Duy Phát",
-          "street": "123 ABC, ABC, Nha Trang, Khánh Hoà, Việt Name",
+          "id": "1762238905118",
+          "recipientName": "phat",
           "phone": "0866482834",
-          "id": "1762236955211",
-          "isDefault": true,
-          "createdAt": "2025-11-04T06:15:55.211Z"
+          "street": "1A A",
+          "ward": "Siu",
+          "district": "Nha Trang",
+          "city": "Khánh Hoà",
+          "country": "Việt Nam",
+          "postalCode": "",
+          "isDefault": false,
+          "createdAt": "2025-11-04T06:48:25.118Z"
         }
       ]
     }

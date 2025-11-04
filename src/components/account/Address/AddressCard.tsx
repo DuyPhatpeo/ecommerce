@@ -3,7 +3,7 @@ import { Edit2, Check, Trash2 } from "lucide-react";
 import type { Address } from "../../../api/addressApi";
 
 interface AddressCardProps {
-  address: Address;
+  address: Address & { line?: string }; // thêm line để hiển thị gộp
   onEdit: (addr: Address) => void;
   onDelete: (id: string) => void;
   onSetDefault: (id: string) => void;
@@ -32,7 +32,9 @@ const AddressCard: React.FC<AddressCardProps> = ({
         </span>
       )}
     </div>
-    <p className="mb-1 text-gray-600">{address.street}</p>
+
+    {/* Hiển thị địa chỉ gộp 1 dòng */}
+    <p className="mb-1 text-gray-600">{address.line || ""}</p>
     <p className="mb-4 text-sm text-gray-500">Phone: {address.phone}</p>
 
     <div className="flex flex-wrap gap-2 justify-end">
