@@ -383,16 +383,14 @@ const DesktopNavItem = ({
       {item.path ? (
         <Link
           to={item.path}
-          className={`px-2 py-1 whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+          className={`px-2 py-1 whitespace-nowrap transition-colors ${
             isActive ? "text-orange-500" : "text-gray-800 hover:text-orange-500"
           }`}
         >
-          {item.label === "CATEGORY" && <LayoutGrid size={14} />}
           {item.label}
         </Link>
       ) : (
-        <span className="px-2 py-1 whitespace-nowrap text-gray-800 cursor-default flex items-center gap-1.5">
-          {item.label === "CATEGORY" && <LayoutGrid size={14} />}
+        <span className="px-2 py-1 whitespace-nowrap text-gray-800 cursor-default">
           {item.label}
         </span>
       )}
@@ -495,10 +493,7 @@ const MobileMenuWithSub = ({
         onClick={() => toggleSubMenu(item.label)}
         className="w-full flex justify-between items-center px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500 transition-colors"
       >
-        <div className="flex items-center gap-2">
-          <LayoutGrid size={16} />
-          {item.label}
-        </div>
+        {item.label}
         {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
       </button>
       <AnimatePresence>
