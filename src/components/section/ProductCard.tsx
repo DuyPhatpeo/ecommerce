@@ -141,12 +141,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : 0;
 
-  const { isWishlisted, handleToggleWishlist } = useWishlist({
-    id,
-    title,
-    img,
-    price,
-  });
+  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
   const formatVND = useCallback(
     (value: number) =>

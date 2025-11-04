@@ -1,7 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import ProductCard from "../section/ProductCard";
+import { getProductById } from "../../api/productApi";
+import toast from "react-hot-toast";
 
-interface WishlistItem {
+interface Product {
   id: string;
   title: string;
   img: string;
@@ -12,33 +14,41 @@ interface WishlistItem {
 }
 
 const WishlistTab: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  // ✅ Sample data tự tạo
-  const items: WishlistItem[] = useMemo(() => {
-    const titles = [
-      "Premium Cotton T-Shirt",
-      "Slim Fit Jeans",
-      "White Sneakers",
-    ];
-    const prices = [299000, 599000, 899000];
-    const images = [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-    ];
+  useEffect(() => {
+    const fetchWishlistProducts = async () => {
+      const wishlistIds: string[] = JSON.parse(
+        localStorage.getItem("wishlist") || "[]"
+      );
+      if (!wishlistIds.length) return;
 
-    return Array.from({ length: 9 }).map((_, i) => ({
-      id: String(i + 1),
-      title: titles[i % titles.length],
-      img: images[i % images.length],
-      salePrice: prices[i % prices.length],
-      regularPrice: prices[i % prices.length],
-      stock: 10,
-    }));
+      setLoading(true);
+      try {
+        const promises = wishlistIds.map((id) => getProductById(id));
+        const res = await Promise.all(promises);
+
+        // 🔹 Dùng ảnh đầu tiên nếu có
+        const productsWithFirstImage = res.map((p: Product) => ({
+          ...p,
+          img: p.images?.[0] || p.img,
+        }));
+
+        setProducts(productsWithFirstImage);
+      } catch (err) {
+        console.error(err);
+        toast.error("Không thể tải sản phẩm trong wishlist.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWishlistProducts();
   }, []);
 
-  const visibleItems = showAll ? items : items.slice(0, 6); // chỉ hiện 6 item đầu
+  const visibleProducts = showAll ? products : products.slice(0, 6);
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -51,20 +61,22 @@ const WishlistTab: React.FC = () => {
         </div>
 
         {/* Wishlist Items */}
-        {items.length === 0 ? (
+        {loading ? (
+          <div className="py-12 text-center text-gray-500">Loading...</div>
+        ) : products.length === 0 ? (
           <div className="py-12 text-center text-gray-500">
             Your wishlist is empty. Start exploring some products ✨
           </div>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-3">
-              {visibleItems.map((item) => (
+              {visibleProducts.map((item) => (
                 <ProductCard key={item.id} data={item} />
               ))}
             </div>
 
             {/* See More Button */}
-            {!showAll && items.length > 6 && (
+            {!showAll && products.length > 6 && (
               <div className="mt-6 text-center">
                 <button
                   onClick={() => setShowAll(true)}

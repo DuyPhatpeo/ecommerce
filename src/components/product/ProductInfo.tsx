@@ -139,12 +139,7 @@ const ProductInfo = ({
 
   const { handleAddToCart } = useAddToCart();
   const { handleBuyNow } = useBuyNow();
-  const { isWishlisted, handleToggleWishlist } = useWishlist({
-    id,
-    title,
-    img: images?.[0] || "",
-    price: salePrice ?? regularPrice ?? 0,
-  });
+  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
   const firstImage = images?.[0] || "";
   const isOutOfStock = stock === 0;
