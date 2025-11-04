@@ -10,6 +10,8 @@ import {
   Wallet,
   Banknote,
   X,
+  Trash2,
+  Edit,
 } from "lucide-react";
 import Radio from "../ui/Radio";
 import { useAddresses } from "../../hooks/useAddresses";
@@ -27,14 +29,13 @@ export default function CheckoutForm({
 }: {
   onChange: (info: CustomerInfo) => void;
 }) {
-  const { addressesFormatted, handleSave, handleDelete, handleSetDefault } =
-    useAddresses();
+  const { addressesFormatted, handleSave, handleDelete } = useAddresses();
 
   const [selectedId, setSelectedId] = useState("");
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newAddressLine, setNewAddressLine] = useState("");
+  const [editingAddress, setEditingAddress] = useState<any>(null);
 
   useEffect(() => {
     if (!selectedId && addressesFormatted.length) {
@@ -83,7 +84,7 @@ export default function CheckoutForm({
         selectedId={selectedId}
         onSelect={setSelectedId}
         onDelete={handleDelete}
-        onSetDefault={handleSetDefault}
+        onEdit={(addr) => setEditingAddress(addr)}
         onAdd={() => setShowAddForm(true)}
       />
       {selectedId && <DeliveryNote note={note} setNote={setNote} />}
@@ -96,17 +97,26 @@ export default function CheckoutForm({
       )}
       {showAddForm && (
         <AddAddressModal
-          value={newAddressLine}
-          onChange={setNewAddressLine}
           onClose={() => setShowAddForm(false)}
-          onSave={async () => {
-            if (!newAddressLine.trim()) return alert("Please enter address");
+          onSave={async (data) => {
             await handleSave({
-              line: newAddressLine,
+              ...data,
               isDefault: addressesFormatted.length === 0,
             });
-            setNewAddressLine("");
             setShowAddForm(false);
+          }}
+        />
+      )}
+      {editingAddress && (
+        <AddAddressModal
+          address={editingAddress}
+          onClose={() => setEditingAddress(null)}
+          onSave={async (data) => {
+            await handleSave({
+              ...data,
+              id: editingAddress.id,
+            });
+            setEditingAddress(null);
           }}
         />
       )}
@@ -130,14 +140,14 @@ const AddressList = ({
   selectedId,
   onSelect,
   onDelete,
-  onSetDefault,
+  onEdit,
   onAdd,
 }: {
   addresses: any[];
   selectedId: string;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  onSetDefault: (id: string) => void;
+  onEdit: (address: any) => void;
   onAdd: () => void;
 }) => (
   <div className="p-6 space-y-4">
@@ -149,7 +159,7 @@ const AddressList = ({
           selected={selectedId === addr.id}
           onSelect={() => onSelect(addr.id)}
           onDelete={() => onDelete(addr.id)}
-          onSetDefault={() => onSetDefault(addr.id)}
+          onEdit={() => onEdit(addr)}
         />
       ))
     ) : (
@@ -173,15 +183,15 @@ const AddressItem = ({
   selected,
   onSelect,
   onDelete,
-  onSetDefault,
+  onEdit,
 }: {
   address: any;
   selected: boolean;
   onSelect: () => void;
   onDelete: () => void;
-  onSetDefault: () => void;
+  onEdit: () => void;
 }) => (
-  <div className="relative group">
+  <div className="relative">
     <Radio
       value={address.id}
       checked={selected}
@@ -189,7 +199,7 @@ const AddressItem = ({
       className="p-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all"
       label={
         <div className="flex justify-between items-start gap-4">
-          <div>
+          <div className="flex-1">
             <InfoRow icon={<User />} text={address.recipientName} bold />
             <InfoRow icon={<Phone />} text={address.phone} />
             <InfoRow icon={<Home />} text={address.line} multiline />
@@ -202,19 +212,19 @@ const AddressItem = ({
         </div>
       }
     />
-    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 flex gap-2">
-      {!address.isDefault && (
-        <button
-          onClick={onSetDefault}
-          className="text-xs text-blue-500 hover:underline"
-        >
-          Set Default
-        </button>
-      )}
+    <div className="flex justify-end gap-2 mt-2 px-4">
+      <button
+        onClick={onEdit}
+        className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 transition"
+      >
+        <Edit size={14} />
+        Edit
+      </button>
       <button
         onClick={onDelete}
-        className="text-xs text-red-500 hover:underline"
+        className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition"
       >
+        <Trash2 size={14} />
         Delete
       </button>
     </div>
@@ -280,43 +290,81 @@ const PaymentSection = ({
 );
 
 const AddAddressModal = ({
-  value,
-  onChange,
+  address,
   onClose,
   onSave,
 }: {
-  value: string;
-  onChange: (v: string) => void;
+  address?: any;
   onClose: () => void;
-  onSave: () => void;
-}) => (
-  <Modal onClose={onClose}>
-    <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2">
-      <MapPin className="text-orange-500" /> Add New Address
-    </div>
-    <textarea
-      placeholder="Full address in one line"
-      rows={3}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-orange-400 outline-none resize-none"
-    />
-    <div className="flex justify-end gap-3 mt-6">
-      <button
-        onClick={onClose}
-        className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-      >
-        Cancel
-      </button>
-      <button
-        onClick={onSave}
-        className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold hover:from-orange-500 hover:to-amber-500 transition shadow-md"
-      >
-        Save
-      </button>
-    </div>
-  </Modal>
-);
+  onSave: (data: {
+    recipientName: string;
+    line: string;
+    phone: string;
+  }) => void;
+}) => {
+  const [form, setForm] = useState({
+    recipientName: address?.recipientName || "",
+    line: address?.line || "",
+    phone: address?.phone || "",
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = () => {
+    if (!form.recipientName.trim() || !form.line.trim() || !form.phone.trim()) {
+      return alert("Please fill all required fields");
+    }
+    onSave(form);
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2 border-b border-orange-100 pb-3">
+        <MapPin className="text-orange-500" />{" "}
+        {address ? "Edit Address" : "Add New Address"}
+      </div>
+      <div className="space-y-3">
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={form.recipientName}
+          onChange={(e) => handleChange("recipientName", e.target.value)}
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition"
+        />
+        <input
+          type="text"
+          placeholder="Address (Street, Ward, District, City, Country)"
+          value={form.line}
+          onChange={(e) => handleChange("line", e.target.value)}
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition"
+        />
+        <input
+          type="text"
+          placeholder="Phone"
+          value={form.phone}
+          onChange={(e) => handleChange("phone", e.target.value)}
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition"
+        />
+      </div>
+      <div className="flex justify-end gap-3 mt-6">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold hover:from-orange-500 hover:to-amber-500 transition shadow-md"
+        >
+          Save
+        </button>
+      </div>
+    </Modal>
+  );
+};
 
 /* Common Components */
 const Section = ({ icon, title, subtitle, children }: any) => (
