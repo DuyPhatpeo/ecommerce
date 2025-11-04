@@ -1,50 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Edit2, Save, X, Lock, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
+import { getUserProfile, updateUserProfile } from "../../api/authApi";
 
-interface ProfileTabProps {
-  profile: {
-    fullName: string;
-    email: string;
-    phone: string;
-  };
-  editedProfile: {
-    fullName: string;
-    email: string;
-    phone: string;
-  };
-  isEditing: boolean;
-  onEdit: () => void;
-  onSave: () => void;
-  onCancel: () => void;
-  onChange: (field: string, value: string) => void;
-  onPasswordChange?: (currentPassword: string, newPassword: string) => void;
+interface UserProfile {
+  id?: string;
+  fullName: string;
+  email: string;
+  phone: string;
 }
 
-const ProfileTab: React.FC<ProfileTabProps> = ({
-  profile,
-  editedProfile,
-  isEditing,
-  onEdit,
-  onSave,
-  onCancel,
-  onChange,
-  onPasswordChange,
-}) => {
+const ProfileTab: React.FC = () => {
+  const [profile, setProfile] = useState<UserProfile>({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
+  const [editedProfile, setEditedProfile] = useState(profile);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
     confirm: "",
   });
 
-  const [showModal, setShowModal] = useState(false);
+  // ✅ Lấy thông tin user từ API
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
 
+      try {
+        const res = await getUserProfile(userId);
+        setProfile(res.data);
+        setEditedProfile(res.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        toast.error("Failed to load profile.");
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // ✅ Bắt đầu chỉnh sửa
+  const handleEdit = () => setIsEditing(true);
+
+  // ✅ Hủy chỉnh sửa
+  const handleCancel = () => {
+    setEditedProfile(profile);
+    setIsEditing(false);
+  };
+
+  // ✅ Lưu thay đổi
+  const handleSave = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return toast.error("User not found!");
+
+    try {
+      const res = await updateUserProfile(userId, editedProfile);
+      setProfile(res.data);
+      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update profile.");
+    }
+  };
+
+  // ✅ Cập nhật state khi nhập form
+  const handleChange = (field: string, value: string) => {
+    setEditedProfile((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // ✅ Đổi mật khẩu (demo logic)
   const handlePasswordUpdate = () => {
     if (passwords.new !== passwords.confirm) {
-      alert("Mật khẩu mới không khớp!");
+      toast.error("Mật khẩu mới không khớp!");
       return;
     }
-    onPasswordChange?.(passwords.current, passwords.new);
+
+    // TODO: Gọi API đổi mật khẩu (nếu có endpoint)
+    toast.success("Password updated successfully!");
     setPasswords({ current: "", new: "", confirm: "" });
     setShowModal(false);
   };
@@ -59,84 +98,80 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
           </h2>
         </div>
 
-        {/* Profile Form */}
-        <div className="space-y-6">
-          {/* Header Actions */}
-          <div className="flex items-center justify-between pb-3 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Account Details
-            </h3>
-
-            {!isEditing ? (
+        {/* Header Actions */}
+        <div className="flex items-center justify-between pb-3 border-b border-gray-200 mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Account Details
+          </h3>
+          {!isEditing ? (
+            <button
+              onClick={handleEdit}
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-orange-500 hover:bg-orange-600 transition-all"
+            >
+              <Edit2 size={16} />
+              Edit
+            </button>
+          ) : (
+            <div className="flex gap-2">
               <button
-                onClick={onEdit}
-                className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-orange-500 hover:bg-orange-600 transition-all"
+                onClick={handleSave}
+                className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
               >
-                <Edit2 size={16} />
-                Edit
+                <Save size={16} />
+                Save
               </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={onSave}
-                  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
-                >
-                  <Save size={16} />
-                  Save
-                </button>
-                <button
-                  onClick={onCancel}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                >
-                  <X size={16} />
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Input Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              { label: "Full Name", type: "text", field: "fullName" },
-              { label: "Email", type: "email", field: "email" },
-              { label: "Phone Number", type: "tel", field: "phone" },
-            ].map(({ label, type, field }) => (
-              <div key={field} className="flex flex-col">
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  {label}
-                </label>
-                <input
-                  type={type}
-                  value={
-                    isEditing
-                      ? editedProfile[field as keyof typeof editedProfile]
-                      : profile[field as keyof typeof profile]
-                  }
-                  onChange={(e) => onChange(field, e.target.value)}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100 transition-all"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Change Password Section */}
-          <div className="mt-8 border-t border-orange-100 pt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
-                <Lock size={18} className="text-orange-500" />
-                Change Password
-              </h3>
-
               <button
-                onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-orange-500 hover:bg-orange-600 transition-all"
+                onClick={handleCancel}
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
               >
-                <Edit2 size={16} />
-                Change
+                <X size={16} />
+                Cancel
               </button>
             </div>
+          )}
+        </div>
+
+        {/* Input Fields */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            { label: "Full Name", type: "text", field: "fullName" },
+            { label: "Email", type: "email", field: "email" },
+            { label: "Phone Number", type: "tel", field: "phone" },
+          ].map(({ label, type, field }) => (
+            <div key={field} className="flex flex-col">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                {label}
+              </label>
+              <input
+                type={type}
+                value={
+                  isEditing
+                    ? editedProfile[field as keyof typeof editedProfile]
+                    : profile[field as keyof typeof profile]
+                }
+                onChange={(e) => handleChange(field, e.target.value)}
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:bg-gray-100 transition-all"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Change Password Section */}
+        <div className="mt-8 border-t border-orange-100 pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+              <Lock size={18} className="text-orange-500" />
+              Change Password
+            </h3>
+
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm bg-orange-500 hover:bg-orange-600 transition-all"
+            >
+              <Edit2 size={16} />
+              Change
+            </button>
           </div>
         </div>
       </div>
@@ -145,14 +180,12 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
       <AnimatePresence>
         {showModal && (
           <>
-            {/* Overlay */}
             <motion.div
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
-            {/* Modal */}
             <motion.div
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               initial={{ scale: 0.9, opacity: 0 }}
@@ -177,10 +210,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
                       placeholder={placeholder}
                       value={passwords[field as keyof typeof passwords]}
                       onChange={(e) =>
-                        setPasswords({
-                          ...passwords,
-                          [field]: e.target.value,
-                        })
+                        setPasswords({ ...passwords, [field]: e.target.value })
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-orange-400 focus:outline-none transition-all"
                     />

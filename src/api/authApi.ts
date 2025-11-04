@@ -1,8 +1,5 @@
 import api from "../lib/axios";
 
-// ---------------------------
-// 🧩 Kiểu dữ liệu
-// ---------------------------
 export interface Address {
   id: string;
   recipientName: string;
@@ -32,10 +29,6 @@ export interface User {
   addresses?: Address[];
 }
 
-// ---------------------------
-// 📦 API Methods
-// ---------------------------
-
 // Lấy toàn bộ user
 export const getUsers = async () => {
   return await api.get<User[]>("/users");
@@ -51,16 +44,17 @@ export const registerUser = async (data: User) => {
   return await api.post<User>("/users", data);
 };
 
-// ---------------------------
-// 👤 Lấy profile người dùng
-// ---------------------------
 export const getUserProfile = async (userId: string) => {
   return await api.get<User>(`/users/${userId}`);
 };
 
-// ---------------------------
-// 🏠 Lấy danh sách địa chỉ
-// ---------------------------
 export const getUserAddresses = async (userId: string) => {
   return await api.get<Address[]>(`/users/${userId}/addresses`);
+};
+
+export const updateUserProfile = async (
+  userId: string,
+  data: Partial<User>
+) => {
+  return await api.put<User>(`/users/${userId}`, data);
 };
