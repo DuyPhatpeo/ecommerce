@@ -21,7 +21,7 @@ const OrdersTab: React.FC = () => {
   const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(5);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -51,7 +51,22 @@ const OrdersTab: React.FC = () => {
   );
 
   const visibleOrders = sortedOrders.slice(0, visibleCount);
-  const handleSeeMore = () => setVisibleCount((prev) => prev + 5);
+
+  const handleSeeMore = () => {
+    const currentCount = visibleCount;
+    setVisibleCount((prev) => prev + 5);
+
+    setTimeout(() => {
+      const orderElements = document.querySelectorAll("[data-order-index]");
+      const firstNewItem = orderElements[currentCount];
+      if (firstNewItem) {
+        firstNewItem.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+    }, 100);
+  };
 
   const getStatusColor = (status: string): string => {
     switch (status.toLowerCase()) {
@@ -88,6 +103,14 @@ const OrdersTab: React.FC = () => {
       minute: "2-digit",
     });
 
+  const handleViewDetails = (orderId: string) => {
+    navigate(`/account/order/${orderId}`);
+  };
+
+  const handleBrowseProducts = () => {
+    navigate("/products");
+  };
+
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
       {/* Gradient Background */}
@@ -95,17 +118,15 @@ const OrdersTab: React.FC = () => {
 
       <div className="relative p-6 sm:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <Package className="text-white" size={20} />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">My Orders</h2>
-              <p className="text-sm text-gray-600">
-                Track and manage your orders
-              </p>
-            </div>
+        <div className="flex items-center gap-3 pb-6 mb-6 border-b border-gray-100">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
+            <Package className="text-white" size={20} />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">My Orders</h2>
+            <p className="text-sm text-gray-600">
+              Track and manage your orders
+            </p>
           </div>
         </div>
 
@@ -131,7 +152,7 @@ const OrdersTab: React.FC = () => {
               Start shopping now! 🛍️
             </p>
             <button
-              onClick={() => navigate("/products")}
+              onClick={handleBrowseProducts}
               className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
             >
               Browse Products
@@ -140,9 +161,10 @@ const OrdersTab: React.FC = () => {
         ) : (
           <>
             <div className="space-y-4">
-              {visibleOrders.map((order) => (
+              {visibleOrders.map((order, index) => (
                 <div
                   key={order.id}
+                  data-order-index={index}
                   className="relative p-5 transition-all duration-300 border border-gray-200 rounded-2xl hover:border-orange-300 hover:shadow-lg group"
                 >
                   {/* Header với Status riêng desktop, cùng dòng mobile */}
@@ -207,7 +229,7 @@ const OrdersTab: React.FC = () => {
                     </div>
 
                     <button
-                      onClick={() => navigate(`/account/order/${order.id}`)}
+                      onClick={() => handleViewDetails(order.id)}
                       className="flex items-center justify-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 group-hover:gap-3 w-full sm:w-auto"
                     >
                       <span>View Details</span>
