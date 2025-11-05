@@ -111,27 +111,15 @@ const Account = () => {
           >
             {/* Mobile Navigation Header */}
             {isMobile && tab && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6"
-              >
-                <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-50 via-transparent to-blue-50 opacity-50" />
-                  <div className="relative flex items-center justify-between p-4">
-                    <button
-                      onClick={handleBack}
-                      className="flex items-center gap-2 px-4 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
-                    >
-                      <ArrowLeft size={18} />
-                      <span>My Account</span>
-                    </button>
-                    <h2 className="text-lg font-bold text-gray-800">
-                      {getTabTitle()}
-                    </h2>
-                  </div>
-                </div>
-              </motion.div>
+              <div className="relative flex items-center justify-between p-4">
+                <button
+                  onClick={handleBack}
+                  className="flex items-center gap-2 px-4 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+                >
+                  <ArrowLeft size={18} />
+                  <span>My Account</span>
+                </button>
+              </div>
             )}
 
             {/* Content Container */}
