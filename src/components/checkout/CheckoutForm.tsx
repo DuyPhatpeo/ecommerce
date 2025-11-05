@@ -219,7 +219,7 @@ const AddressItem = ({
       className="p-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all"
       label={
         <div className="flex justify-between items-start gap-4">
-          <div className="flex-1">
+          <div className="flex-1 space-y-1.5">
             <InfoRow icon={<User />} text={address.recipientName} bold />
             <InfoRow icon={<Phone />} text={address.phone} />
             <InfoRow icon={<Home />} text={address.line} multiline />
@@ -425,6 +425,7 @@ const Modal = ({
     </div>
   </div>
 );
+
 const InfoRow = ({
   icon,
   text,
@@ -436,16 +437,23 @@ const InfoRow = ({
   bold?: boolean;
   multiline?: boolean;
 }) => (
-  <p
-    className={`text-sm text-gray-700 flex items-start gap-2 ${
-      bold ? "font-semibold text-gray-900" : ""
-    } ${multiline ? "mt-1" : ""}`}
-  >
-    {React.isValidElement(icon)
-      ? React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
-          className: "w-4 h-4 text-orange-500 mt-[1px]",
-        })
-      : icon}
-    <span>{text}</span>
-  </p>
+  <div className={`flex items-start gap-2 ${multiline ? "mt-1" : ""}`}>
+    <div className="flex-shrink-0 mt-[3px]">
+      {React.isValidElement(icon)
+        ? React.cloneElement(
+            icon as React.ReactElement<{ className?: string }>,
+            {
+              className: "w-4 h-4 text-orange-500",
+            }
+          )
+        : icon}
+    </div>
+    <p
+      className={`text-sm leading-relaxed ${
+        bold ? "font-semibold text-gray-900" : "text-gray-700"
+      }`}
+    >
+      {text}
+    </p>
+  </div>
 );
