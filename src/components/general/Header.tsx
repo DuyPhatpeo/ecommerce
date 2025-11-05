@@ -402,17 +402,25 @@ const DesktopNavItem = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-1/2 -translate-x-1/2 top-[45px] w-[220px] bg-white shadow-lg border border-gray-100 z-40 rounded-lg overflow-hidden"
+            className="absolute left-1/2 -translate-x-1/2 top-[45px] w-[max-content] max-w-[600px] bg-white shadow-lg border border-gray-100 z-40 rounded-lg overflow-hidden p-2"
           >
-            {item.subMenu!.map((sub, j) => (
-              <Link
-                key={`${sub.label}-${j}`}
-                to={sub.path!}
-                className="block px-5 py-2.5 text-[13px] border-t border-gray-100 first:border-t-0 text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
-              >
-                {sub.label}
-              </Link>
-            ))}
+            <div
+              className={`grid gap-1 ${
+                item.subMenu!.length > 8
+                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  : "grid-cols-1"
+              } auto-rows-min`}
+            >
+              {item.subMenu!.map((sub, j) => (
+                <Link
+                  key={`${sub.label}-${j}`}
+                  to={sub.path!}
+                  className="block px-3 py-1 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white rounded transition-colors"
+                >
+                  {sub.label}
+                </Link>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -831,8 +839,8 @@ const CategoryBottomSheet = ({
             </div>
 
             {/* Categories Grid */}
-            <div className="overflow-y-auto max-h-[calc(70vh-80px)] px-4 py-4">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="overflow-y-auto max-h-[calc(70vh-80px)] px-4 py-4 scrollbar-thin scrollbar-thumb-orange-400 scrollbar-track-gray-100">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {categoryItem.subMenu.map((category, index) => (
                   <button
                     key={`${category.label}-${index}`}
