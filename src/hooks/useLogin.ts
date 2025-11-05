@@ -13,7 +13,6 @@ interface FormErrors {
   password?: string;
 }
 
-// 👇 Mở rộng kiểu User để đảm bảo fullName không gây lỗi
 interface User {
   id: string;
   email: string;
@@ -32,15 +31,18 @@ export default function useLogin() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(
-    localStorage.getItem("rememberMe") === "true"
-  );
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // ✅ Khi component mount: nếu Remember me được bật → tự điền email
+  // ✅ Đọc localStorage khi component mount
   useEffect(() => {
+    const savedRememberMe = localStorage.getItem("rememberMe") === "true";
     const savedEmail = localStorage.getItem("email");
-    if (savedEmail) {
-      setFormData((prev) => ({ ...prev, email: savedEmail }));
+
+    if (savedRememberMe) {
+      setRememberMe(true);
+      if (savedEmail) {
+        setFormData((prev) => ({ ...prev, email: savedEmail }));
+      }
     }
   }, []);
 
@@ -87,14 +89,10 @@ export default function useLogin() {
         return;
       }
 
-      // ✅ Xác định tên hiển thị (fullName > name > username > email)
       const displayName =
         user.fullName || user.name || user.username || user.email;
 
-      // ✅ Chỉ lưu id của user
-      localStorage.setItem("userId", user.id);
-
-      // ✅ Lưu hoặc xóa email nhớ đăng nhập
+      // ✅ Xử lý rememberMe và email TRƯỚC
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
         localStorage.setItem("email", formData.email);
@@ -102,6 +100,9 @@ export default function useLogin() {
         localStorage.removeItem("rememberMe");
         localStorage.removeItem("email");
       }
+
+      // ✅ Lưu userId SAU
+      localStorage.setItem("userId", user.id);
 
       toast.success(`Welcome back, ${displayName}! 🎉`);
       setTimeout(() => navigate("/"), 1500);

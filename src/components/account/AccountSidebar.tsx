@@ -6,11 +6,10 @@ import {
   Heart,
   LogOut,
   ChevronRight,
-  Settings,
-  Bell,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "../../api/authApi";
+import { useLogout } from "../../hooks/useLogout";
 
 interface Tab {
   id: string;
@@ -21,7 +20,6 @@ interface Tab {
 interface AccountSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onLogout?: () => void;
 }
 
 interface UserProfile {
@@ -34,9 +32,9 @@ interface UserProfile {
 const AccountSidebar: React.FC<AccountSidebarProps> = ({
   activeTab,
   onTabChange,
-  onLogout,
 }) => {
   const navigate = useNavigate();
+  const { logout } = useLogout(); // ✅ Sử dụng hook useLogout
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -76,15 +74,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       .map((part) => part.charAt(0).toUpperCase())
       .slice(0, 2)
       .join("");
-
-  const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("rememberMe");
-    localStorage.removeItem("email");
-    setUser(null);
-    if (onLogout) onLogout();
-    navigate("/");
-  };
 
   if (loading) {
     return (
@@ -199,7 +188,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
             {/* Logout Button */}
             <button
-              onClick={handleLogout}
+              onClick={logout} // ✅ Sử dụng logout từ hook
               className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
             >
               <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />

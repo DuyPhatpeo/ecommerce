@@ -20,9 +20,10 @@ export const useLogout = () => {
   }, []);
 
   const logout = () => {
+    // ✅ Chỉ xóa userId, giữ lại rememberMe và email
     localStorage.removeItem("userId");
     setUser(null);
-    navigate("/");
+    navigate("/login");
   };
 
   return { user, setUser, logout };
