@@ -1,6 +1,18 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Phone, Mail, Lock, X } from "lucide-react";
+import {
+  User,
+  Phone,
+  Mail,
+  Lock,
+  X,
+  Edit3,
+  Check,
+  XCircle,
+  Key,
+  Save,
+} from "lucide-react";
+
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
@@ -29,50 +41,54 @@ const ProfileTab: React.FC = () => {
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
 
-      <div className="relative p-6 sm:p-8">
+      <div className="relative p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
+        <div className="flex flex-col gap-4 pb-6 mb-6 border-b border-gray-100 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <User className="text-white" size={20} />
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
+              <User className="text-white" size={18} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
                 Personal Information
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-gray-600 sm:text-sm">
                 Manage your account details
               </p>
             </div>
           </div>
 
+          {/* Action Buttons */}
           {!isEditing ? (
             <Button
               label="Edit"
+              icon={<Edit3 size={16} />}
               onClick={handleEdit}
-              className="px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 sm:w-auto"
             />
           ) : (
             <div className="flex gap-2">
               <Button
                 label="Save"
+                icon={<Check size={16} />}
                 onClick={handleSave}
-                className="px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
+                className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 sm:flex-none"
               />
               <Button
                 label="Cancel"
+                icon={<XCircle size={16} />}
                 onClick={handleCancel}
-                className="px-5 py-2.5 font-semibold text-gray-700 transition-all duration-300 bg-gray-100 rounded-xl hover:bg-gray-200"
+                className="flex-1 px-5 py-2.5 font-semibold text-gray-700 transition-all duration-300 bg-gray-100 rounded-xl hover:bg-gray-200 sm:flex-none"
               />
             </div>
           )}
         </div>
 
         {/* Account Details Section */}
-        <div className="mb-6 space-y-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Mail className="text-orange-500" size={18} />
-            <h3 className="text-base font-bold text-gray-800">
+        <div className="mb-6 space-y-4 sm:space-y-6">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+            <Mail className="text-orange-500" size={16} />
+            <h3 className="text-sm font-bold text-gray-800 sm:text-base">
               Account Details
             </h3>
           </div>
@@ -89,7 +105,7 @@ const ProfileTab: React.FC = () => {
               icon={<Mail size={18} />}
               disabled
             />
-            <div className="absolute top-0 right-0 px-3 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50">
+            <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50 sm:px-3">
               Verified
             </div>
           </div>
@@ -120,14 +136,14 @@ const ProfileTab: React.FC = () => {
 
         {/* Security Section */}
         <div className="pt-6 border-t border-gray-100">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
-              <Lock className="text-blue-500" size={18} />
+              <Lock className="text-blue-500 flex-shrink-0" size={16} />
               <div>
-                <h3 className="text-base font-bold text-gray-800">
+                <h3 className="text-sm font-bold text-gray-800 sm:text-base">
                   Security Settings
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs text-gray-600 sm:text-sm">
                   Keep your account secure
                 </p>
               </div>
@@ -135,8 +151,9 @@ const ProfileTab: React.FC = () => {
 
             <Button
               label="Change Password"
+              icon={<Key size={16} />}
               onClick={() => setShowModal(true)}
-              className="px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5"
+              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5 sm:w-auto whitespace-nowrap"
             />
           </div>
         </div>
@@ -165,20 +182,20 @@ const ProfileTab: React.FC = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
             >
-              <div className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-3xl">
+              <div className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl sm:rounded-3xl max-h-[90vh] flex flex-col">
                 {/* Header with gradient */}
-                <div className="relative p-6 bg-gradient-to-r from-blue-500 to-blue-600">
+                <div className="relative flex-shrink-0 p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-600">
                   <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-lg">
-                        <Lock className="text-blue-600" size={24} />
+                  <div className="relative flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-white sm:w-12 sm:h-12 rounded-xl shadow-lg">
+                        <Lock className="text-blue-600" size={20} />
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-bold text-white sm:text-xl">
                           Change Password
                         </h3>
-                        <p className="text-sm text-blue-100">
+                        <p className="text-xs text-blue-100 sm:text-sm">
                           Update your security credentials
                         </p>
                       </div>
@@ -188,15 +205,15 @@ const ProfileTab: React.FC = () => {
                         setShowModal(false);
                         setPasswords({ current: "", new: "", confirm: "" });
                       }}
-                      className="flex items-center justify-center w-10 h-10 transition-all duration-300 bg-white/20 rounded-xl hover:bg-white/30"
+                      className="flex items-center justify-center flex-shrink-0 w-8 h-8 transition-all duration-300 sm:w-10 sm:h-10 bg-white/20 rounded-xl hover:bg-white/30"
                     >
-                      <X className="text-white" size={20} />
+                      <X className="text-white" size={18} />
                     </button>
                   </div>
                 </div>
 
-                {/* Form Content */}
-                <div className="p-6 space-y-5">
+                {/* Form Content - Scrollable */}
+                <div className="flex-1 p-4 space-y-4 overflow-y-auto sm:p-6 sm:space-y-5">
                   {["current", "new", "confirm"].map((field) => (
                     <div key={field}>
                       <PasswordField
@@ -228,19 +245,22 @@ const ProfileTab: React.FC = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex gap-3 p-6 border-t border-gray-100 bg-gray-50">
-                  <Button
-                    label="Update Password"
-                    onClick={handlePasswordUpdate}
-                    className="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
-                  />
+                <div className="flex items-center gap-3 p-4 border-t border-gray-100 bg-gray-50 sm:p-6">
                   <Button
                     label="Cancel"
+                    icon={<XCircle size={16} />}
                     onClick={() => {
                       setShowModal(false);
                       setPasswords({ current: "", new: "", confirm: "" });
                     }}
-                    className="px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
+                    className="flex-1 px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
+                  />
+
+                  <Button
+                    label="Update Password"
+                    icon={<Save size={16} />}
+                    onClick={handlePasswordUpdate}
+                    className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
                   />
                 </div>
               </div>
