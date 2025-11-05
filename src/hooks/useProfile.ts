@@ -37,15 +37,22 @@ export const useProfile = () => {
 
   const userId = localStorage.getItem("userId") || "";
 
-  // Fetch profile
+  // ✅ Fetch profile
   useEffect(() => {
     if (!userId) return;
 
     const fetchProfile = async () => {
       try {
         const res = await getUserProfile(userId);
-        setProfile(res.data);
-        setEditedProfile(res.data);
+        // ✅ Gán giá trị mặc định nếu thiếu để khớp kiểu UserProfile
+        const safeData: UserProfile = {
+          id: res.data.id,
+          fullName: res.data.fullName || "",
+          email: res.data.email || "",
+          phone: res.data.phone || "",
+        };
+        setProfile(safeData);
+        setEditedProfile(safeData);
       } catch (err) {
         console.error(err);
         toast.error("Failed to load user information.");
@@ -60,6 +67,7 @@ export const useProfile = () => {
   };
 
   const handleEdit = () => setIsEditing(true);
+
   const handleCancel = () => {
     setEditedProfile(profile);
     setIsEditing(false);
@@ -70,7 +78,13 @@ export const useProfile = () => {
 
     try {
       const res = await updateUserProfile(userId, editedProfile);
-      setProfile(res.data);
+      const safeData: UserProfile = {
+        id: res.data.id,
+        fullName: res.data.fullName || "",
+        email: res.data.email || "",
+        phone: res.data.phone || "",
+      };
+      setProfile(safeData);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
     } catch (err) {

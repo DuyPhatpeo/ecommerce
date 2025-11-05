@@ -62,17 +62,17 @@ export default function useRegister() {
         "Please confirm your password.",
       ],
       [
-        email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+        !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
         "email",
         "Invalid email format.",
       ],
       [
-        phone && !/^(0|\+84)[0-9]{9}$/.test(phone),
+        !!phone && !/^(0|\+84)[0-9]{9}$/.test(phone),
         "phone",
         "Invalid phone number.",
       ],
       [
-        password && password.length < 6,
+        !!password && password.length < 6,
         "password",
         "Password must be at least 6 characters.",
       ],
@@ -109,7 +109,8 @@ export default function useRegister() {
         phone: formData.phone.trim(),
         password: formData.password,
         createdAt: new Date().toISOString(),
-        token: null,
+        // ✅ fix: bỏ token hoặc để undefined
+        token: undefined,
         addresses: [
           {
             id: `addr_${Date.now()}`,

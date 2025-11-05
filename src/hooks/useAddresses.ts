@@ -9,6 +9,9 @@ import {
   setDefaultUserAddress,
 } from "../api/addressApi";
 
+// ✅ Thêm kiểu mở rộng để dùng được field "line"
+type AddressWithLine = Address & { line?: string };
+
 export const useAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const userId = localStorage.getItem("userId") || "";
@@ -27,7 +30,7 @@ export const useAddresses = () => {
     fetchAddresses();
   }, []);
 
-  // Parse string 1 dòng thành các field
+  // 🔹 Parse 1 dòng địa chỉ thành các trường riêng
   const parseAddressString = (input: string) => {
     const [street, ward, district, city, country = "Việt Nam"] = input
       .split(",")
@@ -35,16 +38,16 @@ export const useAddresses = () => {
     return { street, ward, district, city, country, postalCode: "" };
   };
 
-  // Format các field thành 1 dòng
+  // 🔹 Gộp các trường thành 1 dòng địa chỉ
   const formatAddressLine = (addr: Address) =>
     [addr.street, addr.ward, addr.district, addr.city, addr.country]
       .filter(Boolean)
       .join(", ");
 
-  const addAddress = async (data: Partial<Address>) => {
+  // ✅ Thêm địa chỉ mới
+  const addAddress = async (data: Partial<AddressWithLine>) => {
     if (!userId) return toast.error("User not found");
 
-    // Nếu nhập 1 dòng, tách ra các field
     const parsed = parseAddressString(data.line || data.street || "");
     const newAddress: Address = {
       id: `addr_${Date.now()}`,
@@ -65,9 +68,9 @@ export const useAddresses = () => {
     }
   };
 
-  const handleSave = async (data: Partial<Address>) => {
+  // ✅ Cập nhật hoặc thêm mới
+  const handleSave = async (data: Partial<AddressWithLine>) => {
     if (data.id) {
-      // Nếu có line, parse lại trước khi update
       const updated = data.line
         ? { ...data, ...parseAddressString(data.line) }
         : data;
@@ -84,6 +87,7 @@ export const useAddresses = () => {
     }
   };
 
+  // ✅ Xoá địa chỉ
   const handleDelete = async (id: string) => {
     try {
       const isDefaultDeleted = addresses.find(
@@ -106,6 +110,7 @@ export const useAddresses = () => {
     }
   };
 
+  // ✅ Đặt mặc định
   const handleSetDefault = async (id: string) => {
     try {
       await setDefaultUserAddress(userId, id);
@@ -117,7 +122,7 @@ export const useAddresses = () => {
     }
   };
 
-  // Trả về addresses với line gộp
+  // ✅ Trả về danh sách đã format
   const addressesFormatted = addresses.map((addr) => ({
     ...addr,
     line: formatAddressLine(addr),

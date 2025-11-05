@@ -1,5 +1,25 @@
 import api from "../lib/axios";
 
+/* ==========================
+   INTERFACES
+========================== */
+
+// Địa chỉ của người dùng
+export interface Address {
+  id: string;
+  recipientName: string;
+  phone: string;
+  street?: string;
+  ward?: string;
+  district?: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+
+// Người dùng
 export interface User {
   id?: string;
   fullName: string;
@@ -12,7 +32,12 @@ export interface User {
     refreshToken: string;
     expiresAt: string;
   };
+  addresses?: Address[];
 }
+
+/* ==========================
+   API FUNCTIONS
+========================== */
 
 // Lấy toàn bộ user
 export const getUsers = async () => {
@@ -42,7 +67,7 @@ export const updateUserProfile = async (
   return await api.put<User>(`/users/${userId}`, data);
 };
 
-// Thay vì changeUserPassword, dùng updateUserProfile
+// Đổi mật khẩu
 export const changeUserPassword = async (
   userId: string,
   oldPassword: string,
@@ -57,6 +82,6 @@ export const changeUserPassword = async (
     throw new Error("Current password is incorrect");
   }
 
-  // Update password
+  // Cập nhật mật khẩu mới
   return await api.put(`/users/${userId}`, { ...user, password: newPassword });
 };

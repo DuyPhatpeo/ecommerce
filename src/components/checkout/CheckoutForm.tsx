@@ -146,9 +146,11 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
 
 const Header = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
   <div className="px-6 py-5 flex items-center gap-3 border-b border-gray-200 bg-white">
-    {React.cloneElement(icon as React.ReactElement, {
-      className: "w-6 h-6 text-orange-500",
-    })}
+    {React.isValidElement(icon)
+      ? React.cloneElement(icon as React.ReactElement<any>, {
+          className: "w-6 h-6 text-orange-500",
+        })
+      : icon}
     <h2 className="text-xl font-bold text-gray-800">{title}</h2>
   </div>
 );
@@ -292,7 +294,7 @@ const PaymentSection = ({
         key={method.value}
         value={method.value}
         checked={selected === method.value}
-        onChange={onChange}
+        onChange={(v) => onChange(v as CustomerInfo["paymentMethod"])}
         label={
           <span className="flex items-center gap-2 font-medium text-gray-800">
             {method.icon} {method.label}
@@ -423,7 +425,6 @@ const Modal = ({
     </div>
   </div>
 );
-
 const InfoRow = ({
   icon,
   text,
@@ -440,9 +441,11 @@ const InfoRow = ({
       bold ? "font-semibold text-gray-900" : ""
     } ${multiline ? "mt-1" : ""}`}
   >
-    {React.cloneElement(icon as React.ReactElement, {
-      className: "w-4 h-4 text-orange-500 mt-[1px]",
-    })}
+    {React.isValidElement(icon)
+      ? React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
+          className: "w-4 h-4 text-orange-500 mt-[1px]",
+        })
+      : icon}
     <span>{text}</span>
   </p>
 );
