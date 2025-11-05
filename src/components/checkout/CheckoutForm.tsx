@@ -499,7 +499,7 @@ const Modal = ({
   children: React.ReactNode;
 }) => (
   <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-90"
     onClick={onClose} // Click outside để đóng modal
   >
     <div
