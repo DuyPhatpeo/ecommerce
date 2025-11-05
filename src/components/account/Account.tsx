@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import AccountSidebar from "./AccountSidebar";
@@ -8,12 +8,10 @@ import ProfileTab from "./ProfileTab";
 import OrdersTab from "./OrdersTab";
 import AddressesTab from "./AddressesTab";
 import WishlistTab from "./WishlistTab";
-import { useLogout } from "../../hooks/useLogout";
 
 const Account = () => {
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
-  const { logout } = useLogout();
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,21 +52,6 @@ const Account = () => {
     }
   };
 
-  const getTabTitle = () => {
-    switch (tab) {
-      case "profile":
-        return "My Profile";
-      case "orders":
-        return "Order History";
-      case "addresses":
-        return "Saved Addresses";
-      case "wishlist":
-        return "My Wishlist";
-      default:
-        return "Account";
-    }
-  };
-
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-orange-50 via-white to-blue-50">
       {/* Animated Background Elements */}
@@ -97,7 +80,7 @@ const Account = () => {
               <AccountSidebar
                 activeTab={isMobile && !tab ? "" : tab || "profile"}
                 onTabChange={handleTabChange}
-                onLogout={logout}
+                // ✅ Đã xóa onLogout prop vì đã có trong sidebar
               />
             </motion.div>
           )}

@@ -52,7 +52,7 @@ export const useProfile = () => {
           id: res.data.id,
           fullName: res.data.fullName || "",
           email: res.data.email || "",
-          phone: res.data.phone || "",
+          phone: res.data.phone || "", // ✅ Đã thêm || ""
         };
         setProfile(safeData);
         setEditedProfile(safeData);
@@ -103,9 +103,9 @@ export const useProfile = () => {
 
       const safeData: UserProfile = {
         id: res.data.id,
-        fullName: res.data.fullName,
-        email: res.data.email,
-        phone: res.data.phone,
+        fullName: res.data.fullName || "",
+        email: res.data.email || "",
+        phone: res.data.phone || "",
       };
 
       setProfile(safeData);

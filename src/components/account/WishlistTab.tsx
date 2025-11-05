@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, ShoppingCart, Sparkles } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import { getProductById } from "../../api/productApi";
 import toast from "react-hot-toast";
