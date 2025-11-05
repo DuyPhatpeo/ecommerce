@@ -72,10 +72,10 @@ const Header = () => {
       { path: "/shop", icon: Store, label: "Shop" },
       { path: "#category", icon: LayoutGrid, label: "Category" },
       {
-        path: user ? "/account" : "/login",
+        path: user ? "/account/profile" : "/login",
         icon: User,
         label: "Account",
-        activeCheck: ["/account", "/login"],
+        activeCheck: ["/account", "/account/profile", "/login"],
       },
     ],
     [user]
