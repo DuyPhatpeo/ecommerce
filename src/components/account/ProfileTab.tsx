@@ -71,7 +71,6 @@ const ProfileTab: React.FC = () => {
           placeholder="Enter your email"
           icon={<Mail size={18} />}
           disabled
-          className="mb-6"
         />
 
         {/* Full Name + Phone */}

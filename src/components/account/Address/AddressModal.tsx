@@ -16,6 +16,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onClose,
   onSave,
 }) => {
+  // Use 'street' instead of 'line'
   const [form, setForm] = useState<Partial<Address>>(address || {});
 
   useEffect(() => {
@@ -24,11 +25,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   if (!open) return null;
 
-  const handleChange = (field: keyof Address | "line", value: string) =>
+  const handleChange = (field: keyof Address, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSave = () => {
-    if (!form.recipientName || !form.line || !form.phone) {
+    if (!form.recipientName || !form.street || !form.phone) {
       return toast.error("Please fill all required fields");
     }
     onSave(form);
@@ -57,8 +58,8 @@ const AddressModal: React.FC<AddressModalProps> = ({
           <input
             type="text"
             placeholder="Address (Street, Ward, District, City, Country)"
-            value={form.line || ""}
-            onChange={(e) => handleChange("line", e.target.value)}
+            value={form.street || ""}
+            onChange={(e) => handleChange("street", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
           />
           <input

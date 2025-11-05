@@ -44,21 +44,6 @@ const Account = () => {
     }
   };
 
-  const getTabTitle = (tab?: string) => {
-    switch (tab) {
-      case "profile":
-        return "Profile";
-      case "orders":
-        return "Orders";
-      case "addresses":
-        return "Addresses";
-      case "wishlist":
-        return "Wishlist";
-      default:
-        return "";
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">

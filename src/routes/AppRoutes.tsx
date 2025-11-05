@@ -10,7 +10,6 @@ const OrderSuccessPage = lazy(() => import("../pages/OrderSuccessPage"));
 const ShopPage = lazy(() => import("../pages/ShopPage"));
 const SearchPage = lazy(() => import("../pages/SearchPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
-const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const CategoryPage = lazy(() => import("../pages/CategoryPage"));
 const AccountPage = lazy(() => import("../pages/AccountPage"));
 const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
@@ -48,7 +47,6 @@ const AppRoutes = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/shop/:category" element={<CategoryPage />} />
 

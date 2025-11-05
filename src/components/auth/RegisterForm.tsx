@@ -15,7 +15,7 @@ export default function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5 w-full">
       {/* Full Name & Phone */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
         <InputField
           label="Full Name"
           name="fullName"
@@ -38,34 +38,36 @@ export default function RegisterForm() {
         />
       </div>
 
-      {/* Email & Address - 1 dòng */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <InputField
-          label="Email Address"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="you@example.com"
-          icon={<Mail size={20} />}
-          error={errors.email}
-          className="flex-1"
-        />
-        <InputField
-          label="Address"
-          name="address"
-          type="text"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Your address"
-          icon={<MapPin size={20} />}
-          error={errors.address}
-          className="flex-1"
-        />
+      {/* Email & Address (full width each) */}
+      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
+        <div className="col-span-2">
+          <InputField
+            label="Email Address"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="you@example.com"
+            icon={<Mail size={20} />}
+            error={errors.email}
+          />
+        </div>
+        <div className="col-span-2">
+          <InputField
+            label="Address"
+            name="address"
+            type="text"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Your address"
+            icon={<MapPin size={20} />}
+            error={errors.address}
+          />
+        </div>
       </div>
 
       {/* Password & Confirm Password */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
         <PasswordField
           label="Password"
           name="password"

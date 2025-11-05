@@ -16,8 +16,7 @@ export default function AuthLayout() {
     setIsLogin(!isRegisterPath);
   }, [isRegisterPath]);
 
-  // 🔁 Chuyển hướng khi bấm tab
-  const handleSwitch = (loginMode) => {
+  const handleSwitch = (loginMode: boolean) => {
     setIsLogin(loginMode);
     navigate(loginMode ? "/login" : "/register");
   };
