@@ -16,7 +16,6 @@ const OrdersTab: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch orders from API
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
@@ -47,7 +46,6 @@ const OrdersTab: React.FC = () => {
   const visibleOrders = sortedOrders.slice(0, visibleCount);
   const handleSeeMore = () => setVisibleCount((prev) => prev + 5);
 
-  // Map trạng thái sang màu nền và chữ
   const getStatusColor = (status: string): string => {
     switch (status.toLowerCase()) {
       case "pending":
@@ -85,8 +83,15 @@ const OrdersTab: React.FC = () => {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white border border-orange-100 rounded-3xl shadow-sm p-6 space-y-6">
-        <div className="mb-10 text-center">
+      <div
+        className="max-w-6xl mx-auto 
+                   bg-transparent lg:bg-white 
+                   border-0 lg:border lg:border-orange-100 
+                   rounded-none lg:rounded-3xl 
+                   shadow-none lg:shadow-sm 
+                   p-0 lg:p-6 space-y-6"
+      >
+        <div className="mb-5 text-center">
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
             My Orders
           </h2>
@@ -97,7 +102,7 @@ const OrdersTab: React.FC = () => {
             Loading orders...
           </div>
         ) : visibleOrders.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
             You haven’t placed any orders yet
           </div>
         ) : (
@@ -106,7 +111,7 @@ const OrdersTab: React.FC = () => {
               {visibleOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="p-5 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-md"
+                  className="p-4 sm:p-5 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-md lg:hover:shadow-md lg:border lg:bg-white lg:rounded-2xl"
                 >
                   <div className="flex flex-row flex-wrap items-center justify-between gap-3 mb-3">
                     <div>
@@ -129,7 +134,6 @@ const OrdersTab: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-gray-100">
-                    {/* Bên trái: items + total (trên cùng dòng, total nằm bên phải) */}
                     <div className="flex justify-between items-center w-full sm:w-auto sm:gap-6">
                       <p className="text-sm text-gray-600">
                         {order.items} items
@@ -139,7 +143,6 @@ const OrdersTab: React.FC = () => {
                       </p>
                     </div>
 
-                    {/* Nút bên phải */}
                     <button
                       onClick={() => navigate(`/account/order/${order.id}`)}
                       className="px-5 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95 shadow-sm"

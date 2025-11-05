@@ -54,34 +54,52 @@ export const registerUser = async (data: User) => {
   return await api.post<User>("/users", data);
 };
 
-// Lấy profile
+// Lấy thông tin user theo ID
 export const getUserProfile = async (userId: string) => {
   return await api.get<User>(`/users/${userId}`);
 };
 
-// Cập nhật thông tin user
+/* --------------------------------------------------
+   ✅ Cập nhật user — chỉ cập nhật phần thay đổi
+   → lấy dữ liệu hiện tại → merge → PUT
+-------------------------------------------------- */
 export const updateUserProfile = async (
   userId: string,
   data: Partial<User>
 ) => {
-  return await api.put<User>(`/users/${userId}`, data);
+  // Lấy thông tin user hiện tại
+  const res = await api.get<User>(`/users/${userId}`);
+  const currentUser = res.data;
+
+  // Merge để giữ các giá trị cũ
+  const updatedUser: User = {
+    ...currentUser,
+    ...data,
+  };
+
+  // Cập nhật
+  return await api.put<User>(`/users/${userId}`, updatedUser);
 };
 
-// Đổi mật khẩu
+/* --------------------------------------------------
+   ✅ Đổi mật khẩu — giữ nguyên dữ liệu khác
+-------------------------------------------------- */
 export const changeUserPassword = async (
   userId: string,
   oldPassword: string,
   newPassword: string
 ) => {
-  // Lấy user hiện tại
-  const res = await api.get(`/users/${userId}`);
+  const res = await api.get<User>(`/users/${userId}`);
   const user = res.data;
 
-  // Kiểm tra mật khẩu cũ
   if (user.password !== oldPassword) {
-    throw new Error("Current password is incorrect");
+    throw new Error("Mật khẩu hiện tại không chính xác");
   }
 
-  // Cập nhật mật khẩu mới
-  return await api.put(`/users/${userId}`, { ...user, password: newPassword });
+  const updatedUser: User = {
+    ...user,
+    password: newPassword,
+  };
+
+  return await api.put<User>(`/users/${userId}`, updatedUser);
 };

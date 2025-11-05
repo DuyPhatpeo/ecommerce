@@ -30,7 +30,6 @@ const WishlistTab: React.FC = () => {
         const promises = wishlistIds.map((id) => getProductById(id));
         const res = await Promise.all(promises);
 
-        // 🔹 Dùng ảnh đầu tiên nếu có
         const productsWithFirstImage = res.map((p: Product) => ({
           ...p,
           img: p.images?.[0] || p.img,
@@ -52,9 +51,16 @@ const WishlistTab: React.FC = () => {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white border border-orange-100 rounded-3xl shadow-sm p-6 space-y-6">
+      <div
+        className="max-w-6xl mx-auto 
+                   bg-transparent lg:bg-white 
+                   border-0 lg:border lg:border-orange-100 
+                   rounded-none lg:rounded-3xl 
+                   shadow-none lg:shadow-sm 
+                   p-0 lg:p-6 space-y-6"
+      >
         {/* Header */}
-        <div className="mb-10 text-center">
+        <div className="mb-5 text-center">
           <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
             My Wishlist
           </h2>
@@ -64,7 +70,7 @@ const WishlistTab: React.FC = () => {
         {loading ? (
           <div className="py-12 text-center text-gray-500">Loading...</div>
         ) : products.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
             Your wishlist is empty. Start exploring some products ✨
           </div>
         ) : (
