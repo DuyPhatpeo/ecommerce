@@ -300,6 +300,57 @@
       "total": 27225000,
       "status": "pending",
       "createdAt": "2025-11-04T06:56:06.043Z"
+    },
+    {
+      "id": "3ac7",
+      "customer": {
+        "recipientName": "Trần Duy Phát",
+        "phone": "0866482834",
+        "address": "123 ABC, ABC, Nha Trang, Khánh Hoà, Việt Nam",
+        "note": "",
+        "paymentMethod": "banking"
+      },
+      "items": [
+        {
+          "productId": "222",
+          "quantity": 2,
+          "price": 4500000
+        },
+        {
+          "productId": "111",
+          "quantity": 3,
+          "price": 5250000
+        }
+      ],
+      "subtotal": 24750000,
+      "tax": 2475000,
+      "shipping": 0,
+      "total": 27225000,
+      "status": "banking",
+      "createdAt": "2025-11-05T01:54:44.513Z"
+    },
+    {
+      "id": "1a30",
+      "customer": {
+        "recipientName": "Trần Duy Phát",
+        "phone": "0866482834",
+        "address": "123 ABC, ABC, Nha Trang, Khánh Hoà, Việt Nam",
+        "note": "",
+        "paymentMethod": "momo"
+      },
+      "items": [
+        {
+          "productId": "222",
+          "quantity": 2,
+          "price": 4500000
+        }
+      ],
+      "subtotal": 9000000,
+      "tax": 900000,
+      "shipping": 0,
+      "total": 9900000,
+      "status": "paid",
+      "createdAt": "2025-11-05T01:54:56.394Z"
     }
   ],
   "cart": [

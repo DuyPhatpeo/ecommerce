@@ -51,6 +51,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
+  /* ---------- Tính tổng tiền ---------- */
   const subtotal = useMemo(() => {
     if (state.subtotal !== undefined) return state.subtotal;
     return products.reduce((sum, p) => {
@@ -64,7 +65,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  /* ---------- Load products ---------- */
+  /* ---------- Load danh sách sản phẩm ---------- */
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -103,7 +104,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     fetchProducts();
   }, [state, navigate]);
 
-  /* ---------- Place order ---------- */
+  /* ---------- Xử lý đặt hàng ---------- */
   const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) {
       toast.error("Vui lòng nhập thông tin giao hàng!");
@@ -120,6 +121,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       setPlacingOrder(true);
       const loadingToast = toast.loading("Đang xử lý đơn hàng...");
 
+      // Lấy thông tin sản phẩm mới nhất
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
@@ -132,11 +134,25 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         })
       );
 
-      const status =
-        paymentMethod === "banking" || paymentMethod === "momo"
-          ? "paid"
-          : "pending";
+      // ✅ Xác định trạng thái đơn hàng dựa theo phương thức thanh toán
+      let status: string;
 
+      switch (paymentMethod) {
+        case "cod":
+          status = "pending"; // Thanh toán khi nhận hàng
+          break;
+        case "banking":
+          status = "banking"; // Đang chờ thanh toán qua ngân hàng
+          break;
+        case "momo":
+          status = "paid"; // Đã thanh toán thành công qua Momo
+          break;
+        default:
+          status = "pending";
+          break;
+      }
+
+      // Dữ liệu đơn hàng gửi lên API
       const orderData = {
         customer: customerInfo,
         items: updatedProducts.map((p) => ({
@@ -153,8 +169,10 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       };
 
       const res = await createOrder(orderData);
+
       toast.dismiss(loadingToast);
       toast.success("Đặt hàng thành công!");
+
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: res }, replace: true });
     } catch (error) {
@@ -166,6 +184,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     }
   }, [customerInfo, products, subtotal, tax, shipping, total, navigate]);
 
+  /* ---------- Trả về các giá trị ---------- */
   return {
     products,
     loading,
