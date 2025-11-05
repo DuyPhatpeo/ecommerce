@@ -7,12 +7,14 @@ import {
   ShieldCheck,
   ShoppingCart,
 } from "lucide-react";
+import type { CustomerInfo } from "./CheckoutForm";
 
 interface Props {
   subtotal: number;
   tax: number;
   shipping: number;
   total: number;
+  customerInfo?: CustomerInfo;
   onPlaceOrder: () => void;
 }
 

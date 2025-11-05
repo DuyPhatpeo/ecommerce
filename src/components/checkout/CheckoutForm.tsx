@@ -16,39 +16,52 @@ import {
 import Radio from "../ui/Radio";
 import { useAddresses } from "../../hooks/useAddresses";
 
+/* =====================
+   TYPES
+===================== */
 export interface CustomerInfo {
   recipientName: string;
   phone: string;
   address: string;
   note: string;
-  paymentMethod: string;
+  paymentMethod: "cod" | "banking" | "momo";
 }
 
-export default function CheckoutForm({
-  onChange,
-}: {
+interface CheckoutFormProps {
   onChange: (info: CustomerInfo) => void;
-}) {
+}
+
+interface PaymentMethod {
+  value: "cod" | "banking" | "momo";
+  label: string;
+  icon: React.ReactNode;
+}
+
+/* =====================
+   MAIN COMPONENT
+===================== */
+export default function CheckoutForm({ onChange }: CheckoutFormProps) {
   const { addressesFormatted, handleSave, handleDelete } = useAddresses();
 
   const [selectedId, setSelectedId] = useState<string>("");
   const [note, setNote] = useState<string>("");
-  const [paymentMethod, setPaymentMethod] = useState<string>("cod");
+  const [paymentMethod, setPaymentMethod] =
+    useState<CustomerInfo["paymentMethod"]>("cod");
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
 
-  // Chọn mặc định address khi load
+  // 🟠 Chọn mặc định address khi load
   useEffect(() => {
     if (!selectedId && addressesFormatted.length > 0) {
       const defaultAddr =
         addressesFormatted.find((a) => a.isDefault) || addressesFormatted[0];
-      setSelectedId(defaultAddr.id);
+      setSelectedId(defaultAddr?.id ?? "");
     }
   }, [addressesFormatted, selectedId]);
 
   const selectedAddress = addressesFormatted.find((a) => a.id === selectedId);
 
-  // Đồng bộ CustomerInfo lên parent
+  // 🟢 Đồng bộ CustomerInfo lên parent
   useEffect(() => {
     if (!selectedAddress) return;
     onChange({
@@ -60,7 +73,7 @@ export default function CheckoutForm({
     });
   }, [selectedAddress?.id, note, paymentMethod, onChange]);
 
-  const paymentMethods = [
+  const paymentMethods: PaymentMethod[] = [
     {
       value: "cod",
       label: "Cash on Delivery",
@@ -81,6 +94,7 @@ export default function CheckoutForm({
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
       <Header icon={<MapPin />} title="Shipping Information" />
+
       <AddressList
         addresses={addressesFormatted}
         selectedId={selectedId}
@@ -89,6 +103,7 @@ export default function CheckoutForm({
         onEdit={setEditingAddress}
         onAdd={() => setShowAddForm(true)}
       />
+
       {selectedAddress && <DeliveryNote note={note} setNote={setNote} />}
       {selectedAddress && (
         <PaymentSection
@@ -97,6 +112,7 @@ export default function CheckoutForm({
           onChange={setPaymentMethod}
         />
       )}
+
       {showAddForm && (
         <AddAddressModal
           onClose={() => setShowAddForm(false)}
@@ -109,6 +125,7 @@ export default function CheckoutForm({
           }}
         />
       )}
+
       {editingAddress && (
         <AddAddressModal
           address={editingAddress}
@@ -123,7 +140,9 @@ export default function CheckoutForm({
   );
 }
 
-/* -------- Subcomponents -------- */
+/* =====================
+   SUBCOMPONENTS
+===================== */
 
 const Header = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
   <div className="px-6 py-5 flex items-center gap-3 border-b border-gray-200 bg-white">
@@ -260,9 +279,9 @@ const PaymentSection = ({
   selected,
   onChange,
 }: {
-  paymentMethods: { value: string; label: string; icon: React.ReactNode }[];
+  paymentMethods: PaymentMethod[];
   selected: string;
-  onChange: (v: string) => void;
+  onChange: (v: CustomerInfo["paymentMethod"]) => void;
 }) => (
   <Section
     icon={<CreditCard className="w-5 h-5 text-orange-500" />}
@@ -361,8 +380,20 @@ const AddAddressModal = ({
   );
 };
 
-/* Common Components */
-const Section = ({ icon, title, subtitle, children }: any) => (
+/* =====================
+   COMMON COMPONENTS
+===================== */
+const Section = ({
+  icon,
+  title,
+  subtitle,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) => (
   <div className="border-t border-gray-200 bg-white">
     <div className="px-6 py-4 flex items-center gap-3 border-b border-gray-200 bg-white">
       {icon}
@@ -393,7 +424,17 @@ const Modal = ({
   </div>
 );
 
-const InfoRow = ({ icon, text, bold, multiline }: any) => (
+const InfoRow = ({
+  icon,
+  text,
+  bold,
+  multiline,
+}: {
+  icon: React.ReactNode;
+  text: string;
+  bold?: boolean;
+  multiline?: boolean;
+}) => (
   <p
     className={`text-sm text-gray-700 flex items-start gap-2 ${
       bold ? "font-semibold text-gray-900" : ""

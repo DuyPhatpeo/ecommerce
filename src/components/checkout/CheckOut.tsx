@@ -25,10 +25,13 @@ const CheckOut: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Form & Product List */}
           <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
             <CheckoutProductList products={products} loading={loading} />
           </div>
+
+          {/* Summary */}
           <div className="lg:col-span-1">
             <CheckoutSummary
               subtotal={subtotal}
@@ -37,14 +40,16 @@ const CheckOut: React.FC = () => {
               total={total}
               customerInfo={
                 customerInfo ?? {
-                  fullName: "",
+                  recipientName: "",
                   phone: "",
                   address: "",
+                  note: "",
                   paymentMethod: "cod",
                 }
               }
               onPlaceOrder={handlePlaceOrder}
             />
+
             {placingOrder && (
               <p className="mt-3 text-center text-orange-500 animate-pulse">
                 Đang xử lý đơn hàng...

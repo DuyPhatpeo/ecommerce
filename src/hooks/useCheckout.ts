@@ -1,4 +1,3 @@
-// hooks/useCheckout.ts
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -6,8 +5,12 @@ import { getCartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 import { createOrder } from "../api/orderApi";
 
+/* =====================
+   TYPES
+===================== */
 interface Product {
   id: string;
+  title: string;
   regularPrice?: number;
   salePrice?: number;
   images?: string[];
@@ -23,18 +26,21 @@ interface CheckoutData {
   quantity?: number;
 }
 
-interface CustomerInfo {
+export interface CustomerInfo {
   recipientName: string;
   phone: string;
   address: string;
-  note?: string;
-  paymentMethod?: "cod" | "online";
+  note: string;
+  paymentMethod: "cod" | "banking" | "momo";
 }
 
 interface UseCheckoutProps {
   state: CheckoutData;
 }
 
+/* =====================
+   HOOK
+===================== */
 export const useCheckout = ({ state }: UseCheckoutProps) => {
   const navigate = useNavigate();
 
@@ -58,7 +64,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  // ---------- Load products ----------
+  /* ---------- Load products ---------- */
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -97,7 +103,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     fetchProducts();
   }, [state, navigate]);
 
-  // ---------- Place order ----------
+  /* ---------- Place order ---------- */
   const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) {
       toast.error("Vui lòng nhập thông tin giao hàng!");
@@ -114,7 +120,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       setPlacingOrder(true);
       const loadingToast = toast.loading("Đang xử lý đơn hàng...");
 
-      // Cập nhật giá mới nhất
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
@@ -127,7 +132,10 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         })
       );
 
-      const status = paymentMethod === "online" ? "paid" : "pending";
+      const status =
+        paymentMethod === "banking" || paymentMethod === "momo"
+          ? "paid"
+          : "pending";
 
       const orderData = {
         customer: customerInfo,
