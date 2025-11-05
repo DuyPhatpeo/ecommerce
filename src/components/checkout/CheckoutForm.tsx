@@ -16,7 +16,7 @@ import {
 import Radio from "../ui/Radio";
 import { useAddresses } from "../../hooks/useAddresses";
 
-interface CustomerInfo {
+export interface CustomerInfo {
   recipientName: string;
   phone: string;
   address: string;
@@ -31,14 +31,15 @@ export default function CheckoutForm({
 }) {
   const { addressesFormatted, handleSave, handleDelete } = useAddresses();
 
-  const [selectedId, setSelectedId] = useState("");
-  const [note, setNote] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cod");
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [note, setNote] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("cod");
+  const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
 
+  // Chọn mặc định address khi load
   useEffect(() => {
-    if (!selectedId && addressesFormatted.length) {
+    if (!selectedId && addressesFormatted.length > 0) {
       const defaultAddr =
         addressesFormatted.find((a) => a.isDefault) || addressesFormatted[0];
       setSelectedId(defaultAddr.id);
@@ -46,17 +47,18 @@ export default function CheckoutForm({
   }, [addressesFormatted, selectedId]);
 
   const selectedAddress = addressesFormatted.find((a) => a.id === selectedId);
+
+  // Đồng bộ CustomerInfo lên parent
   useEffect(() => {
-    if (selectedAddress) {
-      onChange({
-        recipientName: selectedAddress.recipientName,
-        phone: selectedAddress.phone,
-        address: selectedAddress.line,
-        note,
-        paymentMethod,
-      });
-    }
-  }, [selectedAddress, note, paymentMethod, onChange]);
+    if (!selectedAddress) return;
+    onChange({
+      recipientName: selectedAddress.recipientName,
+      phone: selectedAddress.phone,
+      address: selectedAddress.line,
+      note,
+      paymentMethod,
+    });
+  }, [selectedAddress?.id, note, paymentMethod, onChange]);
 
   const paymentMethods = [
     {
@@ -84,11 +86,11 @@ export default function CheckoutForm({
         selectedId={selectedId}
         onSelect={setSelectedId}
         onDelete={handleDelete}
-        onEdit={(addr) => setEditingAddress(addr)}
+        onEdit={setEditingAddress}
         onAdd={() => setShowAddForm(true)}
       />
-      {selectedId && <DeliveryNote note={note} setNote={setNote} />}
-      {selectedId && (
+      {selectedAddress && <DeliveryNote note={note} setNote={setNote} />}
+      {selectedAddress && (
         <PaymentSection
           paymentMethods={paymentMethods}
           selected={paymentMethod}
@@ -112,10 +114,7 @@ export default function CheckoutForm({
           address={editingAddress}
           onClose={() => setEditingAddress(null)}
           onSave={async (data) => {
-            await handleSave({
-              ...data,
-              id: editingAddress.id,
-            });
+            await handleSave({ ...data, id: editingAddress.id });
             setEditingAddress(null);
           }}
         />
@@ -217,15 +216,13 @@ const AddressItem = ({
         onClick={onEdit}
         className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 transition"
       >
-        <Edit size={14} />
-        Edit
+        <Edit size={14} /> Edit
       </button>
       <button
         onClick={onDelete}
         className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition"
       >
-        <Trash2 size={14} />
-        Delete
+        <Trash2 size={14} /> Delete
       </button>
     </div>
   </div>
@@ -279,8 +276,7 @@ const PaymentSection = ({
         onChange={onChange}
         label={
           <span className="flex items-center gap-2 font-medium text-gray-800">
-            {method.icon}
-            {method.label}
+            {method.icon} {method.label}
           </span>
         }
         className="mb-2"
@@ -308,9 +304,8 @@ const AddAddressModal = ({
     phone: address?.phone || "",
   });
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
-  };
 
   const handleSubmit = () => {
     if (!form.recipientName.trim() || !form.line.trim() || !form.phone.trim()) {

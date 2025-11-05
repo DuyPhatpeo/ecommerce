@@ -1,3 +1,4 @@
+// hooks/useCheckout.ts
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -57,7 +58,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  /* ------------------ Lấy dữ liệu sản phẩm ------------------ */
+  // ---------- Load products ----------
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -96,7 +97,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     fetchProducts();
   }, [state, navigate]);
 
-  /* ------------------ Xử lý đặt hàng ------------------ */
+  // ---------- Place order ----------
   const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) {
       toast.error("Vui lòng nhập thông tin giao hàng!");
@@ -128,7 +129,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
 
       const status = paymentMethod === "online" ? "paid" : "pending";
 
-      // 🔹 Dữ liệu gửi đi chỉ gồm productId, quantity, price
       const orderData = {
         customer: customerInfo,
         items: updatedProducts.map((p) => ({
@@ -147,7 +147,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       const res = await createOrder(orderData);
       toast.dismiss(loadingToast);
       toast.success("Đặt hàng thành công!");
-
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: res }, replace: true });
     } catch (error) {
