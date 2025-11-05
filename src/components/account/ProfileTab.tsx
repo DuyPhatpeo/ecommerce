@@ -257,7 +257,7 @@ const ProfileTab: React.FC = () => {
                   />
 
                   <Button
-                    label="Update Password"
+                    label="Update"
                     icon={<Save size={16} />}
                     onClick={handlePasswordUpdate}
                     className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"

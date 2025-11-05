@@ -12,6 +12,7 @@ import {
   X,
   Trash2,
   Edit,
+  ChevronDown, // Icon cho nút mở modal
 } from "lucide-react";
 import Radio from "../ui/Radio";
 import { useAddresses } from "../../hooks/useAddresses";
@@ -49,6 +50,9 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     useState<CustomerInfo["paymentMethod"]>("cod");
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
+  // State mới cho modal chọn địa chỉ
+  const [showSelectAddressModal, setShowSelectAddressModal] =
+    useState<boolean>(false);
 
   // 🟠 Chọn mặc định address khi load
   useEffect(() => {
@@ -95,14 +99,45 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
       <Header icon={<MapPin />} title="Shipping Information" />
 
-      <AddressList
-        addresses={addressesFormatted}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        onDelete={handleDelete}
-        onEdit={setEditingAddress}
-        onAdd={() => setShowAddForm(true)}
-      />
+      {/* Phần hiển thị địa chỉ đã chọn và nút mở modal */}
+      <div className="p-6">
+        {selectedAddress ? (
+          <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
+            <div className="flex justify-between items-start gap-4">
+              <div className="flex-1 space-y-1.5">
+                <InfoRow
+                  icon={<User />}
+                  text={selectedAddress.recipientName}
+                  bold
+                />
+                <InfoRow icon={<Phone />} text={selectedAddress.phone} />
+                <InfoRow
+                  icon={<Home />}
+                  text={selectedAddress.line}
+                  multiline
+                />
+              </div>
+              {selectedAddress.isDefault && (
+                <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full">
+                  Default
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 italic py-4">
+            No address selected
+          </p>
+        )}
+        <div className="pt-2 flex justify-end">
+          <button
+            onClick={() => setShowSelectAddressModal(true)}
+            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
+          >
+            <ChevronDown size={16} /> Select Address
+          </button>
+        </div>
+      </div>
 
       {selectedAddress && <DeliveryNote note={note} setNote={setNote} />}
       {selectedAddress && (
@@ -110,6 +145,22 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
           paymentMethods={paymentMethods}
           selected={paymentMethod}
           onChange={setPaymentMethod}
+        />
+      )}
+
+      {/* Modal chọn địa chỉ */}
+      {showSelectAddressModal && (
+        <SelectAddressModal
+          addresses={addressesFormatted}
+          selectedId={selectedId}
+          onSelect={(id) => {
+            setSelectedId(id);
+            setShowSelectAddressModal(false); // Đóng modal sau khi chọn
+          }}
+          onDelete={handleDelete}
+          onEdit={setEditingAddress}
+          onAdd={() => setShowAddForm(true)}
+          onClose={() => setShowSelectAddressModal(false)}
         />
       )}
 
@@ -144,17 +195,40 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
    SUBCOMPONENTS
 ===================== */
 
-const Header = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
-  <div className="px-6 py-5 flex items-center gap-3 border-b border-gray-200 bg-white">
-    {React.isValidElement(icon)
-      ? React.cloneElement(icon as React.ReactElement<any>, {
-          className: "w-6 h-6 text-orange-500",
-        })
-      : icon}
-    <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-  </div>
+// Component mới: Modal chọn địa chỉ
+const SelectAddressModal = ({
+  addresses,
+  selectedId,
+  onSelect,
+  onDelete,
+  onEdit,
+  onAdd,
+  onClose,
+}: {
+  addresses: any[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (address: any) => void;
+  onAdd: () => void;
+  onClose: () => void;
+}) => (
+  <Modal onClose={onClose}>
+    <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2 border-b border-orange-100 pb-3">
+      <MapPin className="text-orange-500" /> Select Address
+    </div>
+    <AddressList
+      addresses={addresses}
+      selectedId={selectedId}
+      onSelect={onSelect}
+      onDelete={onDelete}
+      onEdit={onEdit}
+      onAdd={onAdd}
+    />
+  </Modal>
 );
 
+// Giữ nguyên AddressList (để tái sử dụng trong modal)
 const AddressList = ({
   addresses,
   selectedId,
@@ -170,7 +244,7 @@ const AddressList = ({
   onEdit: (address: any) => void;
   onAdd: () => void;
 }) => (
-  <div className="p-6 space-y-4">
+  <div className="space-y-4">
     {addresses.length ? (
       addresses.map((addr) => (
         <AddressItem
@@ -195,6 +269,17 @@ const AddressList = ({
         <Plus size={16} /> Add New Address
       </button>
     </div>
+  </div>
+);
+
+const Header = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+  <div className="px-6 py-5 flex items-center gap-3 border-b border-gray-200 bg-white">
+    {React.isValidElement(icon)
+      ? React.cloneElement(icon as React.ReactElement<any>, {
+          className: "w-6 h-6 text-orange-500",
+        })
+      : icon}
+    <h2 className="text-xl font-bold text-gray-800">{title}</h2>
   </div>
 );
 
@@ -413,8 +498,14 @@ const Modal = ({
   onClose: () => void;
   children: React.ReactNode;
 }) => (
-  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200">
+  <div
+    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+    onClick={onClose} // Click outside để đóng modal
+  >
+    <div
+      className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200"
+      onClick={(e) => e.stopPropagation()} // Ngăn click trên nội dung modal lan ra overlay
+    >
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
