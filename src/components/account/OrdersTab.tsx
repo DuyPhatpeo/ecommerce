@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Package,
+  Calendar,
+  DollarSign,
+  ShoppingBag,
+  ChevronRight,
+} from "lucide-react";
 import { getAllOrders } from "../../api/orderApi";
 
 interface Order {
@@ -49,19 +56,19 @@ const OrdersTab: React.FC = () => {
   const getStatusColor = (status: string): string => {
     switch (status.toLowerCase()) {
       case "pending":
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-100 text-gray-700 border-gray-300";
       case "processing":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-yellow-50 text-yellow-700 border-yellow-300";
       case "shipping":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-50 text-blue-700 border-blue-300";
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-green-50 text-green-700 border-green-300";
       case "cancelled":
-        return "bg-red-100 text-red-700";
+        return "bg-red-50 text-red-700 border-red-300";
       case "refunded":
-        return "bg-purple-100 text-purple-700";
+        return "bg-purple-50 text-purple-700 border-purple-300";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-100 text-gray-700 border-gray-300";
     }
   };
 
@@ -82,49 +89,95 @@ const OrdersTab: React.FC = () => {
     });
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8">
-      <div
-        className="max-w-6xl mx-auto 
-                   bg-transparent lg:bg-white 
-                   border-0 lg:border lg:border-orange-100 
-                   rounded-none lg:rounded-3xl 
-                   shadow-none lg:shadow-sm 
-                   p-0 lg:p-6 space-y-6"
-      >
-        <div className="mb-5 text-center">
-          <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
-            My Orders
-          </h2>
+    <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+
+      <div className="relative p-6 sm:p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
+              <Package className="text-white" size={20} />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">My Orders</h2>
+              <p className="text-sm text-gray-600">
+                Track and manage your orders
+              </p>
+            </div>
+          </div>
         </div>
 
+        {/* Content */}
         {loading ? (
-          <div className="py-12 text-center text-gray-500">
-            Loading orders...
+          <div className="py-16 text-center">
+            <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+            <p className="mt-4 text-sm font-medium text-gray-600">
+              Loading your orders...
+            </p>
           </div>
         ) : visibleOrders.length === 0 ? (
-          <div className="py-12 text-center text-gray-500 border border-dashed border-orange-200 rounded-2xl">
-            You haven’t placed any orders yet
+          <div className="py-16 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
+              <ShoppingBag className="text-orange-600" size={32} />
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-gray-800">
+              No Orders Yet
+            </h3>
+            <p className="mb-6 text-sm text-gray-600">
+              You haven't placed any orders yet.
+              <br />
+              Start shopping now! 🛍️
+            </p>
+            <button
+              onClick={() => navigate("/products")}
+              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+            >
+              Browse Products
+            </button>
           </div>
         ) : (
           <>
-            <div className="space-y-5">
+            <div className="space-y-4">
               {visibleOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="p-4 sm:p-5 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:shadow-md lg:hover:shadow-md lg:border lg:bg-white lg:rounded-2xl"
+                  className="relative p-5 transition-all duration-300 border border-gray-200 rounded-2xl hover:border-orange-300 hover:shadow-lg group"
                 >
-                  <div className="flex flex-row flex-wrap items-center justify-between gap-3 mb-3">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        Order #{order.id}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {formatDate(order.createdAt)}
-                      </p>
+                  {/* Header với Status riêng desktop, cùng dòng mobile */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex-shrink-0">
+                        <Package className="text-orange-600" size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 lg:block">
+                          <h3 className="text-base font-bold text-gray-800 truncate">
+                            Order #{order.id}
+                          </h3>
+                          {/* Status mobile - cùng dòng với ID */}
+                          <span
+                            className={`lg:hidden px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
+                              order.status
+                            )}`}
+                          >
+                            {order.status.charAt(0).toUpperCase() +
+                              order.status.slice(1)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
+                          <Calendar size={14} className="flex-shrink-0" />
+                          <span className="truncate">
+                            {formatDate(order.createdAt)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
+                    {/* Status desktop - riêng bên phải */}
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium text-center whitespace-nowrap ${getStatusColor(
+                      className={`hidden lg:inline-flex px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
                         order.status
                       )}`}
                     >
@@ -133,21 +186,35 @@ const OrdersTab: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-gray-100">
-                    <div className="flex justify-between items-center w-full sm:w-auto sm:gap-6">
-                      <p className="text-sm text-gray-600">
-                        {order.items} items
-                      </p>
-                      <p className="text-lg font-semibold text-gray-800">
-                        {formatCurrency(order.total)}
-                      </p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-4 sm:gap-6">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <ShoppingBag
+                          size={16}
+                          className="text-blue-500 flex-shrink-0"
+                        />
+                        <span className="font-medium">{order.items} items</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-base font-bold text-gray-800">
+                        <DollarSign
+                          size={16}
+                          className="text-green-500 flex-shrink-0"
+                        />
+                        <span className="truncate">
+                          {formatCurrency(order.total)}
+                        </span>
+                      </div>
                     </div>
 
                     <button
                       onClick={() => navigate(`/account/order/${order.id}`)}
-                      className="px-5 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95 shadow-sm"
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 group-hover:gap-3 w-full sm:w-auto"
                     >
-                      View Details
+                      <span>View Details</span>
+                      <ChevronRight
+                        size={18}
+                        className="transition-transform duration-300"
+                      />
                     </button>
                   </div>
                 </div>
@@ -155,12 +222,13 @@ const OrdersTab: React.FC = () => {
             </div>
 
             {visibleCount < sortedOrders.length && (
-              <div className="text-center mt-6">
+              <div className="mt-6 text-center">
                 <button
                   onClick={handleSeeMore}
-                  className="px-6 py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-200 active:scale-95"
+                  className="px-6 py-3 font-semibold text-orange-600 transition-all duration-300 border-2 border-orange-500 rounded-xl hover:bg-orange-500 hover:text-white"
                 >
-                  See More
+                  Load More Orders ({sortedOrders.length - visibleCount}{" "}
+                  remaining)
                 </button>
               </div>
             )}

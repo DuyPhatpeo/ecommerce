@@ -6,9 +6,11 @@ import {
   Heart,
   LogOut,
   ChevronRight,
+  Settings,
+  Bell,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getUserProfile } from "../../api/authApi"; // ✅ import API lấy thông tin user
+import { getUserProfile } from "../../api/authApi";
 
 interface Tab {
   id: string;
@@ -38,7 +40,6 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Lấy userId và fetch thông tin user từ API
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem("userId");
@@ -60,7 +61,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
     };
 
     fetchUser();
-  }, []); // chạy 1 lần khi mount
+  }, []);
 
   const tabs: Tab[] = [
     { id: "profile", label: "Profile", icon: User },
@@ -87,81 +88,135 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
   if (loading) {
     return (
-      <div className="sticky top-20 p-6 text-center text-gray-500 border border-gray-200 rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm">
-        Loading user info...
+      <div className="sticky top-20">
+        <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-60" />
+          <div className="relative p-8 text-center">
+            <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+            <p className="mt-4 text-sm font-medium text-gray-600">
+              Loading your profile...
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="sticky top-20 p-6 text-center text-gray-500 border border-gray-200 rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm">
-        <p className="mb-3">You are not logged in.</p>
-        <button
-          onClick={() => navigate("/login")}
-          className="text-orange-600 font-semibold hover:underline"
-        >
-          Go to Login
-        </button>
+      <div className="sticky top-20">
+        <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-red-50 opacity-60" />
+          <div className="relative p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
+              <User className="text-orange-600" size={28} />
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-gray-800">
+              Welcome Back!
+            </h3>
+            <p className="mb-6 text-sm text-gray-600">
+              Please login to access your account
+            </p>
+            <button
+              onClick={() => navigate("/login")}
+              className="w-full py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+            >
+              Login Now
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="sticky top-25 p-6 border border-gray-200 shadow-md rounded-2xl bg-white/70 backdrop-blur-sm">
-      {/* 🔹 Profile Info */}
-      <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-200">
-        <div className="flex items-center justify-center w-20 h-20 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-br from-orange-500 to-orange-600">
-          {getInitials(user.fullName)}
-        </div>
-        <h3 className="mt-3 text-lg font-semibold text-gray-800">
-          {user.fullName}
-        </h3>
-        <p className="text-sm text-gray-500">{user.email}</p>
-      </div>
+    <div className="sticky top-6">
+      <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
 
-      {/* 🔹 Tabs */}
-      <nav className="space-y-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
+        <div className="relative p-6">
+          {/* Profile Header */}
+          <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-100">
+            <div className="relative group">
+              <div className="absolute inset-0 transition-all duration-300 rounded-full opacity-0 bg-gradient-to-r from-orange-400 to-orange-600 blur-xl group-hover:opacity-30" />
+              <div className="relative flex items-center justify-center w-24 h-24 text-2xl font-bold text-white transition-transform duration-300 shadow-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl group-hover:scale-105 shadow-orange-200">
+                {getInitials(user.fullName)}
+              </div>
+              <div className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 bg-green-500 border-4 border-white rounded-full shadow-lg">
+                <div className="w-2 h-2 bg-white rounded-full" />
+              </div>
+            </div>
+            <h3 className="mt-4 text-xl font-bold text-gray-800">
+              {user.fullName}
+            </h3>
+            <p className="text-sm font-medium text-gray-500">{user.email}</p>
+          </div>
+
+          {/* Navigation Tabs */}
+          <nav className="space-y-1.5">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className={`group relative w-full flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold transition-all duration-300 overflow-hidden ${
+                    isActive
+                      ? "text-white shadow-lg shadow-orange-200"
+                      : "text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent hover:text-orange-600"
+                  }`}
+                >
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600" />
+                  )}
+                  <div className="relative flex items-center gap-3">
+                    <div
+                      className={`p-2 rounded-lg transition-all duration-300 ${
+                        isActive
+                          ? "bg-white/20"
+                          : "bg-gray-100 group-hover:bg-orange-100"
+                      }`}
+                    >
+                      <Icon size={20} />
+                    </div>
+                    <span>{tab.label}</span>
+                  </div>
+                  <ChevronRight
+                    size={20}
+                    className={`relative transition-all duration-300 ${
+                      isActive
+                        ? "text-white translate-x-1"
+                        : "text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+
+            <div className="my-4 border-t border-gray-100" />
+
+            {/* Logout Button */}
             <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={`group w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                isActive
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-              }`}
+              onClick={handleLogout}
+              className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
             >
-              <div className="flex items-center gap-3">
-                <Icon size={20} />
-                <span>{tab.label}</span>
+              <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
+              <div className="relative flex items-center gap-3">
+                <div className="p-2 transition-all duration-300 bg-red-100 rounded-lg group-hover:bg-white/20">
+                  <LogOut size={20} />
+                </div>
+                <span>Logout</span>
               </div>
               <ChevronRight
-                size={18}
-                className={`${
-                  isActive
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-orange-500"
-                } transition-colors duration-200`}
+                size={20}
+                className="relative transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1"
               />
             </button>
-          );
-        })}
-
-        <div className="my-4 border-t border-gray-200" />
-
-        {/* 🔹 Logout */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-full gap-3 px-4 py-3 text-red-600 transition-colors rounded-lg hover:bg-red-50"
-        >
-          <LogOut size={20} />
-          <span className="font-medium">Logout</span>
-        </button>
-      </nav>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 };
