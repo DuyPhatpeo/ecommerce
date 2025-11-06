@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Plus,
-  MapPin,
-  Edit2,
-  Check,
-  Trash2,
-  User,
-  Phone,
-  X,
-} from "lucide-react";
+import { Plus, MapPin, Edit2, Trash2, User, Phone, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAddresses } from "../../hooks/useAddresses";
 import type { Address } from "../../api/addressApi";
@@ -30,70 +21,82 @@ const AddressCard: React.FC<AddressCardProps> = ({
   onSetDefault,
 }) => (
   <div
-    className={`relative overflow-hidden p-5 border rounded-2xl transition-all duration-300 ${
+    className={`relative overflow-hidden rounded-3xl border backdrop-blur-sm transition-all duration-300 ${
       address.isDefault
-        ? "border-green-400 bg-green-50/30 shadow-lg"
-        : "border-gray-200 hover:border-orange-300 hover:shadow-md"
+        ? "bg-gradient-to-br from-green-50 via-white to-green-100 border-green-300 shadow-lg shadow-green-100/50"
+        : "bg-gradient-to-br from-white to-orange-50 border-gray-200 hover:border-orange-200 hover:shadow-md"
     }`}
   >
-    {/* Default Badge */}
-    {address.isDefault && (
-      <div className="absolute top-0 right-0">
-        <div className="relative">
-          <div className="absolute inset-0 bg-green-400 blur opacity-40" />
-          <span className="relative inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-bl-2xl rounded-tr-2xl shadow-lg">
-            <Check size={14} /> DEFAULT
+    <div className="p-6 relative">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4 relative">
+        {/* Info */}
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-orange-100 to-orange-200 shadow-sm">
+            <User className="text-orange-600" size={20} />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">
+              {address.recipientName}
+            </h3>
+            <p className="text-sm text-gray-500 mt-0.5">{address.phone}</p>
+          </div>
+        </div>
+
+        {/* Toggle */}
+        <div
+          className={`flex items-center gap-2 sm:static absolute top-0 right-0`}
+        >
+          <button
+            onClick={() => {
+              if (!address.isDefault) onSetDefault(address.id!);
+            }}
+            className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
+              address.isDefault ? "bg-green-500" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform duration-300 ${
+                address.isDefault ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+          <span
+            className={`text-xs font-medium ${
+              address.isDefault ? "text-green-700" : "text-gray-500"
+            } select-none`}
+          >
+            Default
           </span>
         </div>
       </div>
-    )}
 
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200">
-          <User className="text-orange-600" size={18} />
-        </div>
-        <h3 className="text-lg font-bold text-gray-800">
-          {address.recipientName}
-        </h3>
-      </div>
-
-      <div className="space-y-2 ml-12">
-        <div className="flex items-start gap-2 text-gray-700">
+      {/* Address info */}
+      <div className="space-y-2 mt-2 border-t border-gray-100 pt-3 ml-1">
+        <div className="flex items-start gap-3 text-gray-700">
           <MapPin size={16} className="mt-1 text-orange-500 flex-shrink-0" />
-          <p className="text-sm">{address.line || address.street || ""}</p>
-        </div>
-        <div className="flex items-center gap-2 text-gray-700">
-          <Phone size={16} className="text-blue-500 flex-shrink-0" />
-          <p className="text-sm font-medium">{address.phone}</p>
+          <p className="text-sm leading-relaxed">
+            {address.line || address.street || ""}
+          </p>
         </div>
       </div>
-    </div>
 
-    <div className="flex flex-wrap gap-2 justify-end pt-4 border-t border-gray-100">
-      <button
-        onClick={() => onEdit(address)}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 shadow bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5"
-      >
-        <Edit2 size={14} /> Edit
-      </button>
-      <button
-        onClick={() => onSetDefault(address.id!)}
-        disabled={address.isDefault}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${
-          address.isDefault
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow hover:shadow-green-200 hover:-translate-y-0.5"
-        }`}
-      >
-        <Check size={14} /> Set Default
-      </button>
-      <button
-        onClick={() => onDelete(address.id!)}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 shadow bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 hover:shadow-red-200 hover:-translate-y-0.5"
-      >
-        <Trash2 size={14} /> Delete
-      </button>
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 justify-end pt-5 border-t border-gray-100 mt-5">
+        <button
+          onClick={() => onEdit(address)}
+          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <Edit2 size={14} /> Edit
+        </button>
+
+        <button
+          onClick={() => onDelete(address.id!)}
+          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <Trash2 size={14} /> Delete
+        </button>
+      </div>
     </div>
   </div>
 );
