@@ -104,11 +104,12 @@ const AddressCard: React.FC<AddressCardProps> = ({
 // ============================================
 // AddressModal Component
 // ============================================
+
 interface AddressModalProps {
   open: boolean;
-  address?: Partial<Address>;
+  address?: Partial<Address> & { line?: string }; // thêm line để nhận chuỗi địa chỉ đầy đủ
   onClose: () => void;
-  onSave: (data: Partial<Address>) => void;
+  onSave: (data: Partial<Address> & { line?: string }) => void;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({
@@ -117,19 +118,16 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [form, setForm] = useState<Partial<Address>>(address || {});
+  const [form, setForm] = useState<Partial<Address> & { line?: string }>(
+    address || {}
+  );
 
   useEffect(() => {
     setForm(address || {});
   }, [address]);
 
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
+    document.body.style.overflow = open ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -137,11 +135,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   if (!open) return null;
 
-  const handleChange = (field: keyof Address, value: string) =>
+  const handleChange = (field: keyof Address | "line", value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSave = () => {
-    if (!form.recipientName || !form.street || !form.phone) {
+    if (!form.recipientName || !form.line || !form.phone) {
       return toast.error("Please fill all required fields");
     }
     onSave(form);
@@ -184,8 +182,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
             </div>
           </div>
 
-          {/* Form - Scrollable */}
+          {/* Form */}
           <div className="flex-1 p-6 space-y-4 overflow-y-auto">
+            {/* Full Name */}
             <div>
               <label className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
                 <User size={16} className="text-orange-500" />
@@ -200,20 +199,22 @@ const AddressModal: React.FC<AddressModalProps> = ({
               />
             </div>
 
+            {/* Full Address */}
             <div>
               <label className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
                 <MapPin size={16} className="text-orange-500" />
-                Address *
+                Full Address *
               </label>
               <textarea
-                placeholder="Street, Ward, District, City, Country"
-                value={form.street || ""}
-                onChange={(e) => handleChange("street", e.target.value)}
+                placeholder="House No, Ward, District, City, Country"
+                value={form.line || ""}
+                onChange={(e) => handleChange("line", e.target.value)}
                 rows={3}
                 className="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-transparent focus:outline-none transition-all resize-none"
               />
             </div>
 
+            {/* Phone */}
             <div>
               <label className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
                 <Phone size={16} className="text-orange-500" />
@@ -249,7 +250,6 @@ const AddressModal: React.FC<AddressModalProps> = ({
     </>
   );
 };
-
 // ============================================
 // AddressesTab Component (Main)
 // ============================================

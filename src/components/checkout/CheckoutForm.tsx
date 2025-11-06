@@ -497,25 +497,35 @@ const Modal = ({
 }: {
   onClose: () => void;
   children: React.ReactNode;
-}) => (
-  <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-90"
-    onClick={onClose} // Click outside để đóng modal
-  >
+}) => {
+  // 🧩 Chặn scroll khi modal mở
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
+  return (
     <div
-      className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200"
-      onClick={(e) => e.stopPropagation()} // Ngăn click trên nội dung modal lan ra overlay
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-90"
+      onClick={onClose} // click outside -> close modal
     >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+      <div
+        className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200 overflow-y-auto max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()} // ngăn lan sự kiện ra ngoài
       >
-        <X className="w-5 h-5" />
-      </button>
-      {children}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const InfoRow = ({
   icon,
