@@ -5,6 +5,8 @@ import {
   getDocs,
   query,
   where,
+  doc,
+  getDoc,
   QueryConstraint,
 } from "firebase/firestore";
 
@@ -61,7 +63,7 @@ export const getProducts = async (
       (docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Product)
     );
 
-    // Nếu có search, lọc thêm ở client
+    // Nếu có search -> lọc ở client
     if (params.search) {
       const keyword = params.search.toLowerCase();
       products = products.filter((p) =>
@@ -80,10 +82,24 @@ export const getProducts = async (
    LẤY CHI TIẾT SẢN PHẨM
 ===================== */
 export const getProductById = async (id: string): Promise<Product> => {
-  const q = query(collection(db, "products"), where("id", "==", id));
-  const snapshot = await getDocs(q);
+  try {
+    // Dùng getDoc an toàn hơn nếu id là docId thực tế
+    const docRef = doc(db, "products", id);
+    const docSnap = await getDoc(docRef);
 
-  if (snapshot.empty) throw new Error("Sản phẩm không tồn tại");
-  const docSnap = snapshot.docs[0];
-  return { id: docSnap.id, ...docSnap.data() } as Product;
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Product;
+    }
+
+    // Nếu id trong DB không phải docId -> fallback query theo field
+    const q = query(collection(db, "products"), where("id", "==", id));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) throw new Error("Sản phẩm không tồn tại");
+    const firstDoc = snapshot.docs[0];
+    return { id: firstDoc.id, ...firstDoc.data() } as Product;
+  } catch (error) {
+    console.error("🔥 Lỗi khi lấy chi tiết sản phẩm:", error);
+    throw error;
+  }
 };
