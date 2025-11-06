@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Truck,
   CreditCard,
@@ -9,119 +9,15 @@ import {
   Phone,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useOrderDetail } from "../../hooks/useOrderDetail";
 import OrderTimeline from "./OrderTimeline";
 import OrderProductList from "./OrderProductList";
-import { getOrderById } from "../../api/orderApi";
-import { getProductById } from "../../api/productApi";
 
-/* ------------------ Interfaces ------------------ */
-interface Customer {
-  id: string;
-  recipientName: string;
-  phone: string;
-  address: string;
-  isDefault: boolean;
-  note: string;
-  paymentMethod: string;
-}
-
-interface OrderItem {
-  productId: string;
-  quantity: number;
-  price: number;
-}
-
-interface Product {
-  id: string;
-  title: string;
-  images?: string[];
-}
-
-interface OrderDetail {
-  id: string;
-  customer: Customer;
-  items: OrderItem[];
-  subtotal: number;
-  tax: number;
-  shipping: number;
-  total: number;
-  status: string;
-  createdAt: string;
-}
-
-/* ------------------ Component ------------------ */
+/* ---------------- Component ---------------- */
 const OrderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [order, setOrder] = useState<OrderDetail | null>(null);
-  const [products, setProducts] = useState<
-    {
-      id: string;
-      title: string;
-      image?: string;
-      price: number;
-      quantity: number;
-    }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
+  const { order, products, loading } = useOrderDetail(id);
 
-  /* ------------------ Lấy chi tiết đơn hàng ------------------ */
-  useEffect(() => {
-    const fetchOrderDetail = async () => {
-      setLoading(true);
-      try {
-        const orderRes = await getOrderById(id!);
-        const orderData = orderRes?.data || orderRes;
-
-        if (!orderData) {
-          toast.error("Không tìm thấy đơn hàng!");
-          return;
-        }
-
-        setOrder(orderData);
-
-        // 🔄 Lấy thông tin sản phẩm (ảnh + tên)
-        const productDetails = await Promise.all(
-          orderData.items.map(async (item: OrderItem) => {
-            try {
-              const productRes = await getProductById(item.productId);
-              const product: Product = productRes?.data || productRes;
-
-              return {
-                id: item.productId,
-                title: product.title,
-                image:
-                  Array.isArray(product.images) && product.images.length > 0
-                    ? product.images[0]
-                    : "/placeholder.png",
-                price: item.price,
-                quantity: item.quantity,
-              };
-            } catch {
-              return {
-                id: item.productId,
-                title: "Sản phẩm không tồn tại",
-                image: "/placeholder.png",
-                price: item.price,
-                quantity: item.quantity,
-              };
-            }
-          })
-        );
-
-        setProducts(productDetails);
-      } catch (err) {
-        console.error(err);
-        toast.error("Lỗi khi tải chi tiết đơn hàng!");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderDetail();
-  }, [id]);
-
-  /* ------------------ Hiển thị ------------------ */
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-blue-50">
