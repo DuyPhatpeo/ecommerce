@@ -332,13 +332,14 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               className={`absolute left-0 z-10 p-2 rounded-full border shadow-md transition-all ${
                 thumbIndex === 0
                   ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-50"
-                  : "bg-white hover:bg-gray-50 border-gray-200 hover:scale-110 active:scale-95"
+                  : "bg-white hover:bg-gray-50 border-gray-200 active:scale-95"
               }`}
               aria-label="Previous thumbnails"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
+            {/* Thumbnails list */}
             <div className="flex justify-center gap-2 sm:gap-3 overflow-hidden">
               {visibleImages.map((img, idx) => {
                 const actualIndex = thumbIndex + idx;
@@ -348,10 +349,10 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   <button
                     key={actualIndex}
                     onClick={() => changeImage(actualIndex)}
-                    className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 ${
+                    className={`relative rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all duration-200 ${
                       isActive
-                        ? "border-orange-500 shadow-lg ring-2 ring-orange-200 scale-105"
-                        : "border-gray-200 hover:border-orange-300 opacity-60 hover:opacity-100 hover:scale-105"
+                        ? "border-orange-500 ring-2 ring-orange-200"
+                        : "border-gray-200 hover:border-orange-400 opacity-80 hover:opacity-100"
                     }`}
                     aria-label={`View image ${actualIndex + 1}`}
                   >
@@ -360,7 +361,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                         src={img}
                         alt={`${title} thumbnail ${actualIndex + 1}`}
                         loading="lazy"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover select-none"
                       />
                     </div>
                   </button>
@@ -375,7 +376,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               className={`absolute right-0 z-10 p-2 rounded-full border shadow-md transition-all ${
                 thumbIndex === maxThumbIndex
                   ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-50"
-                  : "bg-white hover:bg-gray-50 border-gray-200 hover:scale-110 active:scale-95"
+                  : "bg-white hover:bg-gray-50 border-gray-200 active:scale-95"
               }`}
               aria-label="Next thumbnails"
             >

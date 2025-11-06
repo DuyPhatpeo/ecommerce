@@ -3,8 +3,6 @@ import { db } from "../lib/firebaseConfig";
 import {
   collection,
   getDocs,
-  getDoc,
-  doc,
   query,
   where,
   QueryConstraint,
