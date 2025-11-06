@@ -17,7 +17,7 @@ export const useCart = () => {
   const [clearing, setClearing] = useState(false);
 
   /* =====================
-     FETCH CART
+     🛒 FETCH CART
   ===================== */
   const fetchCart = useCallback(async () => {
     try {
@@ -46,7 +46,7 @@ export const useCart = () => {
       setSelectedItems([]);
     } catch (error) {
       console.error(error);
-      toast.error("Không thể tải giỏ hàng.");
+      toast.error("Failed to load cart.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export const useCart = () => {
   }, [fetchCart]);
 
   /* =====================
-     CẬP NHẬT SỐ LƯỢNG
+     🔄 UPDATE QUANTITY
   ===================== */
   const updateQuantity = async (id: string, change: number) => {
     const item = cartItems.find((i) => i.id === id);
@@ -73,19 +73,19 @@ export const useCart = () => {
 
     try {
       await updateCartItem(id, newQty);
-      toast.success("Cập nhật số lượng thành công.");
+      toast.success("Quantity updated successfully.");
     } catch {
       setCartItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, quantity: item.quantity } : i))
       );
-      toast.error("Lỗi khi cập nhật số lượng.");
+      toast.error("Failed to update quantity.");
     } finally {
       setUpdating(null);
     }
   };
 
   /* =====================
-     XÓA ITEM
+     ❌ REMOVE ITEM
   ===================== */
   const removeItem = async (id: string) => {
     const prev = [...cartItems];
@@ -94,15 +94,15 @@ export const useCart = () => {
 
     try {
       await deleteCartItem(id);
-      toast.success("Đã xóa sản phẩm khỏi giỏ hàng.");
+      toast.success("Item removed from cart.");
     } catch {
       setCartItems(prev);
-      toast.error("Lỗi khi xóa sản phẩm.");
+      toast.error("Failed to remove item.");
     }
   };
 
   /* =====================
-     XÓA TOÀN BỘ GIỎ HÀNG
+     🧹 CLEAR CART
   ===================== */
   const removeAll = async () => {
     if (cartItems.length === 0) return;
@@ -113,17 +113,17 @@ export const useCart = () => {
 
     try {
       await clearCart();
-      toast.success("Đã xóa toàn bộ giỏ hàng.");
+      toast.success("All items removed from cart.");
     } catch {
       setCartItems(prev);
-      toast.error("Lỗi khi xóa toàn bộ giỏ hàng.");
+      toast.error("Failed to clear cart.");
     } finally {
       setClearing(false);
     }
   };
 
   /* =====================
-     CHỌN SẢN PHẨM
+     ✅ SELECT ITEMS
   ===================== */
   const toggleSelect = (id: string) => {
     setSelectedItems((prev) =>

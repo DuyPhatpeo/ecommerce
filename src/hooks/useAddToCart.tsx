@@ -6,9 +6,7 @@ import { addToCart } from "../api/cartApi";
 import Button from "../components/ui/Button";
 import { X } from "lucide-react";
 
-/**
- * Hook xử lý thêm sản phẩm vào giỏ hàng
- */
+/** Hook xử lý thêm sản phẩm vào giỏ hàng */
 export const useAddToCart = () => {
   const navigate = useNavigate();
 
@@ -21,7 +19,7 @@ export const useAddToCart = () => {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-center gap-4 p-4 max-w-sm bg-white shadow-lg rounded-xl relative transition-all ${
+            className={`flex items-center gap-4 p-4 w-[360px] min-h-[110px] bg-white shadow-lg rounded-xl relative transition-all ${
               t.visible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 -translate-y-2"
@@ -30,37 +28,47 @@ export const useAddToCart = () => {
             <img
               src={imageUrl || "/placeholder.jpg"}
               alt={title}
-              className="w-16 h-16 rounded-lg object-cover"
+              className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
               onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
             />
-            <div className="flex-1 text-sm">
-              <p className="font-semibold text-gray-800 line-clamp-1">
-                {title}
-              </p>
-              <p className="text-gray-600">
-                Added{" "}
-                <span className="text-orange-500 font-semibold">
-                  {quantity}
-                </span>{" "}
-                item(s)
-              </p>
-              {price > 0 && (
-                <p className="text-gray-700 font-medium">{formatVND(price)}</p>
-              )}
-              <Button
-                label="View cart"
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  navigate("/cart");
-                }}
-                className="mt-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg"
-              />
+
+            {/* Nội dung */}
+            <div className="flex flex-col justify-between flex-1 h-full text-sm">
+              <div className="space-y-0.5 overflow-hidden">
+                <p className="font-semibold text-gray-800 truncate">{title}</p>
+                <p className="text-gray-600">
+                  Added{" "}
+                  <span className="text-orange-500 font-semibold">
+                    {quantity}
+                  </span>{" "}
+                  item(s)
+                </p>
+                {price > 0 && (
+                  <p className="text-gray-700 font-medium">
+                    {formatVND(price)}
+                  </p>
+                )}
+              </div>
+
+              {/* Nút luôn cố định ở dưới */}
+              <div className="mt-2">
+                <Button
+                  label="View cart"
+                  onClick={() => {
+                    toast.dismiss(t.id);
+                    navigate("/cart");
+                  }}
+                  className="text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg"
+                />
+              </div>
             </div>
-            <Button
+
+            <button
               onClick={() => toast.dismiss(t.id)}
-              icon={<X size={16} />}
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            />
+            >
+              <X size={16} />
+            </button>
           </div>
         ),
         { duration: 3000 }

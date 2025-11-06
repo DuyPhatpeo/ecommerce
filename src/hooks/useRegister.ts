@@ -31,20 +31,24 @@ export default function useRegister() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // ✅ Cập nhật dữ liệu input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormErrors])
+    if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
+  // ✅ Parse chuỗi địa chỉ "số, phường, quận, TP"
   const parseAddress = (input: string) => {
-    const [street, ward, district, city, country = "Vietnam"] = input
+    const [street, ward, district, city, country = "Việt Nam"] = input
       .split(",")
       .map((p) => p.trim());
     return { street, ward, district, city, country, postalCode: "" };
   };
 
+  // ✅ Kiểm tra hợp lệ form
   const validateForm = () => {
     const newErrors: FormErrors = {};
     const { fullName, email, phone, password, confirmPassword, address } =
@@ -85,23 +89,31 @@ export default function useRegister() {
 
     for (const [condition, field, message] of rules)
       if (condition) newErrors[field] = message;
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // ✅ Gửi form đăng ký
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     try {
-      const { data } = await getUsers();
-      const existing = data.find(
-        (u: User) =>
+      // 🔹 Lấy toàn bộ user từ Firestore
+      const users = await getUsers();
+      const existing = users.find(
+        (u) =>
           u.email?.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
-      if (existing) return toast.error("Email already exists.");
 
+      if (existing) {
+        toast.error("Email already exists.");
+        return;
+      }
+
+      // 🔹 Tạo user mới
       const newUser: User = {
         id: Date.now().toString(),
         fullName: formData.fullName.trim(),
@@ -109,8 +121,6 @@ export default function useRegister() {
         phone: formData.phone.trim(),
         password: formData.password,
         createdAt: new Date().toISOString(),
-        // ✅ fix: bỏ token hoặc để undefined
-        token: undefined,
         addresses: [
           {
             id: `addr_${Date.now()}`,
@@ -123,10 +133,10 @@ export default function useRegister() {
         ],
       };
 
+      // 🔹 Lưu vào Firestore
       await registerUser(newUser);
-      toast.success(
-        "Account created successfully! Please login to continue. 🔑"
-      );
+
+      toast.success("Account created successfully! Please login to continue.");
 
       setSuccess(true);
       resetForm();
@@ -142,6 +152,7 @@ export default function useRegister() {
     }
   };
 
+  // ✅ Reset form sau khi đăng ký
   const resetForm = () => {
     setFormData({
       fullName: "",

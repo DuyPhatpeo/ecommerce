@@ -1,4 +1,15 @@
-import api from "../lib/axios";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  query,
+  where,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../lib/firebaseConfig";
+import { v4 as uuidv4 } from "uuid";
 
 /* ==========================
    INTERFACES
@@ -36,70 +47,79 @@ export interface User {
 }
 
 /* ==========================
-   API FUNCTIONS
+   FIREBASE API FUNCTIONS
 ========================== */
 
-// Lấy toàn bộ user
-export const getUsers = async () => {
-  return await api.get<User[]>("/users");
+// 🔹 Lấy toàn bộ user
+export const getUsers = async (): Promise<User[]> => {
+  const snapshot = await getDocs(collection(db, "users"));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
 };
 
-// Lấy user theo email (để login)
-export const getUserByEmail = async (email: string) => {
-  return await api.get<User[]>(`/users?email=${encodeURIComponent(email)}`);
+// 🔹 Lấy user theo email
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+  const q = query(collection(db, "users"), where("email", "==", email));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as User;
 };
 
-// Đăng ký user mới
-export const registerUser = async (data: User) => {
-  return await api.post<User>("/users", data);
+// 🔹 Đăng ký user mới
+export const registerUser = async (data: User): Promise<User> => {
+  const newId = uuidv4(); // tạo ID ngẫu nhiên cho document
+  const newUser: User = {
+    ...data,
+    id: Date.now().toString(), // lưu id riêng trong document (theo timestamp)
+    createdAt: new Date().toISOString(),
+  };
+  await setDoc(doc(db, "users", newId), newUser);
+  return newUser;
 };
 
-// Lấy thông tin user theo ID
-export const getUserProfile = async (userId: string) => {
-  return await api.get<User>(`/users/${userId}`);
+// 🔹 Lấy thông tin user theo user.id (field trong document)
+export const getUserProfile = async (userId: string): Promise<User> => {
+  // 🔍 Tìm document có field "id" = userId (thay vì doc.id)
+  const q = query(collection(db, "users"), where("id", "==", userId));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) throw new Error("User not found");
+
+  const docData = snapshot.docs[0];
+  return { id: docData.id, ...docData.data() } as User;
 };
 
-/* --------------------------------------------------
-   ✅ Cập nhật user — chỉ cập nhật phần thay đổi
-   → lấy dữ liệu hiện tại → merge → PUT
--------------------------------------------------- */
+// 🔹 Cập nhật thông tin user — merge dữ liệu
 export const updateUserProfile = async (
   userId: string,
   data: Partial<User>
-) => {
-  // Lấy thông tin user hiện tại
-  const res = await api.get<User>(`/users/${userId}`);
-  const currentUser = res.data;
+): Promise<void> => {
+  // 🔍 Lấy document theo field "id"
+  const q = query(collection(db, "users"), where("id", "==", userId));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) throw new Error("User not found");
 
-  // Merge để giữ các giá trị cũ
-  const updatedUser: User = {
-    ...currentUser,
-    ...data,
-  };
-
-  // Cập nhật
-  return await api.put<User>(`/users/${userId}`, updatedUser);
+  const userRef = doc(db, "users", snapshot.docs[0].id);
+  const currentData = snapshot.docs[0].data();
+  const updatedUser = { ...currentData, ...data };
+  await updateDoc(userRef, updatedUser);
 };
 
-/* --------------------------------------------------
-   ✅ Đổi mật khẩu — giữ nguyên dữ liệu khác
--------------------------------------------------- */
+// 🔹 Đổi mật khẩu — giữ nguyên dữ liệu khác
 export const changeUserPassword = async (
   userId: string,
   oldPassword: string,
   newPassword: string
-) => {
-  const res = await api.get<User>(`/users/${userId}`);
-  const user = res.data;
+): Promise<void> => {
+  // 🔍 Tìm document theo field "id"
+  const q = query(collection(db, "users"), where("id", "==", userId));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) throw new Error("User not found");
+
+  const userRef = doc(db, "users", snapshot.docs[0].id);
+  const user = snapshot.docs[0].data() as User;
 
   if (user.password !== oldPassword) {
     throw new Error("Mật khẩu hiện tại không chính xác");
   }
 
-  const updatedUser: User = {
-    ...user,
-    password: newPassword,
-  };
-
-  return await api.put<User>(`/users/${userId}`, updatedUser);
+  await updateDoc(userRef, { password: newPassword });
 };

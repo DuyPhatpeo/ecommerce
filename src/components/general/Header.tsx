@@ -12,244 +12,40 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getCart } from "../../api/cartApi";
-import { getCategories } from "../../api/categoryApi";
-
-// ==================== TYPES ====================
-interface MenuItem {
-  label: string;
-  path?: string;
-  subMenu?: MenuItem[];
-}
-
-interface TaskbarItem {
-  path: string;
-  icon: any;
-  label: string;
-  badge?: number;
-  activeCheck?: string[];
-}
+import { useHeader } from "../../hooks/useHeader";
+import type { MenuItem, TaskbarItem } from "../../hooks/useHeader";
 
 // ==================== MAIN COMPONENT ====================
 const Header = () => {
-  // ========== STATE ==========
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<{ name: string } | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
+  const {
+    isScrolled,
+    activeMenu,
+    mobileOpen,
+    searchOpen,
+    cartCount,
+    searchQuery,
+    user,
+    menuItems,
+    categoryMenuOpen,
+    searchInputRef,
+    searchBoxRef,
+    mobileMenuRef,
+    categoryMenuRef,
+    setSearchOpen,
+    setMobileOpen,
+    setSearchQuery,
+    setCategoryMenuOpen,
+    handleSearchSubmit,
+    handleMouseEnter,
+    handleMouseLeave,
+    toggleSubMenu,
+    closeMobileMenu,
+    taskbarItems,
+    location,
+    navigate,
+  } = useHeader();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // ========== REFS ==========
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const searchBoxRef = useRef<HTMLDivElement | null>(null);
-  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-  const categoryMenuRef = useRef<HTMLDivElement | null>(null);
-
-  // ========== BASE MENU ==========
-  const baseMenu: MenuItem[] = useMemo(
-    () => [
-      { label: "HOME", path: "/" },
-      { label: "SHOP", path: "/shop" },
-      { label: "CONTACT", path: "/contact" },
-    ],
-    []
-  );
-
-  // ========== TASKBAR ITEMS ==========
-  const taskbarItems: TaskbarItem[] = useMemo(
-    () => [
-      { path: "/", icon: Home, label: "Home" },
-      { path: "/shop", icon: Store, label: "Shop" },
-      { path: "#category", icon: LayoutGrid, label: "Category" },
-      {
-        path: user ? "/account/profile" : "/login",
-        icon: User,
-        label: "Account",
-        activeCheck: ["/account", "/account/profile", "/login"],
-      },
-    ],
-    [user]
-  );
-
-  // ========== HANDLERS ==========
-  const fetchCartCount = useCallback(async () => {
-    try {
-      const { data } = await getCart();
-      setCartCount(Array.isArray(data) ? data.length : 0);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      setCartCount(0);
-    }
-  }, []);
-
-  const handleSearchSubmit = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && searchQuery.trim()) {
-        navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-        setSearchOpen(false);
-        setSearchQuery("");
-      }
-    },
-    [searchQuery, navigate]
-  );
-
-  const handleMouseEnter = useCallback((label: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setActiveMenu(label);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
-  }, []);
-
-  const toggleSubMenu = useCallback((label: string) => {
-    setActiveMenu((prev) => (prev === label ? null : label));
-  }, []);
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileOpen(false);
-    setActiveMenu(null);
-  }, []);
-
-  // ========== EFFECTS ==========
-  // Fetch categories & build menu
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categories = await getCategories();
-        if (!Array.isArray(categories) || categories.length === 0) {
-          setMenuItems(baseMenu);
-          return;
-        }
-
-        const categoryMenu: MenuItem = {
-          label: "CATEGORY",
-          subMenu: categories.map((cat: string) => ({
-            label: cat.charAt(0).toUpperCase() + cat.slice(1),
-            path: `/shop/${cat.toLowerCase().replace(/\s+/g, "-")}`,
-          })),
-        };
-
-        const updated = [...baseMenu];
-        const shopIndex = updated.findIndex((m) => m.label === "SHOP");
-        if (shopIndex !== -1) {
-          updated.splice(shopIndex + 1, 0, categoryMenu);
-        } else {
-          updated.push(categoryMenu);
-        }
-
-        setMenuItems(updated);
-      } catch (error) {
-        console.error("❌ Fetch categories failed:", error);
-        setMenuItems(baseMenu);
-      }
-    };
-
-    fetchCategories();
-  }, [baseMenu]);
-
-  // Initialize cart & user
-  useEffect(() => {
-    fetchCartCount();
-    const storedUser = localStorage.getItem("userId");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Invalid user data in localStorage", error);
-        localStorage.removeItem("userId");
-      }
-    }
-  }, [fetchCartCount, location.pathname]);
-
-  // Scroll listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 50;
-      setIsScrolled(scrolled);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Focus search input
-  useEffect(() => {
-    if (searchOpen && searchInputRef.current) {
-      const timer = setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [searchOpen]);
-
-  // Click outside to close
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-
-      if (
-        searchOpen &&
-        searchBoxRef.current &&
-        !searchBoxRef.current.contains(target)
-      ) {
-        setSearchOpen(false);
-      }
-
-      if (
-        mobileOpen &&
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(target)
-      ) {
-        closeMobileMenu();
-      }
-
-      if (
-        categoryMenuOpen &&
-        categoryMenuRef.current &&
-        !categoryMenuRef.current.contains(target)
-      ) {
-        setCategoryMenuOpen(false);
-      }
-    };
-
-    if (searchOpen || mobileOpen || categoryMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [searchOpen, mobileOpen, categoryMenuOpen, closeMobileMenu]);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    closeMobileMenu();
-    setCategoryMenuOpen(false);
-  }, [location.pathname, closeMobileMenu]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  // ========== RENDER ==========
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-50">
@@ -564,50 +360,54 @@ const MobileBottomBar = ({
   navigate: ReturnType<typeof useNavigate>;
   categoryMenuOpen: boolean;
   setCategoryMenuOpen: (open: boolean) => void;
-}) => (
-  <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
-    <div className="flex items-center justify-around h-16">
-      {taskbarItems.map((item, i) => {
-        const Icon = item.icon;
-        const isActive = item.activeCheck
-          ? item.activeCheck.some((path) => location.pathname === path)
-          : location.pathname === item.path;
+}) => {
+  const iconMap = { Home, Store, LayoutGrid, User };
 
-        const isCategory = item.label === "Category";
+  return (
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
+      <div className="flex items-center justify-around h-16">
+        {taskbarItems.map((item, i) => {
+          const Icon = iconMap[item.icon as keyof typeof iconMap];
+          const isActive = item.activeCheck
+            ? item.activeCheck.some((path) => location.pathname === path)
+            : location.pathname === item.path;
 
-        return (
-          <button
-            key={`${item.label}-${i}`}
-            onClick={() => {
-              if (isCategory) {
-                setCategoryMenuOpen(!categoryMenuOpen);
-              } else {
-                navigate(item.path);
-              }
-            }}
-            className={`flex-1 ${
-              isActive || (isCategory && categoryMenuOpen)
-                ? "text-orange-500"
-                : "text-gray-600"
-            } hover:text-orange-500 transition-colors active:scale-95`}
-          >
-            <div className="flex flex-col items-center justify-center gap-1 py-2">
-              <div className="relative">
-                <Icon size={22} />
-                {item.badge && item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                    {item.badge > 99 ? "99+" : item.badge}
-                  </span>
-                )}
+          const isCategory = item.label === "Category";
+
+          return (
+            <button
+              key={`${item.label}-${i}`}
+              onClick={() => {
+                if (isCategory) {
+                  setCategoryMenuOpen(!categoryMenuOpen);
+                } else {
+                  navigate(item.path);
+                }
+              }}
+              className={`flex-1 ${
+                isActive || (isCategory && categoryMenuOpen)
+                  ? "text-orange-500"
+                  : "text-gray-600"
+              } hover:text-orange-500 transition-colors active:scale-95`}
+            >
+              <div className="flex flex-col items-center justify-center gap-1 py-2">
+                <div className="relative">
+                  <Icon size={22} />
+                  {item.badge && item.badge > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
+                      {item.badge > 99 ? "99+" : item.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] font-medium">{item.label}</span>
               </div>
-              <span className="text-[10px] font-medium">{item.label}</span>
-            </div>
-          </button>
-        );
-      })}
+            </button>
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ==================== SHARED COMPONENTS ====================
 const Logo = () => (

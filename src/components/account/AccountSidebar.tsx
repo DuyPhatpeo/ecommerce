@@ -34,7 +34,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
   onTabChange,
 }) => {
   const navigate = useNavigate();
-  const { logout } = useLogout(); // ✅ Sử dụng hook useLogout
+  const { logout } = useLogout();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,14 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
       try {
         const res = await getUserProfile(userId);
-        setUser(res.data);
+        // ✅ Firebase trả về document data (không có res.data)
+        const safeData: UserProfile = {
+          id: res.id,
+          fullName: res.fullName || "",
+          email: res.email || "",
+          phone: res.phone || "",
+        };
+        setUser(safeData);
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
         setUser(null);
@@ -75,6 +82,9 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       .slice(0, 2)
       .join("");
 
+  /* ==========================
+     LOADING STATE
+  =========================== */
   if (loading) {
     return (
       <div className="sticky top-20">
@@ -91,6 +101,9 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
     );
   }
 
+  /* ==========================
+     NOT LOGGED IN
+  =========================== */
   if (!user) {
     return (
       <div className="sticky top-20">
@@ -118,14 +131,16 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
     );
   }
 
+  /* ==========================
+     LOGGED IN VIEW
+  =========================== */
   return (
     <div className="sticky top-6">
       <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-        {/* Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
 
         <div className="relative p-6">
-          {/* Profile Header */}
+          {/* Header */}
           <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-100">
             <div className="relative group">
               <div className="absolute inset-0 transition-all duration-300 rounded-full opacity-0 bg-gradient-to-r from-orange-400 to-orange-600 blur-xl group-hover:opacity-30" />
@@ -142,7 +157,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
             <p className="text-sm font-medium text-gray-500">{user.email}</p>
           </div>
 
-          {/* Navigation Tabs */}
+          {/* Tabs */}
           <nav className="space-y-1.5">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -186,9 +201,9 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
 
             <div className="my-4 border-t border-gray-100" />
 
-            {/* Logout Button */}
+            {/* Logout */}
             <button
-              onClick={logout} // ✅ Sử dụng logout từ hook
+              onClick={logout}
               className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
             >
               <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
