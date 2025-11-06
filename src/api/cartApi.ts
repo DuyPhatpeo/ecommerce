@@ -1,41 +1,93 @@
-import api from "../lib/axios";
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../lib/firebaseConfig";
 
-// 🛒 Lấy toàn bộ giỏ hàng
-export const getCart = () => api.get("/cart");
+/**
+ * Kiểu dữ liệu item trong giỏ hàng
+ */
+export interface CartItem {
+  id: string;
+  productId: string;
+  quantity: number;
+}
 
-// 🛒 Lấy 1 item trong giỏ hàng theo id
-export const getCartItem = (id: string) => api.get(`/cart/${id}`);
-
-// 🔄 Cập nhật số lượng của 1 item
-export const updateCartItem = (id: string, quantity: number) => {
-  return api.patch(`/cart/${id}`, { quantity });
+/* ============================
+   🛒 Lấy toàn bộ giỏ hàng
+============================ */
+export const getCart = async (): Promise<CartItem[]> => {
+  const snapshot = await getDocs(collection(db, "cart"));
+  return snapshot.docs.map(
+    (docSnap) => ({ id: docSnap.id, ...docSnap.data() } as CartItem)
+  );
 };
 
-// ❌ Xóa 1 item khỏi giỏ hàng
-export const deleteCartItem = (id: string) => api.delete(`/cart/${id}`);
+/* ============================
+   🛒 Lấy 1 item trong giỏ hàng theo id
+============================ */
+export const getCartItem = async (id: string): Promise<CartItem | null> => {
+  const docRef = doc(db, "cart", id);
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists()
+    ? ({ id: docSnap.id, ...docSnap.data() } as CartItem)
+    : null;
+};
 
-// ➕ Thêm sản phẩm vào giỏ hàng (hoặc tăng số lượng nếu đã tồn tại)
+/* ============================
+   🔄 Cập nhật số lượng của 1 item
+============================ */
+export const updateCartItem = async (id: string, quantity: number) => {
+  const docRef = doc(db, "cart", id);
+  await updateDoc(docRef, { quantity });
+};
+
+/* ============================
+   ❌ Xóa 1 item khỏi giỏ hàng
+============================ */
+export const deleteCartItem = async (id: string) => {
+  const docRef = doc(db, "cart", id);
+  await deleteDoc(docRef);
+};
+
+/* ============================
+   ➕ Thêm sản phẩm vào giỏ hàng
+   (hoặc tăng số lượng nếu đã tồn tại)
+============================ */
 export const addToCart = async (productId: string, quantity = 1) => {
-  const { data: cart } = await api.get("/cart");
-  const existingItem = cart.find((item: any) => item.productId === productId);
+  const cart = await getCart();
+  const existingItem = cart.find((item) => item.productId === productId);
 
   if (existingItem) {
-    // Nếu sản phẩm đã có -> chỉ tăng số lượng
-    return api.patch(`/cart/${existingItem.id}`, {
-      quantity: existingItem.quantity + quantity,
-    });
+    // Nếu sản phẩm đã có → chỉ tăng số lượng
+    const docRef = doc(db, "cart", existingItem.id);
+    const newQty = existingItem.quantity + quantity;
+    await updateDoc(docRef, { quantity: newQty });
+    return { ...existingItem, quantity: newQty };
   } else {
-    // Nếu chưa có -> thêm mới
-    return api.post("/cart", { productId, quantity });
+    // Nếu chưa có → thêm mới
+    const docRef = await addDoc(collection(db, "cart"), {
+      productId,
+      quantity,
+    });
+    await updateDoc(docRef, { id: docRef.id }); // lưu id cho đồng bộ
+    return { id: docRef.id, productId, quantity };
   }
 };
 
-// 🧹 Xóa toàn bộ giỏ hàng
+/* ============================
+   🧹 Xóa toàn bộ giỏ hàng
+============================ */
 export const clearCart = async () => {
-  const { data: cart } = await api.get("/cart");
-  const deleteRequests = cart.map((item: any) =>
-    api.delete(`/cart/${item.id}`)
+  const cart = await getCart();
+  const deletePromises = cart.map((item) =>
+    deleteDoc(doc(db, "cart", item.id))
   );
-  await Promise.all(deleteRequests);
+  await Promise.all(deletePromises);
   return [];
 };
