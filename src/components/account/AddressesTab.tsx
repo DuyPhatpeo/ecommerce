@@ -120,6 +120,18 @@ const AddressModal: React.FC<AddressModalProps> = ({
     setForm(address || {});
   }, [address]);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const handleChange = (field: keyof Address, value: string) =>
@@ -136,15 +148,15 @@ const AddressModal: React.FC<AddressModalProps> = ({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md"
+        className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="relative w-full max-w-lg overflow-hidden bg-white shadow-2xl rounded-3xl">
+      <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
+        <div className="relative w-full max-w-lg overflow-hidden bg-white shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
           {/* Header */}
-          <div className="relative p-6 bg-gradient-to-r from-orange-500 to-orange-600">
+          <div className="relative flex-shrink-0 p-6 bg-gradient-to-r from-orange-500 to-orange-600">
             <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -169,8 +181,8 @@ const AddressModal: React.FC<AddressModalProps> = ({
             </div>
           </div>
 
-          {/* Form */}
-          <div className="p-6 space-y-4">
+          {/* Form - Scrollable */}
+          <div className="flex-1 p-6 space-y-4 overflow-y-auto">
             <div>
               <label className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
                 <User size={16} className="text-orange-500" />

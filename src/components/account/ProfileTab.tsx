@@ -1,5 +1,4 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect } from "react";
 import {
   User,
   Phone,
@@ -35,6 +34,18 @@ const ProfileTab: React.FC = () => {
     handleSave,
     handlePasswordUpdate,
   } = useProfile();
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showModal]);
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
@@ -160,114 +171,104 @@ const ProfileTab: React.FC = () => {
       </div>
 
       {/* Password Change Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setShowModal(false);
-                setPasswords({ current: "", new: "", confirm: "" });
-              }}
-            />
+      {showModal && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md"
+            onClick={() => {
+              setShowModal(false);
+              setPasswords({ current: "", new: "", confirm: "" });
+            }}
+          />
 
-            {/* Modal */}
-            <motion.div
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-            >
-              <div className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl sm:rounded-3xl max-h-[90vh] flex flex-col">
-                {/* Header with gradient */}
-                <div className="relative flex-shrink-0 p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-600">
-                  <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
-                  <div className="relative flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3">
-                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-white sm:w-12 sm:h-12 rounded-xl shadow-lg">
-                        <Lock className="text-blue-600" size={20} />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-lg font-bold text-white sm:text-xl">
-                          Change Password
-                        </h3>
-                        <p className="text-xs text-blue-100 sm:text-sm">
-                          Update your security credentials
-                        </p>
-                      </div>
+          {/* Modal */}
+          <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl sm:rounded-3xl max-h-[90vh] flex flex-col">
+              {/* Header with gradient */}
+              <div className="relative flex-shrink-0 p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-600">
+                <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
+                <div className="relative flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-white sm:w-12 sm:h-12 rounded-xl shadow-lg">
+                      <Lock className="text-blue-600" size={20} />
                     </div>
-                    <button
-                      onClick={() => {
-                        setShowModal(false);
-                        setPasswords({ current: "", new: "", confirm: "" });
-                      }}
-                      className="flex items-center justify-center flex-shrink-0 w-8 h-8 transition-all duration-300 sm:w-10 sm:h-10 bg-white/20 rounded-xl hover:bg-white/30"
-                    >
-                      <X className="text-white" size={18} />
-                    </button>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-bold text-white sm:text-xl">
+                        Change Password
+                      </h3>
+                      <p className="text-xs text-blue-100 sm:text-sm">
+                        Update your security credentials
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                {/* Form Content - Scrollable */}
-                <div className="flex-1 p-4 space-y-4 overflow-y-auto sm:p-6 sm:space-y-5">
-                  {["current", "new", "confirm"].map((field) => (
-                    <div key={field}>
-                      <PasswordField
-                        label={
-                          field === "current"
-                            ? "Current Password"
-                            : field === "new"
-                            ? "New Password"
-                            : "Confirm New Password"
-                        }
-                        name={field}
-                        value={passwords[field as keyof typeof passwords]}
-                        show={showPassword[field as keyof typeof showPassword]}
-                        toggle={() =>
-                          setShowPassword((p) => ({
-                            ...p,
-                            [field]: !p[field as keyof typeof p],
-                          }))
-                        }
-                        onChange={(e) =>
-                          setPasswords((p) => ({
-                            ...p,
-                            [field]: e.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Footer Actions */}
-                <div className="flex items-center gap-3 p-4 border-t border-gray-100 bg-gray-50 sm:p-6">
-                  <Button
-                    label="Cancel"
-                    icon={<XCircle size={16} />}
+                  <button
                     onClick={() => {
                       setShowModal(false);
                       setPasswords({ current: "", new: "", confirm: "" });
                     }}
-                    className="flex-1 px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
-                  />
-
-                  <Button
-                    label="Update"
-                    icon={<Save size={16} />}
-                    onClick={handlePasswordUpdate}
-                    className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
-                  />
+                    className="flex items-center justify-center flex-shrink-0 w-8 h-8 transition-all duration-300 sm:w-10 sm:h-10 bg-white/20 rounded-xl hover:bg-white/30"
+                  >
+                    <X className="text-white" size={18} />
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+
+              {/* Form Content - Scrollable */}
+              <div className="flex-1 p-4 space-y-4 overflow-y-auto sm:p-6 sm:space-y-5">
+                {["current", "new", "confirm"].map((field) => (
+                  <div key={field}>
+                    <PasswordField
+                      label={
+                        field === "current"
+                          ? "Current Password"
+                          : field === "new"
+                          ? "New Password"
+                          : "Confirm New Password"
+                      }
+                      name={field}
+                      value={passwords[field as keyof typeof passwords]}
+                      show={showPassword[field as keyof typeof showPassword]}
+                      toggle={() =>
+                        setShowPassword((p) => ({
+                          ...p,
+                          [field]: !p[field as keyof typeof p],
+                        }))
+                      }
+                      onChange={(e) =>
+                        setPasswords((p) => ({
+                          ...p,
+                          [field]: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer Actions */}
+              <div className="flex items-center gap-3 p-4 border-t border-gray-100 bg-gray-50 sm:p-6">
+                <Button
+                  label="Cancel"
+                  icon={<XCircle size={16} />}
+                  onClick={() => {
+                    setShowModal(false);
+                    setPasswords({ current: "", new: "", confirm: "" });
+                  }}
+                  className="flex-1 px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
+                />
+
+                <Button
+                  label="Update"
+                  icon={<Save size={16} />}
+                  onClick={handlePasswordUpdate}
+                  className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
