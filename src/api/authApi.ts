@@ -65,13 +65,16 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 
 // 🔹 Đăng ký user mới
 export const registerUser = async (data: User): Promise<User> => {
-  const newId = uuidv4(); // tạo ID ngẫu nhiên cho document
+  const userId = uuidv4(); // ✅ sinh UUID cho cả user.id và doc.id
   const newUser: User = {
     ...data,
-    id: Date.now().toString(), // lưu id riêng trong document (theo timestamp)
+    id: userId,
     createdAt: new Date().toISOString(),
   };
-  await setDoc(doc(db, "users", newId), newUser);
+
+  // Lưu với doc ID = userId luôn (đồng bộ)
+  await setDoc(doc(db, "users", userId), newUser);
+
   return newUser;
 };
 

@@ -111,9 +111,19 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       return;
     }
 
-    const { recipientName, phone, address, paymentMethod } = customerInfo;
+    const { recipientName, phone, address, paymentMethod, note } = customerInfo;
     if (!recipientName || !phone || !address) {
       toast.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
+      return;
+    }
+
+    // ✅ Lấy userId từ localStorage
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      toast.error(
+        "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại!"
+      );
+      navigate("/login");
       return;
     }
 
@@ -136,7 +146,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
 
       // ✅ Xác định trạng thái đơn hàng dựa theo phương thức thanh toán
       let status: string;
-
       switch (paymentMethod) {
         case "cod":
           status = "pending"; // Thanh toán khi nhận hàng
@@ -152,9 +161,16 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
           break;
       }
 
-      // Dữ liệu đơn hàng gửi lên API
+      // ✅ Dữ liệu đơn hàng gửi lên API
       const orderData = {
-        customer: customerInfo,
+        customer: {
+          id: userId, // 🔥 Gắn userId từ local
+          recipientName,
+          phone,
+          address,
+          note,
+          paymentMethod,
+        },
         items: updatedProducts.map((p) => ({
           productId: p.id,
           quantity: p.quantity,

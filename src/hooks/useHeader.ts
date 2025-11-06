@@ -228,11 +228,6 @@ export const useHeader = () => {
     setCategoryMenuOpen(false);
   }, [location.pathname, closeMobileMenu]);
 
-  // Cleanup timeout
-  useEffect(() => {
-    return () => timeoutRef.current && clearTimeout(timeoutRef.current);
-  }, []);
-
   // ========== RETURN ==========
   return {
     isScrolled,

@@ -33,9 +33,9 @@ const WishlistTab: React.FC = () => {
         const promises = wishlistIds.map((id) => getProductById(id));
         const res = await Promise.all(promises);
 
-        const productsWithFirstImage = res.map((p: Product) => ({
+        const productsWithFirstImage = res.map((p) => ({
           ...p,
-          img: p.images?.[0] || p.img,
+          img: p.images?.[0] || p.img || "/placeholder.png",
         }));
 
         setProducts(productsWithFirstImage);

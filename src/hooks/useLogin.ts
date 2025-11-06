@@ -13,15 +13,6 @@ interface FormErrors {
   password?: string;
 }
 
-interface User {
-  id?: string;
-  email: string;
-  password: string;
-  fullName?: string;
-  name?: string;
-  username?: string;
-}
-
 export default function useLogin() {
   const navigate = useNavigate();
 
@@ -101,8 +92,7 @@ export default function useLogin() {
         return;
       }
 
-      const displayName =
-        user.fullName || user.name || user.username || user.email;
+      const displayName = user.fullName || user.email;
 
       // ✅ Ghi nhớ email nếu chọn “Remember Me”
       if (rememberMe) {

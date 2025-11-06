@@ -6,7 +6,7 @@ import { getProductById } from "../api/productApi";
 /* ------------------ Interfaces ------------------ */
 interface Customer {
   id: string;
-  fullName: string;
+  name: string;
   phone: string;
   address: string;
   isDefault?: boolean;
@@ -18,12 +18,6 @@ interface OrderItem {
   productId: string;
   quantity: number;
   price: number;
-}
-
-interface Product {
-  id: string;
-  title: string;
-  images?: string[];
 }
 
 export interface OrderDetail {

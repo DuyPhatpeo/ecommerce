@@ -1,3 +1,4 @@
+// src/components/account/OrdersTab.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -6,8 +7,9 @@ import {
   DollarSign,
   ShoppingBag,
   ChevronRight,
+  LogIn,
 } from "lucide-react";
-import { getAllOrders } from "../../api/orderApi";
+import { getOrdersByUser } from "../../api/orderApi";
 
 interface Order {
   id: string;
@@ -22,22 +24,39 @@ const OrdersTab: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(5);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const data = await getAllOrders();
+        // ✅ Lấy userId từ localStorage (đã lưu trực tiếp dạng chuỗi)
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+          console.warn("⚠️ User chưa đăng nhập");
+          setIsLoggedIn(false);
+          setOrders([]);
+          setLoading(false);
+          return;
+        }
+
+        setIsLoggedIn(true);
+
+        // ✅ Gọi đúng hàm lấy đơn của người dùng
+        const data = await getOrdersByUser(userId);
+
         const formattedOrders = data.map((order: any) => ({
           id: order.id,
           createdAt: order.createdAt,
           status: order.status || "pending",
-          total: order.total,
+          total: order.total || 0,
           items: order.items?.length || 0,
         }));
+
         setOrders(formattedOrders);
       } catch (err) {
-        console.error("Failed to fetch orders:", err);
+        console.error("❌ Failed to fetch user orders:", err);
       } finally {
         setLoading(false);
       }
@@ -108,7 +127,11 @@ const OrdersTab: React.FC = () => {
   };
 
   const handleBrowseProducts = () => {
-    navigate("/products");
+    navigate("/shop");
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -130,8 +153,26 @@ const OrdersTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Content */}
-        {loading ? (
+        {/* Nếu chưa đăng nhập */}
+        {!isLoggedIn ? (
+          <div className="py-16 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
+              <LogIn className="text-orange-600" size={32} />
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-gray-800">
+              Please log in to view your orders
+            </h3>
+            <p className="mb-6 text-sm text-gray-600">
+              Log in to see your order history and track your purchases.
+            </p>
+            <button
+              onClick={handleLogin}
+              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+            >
+              Log In
+            </button>
+          </div>
+        ) : loading ? (
           <div className="py-16 text-center">
             <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
             <p className="mt-4 text-sm font-medium text-gray-600">
@@ -167,7 +208,7 @@ const OrdersTab: React.FC = () => {
                   data-order-index={index}
                   className="relative p-5 transition-all duration-300 border border-gray-200 rounded-2xl hover:border-orange-300 hover:shadow-lg group"
                 >
-                  {/* Header với Status riêng desktop, cùng dòng mobile */}
+                  {/* Header */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
                       <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex-shrink-0">
@@ -178,7 +219,7 @@ const OrdersTab: React.FC = () => {
                           <h3 className="text-base font-bold text-gray-800 truncate">
                             Order #{order.id}
                           </h3>
-                          {/* Status mobile - cùng dòng với ID */}
+                          {/* Status (mobile) */}
                           <span
                             className={`lg:hidden px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
                               order.status
@@ -197,7 +238,7 @@ const OrdersTab: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Status desktop - riêng bên phải */}
+                    {/* Status (desktop) */}
                     <span
                       className={`hidden lg:inline-flex px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
                         order.status
@@ -208,6 +249,7 @@ const OrdersTab: React.FC = () => {
                     </span>
                   </div>
 
+                  {/* Footer */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-4 sm:gap-6">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -243,6 +285,7 @@ const OrdersTab: React.FC = () => {
               ))}
             </div>
 
+            {/* Load more */}
             {visibleCount < sortedOrders.length && (
               <div className="mt-6 text-center">
                 <button

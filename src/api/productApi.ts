@@ -15,13 +15,16 @@ import {
 ===================== */
 export interface Product {
   id: string;
-  name: string;
+  title: string;
   price: number;
   category?: string;
   brand?: string;
   color?: string;
   size?: string | string[];
   description?: string;
+  salePrice?: number;
+  regularPrice?: number;
+  img?: string;
   images?: string[];
   [key: string]: any;
 }
@@ -67,7 +70,7 @@ export const getProducts = async (
     if (params.search) {
       const keyword = params.search.toLowerCase();
       products = products.filter((p) =>
-        (p.name || "").toLowerCase().includes(keyword)
+        (p.title || "").toLowerCase().includes(keyword)
       );
     }
 
