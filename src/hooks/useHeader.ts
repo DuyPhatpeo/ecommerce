@@ -20,14 +20,13 @@ export interface TaskbarItem {
 
 // ==================== CUSTOM HOOK ====================
 export const useHeader = () => {
-  // ========== STATE ==========
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [user, setUser] = useState<{ name?: string; id?: string } | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
 
@@ -70,7 +69,7 @@ export const useHeader = () => {
   // ========== HANDLERS ==========
   const fetchCartCount = useCallback(async () => {
     try {
-      const cartItems = await getCart(); // 🔥 getCart() trả về CartItem[] trực tiếp
+      const cartItems = await getCart();
       setCartCount(Array.isArray(cartItems) ? cartItems.length : 0);
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -147,28 +146,36 @@ export const useHeader = () => {
     fetchCategories();
   }, [baseMenu]);
 
-  // Initialize cart & user
+  // ✅ Initialize cart & user
   useEffect(() => {
     fetchCartCount();
-    const storedUser = localStorage.getItem("userId");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Invalid user data in localStorage", error);
-        localStorage.removeItem("userId");
+
+    const storedUser = localStorage.getItem("user");
+    const storedUserId = localStorage.getItem("userId");
+
+    try {
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+      } else if (storedUserId) {
+        // Nếu chỉ có userId, thì chỉ lưu id vào state
+        setUser({ id: storedUserId });
+      } else {
+        setUser(null);
       }
+    } catch (error) {
+      console.error("Invalid user data in localStorage", error);
+      localStorage.removeItem("user");
+      localStorage.removeItem("userId");
+      setUser(null);
     }
   }, [fetchCartCount, location.pathname]);
 
   // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY > 50;
-      setIsScrolled(scrolled);
+      setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -176,9 +183,7 @@ export const useHeader = () => {
   // Focus search input
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
-      const timer = setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
+      const timer = setTimeout(() => searchInputRef.current?.focus(), 100);
       return () => clearTimeout(timer);
     }
   }, [searchOpen]);
@@ -187,7 +192,6 @@ export const useHeader = () => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-
       if (
         searchOpen &&
         searchBoxRef.current &&
@@ -195,7 +199,6 @@ export const useHeader = () => {
       ) {
         setSearchOpen(false);
       }
-
       if (
         mobileOpen &&
         mobileMenuRef.current &&
@@ -203,7 +206,6 @@ export const useHeader = () => {
       ) {
         closeMobileMenu();
       }
-
       if (
         categoryMenuOpen &&
         categoryMenuRef.current &&
@@ -226,18 +228,13 @@ export const useHeader = () => {
     setCategoryMenuOpen(false);
   }, [location.pathname, closeMobileMenu]);
 
-  // Cleanup timeout on unmount
+  // Cleanup timeout
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
+    return () => timeoutRef.current && clearTimeout(timeoutRef.current);
   }, []);
 
   // ========== RETURN ==========
   return {
-    // State
     isScrolled,
     activeMenu,
     mobileOpen,
@@ -248,19 +245,16 @@ export const useHeader = () => {
     menuItems,
     categoryMenuOpen,
 
-    // Refs
     searchInputRef,
     searchBoxRef,
     mobileMenuRef,
     categoryMenuRef,
 
-    // Setters
     setSearchOpen,
     setMobileOpen,
     setSearchQuery,
     setCategoryMenuOpen,
 
-    // Handlers
     handleSearchSubmit,
     handleMouseEnter,
     handleMouseLeave,
@@ -268,7 +262,6 @@ export const useHeader = () => {
     closeMobileMenu,
     fetchCartCount,
 
-    // Data
     taskbarItems,
     location,
     navigate,

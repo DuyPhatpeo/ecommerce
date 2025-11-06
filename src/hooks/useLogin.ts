@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getUserByEmail } from "../api/authApi";
+import { getUsers } from "../api/authApi"; // Firestore version
 
 interface LoginFormData {
   email: string;
@@ -11,6 +11,15 @@ interface LoginFormData {
 interface FormErrors {
   email?: string;
   password?: string;
+}
+
+interface User {
+  id?: string;
+  email: string;
+  password: string;
+  fullName?: string;
+  name?: string;
+  username?: string;
 }
 
 export default function useLogin() {
@@ -25,7 +34,7 @@ export default function useLogin() {
   const [rememberMe, setRememberMe] = useState(false);
 
   /* ==========================
-     Load saved email from localStorage
+     🔹 Load email đã lưu (nếu có)
   ========================== */
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe") === "true";
@@ -38,7 +47,7 @@ export default function useLogin() {
   }, []);
 
   /* ==========================
-     Handle input change
+     🔹 Handle input change
   ========================== */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,25 +56,25 @@ export default function useLogin() {
   };
 
   /* ==========================
-     Validate form
+     🔹 Validate form
   ========================== */
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     const { email, password } = formData;
 
-    if (!email.trim()) newErrors.email = "Email is required.";
-    if (!password.trim()) newErrors.password = "Password is required.";
+    if (!email.trim()) newErrors.email = "Email là bắt buộc.";
+    if (!password.trim()) newErrors.password = "Mật khẩu là bắt buộc.";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email))
-      newErrors.email = "Invalid email format.";
+      newErrors.email = "Định dạng email không hợp lệ.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   /* ==========================
-     Handle login
+     🔹 Handle login (Firestore)
   ========================== */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,47 +82,53 @@ export default function useLogin() {
 
     setLoading(true);
     try {
-      const email = formData.email.trim().toLowerCase();
-      const user = await getUserByEmail(email);
+      // 🔸 Lấy toàn bộ người dùng từ Firestore
+      const users = await getUsers();
+
+      // 🔸 Tìm user theo email (không phân biệt hoa/thường)
+      const user = users.find(
+        (u) =>
+          u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
+      );
 
       if (!user) {
-        toast.error("Email not found.");
+        toast.error("Email không tồn tại trong hệ thống.");
         return;
       }
 
       if (user.password !== formData.password) {
-        toast.error("Incorrect password.");
+        toast.error("Mật khẩu không chính xác.");
         return;
       }
 
-      const displayName = user.fullName || user.email || "User";
+      const displayName =
+        user.fullName || user.name || user.username || user.email;
 
-      // ✅ Save email if “Remember Me” is checked
+      // ✅ Ghi nhớ email nếu chọn “Remember Me”
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
-        localStorage.setItem("email", email);
+        localStorage.setItem("email", formData.email);
       } else {
         localStorage.removeItem("rememberMe");
         localStorage.removeItem("email");
       }
 
-      // ✅ Save userId to localStorage (ensure it exists)
+      // ✅ Lưu userId (giữ cố định)
       if (!user.id) {
-        console.warn("⚠️ User does not have an ID in Firestore!");
-        toast.error("User ID not found.");
+        console.warn("⚠️ User không có field `id` trong Firestore!");
+        toast.error("Không tìm thấy ID người dùng trong Firestore.");
         return;
       }
 
       localStorage.setItem("userId", user.id);
 
-      toast.success(`Welcome back, ${displayName}! 🎉`);
+      toast.success(`Chào mừng trở lại, ${displayName}! 🎉`);
       setFormData({ email: "", password: "" });
 
-      // ✅ Navigate after login
-      setTimeout(() => navigate("/"), 1200);
+      setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Something went wrong. Please try again.");
+      console.error("❌ Lỗi đăng nhập:", error);
+      toast.error("Đăng nhập thất bại. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }

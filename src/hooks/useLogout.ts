@@ -3,28 +3,29 @@ import { useState, useEffect } from "react";
 
 export const useLogout = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<{ name: string } | null>(() => {
-    const stored = localStorage.getItem("userId");
-    return stored ? JSON.parse(stored) : null;
+
+  // ✅ userId chỉ là chuỗi, KHÔNG parse JSON
+  const [userId, setUserId] = useState<string | null>(() => {
+    return localStorage.getItem("userId");
   });
 
-  // Sync across tabs
+  // 🔄 Đồng bộ giữa các tab
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "userId") {
-        setUser(e.newValue ? JSON.parse(e.newValue) : null);
+        setUserId(e.newValue);
       }
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  // ✅ Hàm logout
   const logout = () => {
-    // ✅ Chỉ xóa userId, giữ lại rememberMe và email
-    localStorage.removeItem("userId");
-    setUser(null);
+    localStorage.removeItem("userId"); // chỉ xoá userId
+    setUserId(null);
     navigate("/login");
   };
 
-  return { user, setUser, logout };
+  return { userId, setUserId, logout };
 };
