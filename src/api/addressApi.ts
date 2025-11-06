@@ -1,4 +1,12 @@
-import api from "../lib/axios";
+import {
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../lib/firebaseConfig";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Address {
   id?: string;
@@ -14,67 +22,99 @@ export interface Address {
   createdAt?: string;
 }
 
-// Lấy danh sách địa chỉ của user
-export const getUserAddresses = async (userId: string) => {
-  const res = await api.get(`/users/${userId}`);
-  return { data: res.data.addresses || [] };
+/* ==========================
+   Helper: find user by field "id"
+========================== */
+const getUserDocById = async (userId: string) => {
+  const q = query(collection(db, "users"), where("id", "==", userId));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) throw new Error("User not found");
+  return snapshot.docs[0];
 };
 
-// Thêm địa chỉ mới
+/* ==========================
+   1️⃣ Get user's address list
+========================== */
+export const getUserAddresses = async (userId: string) => {
+  const userDoc = await getUserDocById(userId);
+  const userData = userDoc.data();
+  const addresses = userData.addresses || [];
+  return { data: addresses };
+};
+
+/* ==========================
+   2️⃣ Add new address
+========================== */
 export const addUserAddress = async (userId: string, data: Address) => {
-  const res = await api.get(`/users/${userId}`);
-  const user = res.data;
+  const userDoc = await getUserDocById(userId);
+  const userData = userDoc.data();
+
   const newAddress: Address = {
     ...data,
-    id: Date.now().toString(),
+    id: uuidv4(),
     isDefault: data.isDefault || false,
     createdAt: new Date().toISOString(),
   };
-  const updatedUser = {
-    ...user,
-    addresses: [...(user.addresses || []), newAddress],
-  };
-  await api.put(`/users/${userId}`, updatedUser);
+
+  const updatedAddresses = [...(userData.addresses || []), newAddress];
+
+  await updateDoc(userDoc.ref, { addresses: updatedAddresses });
+
   return { data: newAddress };
 };
 
-// Cập nhật địa chỉ
+/* ==========================
+   3️⃣ Update address
+========================== */
 export const updateUserAddress = async (
   userId: string,
   addressId: string,
   data: Partial<Address>
 ) => {
-  const res = await api.get(`/users/${userId}`);
-  const user = res.data;
-  const updatedAddresses = (user.addresses || []).map((addr: Address) =>
+  const userDoc = await getUserDocById(userId);
+  const userData = userDoc.data();
+
+  const updatedAddresses = (userData.addresses || []).map((addr: Address) =>
     addr.id === addressId ? { ...addr, ...data } : addr
   );
-  await api.put(`/users/${userId}`, { ...user, addresses: updatedAddresses });
-  return { data: data };
+
+  await updateDoc(userDoc.ref, { addresses: updatedAddresses });
+
+  return { data };
 };
 
-// Xóa địa chỉ
+/* ==========================
+   4️⃣ Delete address
+========================== */
 export const deleteUserAddress = async (userId: string, addressId: string) => {
-  const res = await api.get(`/users/${userId}`);
-  const user = res.data;
-  const updatedAddresses = (user.addresses || []).filter(
+  const userDoc = await getUserDocById(userId);
+  const userData = userDoc.data();
+
+  const updatedAddresses = (userData.addresses || []).filter(
     (addr: Address) => addr.id !== addressId
   );
-  await api.put(`/users/${userId}`, { ...user, addresses: updatedAddresses });
+
+  await updateDoc(userDoc.ref, { addresses: updatedAddresses });
+
   return { data: addressId };
 };
 
-// Đặt địa chỉ mặc định
+/* ==========================
+   5️⃣ Set default address
+========================== */
 export const setDefaultUserAddress = async (
   userId: string,
   addressId: string
 ) => {
-  const res = await api.get(`/users/${userId}`);
-  const user = res.data;
-  const updatedAddresses = (user.addresses || []).map((addr: Address) => ({
+  const userDoc = await getUserDocById(userId);
+  const userData = userDoc.data();
+
+  const updatedAddresses = (userData.addresses || []).map((addr: Address) => ({
     ...addr,
     isDefault: addr.id === addressId,
   }));
-  await api.put(`/users/${userId}`, { ...user, addresses: updatedAddresses });
+
+  await updateDoc(userDoc.ref, { addresses: updatedAddresses });
+
   return { data: updatedAddresses };
 };

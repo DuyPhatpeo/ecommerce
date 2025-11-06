@@ -6,12 +6,20 @@ import {
   changeUserPassword,
 } from "../api/authApi";
 
+/* ==========================
+   INTERFACES
+========================== */
+
 export interface UserProfile {
   id?: string;
   fullName: string;
   email: string;
   phone: string;
 }
+
+/* ==========================
+   HOOK
+========================== */
 
 export const useProfile = () => {
   const userId = localStorage.getItem("userId") || "";
@@ -26,7 +34,6 @@ export const useProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
-
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
@@ -47,12 +54,12 @@ export const useProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const res = await getUserProfile(userId);
+        const res = await getUserProfile(userId); // 🔹 res is a User object
         const safeData: UserProfile = {
-          id: res.data.id,
-          fullName: res.data.fullName || "",
-          email: res.data.email || "",
-          phone: res.data.phone || "", // ✅ Đã thêm || ""
+          id: res.id,
+          fullName: res.fullName || "",
+          email: res.email || "",
+          phone: res.phone || "",
         };
         setProfile(safeData);
         setEditedProfile(safeData);
@@ -86,7 +93,6 @@ export const useProfile = () => {
     if (!userId) return toast.error("User not found.");
 
     const updates: Partial<UserProfile> = {};
-
     (Object.keys(editedProfile) as (keyof UserProfile)[]).forEach((key) => {
       if (editedProfile[key] !== profile[key]) {
         updates[key] = editedProfile[key];
@@ -99,17 +105,10 @@ export const useProfile = () => {
     }
 
     try {
-      const res = await updateUserProfile(userId, updates);
-
-      const safeData: UserProfile = {
-        id: res.data.id,
-        fullName: res.data.fullName || "",
-        email: res.data.email || "",
-        phone: res.data.phone || "",
-      };
-
-      setProfile(safeData);
-      setEditedProfile(safeData);
+      await updateUserProfile(userId, updates);
+      const newProfile = { ...profile, ...updates };
+      setProfile(newProfile);
+      setEditedProfile(newProfile);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
     } catch (err) {

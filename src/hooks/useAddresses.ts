@@ -9,14 +9,16 @@ import {
   setDefaultUserAddress,
 } from "../api/addressApi";
 
-// ✅ Thêm kiểu mở rộng để dùng được field "line"
+// 🔹 Extend type with "line" for formatted display
 type AddressWithLine = Address & { line?: string };
 
 export const useAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const userId = localStorage.getItem("userId") || "";
 
+  // 🔹 Fetch all addresses from Firestore
   const fetchAddresses = async () => {
+    if (!userId) return;
     try {
       const res = await getUserAddresses(userId);
       setAddresses(res.data);
@@ -30,27 +32,27 @@ export const useAddresses = () => {
     fetchAddresses();
   }, []);
 
-  // 🔹 Parse 1 dòng địa chỉ thành các trường riêng
+  // 🔹 Parse one-line address into separate fields
   const parseAddressString = (input: string) => {
-    const [street, ward, district, city, country = "Việt Nam"] = input
+    const [street, ward, district, city, country = "Vietnam"] = input
       .split(",")
       .map((p) => p.trim());
     return { street, ward, district, city, country, postalCode: "" };
   };
 
-  // 🔹 Gộp các trường thành 1 dòng địa chỉ
+  // 🔹 Combine fields into one-line address
   const formatAddressLine = (addr: Address) =>
     [addr.street, addr.ward, addr.district, addr.city, addr.country]
       .filter(Boolean)
       .join(", ");
 
-  // ✅ Thêm địa chỉ mới
+  // ✅ Add new address
   const addAddress = async (data: Partial<AddressWithLine>) => {
     if (!userId) return toast.error("User not found");
 
     const parsed = parseAddressString(data.line || data.street || "");
     const newAddress: Address = {
-      id: `addr_${Date.now()}`,
+      id: `${Date.now()}`,
       recipientName: data.recipientName || "",
       phone: data.phone || "",
       ...parsed,
@@ -61,15 +63,17 @@ export const useAddresses = () => {
     try {
       await addUserAddress(userId, newAddress);
       toast.success("Address added!");
-      fetchAddresses();
+      await fetchAddresses();
     } catch (err) {
       console.error(err);
       toast.error("Failed to add address");
     }
   };
 
-  // ✅ Cập nhật hoặc thêm mới
+  // ✅ Update existing or add new
   const handleSave = async (data: Partial<AddressWithLine>) => {
+    if (!userId) return toast.error("User not found");
+
     if (data.id) {
       const updated = data.line
         ? { ...data, ...parseAddressString(data.line) }
@@ -77,7 +81,7 @@ export const useAddresses = () => {
       try {
         await updateUserAddress(userId, data.id, updated);
         toast.success("Address updated!");
-        fetchAddresses();
+        await fetchAddresses();
       } catch (err) {
         console.error(err);
         toast.error("Failed to update address");
@@ -87,12 +91,15 @@ export const useAddresses = () => {
     }
   };
 
-  // ✅ Xoá địa chỉ
+  // ✅ Delete address
   const handleDelete = async (id: string) => {
+    if (!userId) return toast.error("User not found");
+
     try {
       const isDefaultDeleted = addresses.find(
         (addr) => addr.id === id
       )?.isDefault;
+
       await deleteUserAddress(userId, id);
       toast.success("Address deleted!");
 
@@ -103,26 +110,28 @@ export const useAddresses = () => {
         toast.success("Default address updated!");
       }
 
-      fetchAddresses();
+      await fetchAddresses();
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete address");
     }
   };
 
-  // ✅ Đặt mặc định
+  // ✅ Set default address
   const handleSetDefault = async (id: string) => {
+    if (!userId) return toast.error("User not found");
+
     try {
       await setDefaultUserAddress(userId, id);
       toast.success("Default address updated!");
-      fetchAddresses();
+      await fetchAddresses();
     } catch (err) {
       console.error(err);
       toast.error("Failed to set default address");
     }
   };
 
-  // ✅ Trả về danh sách đã format
+  // ✅ Format addresses for display
   const addressesFormatted = addresses.map((addr) => ({
     ...addr,
     line: formatAddressLine(addr),
