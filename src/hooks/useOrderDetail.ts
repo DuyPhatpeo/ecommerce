@@ -6,7 +6,7 @@ import { getProductById } from "../api/productApi";
 /* ------------------ Interfaces ------------------ */
 interface Customer {
   id: string;
-  name: string;
+  recipientName: string;
   phone: string;
   address: string;
   isDefault?: boolean;
