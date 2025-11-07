@@ -159,9 +159,9 @@ const ProductView: React.FC<ProductViewProps> = ({
                   : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
               }
             >
-              {products.map((p) => (
+              {products.map((p, index) => (
                 <div
-                  key={p.id}
+                  key={`${p.id}-${index}`}
                   className={
                     mode === "slider"
                       ? "product-card-item flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-14px)] lg:w-[calc(25%-14px)] xl:w-[calc(16.666%-16px)]"
