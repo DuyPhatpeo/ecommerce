@@ -72,18 +72,31 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       try {
         const result: (Product & { quantity: number })[] = [];
 
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          toast.error("Vui lòng đăng nhập để thanh toán!");
+          navigate("/login");
+          return;
+        }
+
         if (state.selectedItems?.length) {
           for (const item of state.selectedItems) {
-            const cartRes = await getCartItem(item.id);
-            const cart = cartRes?.data || cartRes;
-            const productRes = await getProductById(cart.productId);
-            const product = productRes?.data || productRes;
-            result.push({ ...product, quantity: item.quantity });
+            const cartRes = await getCartItem(userId, item.id);
+            if (!cartRes) continue; // ❌ bỏ qua nếu item không tồn tại
+
+            const productRes = await getProductById(cartRes.productId);
+            if (!productRes) continue; // ❌ bỏ qua nếu sản phẩm không tồn tại
+
+            result.push({
+              ...productRes,
+              quantity: item.quantity,
+            });
           }
         } else if (state.productId && state.quantity) {
           const productRes = await getProductById(state.productId);
-          const product = productRes?.data || productRes;
-          result.push({ ...product, quantity: state.quantity });
+          if (productRes) {
+            result.push({ ...productRes, quantity: state.quantity });
+          }
         }
 
         if (!result.length) {

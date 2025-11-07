@@ -69,8 +69,15 @@ export const useHeader = () => {
   // ========== HANDLERS ==========
   const fetchCartCount = useCallback(async () => {
     try {
-      const cartItems = await getCart();
-      setCartCount(Array.isArray(cartItems) ? cartItems.length : 0);
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        setCartCount(0);
+        return;
+      }
+
+      const cartItems = await getCart(userId);
+      // Chỉ lấy số lượng sản phẩm khác nhau
+      setCartCount(cartItems.length);
     } catch (error) {
       console.error("Error fetching cart:", error);
       setCartCount(0);

@@ -7,33 +7,57 @@ import {
   deleteCartItem,
   clearCart,
 } from "../api/cartApi";
+
+import type { CartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 
 export const useCart = () => {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(
+    localStorage.getItem("userId")
+  );
+  const [cartItems, setCartItems] = useState<(CartItem & { product?: any })[]>(
+    []
+  );
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
 
   /* =====================
+     🔄 Đồng bộ userId từ localStorage
+  ===================== */
+  useEffect(() => {
+    const syncUserId = () => setUserId(localStorage.getItem("userId"));
+    window.addEventListener("storage", syncUserId);
+    syncUserId();
+    return () => window.removeEventListener("storage", syncUserId);
+  }, []);
+
+  /* =====================
      🛒 FETCH CART
   ===================== */
   const fetchCart = useCallback(async () => {
+    if (!userId) {
+      setCartItems([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
-      setLoading(true);
-      const cart = await getCart();
+      const cart = await getCart(userId);
 
       if (!cart || cart.length === 0) {
         setCartItems([]);
+        setSelectedItems([]);
         return;
       }
 
       const products = await Promise.allSettled(
-        cart.map((item: any) => getProductById(item.productId))
+        cart.map((item) => getProductById(item.productId))
       );
 
-      const merged = cart.map((item: any, i: number) => ({
+      const merged = cart.map((item, i) => ({
         ...item,
         id: String(item.id),
         product:
@@ -50,7 +74,7 @@ export const useCart = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     fetchCart();
@@ -60,6 +84,8 @@ export const useCart = () => {
      🔄 UPDATE QUANTITY
   ===================== */
   const updateQuantity = async (id: string, change: number) => {
+    if (!userId) return;
+
     const item = cartItems.find((i) => i.id === id);
     if (!item) return;
 
@@ -72,7 +98,7 @@ export const useCart = () => {
     );
 
     try {
-      await updateCartItem(id, newQty);
+      await updateCartItem(userId, id, newQty);
       toast.success("Quantity updated successfully.");
     } catch {
       setCartItems((prev) =>
@@ -88,12 +114,13 @@ export const useCart = () => {
      ❌ REMOVE ITEM
   ===================== */
   const removeItem = async (id: string) => {
+    if (!userId) return;
     const prev = [...cartItems];
     setCartItems((c) => c.filter((i) => i.id !== id));
     setSelectedItems((s) => s.filter((sid) => sid !== id));
 
     try {
-      await deleteCartItem(id);
+      await deleteCartItem(userId, id);
       toast.success("Item removed from cart.");
     } catch {
       setCartItems(prev);
@@ -105,14 +132,14 @@ export const useCart = () => {
      🧹 CLEAR CART
   ===================== */
   const removeAll = async () => {
-    if (cartItems.length === 0) return;
+    if (!userId || cartItems.length === 0) return;
     setClearing(true);
     const prev = [...cartItems];
     setCartItems([]);
     setSelectedItems([]);
 
     try {
-      await clearCart();
+      await clearCart(userId);
       toast.success("All items removed from cart.");
     } catch {
       setCartItems(prev);
@@ -142,6 +169,7 @@ export const useCart = () => {
   };
 
   return {
+    userId,
     cartItems,
     selectedItems,
     loading,

@@ -6,6 +6,16 @@ import { addToCart } from "../api/cartApi";
 import Button from "../components/ui/Button";
 import { X } from "lucide-react";
 
+interface AddToCartParams {
+  id: string; // productId
+  title: string;
+  stock: number;
+  quantity: number;
+  price: number;
+  images?: string[];
+  setLoading: (v: boolean) => void;
+}
+
 /** Hook xử lý thêm sản phẩm vào giỏ hàng */
 export const useAddToCart = () => {
   const navigate = useNavigate();
@@ -32,7 +42,6 @@ export const useAddToCart = () => {
               onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
             />
 
-            {/* Nội dung */}
             <div className="flex flex-col justify-between flex-1 h-full text-sm">
               <div className="space-y-0.5 overflow-hidden">
                 <p className="font-semibold text-gray-800 truncate">{title}</p>
@@ -50,7 +59,6 @@ export const useAddToCart = () => {
                 )}
               </div>
 
-              {/* Nút luôn cố định ở dưới */}
               <div className="mt-2">
                 <Button
                   label="View cart"
@@ -87,15 +95,13 @@ export const useAddToCart = () => {
       price,
       images,
       setLoading,
-    }: {
-      id: string;
-      title: string;
-      stock: number;
-      quantity: number;
-      price: number;
-      images?: string[];
-      setLoading: (v: boolean) => void;
-    }) => {
+    }: AddToCartParams) => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        toast.error("You need to login to add products to cart!");
+        return;
+      }
+
       if (quantity > stock) {
         toast.error(`Only ${stock} items left in stock!`);
         return;
@@ -103,9 +109,10 @@ export const useAddToCart = () => {
 
       setLoading(true);
       try {
-        await addToCart(id, quantity);
+        await addToCart(userId, id, quantity); // ✅ truyền userId
         showCartToast(title, images?.[0] || "", price, quantity);
-      } catch {
+      } catch (err) {
+        console.error(err);
         toast.error("Failed to add product to cart!");
       } finally {
         setLoading(false);
