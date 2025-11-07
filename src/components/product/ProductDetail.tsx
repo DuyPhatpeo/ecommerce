@@ -20,13 +20,13 @@ interface Product {
   images: string[];
   category: string;
   brand: string;
-  status: string;
-  salePrice: number;
+  status?: string;
+  salePrice?: number;
   regularPrice?: number;
   description?: string;
   specs?: Record<string, string>;
   reviews?: Review[];
-  stock: number;
+  stock?: number;
 }
 
 export default function ProductDetail() {
@@ -40,8 +40,30 @@ export default function ProductDetail() {
       setLoading(true);
       try {
         if (!id) throw new Error("No product ID");
+
         const data = await getProductById(id);
-        setProduct(data);
+
+        // Normalize data để tránh undefined và lỗi TS
+        const normalized: Product = {
+          id: data.id,
+          title: data.title || "Untitled",
+          salePrice: data.salePrice ?? 0,
+          regularPrice: data.regularPrice ?? data.salePrice ?? 0,
+          stock: data.stock ?? 0,
+          status: data.status ?? "available",
+          images: Array.isArray(data.images)
+            ? data.images
+            : data.images
+            ? [data.images]
+            : ["/placeholder.jpg"],
+          category: data.category || "Uncategorized",
+          brand: data.brand || "No Brand",
+          description: data.description,
+          specs: data.specs,
+          reviews: data.reviews ?? [],
+        };
+
+        setProduct(normalized);
         setError(null);
       } catch (err) {
         console.error(err);
@@ -55,7 +77,6 @@ export default function ProductDetail() {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, [id]);
 
-  /** ======= Trạng thái loading ======= */
   if (loading)
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-gray-50 to-gray-100">
@@ -64,7 +85,6 @@ export default function ProductDetail() {
       </div>
     );
 
-  /** ======= Lỗi hoặc không có sản phẩm ======= */
   if (error || !product)
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-red-50 to-gray-50">
@@ -77,10 +97,8 @@ export default function ProductDetail() {
       </div>
     );
 
-  /** ======= Giao diện chi tiết sản phẩm ======= */
   return (
     <div>
-      {/* ======= Banner ======= */}
       <SectionBanner
         bgImage="/banner-bg.jpg"
         title={product.title}
@@ -89,24 +107,22 @@ export default function ProductDetail() {
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* ======= Main Product Section ======= */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-300 hover:shadow-2xl">
             <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">
               <ProductGallery images={product.images} title={product.title} />
               <ProductInfo
                 id={product.id}
                 title={product.title}
-                salePrice={product.salePrice ?? (product as any).price}
-                regularPrice={product.regularPrice ?? (product as any).oldPrice}
+                salePrice={product.salePrice!}
+                regularPrice={product.regularPrice!}
                 category={product.category}
                 brand={product.brand}
                 images={product.images}
-                stock={product.stock}
+                stock={product.stock!}
               />
             </div>
           </div>
 
-          {/* ======= Tabs (Description / Specification / Reviews) ======= */}
           <ProductTabs
             description={product.description}
             specs={product.specs}

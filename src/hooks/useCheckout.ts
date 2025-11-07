@@ -22,7 +22,7 @@ interface CheckoutData {
   shipping?: number;
   total?: number;
   selectedItems?: { id: string; quantity: number }[];
-  productId?: number;
+  productId?: string;
   quantity?: number;
 }
 

@@ -9,7 +9,7 @@ import ProductCard from "../section/ProductCard";
 interface Product {
   id: string;
   title: string;
-  salePrice: number;
+  salePrice?: number; // optional vì API có thể undefined
   regularPrice?: number;
   status?: string;
   images?: string[];
@@ -24,14 +24,12 @@ const CategoryProducts: React.FC = () => {
   const { category } = useParams<{ category: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // --- State chính ---
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(9);
 
-  // --- Đọc filter/sort từ URL ---
   const [brandFilter, setBrandFilter] = useState<string[]>(
     searchParams.getAll("brand")
   );
@@ -58,50 +56,56 @@ const CategoryProducts: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const data: Product[] = await getProducts({ category });
-        setProducts(data || []);
+
+        const data = await getProducts({ category });
+
+        const normalizedData: Product[] = (data || []).map((p: any) => ({
+          id: p.id,
+          title: p.title || "Untitled",
+          salePrice: p.salePrice ?? p.price ?? 0,
+          regularPrice: p.regularPrice ?? p.oldPrice ?? p.salePrice ?? 0,
+          stock: p.stock ?? 0,
+          status: p.status,
+          images: Array.isArray(p.images)
+            ? p.images
+            : p.image
+            ? [p.image]
+            : ["/placeholder.jpg"],
+          category: p.category,
+          brand: p.brand,
+          color: p.color,
+          size: p.size ?? "",
+        }));
+
+        setProducts(normalizedData);
       } catch {
         setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, [category]);
 
-  // --- Danh sách tùy chọn filter ---
   const brandOptions = [
     ...new Set(
       products.map((p) => p.brand).filter((b): b is string => Boolean(b))
     ),
   ];
-  // const colorOptions = [
-  //   ...new Set(
-  //     products.map((p) => p.color).filter((c): c is string => Boolean(c))
-  //   ),
-  // ];
-  // const sizeOptions = [
-  //   ...new Set(
-  //     products.map((p) => p.size).filter((s): s is string => Boolean(s))
-  //   ),
-  // ];
 
-  // --- Cập nhật URL mỗi khi filter thay đổi ---
   useEffect(() => {
     const params: Record<string, string | string[]> = {};
-
     if (brandFilter.length) params.brand = brandFilter;
     if (colorFilter.length) params.color = colorFilter;
     if (sizeFilter.length) params.size = sizeFilter;
     if (stockFilter !== "all") params.stock = stockFilter;
     if (sortBy !== "none") params.sort = sortBy;
     if (priceRange.min > 0) params.min = String(priceRange.min);
-    if (priceRange.max < 10000000) params.max = String(priceRange.max);
-
+    if (priceRange.max < 100000000) params.max = String(priceRange.max);
     setSearchParams(params as any, { replace: true });
   }, [brandFilter, colorFilter, sizeFilter, stockFilter, priceRange, sortBy]);
 
-  // --- Lọc sản phẩm ---
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchBrand =
@@ -117,16 +121,15 @@ const CategoryProducts: React.FC = () => {
           ? (p.stock ?? 0) > 0
           : (p.stock ?? 0) <= 0;
       const matchPrice =
-        p.salePrice >= priceRange.min && p.salePrice <= priceRange.max;
+        (p.salePrice ?? 0) >= priceRange.min &&
+        (p.salePrice ?? 0) <= priceRange.max;
 
       return matchBrand && matchColor && matchSize && matchStock && matchPrice;
     });
   }, [products, brandFilter, colorFilter, sizeFilter, stockFilter, priceRange]);
 
-  // --- Sắp xếp & đẩy hết hàng xuống ---
   const sortedProducts = useMemo(() => {
     const items = [...filteredProducts];
-
     switch (sortBy) {
       case "name-asc":
         items.sort((a, b) => a.title.localeCompare(b.title));
@@ -135,10 +138,10 @@ const CategoryProducts: React.FC = () => {
         items.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "price-asc":
-        items.sort((a, b) => a.salePrice - b.salePrice);
+        items.sort((a, b) => (a.salePrice ?? 0) - (b.salePrice ?? 0));
         break;
       case "price-desc":
-        items.sort((a, b) => b.salePrice - a.salePrice);
+        items.sort((a, b) => (b.salePrice ?? 0) - (a.salePrice ?? 0));
         break;
       case "discount-high":
         items.sort(
@@ -149,8 +152,6 @@ const CategoryProducts: React.FC = () => {
         );
         break;
     }
-
-    // ⚡ Sản phẩm còn hàng trước
     items.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -158,7 +159,6 @@ const CategoryProducts: React.FC = () => {
       if (stockA <= 0 && stockB > 0) return 1;
       return 0;
     });
-
     return items;
   }, [filteredProducts, sortBy]);
 
@@ -170,7 +170,7 @@ const CategoryProducts: React.FC = () => {
     setSizeFilter([]);
     setStockFilter("all");
     setSortBy("none");
-    setPriceRange({ min: 0, max: 10000000 });
+    setPriceRange({ min: 0, max: 100000000 });
     setSearchParams({});
   };
 
@@ -191,7 +191,7 @@ const CategoryProducts: React.FC = () => {
           </h2>
         </div>
 
-        {/* --- Toolbar --- */}
+        {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={() => setShowFilters(!showFilters)}
@@ -199,8 +199,6 @@ const CategoryProducts: React.FC = () => {
             icon={<Filter size={18} />}
             label={"Filter"}
           />
-
-          {/* --- Sort --- */}
           <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
             <ArrowUpDown size={18} className="text-orange-500 shrink-0" />
             <select
@@ -219,7 +217,7 @@ const CategoryProducts: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* --- Sidebar --- */}
+          {/* Sidebar */}
           <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
               context="category"
@@ -247,12 +245,12 @@ const CategoryProducts: React.FC = () => {
               priceRange={priceRange}
               setPriceRange={setPriceRange}
               priceMin={0}
-              priceMax={10000000}
+              priceMax={100000000}
               priceStep={100000}
             />
           </div>
 
-          {/* --- Grid sản phẩm --- */}
+          {/* Grid sản phẩm */}
           <div className="flex-1 relative">
             {loading && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
@@ -287,9 +285,9 @@ const CategoryProducts: React.FC = () => {
                         id: p.id,
                         img: p.images?.[0] || "/placeholder.jpg",
                         title: p.title,
-                        salePrice: p.salePrice,
-                        regularPrice: p.regularPrice,
-                        stock: p.stock,
+                        salePrice: p.salePrice ?? 0,
+                        regularPrice: p.regularPrice ?? 0,
+                        stock: p.stock ?? 0,
                       }}
                     />
                   ))}

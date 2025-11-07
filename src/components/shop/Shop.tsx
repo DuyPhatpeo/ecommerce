@@ -26,19 +26,35 @@ const Shop: React.FC = () => {
 
   useEffect(() => {
     let mounted = true;
+
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data: Product[] = await getProducts();
-        if (!Array.isArray(data)) throw new Error("Invalid product data");
-        if (mounted) setProducts(data);
-      } catch {
+        const dataFromApi = await getProducts();
+
+        if (!Array.isArray(dataFromApi))
+          throw new Error("Invalid product data");
+
+        // --- normalize dữ liệu ---
+        const normalized: Product[] = dataFromApi.map((p) => ({
+          ...p,
+          salePrice: p.salePrice ?? 0, // bắt buộc number
+          regularPrice: p.regularPrice ?? 0,
+          stock: p.stock ?? 0,
+          status: p.status ?? "available",
+        }));
+
+        if (mounted) setProducts(normalized);
+      } catch (err) {
+        console.error(err);
         if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
       } finally {
         if (mounted) setLoading(false);
       }
     };
+
     fetchData();
+
     return () => {
       mounted = false;
     };

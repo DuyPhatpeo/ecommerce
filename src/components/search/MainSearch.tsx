@@ -1,6 +1,3 @@
-// ============================================================
-// MainSearch.tsx - Hoàn chỉnh với useShopSort hook
-// ============================================================
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
@@ -10,7 +7,6 @@ import SectionBanner from "../section/SectionBanner";
 import Button from "../ui/Button";
 import { useSort } from "../../hooks/useSort";
 
-// ================== Type & Constants ==================
 export type SortOption =
   | "none"
   | "name-asc"
@@ -23,16 +19,15 @@ export interface Product {
   id: string;
   title: string;
   salePrice: number;
-  regularPrice?: number;
-  stock?: number;
-  images?: string[];
+  regularPrice: number;
+  stock: number;
+  images: string[];
   category?: string;
   brand?: string;
 }
 
 const ITEMS_PER_PAGE = 8;
 
-// ================== Component ==================
 const MainSearch: React.FC = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
@@ -53,7 +48,22 @@ const MainSearch: React.FC = () => {
       try {
         setLoading(true);
         const data = await getProducts();
-        setAllProducts(data);
+
+        // Normalize dữ liệu: salePrice/regularPrice/stock/images
+        const normalized: Product[] = data.map((p: any) => ({
+          id: p.id,
+          title: p.title || "Untitled Product",
+          salePrice: p.salePrice ?? p.price ?? 0,
+          regularPrice: p.regularPrice ?? p.oldPrice ?? p.salePrice ?? 0,
+          stock: p.stock ?? 0,
+          images: Array.isArray(p.images)
+            ? p.images
+            : [p.image || "/placeholder.jpg"],
+          category: p.category,
+          brand: p.brand,
+        }));
+
+        setAllProducts(normalized);
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -71,32 +81,15 @@ const MainSearch: React.FC = () => {
     }
 
     const lowerKeyword = keyword.toLowerCase();
-
     const filtered = allProducts.filter((p) => {
-      const title = p.title?.toLowerCase() || "";
-      const brand = p.brand?.toLowerCase() || "";
-      const category = p.category?.toLowerCase() || "";
       return (
-        title.includes(lowerKeyword) ||
-        brand.includes(lowerKeyword) ||
-        category.includes(lowerKeyword)
+        p.title.toLowerCase().includes(lowerKeyword) ||
+        (p.brand?.toLowerCase().includes(lowerKeyword) ?? false) ||
+        (p.category?.toLowerCase().includes(lowerKeyword) ?? false)
       );
     });
 
-    const mapped: Product[] = filtered.map((p: any) => ({
-      id: p.id,
-      title: p.title,
-      salePrice: p.salePrice ?? p.price,
-      regularPrice: p.regularPrice ?? p.oldPrice,
-      stock: p.stock,
-      images: Array.isArray(p.images)
-        ? p.images
-        : [p.image || "/placeholder.jpg"],
-      category: p.category,
-      brand: p.brand,
-    }));
-
-    setSearchResults(mapped);
+    setSearchResults(filtered);
   }, [keyword, allProducts]);
 
   // 🎯 Sort & Pagination
@@ -108,7 +101,6 @@ const MainSearch: React.FC = () => {
 
   const totalFound = searchResults.length;
 
-  // ================== Render ==================
   return (
     <>
       <SectionBanner

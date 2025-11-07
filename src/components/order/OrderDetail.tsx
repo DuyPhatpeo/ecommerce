@@ -13,7 +13,6 @@ import { useOrderDetail } from "../../hooks/useOrderDetail";
 import OrderTimeline from "./OrderTimeline";
 import OrderProductList from "./OrderProductList";
 
-/* ---------------- Component ---------------- */
 const OrderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { order, products, loading } = useOrderDetail(id);
@@ -46,7 +45,7 @@ const OrderDetail: React.FC = () => {
                   </p>
                 </div>
                 <div className="bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full font-semibold text-sm capitalize">
-                  {order.status}
+                  {order.status ?? "Pending"}
                 </div>
               </div>
 
@@ -69,17 +68,17 @@ const OrderDetail: React.FC = () => {
                   <InfoItem
                     icon={<User className="text-blue-500 w-5 h-5" />}
                     label="Full Name"
-                    value={order.customer.recipientName}
+                    value={order.customer.recipientName ?? "N/A"}
                   />
                   <InfoItem
                     icon={<Phone className="text-green-500 w-5 h-5" />}
                     label="Phone"
-                    value={order.customer.phone}
+                    value={order.customer.phone ?? "N/A"}
                   />
                   <InfoItem
                     icon={<MapPin className="text-red-500 w-5 h-5" />}
                     label="Address"
-                    value={order.customer.address}
+                    value={order.customer.address ?? "N/A"}
                   />
                   <InfoItem
                     icon={<CreditCard className="text-purple-500 w-5 h-5" />}
@@ -87,7 +86,7 @@ const OrderDetail: React.FC = () => {
                     value={
                       order.customer.paymentMethod === "cod"
                         ? "Cash on Delivery"
-                        : order.customer.paymentMethod
+                        : order.customer.paymentMethod ?? "N/A"
                     }
                   />
                 </div>
@@ -102,13 +101,17 @@ const OrderDetail: React.FC = () => {
                 <InfoItem
                   icon={<Calendar className="text-orange-500 w-5 h-5" />}
                   label="Order Date"
-                  value={new Date(order.createdAt).toLocaleString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  value={
+                    order.createdAt
+                      ? new Date(order.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "N/A"
+                  }
                 />
               </div>
             </div>
@@ -128,17 +131,17 @@ const OrderDetail: React.FC = () => {
               <div className="space-y-4 mb-6">
                 <Row
                   label="Subtotal"
-                  value={`${order.subtotal.toLocaleString("en-US")}₫`}
+                  value={`${(order.subtotal ?? 0).toLocaleString("en-US")}₫`}
                 />
                 <Row label="Shipping" value="Free" />
                 <Row
                   label="Tax"
-                  value={`${order.tax.toLocaleString("en-US")}₫`}
+                  value={`${(order.tax ?? 0).toLocaleString("en-US")}₫`}
                 />
                 <div className="border-t-2 border-orange-200 pt-4 flex justify-between items-center">
                   <span className="font-bold text-xl text-gray-900">Total</span>
                   <span className="font-bold text-2xl text-orange-600">
-                    {order.total.toLocaleString("en-US")}₫
+                    {(order.total ?? 0).toLocaleString("en-US")}₫
                   </span>
                 </div>
               </div>
