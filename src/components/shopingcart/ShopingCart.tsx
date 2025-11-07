@@ -17,6 +17,12 @@ export default function ShoppingCart() {
     toggleSelectAll,
   } = useCart();
 
+  // Map cartItems sang CartItemType để đảm bảo có productid
+  const formattedCartItems = cartItems.map((item) => ({
+    ...item,
+    productid: item.product?.id || "", // nếu không có product, để rỗng string
+  }));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
@@ -24,7 +30,7 @@ export default function ShoppingCart() {
           {/* Cart List */}
           <div className="w-full lg:col-span-2">
             <CartList
-              cartItems={cartItems}
+              cartItems={formattedCartItems}
               selectedItems={selectedItems}
               loading={loading}
               updating={updating}
@@ -39,7 +45,10 @@ export default function ShoppingCart() {
 
           {/* Cart Summary */}
           <div className="w-full">
-            <CartSummary cartItems={cartItems} selectedItems={selectedItems} />
+            <CartSummary
+              cartItems={formattedCartItems}
+              selectedItems={selectedItems}
+            />
           </div>
         </div>
       </div>

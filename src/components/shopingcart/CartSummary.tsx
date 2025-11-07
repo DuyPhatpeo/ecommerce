@@ -26,7 +26,10 @@ interface CartItemType {
 }
 
 interface CartSummaryProps {
-  cartItems: CartItemType[];
+  cartItems: (
+    | CartItemType
+    | { id: string; product?: ProductType; quantity: number }
+  )[];
   selectedItems: string[];
 }
 
@@ -36,15 +39,22 @@ export default function CartSummary({
 }: CartSummaryProps) {
   const navigate = useNavigate();
 
+  // ===== Map cartItems sang CartItemType để đảm bảo có productid =====
+  const formattedCartItems: CartItemType[] = cartItems.map((item) => ({
+    ...item,
+    productid: item.product?.id || "", // nếu product undefined thì để rỗng
+    product: item.product || { id: "", title: "", stock: 0 },
+  }));
+
   // ===== Filter valid & invalid products =====
-  const validSelectedItems = cartItems.filter(
+  const validSelectedItems = formattedCartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       item.product.stock > 0 &&
       item.quantity <= item.product.stock
   );
 
-  const invalidSelectedItems = cartItems.filter(
+  const invalidSelectedItems = formattedCartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
       (item.product.stock === 0 || item.quantity > item.product.stock)

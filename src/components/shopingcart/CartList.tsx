@@ -21,7 +21,10 @@ interface CartItemType {
 }
 
 interface CartListProps {
-  cartItems: CartItemType[];
+  cartItems: (
+    | CartItemType
+    | { id: string; product?: ProductType; quantity: number }
+  )[];
   selectedItems: string[];
   loading: boolean;
   updating: string | null;
@@ -45,8 +48,15 @@ export default function CartList({
   clearAll,
   clearing,
 }: CartListProps) {
-  const validItems = cartItems.filter(
-    (item) => item.product?.stock > 0 && item.quantity <= item.product?.stock
+  // Map cartItems để đảm bảo có productid
+  const formattedCartItems: CartItemType[] = cartItems.map((item) => ({
+    ...item,
+    productid: item.product?.id || "", // nếu không có product, để rỗng
+    product: item.product || { id: "", title: "", image: "", stock: 0 },
+  }));
+
+  const validItems = formattedCartItems.filter(
+    (item) => item.product.stock > 0 && item.quantity <= item.product.stock
   );
   const validIds = validItems.map((item) => item.id);
 
@@ -55,14 +65,16 @@ export default function CartList({
     validIds.every((id) => selectedItems.includes(id)) &&
     selectedItems.length === validIds.length;
 
-  const outOfStockItems = cartItems.filter((item) => item.product?.stock === 0);
+  const outOfStockItems = formattedCartItems.filter(
+    (item) => item.product.stock === 0
+  );
 
   const handleSelectAll = () => {
     if (allValidSelected) {
       toggleSelectAll([]);
     } else {
       toggleSelectAll(validIds);
-      const invalidCount = cartItems.length - validIds.length;
+      const invalidCount = formattedCartItems.length - validIds.length;
       if (invalidCount > 0) {
         toast.error(
           `${invalidCount} item(s) cannot be selected (out of stock or exceeds stock quantity)`
@@ -71,16 +83,16 @@ export default function CartList({
     }
   };
 
-  const sortedCartItems = [...cartItems].sort((a, b) => {
-    const aOut = a.product?.stock === 0 || a.quantity > a.product?.stock;
-    const bOut = b.product?.stock === 0 || b.quantity > b.product?.stock;
+  const sortedCartItems = [...formattedCartItems].sort((a, b) => {
+    const aOut = a.product.stock === 0 || a.quantity > a.product.stock;
+    const bOut = b.product.stock === 0 || b.quantity > b.product.stock;
     return aOut === bOut ? 0 : aOut ? 1 : -1;
   });
 
   return (
     <div className="lg:col-span-2">
       <div className="bg-white border border-orange-100 rounded-3xl p-8 space-y-6 shadow-sm">
-        {/* ===== HEADER (đồng bộ CartSummary) ===== */}
+        {/* HEADER */}
         <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">
             <ShoppingBag className="text-orange-600 w-6 h-6" />
@@ -88,8 +100,8 @@ export default function CartList({
           </div>
         </div>
 
-        {/* ===== CONTROL ROW ===== */}
-        {!loading && cartItems.length > 0 && (
+        {/* CONTROL ROW */}
+        {!loading && formattedCartItems.length > 0 && (
           <div className="flex items-center justify-between flex-wrap gap-2 border-b border-orange-100 pb-4">
             <div className="flex items-center gap-2">
               <Checkbox
@@ -102,7 +114,7 @@ export default function CartList({
 
             <Button
               onClick={clearAll}
-              disabled={clearing || cartItems.length === 0}
+              disabled={clearing || formattedCartItems.length === 0}
               icon={<Trash2 className="w-4 h-4" />}
               label={clearing ? "Clearing..." : "Clear all"}
               className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap ${
@@ -114,7 +126,7 @@ export default function CartList({
           </div>
         )}
 
-        {/* ===== BODY ===== */}
+        {/* BODY */}
         <div>
           {loading ? (
             <div className="text-center py-12">
@@ -123,7 +135,7 @@ export default function CartList({
                 Loading cart...
               </p>
             </div>
-          ) : cartItems.length === 0 ? (
+          ) : formattedCartItems.length === 0 ? (
             <div className="text-center py-16">
               <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <ShoppingBag className="w-14 h-14 text-orange-500" />
@@ -135,7 +147,7 @@ export default function CartList({
                 Add some products to your cart to get started!
               </p>
             </div>
-          ) : outOfStockItems.length === cartItems.length ? (
+          ) : outOfStockItems.length === formattedCartItems.length ? (
             <div className="text-center py-16">
               <div className="w-20 h-20 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
                 <AlertTriangle className="w-10 h-10 text-yellow-500" />
