@@ -23,6 +23,65 @@ const Account = () => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState(tab || "profile");
+
+  /* ===============================
+      Hooks luôn ở top level
+  =============================== */
+
+  // Responsive
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Desktop default tab
+  useEffect(() => {
+    if (!isMobile && !tab) {
+      navigate("/account/profile", { replace: true });
+    }
+  }, [isMobile, tab, navigate]);
+
+  // Sync activeTab với URL param
+  useEffect(() => {
+    if (tab && tab !== activeTab) {
+      setActiveTab(tab);
+    }
+  }, [tab, activeTab]);
+
+  // Tắt loading khi activeTab thay đổi
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => setIsLoading(false), 250);
+      return () => clearTimeout(timeout);
+    }
+  }, [activeTab, isLoading]);
+
+  const handleTabChange = (tabId: string) => {
+    if (tabId === activeTab) return;
+    setIsLoading(true);
+    navigate(`/account/${tabId}`);
+  };
+
+  const handleBack = () => navigate("/account");
+
+  // Memo Sidebar để tránh re-render không cần thiết
+  const sidebar = useMemo(() => {
+    return (
+      <AccountSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+    );
+  }, [activeTab]);
+
+  // Memo tab content để giữ state riêng
+  const currentTab = useMemo(() => {
+    const TabComponent = TAB_COMPONENTS[activeTab] || TAB_COMPONENTS["profile"];
+    return <TabComponent />;
+  }, [activeTab]);
+
+  /* ===============================
+      Render JSX
+  =============================== */
 
   // Nếu chưa login
   if (!userId) {
@@ -46,46 +105,6 @@ const Account = () => {
     );
   }
 
-  // Responsive: update isMobile khi resize
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Desktop default tab
-  useEffect(() => {
-    if (!isMobile && !tab) {
-      navigate("/account/profile", { replace: true });
-    }
-  }, [isMobile, tab, navigate]);
-
-  const handleTabChange = (tabId: string) => {
-    if (tabId === tab) return;
-    setIsLoading(true);
-    navigate(`/account/${tabId}`);
-    // Dùng effect để dừng loading khi tab thay đổi
-    // setTimeout được thay bằng useEffect trên currentTab
-  };
-
-  const handleBack = () => navigate("/account");
-
-  const currentTab = useMemo(() => {
-    const TabComponent =
-      tab && TAB_COMPONENTS[tab]
-        ? TAB_COMPONENTS[tab]
-        : TAB_COMPONENTS["profile"];
-    return <TabComponent />;
-  }, [tab]);
-
-  // Tắt loading khi currentTab thay đổi
-  useEffect(() => {
-    if (isLoading) {
-      const timeout = setTimeout(() => setIsLoading(false), 250);
-      return () => clearTimeout(timeout);
-    }
-  }, [currentTab, isLoading]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       <div className="py-10 sm:py-14 lg:py-20 max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
@@ -94,17 +113,14 @@ const Account = () => {
           {(!isMobile || !tab) && (
             <div className="w-full lg:w-80">
               <div className="bg-white/90 backdrop-blur-md shadow-md rounded-2xl border border-orange-100 overflow-hidden">
-                <AccountSidebar
-                  activeTab={tab || "profile"}
-                  onTabChange={handleTabChange}
-                />
+                {sidebar}
               </div>
             </div>
           )}
 
           {/* Content */}
           <div className="flex-1 w-full">
-            {/* Mobile back header */}
+            {/* Mobile back button */}
             {isMobile && tab && (
               <button
                 onClick={handleBack}
@@ -128,7 +144,7 @@ const Account = () => {
                 </div>
               </div>
             ) : (
-              <div key={tab || "profile"} className="animate-fadeIn">
+              <div key={activeTab} className="animate-fadeIn">
                 {currentTab}
               </div>
             )}

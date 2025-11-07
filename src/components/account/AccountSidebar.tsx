@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import {
   User,
   Package,
@@ -29,90 +29,72 @@ interface UserProfile {
   phone?: string;
 }
 
-const AccountSidebar: React.FC<AccountSidebarProps> = ({
-  activeTab,
-  onTabChange,
-}) => {
-  const navigate = useNavigate();
-  const { logout } = useLogout();
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+const AccountSidebar: React.FC<AccountSidebarProps> = memo(
+  ({ activeTab, onTabChange }) => {
+    const navigate = useNavigate();
+    const { logout } = useLogout();
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
+    useEffect(() => {
+      const fetchUser = async () => {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        try {
+          const res = await getUserProfile(userId);
+          setUser({
+            id: res.id,
+            fullName: res.fullName || "",
+            email: res.email || "",
+            phone: res.phone || "",
+          });
+        } catch (err) {
+          console.error(err);
+          setUser(null);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-      try {
-        const res = await getUserProfile(userId);
-        // ✅ Firebase trả về document data (không có res.data)
-        const safeData: UserProfile = {
-          id: res.id,
-          fullName: res.fullName || "",
-          email: res.email || "",
-          phone: res.phone || "",
-        };
-        setUser(safeData);
-      } catch (err) {
-        console.error("Failed to fetch user profile:", err);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+      if (!user) fetchUser();
+      else setLoading(false);
+    }, [user]);
 
-    fetchUser();
-  }, []);
+    const tabs: Tab[] = [
+      { id: "profile", label: "Profile", icon: User },
+      { id: "orders", label: "Orders", icon: Package },
+      { id: "addresses", label: "Addresses", icon: MapPin },
+      { id: "wishlist", label: "Wishlist", icon: Heart },
+    ];
 
-  const tabs: Tab[] = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "orders", label: "Orders", icon: Package },
-    { id: "addresses", label: "Addresses", icon: MapPin },
-    { id: "wishlist", label: "Wishlist", icon: Heart },
-  ];
+    const getInitials = (name: string) =>
+      name
+        .split(" ")
+        .map((part) => part.charAt(0).toUpperCase())
+        .slice(0, 2)
+        .join("");
 
-  const getInitials = (name: string) =>
-    name
-      .split(" ")
-      .map((part) => part.charAt(0).toUpperCase())
-      .slice(0, 2)
-      .join("");
-
-  /* ==========================
-     LOADING STATE
-  =========================== */
-  if (loading) {
-    return (
-      <div className="sticky top-20">
-        <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-60" />
-          <div className="relative p-8 text-center">
+    if (loading)
+      return (
+        <div className="sticky top-20">
+          <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl p-6 text-center">
             <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
             <p className="mt-4 text-sm font-medium text-gray-600">
               Loading your profile...
             </p>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
 
-  /* ==========================
-     NOT LOGGED IN
-  =========================== */
-  if (!user) {
-    return (
-      <div className="sticky top-20">
-        <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-red-50 opacity-60" />
-          <div className="relative p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <User className="text-orange-600" size={28} />
-            </div>
+    if (!user)
+      return (
+        <div className="sticky top-20">
+          <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl p-6 text-center">
+            <User className="text-orange-600 w-16 h-16 mx-auto mb-4" />
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               Welcome Back!
             </h3>
@@ -127,102 +109,91 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
             </button>
           </div>
         </div>
+      );
+
+    return (
+      <div className="sticky top-6">
+        <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+          <div className="relative p-6">
+            {/* User Info */}
+            <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-100">
+              <div className="relative flex items-center justify-center w-24 h-24 text-2xl font-bold text-white shadow-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl">
+                {getInitials(user.fullName)}
+              </div>
+              <h3 className="mt-4 text-xl font-bold text-gray-800">
+                {user.fullName}
+              </h3>
+              <p className="text-sm font-medium text-gray-500">{user.email}</p>
+            </div>
+
+            {/* Tabs */}
+            <nav className="space-y-1.5">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => onTabChange(tab.id)}
+                    className={`group relative w-full flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold transition-all duration-300 overflow-hidden ${
+                      isActive
+                        ? "text-white shadow-lg shadow-orange-200"
+                        : "text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent hover:text-orange-600"
+                    }`}
+                  >
+                    {isActive && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600" />
+                    )}
+                    <div className="relative flex items-center gap-3">
+                      <div
+                        className={`p-2 rounded-lg transition-all duration-300 ${
+                          isActive
+                            ? "bg-white/20"
+                            : "bg-gray-100 group-hover:bg-orange-100"
+                        }`}
+                      >
+                        <Icon size={20} />
+                      </div>
+                      <span>{tab.label}</span>
+                    </div>
+                    <ChevronRight
+                      size={20}
+                      className={`relative transition-all duration-300 ${
+                        isActive
+                          ? "text-white translate-x-1"
+                          : "text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1"
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+
+              <div className="my-4 border-t border-gray-100" />
+
+              {/* Logout */}
+              <button
+                onClick={logout}
+                className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
+              >
+                <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
+                <div className="relative flex items-center gap-3">
+                  <div className="p-2 transition-all duration-300 bg-red-100 rounded-lg group-hover:bg-white/20">
+                    <LogOut size={20} />
+                  </div>
+                  <span>Logout</span>
+                </div>
+                <ChevronRight
+                  size={20}
+                  className="relative transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1"
+                />
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     );
   }
-
-  /* ==========================
-     LOGGED IN VIEW
-  =========================== */
-  return (
-    <div className="sticky top-6">
-      <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
-
-        <div className="relative p-6">
-          {/* Header */}
-          <div className="flex flex-col items-center pb-6 mb-6 border-b border-gray-100">
-            <div className="relative group">
-              <div className="absolute inset-0 transition-all duration-300 rounded-full opacity-0 bg-gradient-to-r from-orange-400 to-orange-600 blur-xl group-hover:opacity-30" />
-              <div className="relative flex items-center justify-center w-24 h-24 text-2xl font-bold text-white transition-transform duration-300 shadow-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl group-hover:scale-105 shadow-orange-200">
-                {getInitials(user.fullName)}
-              </div>
-              <div className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 bg-green-500 border-4 border-white rounded-full shadow-lg">
-                <div className="w-2 h-2 bg-white rounded-full" />
-              </div>
-            </div>
-            <h3 className="mt-4 text-xl font-bold text-gray-800">
-              {user.fullName}
-            </h3>
-            <p className="text-sm font-medium text-gray-500">{user.email}</p>
-          </div>
-
-          {/* Tabs */}
-          <nav className="space-y-1.5">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`group relative w-full flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold transition-all duration-300 overflow-hidden ${
-                    isActive
-                      ? "text-white shadow-lg shadow-orange-200"
-                      : "text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent hover:text-orange-600"
-                  }`}
-                >
-                  {isActive && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600" />
-                  )}
-                  <div className="relative flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-lg transition-all duration-300 ${
-                        isActive
-                          ? "bg-white/20"
-                          : "bg-gray-100 group-hover:bg-orange-100"
-                      }`}
-                    >
-                      <Icon size={20} />
-                    </div>
-                    <span>{tab.label}</span>
-                  </div>
-                  <ChevronRight
-                    size={20}
-                    className={`relative transition-all duration-300 ${
-                      isActive
-                        ? "text-white translate-x-1"
-                        : "text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1"
-                    }`}
-                  />
-                </button>
-              );
-            })}
-
-            <div className="my-4 border-t border-gray-100" />
-
-            {/* Logout */}
-            <button
-              onClick={logout}
-              className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
-            >
-              <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
-              <div className="relative flex items-center gap-3">
-                <div className="p-2 transition-all duration-300 bg-red-100 rounded-lg group-hover:bg-white/20">
-                  <LogOut size={20} />
-                </div>
-                <span>Logout</span>
-              </div>
-              <ChevronRight
-                size={20}
-                className="relative transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1"
-              />
-            </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-  );
-};
+);
 
 export default AccountSidebar;
