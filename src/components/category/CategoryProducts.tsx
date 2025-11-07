@@ -178,33 +178,36 @@ const CategoryProducts: React.FC = () => {
     text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
   return (
-    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
-            <Sparkles size={18} />
+    <section className="w-full min-h-screen py-5 px-2 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+      <div className="max-w-7xl mx-auto">
+        {/* Title */}
+        <div className="text-center mb-6 sm:mb-10">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow mb-3">
+            <Sparkles size={16} />
             <span>{capitalize(category) || "All Products"}</span>
-            <ShoppingBag size={18} />
+            <ShoppingBag size={16} />
           </div>
-          <h2 className="text-4xl sm:text-5xl font-black leading-tight sm:leading-[1.1] tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent pb-1">
+
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             {category ? `${capitalize(category)} Collection` : "Our Collection"}
           </h2>
         </div>
 
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-6">
           <Button
             onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
-            icon={<Filter size={18} />}
+            className="lg:hidden flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg shadow-sm text-sm"
+            icon={<Filter size={16} />}
             label={"Filter"}
           />
-          <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
-            <ArrowUpDown size={18} className="text-orange-500 shrink-0" />
+
+          <div className="ml-auto flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-2 py-1.5 shadow-sm">
+            <ArrowUpDown size={16} className="text-orange-500 shrink-0" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-2 py-1 border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
+              className="px-1 py-1 border-none outline-none bg-transparent text-gray-800 text-sm"
             >
               <option value="none">Default</option>
               <option value="name-asc">A → Z</option>
@@ -216,9 +219,9 @@ const CategoryProducts: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar */}
-          <div className="lg:w-64 shrink-0 self-start">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
+          {/* SIDEBAR */}
+          <div className="lg:w-60 shrink-0">
             <ShopFilter
               context="category"
               showFilters={showFilters}
@@ -236,9 +239,9 @@ const CategoryProducts: React.FC = () => {
               setSizeFilter={setSizeFilter}
               brandOptions={brandOptions}
               hasActiveFilters={
-                brandFilter.length > 0 ||
-                colorFilter.length > 0 ||
-                sizeFilter.length > 0 ||
+                brandFilter.length ||
+                colorFilter.length ||
+                sizeFilter.length ||
                 stockFilter !== "all"
               }
               clearFilters={clearFilters}
@@ -250,59 +253,32 @@ const CategoryProducts: React.FC = () => {
             />
           </div>
 
-          {/* Grid sản phẩm */}
+          {/* PRODUCT GRID */}
           <div className="flex-1 relative">
-            {loading && (
-              <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
-                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+              {visibleProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  data={{
+                    id: p.id,
+                    img: p.images?.[0] || "/placeholder.jpg",
+                    title: p.title,
+                    salePrice: p.salePrice ?? 0,
+                    regularPrice: p.regularPrice ?? 0,
+                    stock: p.stock ?? 0,
+                  }}
+                />
+              ))}
+            </div>
+
+            {visibleCount < sortedProducts.length && (
+              <div className="flex justify-center mt-6">
+                <Button
+                  onClick={() => setVisibleCount((prev) => prev + 8)}
+                  label="See More"
+                  className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium shadow transition-all"
+                />
               </div>
-            )}
-
-            {!loading && error && (
-              <div className="text-center py-8 text-red-600 font-semibold bg-white rounded-2xl shadow border border-red-200">
-                {error}
-              </div>
-            )}
-
-            {!loading && !error && sortedProducts.length === 0 && (
-              <div className="text-center py-20 bg-white rounded-2xl shadow-md border border-dashed border-gray-300">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  No products found
-                </h3>
-                <p className="text-gray-500 text-sm">
-                  Try adjusting your filters
-                </p>
-              </div>
-            )}
-
-            {!loading && !error && (
-              <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-5">
-                  {visibleProducts.map((p) => (
-                    <ProductCard
-                      key={p.id}
-                      data={{
-                        id: p.id,
-                        img: p.images?.[0] || "/placeholder.jpg",
-                        title: p.title,
-                        salePrice: p.salePrice ?? 0,
-                        regularPrice: p.regularPrice ?? 0,
-                        stock: p.stock ?? 0,
-                      }}
-                    />
-                  ))}
-                </div>
-
-                {visibleCount < sortedProducts.length && (
-                  <div className="flex justify-center mt-10">
-                    <Button
-                      onClick={() => setVisibleCount((prev) => prev + 8)}
-                      label="See More"
-                      className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all hover:scale-105"
-                    />
-                  </div>
-                )}
-              </>
             )}
           </div>
         </div>

@@ -109,7 +109,7 @@ const MainSearch: React.FC = () => {
         subtitle="Discover products that match your keyword"
       />
 
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-24 min-h-screen">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-8 sm:py-12 min-h-screen">
         {loading ? (
           <p className="text-center text-gray-500 animate-pulse">
             Loading products...
@@ -117,33 +117,32 @@ const MainSearch: React.FC = () => {
         ) : keyword ? (
           <>
             {/* Header + Sort */}
-            <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+            <div className="flex flex-wrap justify-between items-center mb-5 gap-3">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                 <Search
-                  className="inline-block mr-2 text-orange-500"
-                  size={18}
+                  className="inline-block mr-1.5 text-orange-500"
+                  size={16}
                 />
                 Results for{" "}
                 <span className="text-orange-500 font-semibold">
                   "{keyword}"
                 </span>{" "}
-                ({totalFound} items)
+                ({totalFound})
               </h2>
 
-              {/* Sort Dropdown */}
-              <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
-                <ArrowUpDown size={18} className="text-orange-500" />
+              <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 shadow-sm">
+                <ArrowUpDown size={16} className="text-orange-500" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
+                  className="px-1.5 py-0.5 border-none outline-none bg-transparent text-gray-800 text-sm"
                 >
                   <option value="none">Default</option>
                   <option value="name-asc">A → Z</option>
                   <option value="name-desc">Z → A</option>
                   <option value="price-asc">Low → High</option>
                   <option value="price-desc">High → Low</option>
-                  <option value="discount-high">Biggest Discount (%)</option>
+                  <option value="discount-high">Biggest Discount</option>
                 </select>
               </div>
             </div>
@@ -151,7 +150,7 @@ const MainSearch: React.FC = () => {
             {/* Product Grid */}
             {searchResults.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
                   {paginatedProducts.map((p) => (
                     <ProductCard
                       key={p.id}
@@ -167,19 +166,18 @@ const MainSearch: React.FC = () => {
                   ))}
                 </div>
 
-                {/* See More */}
                 {hasMore && (
-                  <div className="flex justify-center mt-10">
+                  <div className="flex justify-center mt-6">
                     <Button
                       onClick={handleSeeMore}
                       label="See More"
-                      className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold shadow-md transition-all duration-200 hover:scale-105"
+                      className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium shadow-sm transition"
                     />
                   </div>
                 )}
               </>
             ) : (
-              <div className="text-center text-gray-500 mt-10">
+              <div className="text-center text-gray-500 mt-10 text-sm">
                 No products found matching your keyword.
               </div>
             )}
