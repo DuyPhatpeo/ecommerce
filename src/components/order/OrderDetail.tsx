@@ -56,7 +56,7 @@ const OrderDetail: React.FC = () => {
                   <Truck className="w-6 h-6 text-orange-600" />
                   Order Progress
                 </h2>
-                <OrderTimeline status={order.status} />
+                <OrderTimeline status={order.status ?? ""} />
               </div>
 
               {/* Customer Info */}

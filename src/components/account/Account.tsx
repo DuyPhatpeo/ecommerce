@@ -9,7 +9,7 @@ import AddressesTab from "./AddressesTab";
 import WishlistTab from "./WishlistTab";
 
 // Mapping tabId -> component factory để giữ state riêng
-const TAB_COMPONENTS: Record<string, () => JSX.Element> = {
+const TAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   profile: () => <ProfileTab />,
   orders: () => <OrdersTab />,
   addresses: () => <AddressesTab />,

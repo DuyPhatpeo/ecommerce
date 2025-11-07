@@ -50,7 +50,7 @@ export const getCartItem = async (
   const data = docSnap.data() as CartItem;
 
   if (data.userId !== userId) return null; // tránh lấy item của user khác
-  return { id: docSnap.id, ...data };
+  return { ...data, id: docSnap.id };
 };
 
 /* ============================

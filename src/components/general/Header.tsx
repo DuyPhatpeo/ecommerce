@@ -70,7 +70,7 @@ const Header = () => {
 
             {/* ========== RIGHT ACTIONS ========== */}
             <RightActions
-              user={user}
+              user={user ? { name: user.name ?? "Guest" } : null}
               cartCount={cartCount}
               searchOpen={searchOpen}
               mobileOpen={mobileOpen}
