@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { LogIn, UserPlus } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import { Toaster } from "react-hot-toast";
 
 export default function AuthLayout() {
   const location = useLocation();
@@ -23,7 +22,6 @@ export default function AuthLayout() {
 
   return (
     <div className="w-full h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center relative overflow-hidden">
-      <Toaster position="top-center" />
       {/* Background hiệu ứng */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-amber-300 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
