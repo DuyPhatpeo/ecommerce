@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getUsers } from "../api/authApi"; // Firestore version
+import { getUsers } from "../api/authApi";
 
 interface LoginFormData {
   email: string;
@@ -24,9 +24,6 @@ export default function useLogin() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  /* ==========================
-     🔹 Load saved email (if any)
-  ========================== */
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe") === "true";
     const savedEmail = localStorage.getItem("email");
@@ -37,18 +34,12 @@ export default function useLogin() {
     }
   }, []);
 
-  /* ==========================
-     🔹 Handle input change
-  ========================== */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  /* ==========================
-     🔹 Validate form
-  ========================== */
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     const { email, password } = formData;
@@ -64,19 +55,13 @@ export default function useLogin() {
     return Object.keys(newErrors).length === 0;
   };
 
-  /* ==========================
-     🔹 Handle login (Firestore)
-  ========================== */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     try {
-      // 🔸 Fetch all users from Firestore
       const users = await getUsers();
-
-      // 🔸 Find user by email (case-insensitive)
       const user = users.find(
         (u) =>
           u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
@@ -94,7 +79,6 @@ export default function useLogin() {
 
       const displayName = user.fullName || user.email;
 
-      // ✅ Remember email if “Remember Me” is checked
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
         localStorage.setItem("email", formData.email);
@@ -103,9 +87,7 @@ export default function useLogin() {
         localStorage.removeItem("email");
       }
 
-      // ✅ Save userId (fixed)
       if (!user.id) {
-        console.warn("⚠️ User does not have `id` field in Firestore!");
         toast.error("User ID not found in Firestore.");
         return;
       }
@@ -116,8 +98,7 @@ export default function useLogin() {
       setFormData({ email: "", password: "" });
 
       setTimeout(() => navigate("/"), 1500);
-    } catch (error) {
-      console.error("❌ Login error:", error);
+    } catch {
       toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);

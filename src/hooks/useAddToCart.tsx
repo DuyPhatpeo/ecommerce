@@ -16,14 +16,14 @@ interface AddToCartParams {
   setLoading: (v: boolean) => void;
 }
 
-/** Hook xử lý thêm sản phẩm vào giỏ hàng */
+/** Hook to handle adding products to cart */
 export const useAddToCart = () => {
   const navigate = useNavigate();
 
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
-  /** Hiển thị toast tuỳ chỉnh khi thêm vào giỏ */
+  /** Custom toast when adding to cart */
   const showCartToast = useCallback(
     (title: string, imageUrl: string, price: number, quantity: number) => {
       toast.custom(
@@ -85,7 +85,7 @@ export const useAddToCart = () => {
     [navigate]
   );
 
-  /** Hàm thực hiện thêm vào giỏ */
+  /** Add product to cart */
   const handleAddToCart = useCallback(
     async ({
       id,
@@ -109,10 +109,9 @@ export const useAddToCart = () => {
 
       setLoading(true);
       try {
-        await addToCart(userId, id, quantity); // ✅ truyền userId
+        await addToCart(userId, id, quantity); // ✅ pass userId
         showCartToast(title, images?.[0] || "", price, quantity);
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to add product to cart!");
       } finally {
         setLoading(false);

@@ -43,7 +43,6 @@ interface UseCheckoutProps {
 ===================== */
 export const useCheckout = ({ state }: UseCheckoutProps) => {
   const navigate = useNavigate();
-
   const [products, setProducts] = useState<(Product & { quantity: number })[]>(
     []
   );
@@ -51,100 +50,90 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
-  /* ---------- Tính tổng tiền ---------- */
-  const subtotal = useMemo(() => {
-    if (state.subtotal !== undefined) return state.subtotal;
-    return products.reduce((sum, p) => {
-      const price =
-        p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice || 0;
-      return sum + price * p.quantity;
-    }, 0);
-  }, [state.subtotal, products]);
+  /* ---------- Calculate totals ---------- */
+  const subtotal = useMemo(
+    () =>
+      state.subtotal ??
+      products.reduce((sum, p) => {
+        const price =
+          p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice || 0;
+        return sum + price * p.quantity;
+      }, 0),
+    [state.subtotal, products]
+  );
 
   const tax = state.tax ?? 0;
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  /* ---------- Load danh sách sản phẩm ---------- */
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const result: (Product & { quantity: number })[] = [];
-
-        const userId = localStorage.getItem("userId");
-        if (!userId) {
-          toast.error("Vui lòng đăng nhập để thanh toán!");
-          navigate("/login");
-          return;
-        }
-
-        if (state.selectedItems?.length) {
-          for (const item of state.selectedItems) {
-            const cartRes = await getCartItem(userId, item.id);
-            if (!cartRes) continue; // ❌ bỏ qua nếu item không tồn tại
-
-            const productRes = await getProductById(cartRes.productId);
-            if (!productRes) continue; // ❌ bỏ qua nếu sản phẩm không tồn tại
-
-            result.push({
-              ...productRes,
-              quantity: item.quantity,
-            });
-          }
-        } else if (state.productId && state.quantity) {
-          const productRes = await getProductById(state.productId);
-          if (productRes) {
-            result.push({ ...productRes, quantity: state.quantity });
-          }
-        }
-
-        if (!result.length) {
-          toast.error("Không có sản phẩm nào để thanh toán!");
-          navigate("/", { replace: true });
-          return;
-        }
-
-        setProducts(result);
-      } catch (error) {
-        console.error(error);
-        toast.error("Lỗi khi tải dữ liệu sản phẩm!");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [state, navigate]);
-
-  /* ---------- Xử lý đặt hàng ---------- */
-  const handlePlaceOrder = useCallback(async () => {
-    if (!customerInfo) {
-      toast.error("Vui lòng nhập thông tin giao hàng!");
-      return;
-    }
-
-    const { recipientName, phone, address, paymentMethod, note } = customerInfo;
-    if (!recipientName || !phone || !address) {
-      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
-      return;
-    }
-
-    // ✅ Lấy userId từ localStorage
+  /* ---------- Fetch products helper ---------- */
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
     const userId = localStorage.getItem("userId");
     if (!userId) {
-      toast.error(
-        "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại!"
-      );
+      toast.error("Please login to proceed with checkout!");
       navigate("/login");
+      setLoading(false);
       return;
     }
 
     try {
-      setPlacingOrder(true);
-      const loadingToast = toast.loading("Đang xử lý đơn hàng...");
+      let items: (Product & { quantity: number })[] = [];
 
-      // Lấy thông tin sản phẩm mới nhất
+      if (state.selectedItems?.length) {
+        items = await Promise.all(
+          state.selectedItems.map(async (item) => {
+            const cartRes = await getCartItem(userId, item.id);
+            if (!cartRes) return null;
+
+            const productRes = await getProductById(cartRes.productId);
+            if (!productRes) return null;
+
+            return { ...productRes, quantity: item.quantity };
+          })
+        );
+        items = items.filter(Boolean) as (Product & { quantity: number })[];
+      } else if (state.productId && state.quantity) {
+        const productRes = await getProductById(state.productId);
+        if (productRes) items.push({ ...productRes, quantity: state.quantity });
+      }
+
+      if (!items.length) {
+        toast.error("No products available for checkout!");
+        navigate("/", { replace: true });
+        return;
+      }
+
+      setProducts(items);
+    } catch {
+      toast.error("Failed to load product data!");
+    } finally {
+      setLoading(false);
+    }
+  }, [state, navigate]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  /* ---------- Place order ---------- */
+  const handlePlaceOrder = useCallback(async () => {
+    if (!customerInfo) return toast.error("Please enter shipping information!");
+    const { recipientName, phone, address, paymentMethod, note } = customerInfo;
+    if (!recipientName || !phone || !address)
+      return toast.error("Please fill in all required information!");
+
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      toast.error("User information not found. Please login again!");
+      navigate("/login");
+      return;
+    }
+
+    setPlacingOrder(true);
+    const loadingToast = toast.loading("Processing your order...");
+
+    try {
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
@@ -157,27 +146,16 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         })
       );
 
-      // ✅ Xác định trạng thái đơn hàng dựa theo phương thức thanh toán
-      let status: string;
-      switch (paymentMethod) {
-        case "cod":
-          status = "pending"; // Thanh toán khi nhận hàng
-          break;
-        case "banking":
-          status = "banking"; // Đang chờ thanh toán qua ngân hàng
-          break;
-        case "momo":
-          status = "paid"; // Đã thanh toán thành công qua Momo
-          break;
-        default:
-          status = "pending";
-          break;
-      }
+      const statusMap: Record<string, string> = {
+        cod: "pending",
+        banking: "banking",
+        momo: "paid",
+      };
+      const status = statusMap[paymentMethod] ?? "pending";
 
-      // ✅ Dữ liệu đơn hàng gửi lên API
       const orderData = {
         customer: {
-          id: userId, // 🔥 Gắn userId từ local
+          id: userId,
           recipientName,
           phone,
           address,
@@ -200,20 +178,18 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       const res = await createOrder(orderData);
 
       toast.dismiss(loadingToast);
-      toast.success("Đặt hàng thành công!");
+      toast.success("Order placed successfully!");
 
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: res }, replace: true });
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.dismiss();
-      toast.error("Không thể đặt hàng, vui lòng thử lại!");
+      toast.error("Failed to place order, please try again!");
     } finally {
       setPlacingOrder(false);
     }
   }, [customerInfo, products, subtotal, tax, shipping, total, navigate]);
 
-  /* ---------- Trả về các giá trị ---------- */
   return {
     products,
     loading,

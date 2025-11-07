@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 import { getOrderById } from "../api/orderApi";
 import { getProductById } from "../api/productApi";
 
-/* ------------------ Interfaces ------------------ */
 interface Customer {
   id: string;
   recipientName: string;
@@ -32,7 +31,6 @@ export interface OrderDetail {
   createdAt: string;
 }
 
-/* ------------------ Hook ------------------ */
 export const useOrderDetail = (id: string | undefined) => {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [products, setProducts] = useState<
@@ -52,7 +50,6 @@ export const useOrderDetail = (id: string | undefined) => {
     const fetchOrderDetail = async () => {
       setLoading(true);
       try {
-        // ✅ Firebase trả object trực tiếp, không có .data
         const orderData = await getOrderById(id);
 
         if (!orderData) {
@@ -62,7 +59,6 @@ export const useOrderDetail = (id: string | undefined) => {
 
         setOrder(orderData);
 
-        // ✅ Load chi tiết sản phẩm
         const productDetails = await Promise.all(
           (orderData.items || []).map(async (item: OrderItem) => {
             try {
@@ -90,8 +86,7 @@ export const useOrderDetail = (id: string | undefined) => {
         );
 
         setProducts(productDetails);
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to load order details!");
       } finally {
         setLoading(false);

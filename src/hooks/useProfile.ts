@@ -6,20 +6,12 @@ import {
   changeUserPassword,
 } from "../api/authApi";
 
-/* ==========================
-   INTERFACES
-========================== */
-
 export interface UserProfile {
   id?: string;
   fullName: string;
   email: string;
   phone: string;
 }
-
-/* ==========================
-   HOOK
-========================== */
 
 export const useProfile = () => {
   const userId = localStorage.getItem("userId") || "";
@@ -29,7 +21,6 @@ export const useProfile = () => {
     email: "",
     phone: "",
   });
-
   const [editedProfile, setEditedProfile] = useState(profile);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -39,22 +30,18 @@ export const useProfile = () => {
     new: false,
     confirm: false,
   });
-
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
     confirm: "",
   });
 
-  /* ==========================
-     LOAD PROFILE
-  =========================== */
   useEffect(() => {
     if (!userId) return;
 
     const fetchProfile = async () => {
       try {
-        const res = await getUserProfile(userId); // 🔹 res is a User object
+        const res = await getUserProfile(userId);
         const safeData: UserProfile = {
           id: res.id,
           fullName: res.fullName || "",
@@ -63,8 +50,7 @@ export const useProfile = () => {
         };
         setProfile(safeData);
         setEditedProfile(safeData);
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to load user information.");
       }
     };
@@ -72,18 +58,11 @@ export const useProfile = () => {
     fetchProfile();
   }, [userId]);
 
-  /* ==========================
-     HANDLE EDIT PROFILE
-  =========================== */
   const handleChangeProfile = (field: keyof UserProfile, value: string) => {
-    setEditedProfile((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setEditedProfile((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleEdit = () => setIsEditing(true);
-
   const handleCancel = () => {
     setEditedProfile(profile);
     setIsEditing(false);
@@ -94,15 +73,11 @@ export const useProfile = () => {
 
     const updates: Partial<UserProfile> = {};
     (Object.keys(editedProfile) as (keyof UserProfile)[]).forEach((key) => {
-      if (editedProfile[key] !== profile[key]) {
+      if (editedProfile[key] !== profile[key])
         updates[key] = editedProfile[key];
-      }
     });
 
-    if (Object.keys(updates).length === 0) {
-      toast("No changes detected.");
-      return;
-    }
+    if (!Object.keys(updates).length) return toast("No changes detected.");
 
     try {
       await updateUserProfile(userId, updates);
@@ -111,24 +86,16 @@ export const useProfile = () => {
       setEditedProfile(newProfile);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to update profile.");
     }
   };
 
-  /* ==========================
-     HANDLE CHANGE PASSWORD
-  =========================== */
   const handlePasswordUpdate = async () => {
-    if (!passwords.current || !passwords.new || !passwords.confirm) {
+    if (!passwords.current || !passwords.new || !passwords.confirm)
       return toast.error("Please fill in all password fields.");
-    }
-
-    if (passwords.new !== passwords.confirm) {
+    if (passwords.new !== passwords.confirm)
       return toast.error("New passwords do not match.");
-    }
-
     if (!userId) return toast.error("User not found.");
 
     try {
@@ -137,7 +104,6 @@ export const useProfile = () => {
       setPasswords({ current: "", new: "", confirm: "" });
       setShowModal(false);
     } catch (err: any) {
-      console.error(err);
       toast.error(err?.message || "Failed to update password.");
     }
   };

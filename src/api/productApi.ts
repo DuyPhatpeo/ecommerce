@@ -1,4 +1,3 @@
-// src/api/productApi.ts
 import { db } from "../lib/firebaseConfig";
 import {
   collection,
@@ -10,9 +9,6 @@ import {
   QueryConstraint,
 } from "firebase/firestore";
 
-/* =====================
-   TYPES
-===================== */
 export interface Product {
   id: string;
   title: string;
@@ -39,70 +35,50 @@ export interface ProductFilter {
   maxPrice?: number;
 }
 
-/* =====================
-   LẤY DANH SÁCH SẢN PHẨM
-===================== */
 export const getProducts = async (
   params: ProductFilter = {}
 ): Promise<Product[]> => {
-  try {
-    const productsRef = collection(db, "products");
-    const filters: QueryConstraint[] = [];
+  const productsRef = collection(db, "products");
+  const filters: QueryConstraint[] = [];
 
-    // Thêm điều kiện lọc Firestore
-    if (params.category) filters.push(where("category", "==", params.category));
-    if (params.brand) filters.push(where("brand", "==", params.brand));
-    if (params.color) filters.push(where("color", "==", params.color));
-    if (params.size) filters.push(where("size", "==", params.size));
-    if (params.minPrice !== undefined)
-      filters.push(where("price", ">=", params.minPrice));
-    if (params.maxPrice !== undefined)
-      filters.push(where("price", "<=", params.maxPrice));
+  if (params.category) filters.push(where("category", "==", params.category));
+  if (params.brand) filters.push(where("brand", "==", params.brand));
+  if (params.color) filters.push(where("color", "==", params.color));
+  if (params.size) filters.push(where("size", "==", params.size));
+  if (params.minPrice !== undefined)
+    filters.push(where("price", ">=", params.minPrice));
+  if (params.maxPrice !== undefined)
+    filters.push(where("price", "<=", params.maxPrice));
 
-    const q = filters.length > 0 ? query(productsRef, ...filters) : productsRef;
-    const snapshot = await getDocs(q);
+  const q = filters.length > 0 ? query(productsRef, ...filters) : productsRef;
+  const snapshot = await getDocs(q);
 
-    let products: Product[] = snapshot.docs.map(
-      (docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Product)
+  let products: Product[] = snapshot.docs.map(
+    (docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Product)
+  );
+
+  if (params.search) {
+    const keyword = params.search.toLowerCase();
+    products = products.filter((p) =>
+      (p.title || "").toLowerCase().includes(keyword)
     );
-
-    // Nếu có search -> lọc ở client
-    if (params.search) {
-      const keyword = params.search.toLowerCase();
-      products = products.filter((p) =>
-        (p.title || "").toLowerCase().includes(keyword)
-      );
-    }
-
-    return products;
-  } catch (error) {
-    console.error("🔥 Lỗi khi lấy danh sách sản phẩm:", error);
-    throw error;
   }
+
+  return products;
 };
 
-/* =====================
-   LẤY CHI TIẾT SẢN PHẨM
-===================== */
 export const getProductById = async (id: string): Promise<Product> => {
-  try {
-    // Dùng getDoc an toàn hơn nếu id là docId thực tế
-    const docRef = doc(db, "products", id);
-    const docSnap = await getDoc(docRef);
+  const docRef = doc(db, "products", id);
+  const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as Product;
-    }
-
-    // Nếu id trong DB không phải docId -> fallback query theo field
-    const q = query(collection(db, "products"), where("id", "==", id));
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) throw new Error("Sản phẩm không tồn tại");
-    const firstDoc = snapshot.docs[0];
-    return { id: firstDoc.id, ...firstDoc.data() } as Product;
-  } catch (error) {
-    console.error("🔥 Lỗi khi lấy chi tiết sản phẩm:", error);
-    throw error;
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() } as Product;
   }
+
+  const q = query(collection(db, "products"), where("id", "==", id));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) throw new Error("Sản phẩm không tồn tại");
+  const firstDoc = snapshot.docs[0];
+  return { id: firstDoc.id, ...firstDoc.data() } as Product;
 };

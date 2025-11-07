@@ -22,8 +22,7 @@ export const useAddresses = () => {
     try {
       const res = await getUserAddresses(userId);
       setAddresses(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to load addresses");
     }
   };
@@ -64,8 +63,7 @@ export const useAddresses = () => {
       await addUserAddress(userId, newAddress);
       toast.success("Address added!");
       await fetchAddresses();
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to add address");
     }
   };
@@ -82,8 +80,7 @@ export const useAddresses = () => {
         await updateUserAddress(userId, data.id, updated);
         toast.success("Address updated!");
         await fetchAddresses();
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to update address");
       }
     } else {
@@ -111,8 +108,7 @@ export const useAddresses = () => {
       }
 
       await fetchAddresses();
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to delete address");
     }
   };
@@ -125,8 +121,7 @@ export const useAddresses = () => {
       await setDefaultUserAddress(userId, id);
       toast.success("Default address updated!");
       await fetchAddresses();
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to set default address");
     }
   };
