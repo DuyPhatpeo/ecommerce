@@ -27,11 +27,11 @@ export default function Features() {
   return (
     <section className="bg-white py-10 sm:py-14 md:py-20 border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-0 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 rounded-lg overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  sm:gap-0 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 rounded-lg overflow-hidden">
           {features.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-center text-center gap-2 py-8 sm:py-10 px-6 bg-gray-100 hover:bg-gray-200 transition-colors rounded-md"
+              className="flex flex-col items-center justify-center text-center gap-2 py-8 sm:py-10 px-6 bg-gray-100 hover:bg-gray-200 transition-colors"
             >
               <div className="mb-2">{item.icon}</div>
               <h3 className="text-base md:text-lg font-semibold text-gray-800">
