@@ -199,7 +199,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
   return (
     <div
-      className="group flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg border border-gray-100 transition-all duration-300 overflow-hidden"
+      className="group flex flex-col h-full bg-white/80 backdrop-blur-md rounded-2xl  h border border-gray-300 transition-all duration-300 overflow-hidden"
       onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
