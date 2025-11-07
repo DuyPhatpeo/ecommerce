@@ -32,7 +32,7 @@ const WishlistTab: React.FC = () => {
       }
 
       try {
-        const wishlistItems = await getWishlist(userId); // ✅ Lấy từ database
+        const wishlistItems = await getWishlist(userId);
 
         if (!wishlistItems.length) {
           setProducts([]);
@@ -70,6 +70,7 @@ const WishlistTab: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-white to-orange-50 opacity-50" />
 
       <div className="relative p-6 sm:p-8">
+        {/* Header */}
         <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 shadow-lg shadow-pink-200">
@@ -82,9 +83,7 @@ const WishlistTab: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="px-4 py-2 text-sm font-semibold text-pink-600 rounded-lg bg-pink-50">
-            {products.length} {products.length === 1 ? "Item" : "Items"}
-          </div>
+          {/* ❌ Bỏ phần hiển thị số lượng item */}
         </div>
 
         {/* Content */}

@@ -35,50 +35,46 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
   const isCancelled = status === "cancelled";
   const isRefunded = status === "refunded";
 
-  // Tính toán % thanh tiến trình - chạy đến chính giữa icon của step hiện tại
   const calculateProgress = () => {
     if (isCancelled || isRefunded) return 0;
     if (activeIndex === -1) return 0;
 
     const totalSteps = steps.length;
-    // Mỗi step chiếm (100 / số step) % của thanh
-    // Thanh chạy đến giữa icon của step hiện tại
     const stepWidth = 100 / (totalSteps - 1);
-    const progressToStep = activeIndex * stepWidth;
-
-    // Trả về % đến giữa icon của step
-    return progressToStep;
+    return activeIndex * stepWidth;
   };
 
   const progressPercent = calculateProgress();
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto px-6 sm:px-12 py-10">
+    <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-10">
       {/* Header */}
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Status</h2>
-        <p className="text-gray-500 text-sm">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
+          Order Status
+        </h2>
+        <p className="text-gray-500 text-xs sm:text-sm">
           Track your order journey from placement to delivery
         </p>
       </div>
 
       <div className="relative">
         {/* Thanh nền */}
-        <div className="absolute top-5 left-0 right-0 h-2 bg-gray-200 rounded-full" />
+        <div className="absolute top-4 sm:top-5 left-0 right-0 h-2 bg-gray-200 rounded-full" />
 
-        {/* Thanh tiến trình với animation mượt */}
+        {/* Thanh tiến trình */}
         {!isCancelled && !isRefunded && (
           <div
-            className="absolute top-5 left-0 h-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 transition-all duration-1000 ease-out shadow-lg"
+            className="absolute top-4 sm:top-5 left-0 h-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 transition-all duration-1000 ease-out shadow-lg"
             style={{
-              width: `${Math.max(progressPercent, 8)}%`, // Tối thiểu 8% để thấy thanh ngay từ bước đầu
+              width: `${Math.max(progressPercent, 8)}%`,
               boxShadow: "0 0 20px rgba(251, 146, 60, 0.4)",
             }}
           />
         )}
 
         {/* Các bước */}
-        <div className="relative flex justify-between items-start">
+        <div className="relative flex justify-between items-start flex-wrap sm:flex-nowrap gap-y-6">
           {steps.map(({ label, icon: Icon }, i) => {
             const isActive = i === activeIndex;
             const isCompleted = i < activeIndex;
@@ -93,12 +89,12 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
               labelClasses = "text-gray-400";
             } else if (isCompleted) {
               circleClasses =
-                "bg-gradient-to-br from-orange-400 to-orange-600 border-0 shadow-lg scale-100 hover:scale-110";
+                "bg-gradient-to-br from-orange-400 to-orange-600 border-0 shadow-lg";
               iconColor = "text-white";
               labelClasses = "text-orange-600 font-semibold";
             } else if (isActive) {
               circleClasses =
-                "bg-white border-4 border-orange-500 shadow-xl ring-4 ring-orange-100 scale-110";
+                "bg-white border-4 border-orange-500 shadow-xl ring-4 ring-orange-100";
               iconColor = "text-orange-600";
               labelClasses = "text-orange-600 font-bold";
             } else {
@@ -110,31 +106,24 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
             return (
               <div
                 key={label}
-                className="flex flex-col items-center flex-1 text-center relative z-10"
+                className="flex flex-col items-center flex-1 text-center relative z-10 min-w-[70px] sm:min-w-[100px]"
               >
-                {/* Circle icon */}
+                {/* Icon circle */}
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${circleClasses}`}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-500 ${circleClasses}`}
                 >
                   <Icon
-                    size={20}
-                    className={`${iconColor} transition-colors duration-300`}
+                    size={18}
+                    className={`${iconColor} transition-colors duration-300 sm:w-5 sm:h-5`}
                   />
                 </div>
 
                 {/* Label */}
                 <p
-                  className={`text-xs sm:text-sm mt-3 transition-all duration-300 px-2 ${labelClasses}`}
+                  className={`text-[10px] sm:text-xs md:text-sm mt-2 sm:mt-3 transition-all duration-300 px-1 sm:px-2 ${labelClasses}`}
                 >
                   {label}
                 </p>
-
-                {/* Active indicator pulse - hiệu ứng đập */}
-                {isActive && !isCancelled && !isRefunded && (
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-                    <div className="w-12 h-12 rounded-full bg-orange-400 opacity-20 animate-ping" />
-                  </div>
-                )}
               </div>
             );
           })}
