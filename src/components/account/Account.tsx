@@ -22,29 +22,47 @@ const Account = () => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>(tab || null);
 
-  // Responsive check
+  // Initialize activeTab:
+  // Desktop -> default "profile"
+  // Mobile -> show tab if URL param exists, otherwise null
+  const initialTab = tab || (!isMobile ? "profile" : null);
+  const [activeTab, setActiveTab] = useState<string | null>(initialTab);
+
+  // Handle resize
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+
+      // If switching from mobile -> desktop and no activeTab, set profile
+      if (!mobile && !activeTab) setActiveTab("profile");
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [activeTab]);
 
   // Sync URL param -> activeTab
   useEffect(() => {
-    setActiveTab(tab || null);
-  }, [tab]);
+    if (tab) {
+      setActiveTab(tab);
+    } else if (!isMobile && !activeTab) {
+      setActiveTab("profile"); // Desktop default
+    }
+  }, [tab, isMobile, activeTab]);
 
   const handleTabChange = (tabId: string) => {
     if (tabId === activeTab) return;
     setIsLoading(true);
     navigate(`/account/${tabId}`);
+    setActiveTab(tabId);
   };
 
   const handleBack = () => {
     setIsLoading(true);
     navigate("/account", { replace: true });
+    if (!isMobile) setActiveTab("profile"); // Desktop default
+    else setActiveTab(null); // Mobile overview
   };
 
   // Stop loading animation
@@ -96,19 +114,18 @@ const Account = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       <div className="py-10 sm:py-14 lg:py-20 max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
         <div className={`flex gap-6 ${isMobile ? "flex-col" : "lg:flex-row"}`}>
-          {/* Sidebar: mobile overview or desktop */}
+          {/* Sidebar */}
           {(isMobile ? !activeTab : true) && (
-            <div className={`w-full lg:w-80`}>
+            <div className="w-full lg:w-80">
               <div className="bg-white/90 backdrop-blur-md shadow-md rounded-2xl border border-orange-100 overflow-hidden">
                 {sidebar}
               </div>
             </div>
           )}
 
-          {/* Tab content: chỉ hiện khi activeTab */}
+          {/* Tab content */}
           {activeTab && (
             <div className="flex-1 w-full">
-              {/* Back button mobile/tablet */}
               {isMobile && (
                 <button
                   onClick={handleBack}
