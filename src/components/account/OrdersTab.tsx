@@ -126,10 +126,6 @@ const OrdersTab: React.FC = () => {
     navigate(`/account/order/${orderId}`);
   };
 
-  const handleBrowseProducts = () => {
-    navigate("/shop");
-  };
-
   const handleLogin = () => {
     navigate("/login");
   };
@@ -192,12 +188,6 @@ const OrdersTab: React.FC = () => {
               <br />
               Start shopping now! 🛍️
             </p>
-            <button
-              onClick={handleBrowseProducts}
-              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
-            >
-              Browse Products
-            </button>
           </div>
         ) : (
           <>

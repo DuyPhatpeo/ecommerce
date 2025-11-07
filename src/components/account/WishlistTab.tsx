@@ -110,13 +110,6 @@ const WishlistTab: React.FC = () => {
               <br />
               Discover amazing items ✨
             </p>
-            <button
-              onClick={() => navigate("/products")}
-              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-pink-500 to-orange-500 rounded-xl hover:from-pink-600 hover:to-orange-600 hover:shadow-pink-200 hover:-translate-y-0.5"
-            >
-              <Sparkles size={18} />
-              Browse Products
-            </button>
           </div>
         ) : (
           <>
