@@ -15,62 +15,58 @@ interface Props {
 
 const CheckoutProductItem: React.FC<Props> = ({ product }) => {
   const displayPrice = product.salePrice ?? product.regularPrice ?? 0;
+  const totalPrice = displayPrice * product.quantity;
 
   return (
-    <div
-      className="flex items-center justify-between border-2 border-gray-100 rounded-2xl p-4 
-                 bg-gradient-to-r from-white to-gray-50 hover:bg-orange-50/80 hover:border-orange-200 
-                 transition-all duration-300 group"
-    >
-      {/* Left side: Image + Info */}
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <img
-            src={
-              Array.isArray(product.images) && product.images.length > 0
-                ? product.images[0]
-                : "/placeholder.png"
-            }
-            alt={product.title}
-            className="w-24 h-24 rounded-xl object-cover border border-orange-100 
-                       shadow-sm group-hover:scale-105 transition-transform duration-300"
-          />
-          <div
-            className="absolute -top-2 -right-2 bg-gradient-to-br from-orange-500 to-orange-600 
-                       text-white text-xs font-bold rounded-full w-7 h-7 flex items-center 
-                       justify-center shadow-lg border-2 border-white"
-          >
-            {product.quantity}
-          </div>
-        </div>
+    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-none">
+      {/* LEFT SIDE */}
+      <div className="flex items-center gap-3 min-w-0">
+        <img
+          src={
+            Array.isArray(product.images) && product.images.length > 0
+              ? product.images[0]
+              : "/placeholder.png"
+          }
+          alt={product.title}
+          className="w-16 h-16 rounded-lg object-cover"
+        />
 
         <div className="min-w-0">
           <h3
-            className="font-semibold text-lg text-gray-800 truncate max-w-[220px]"
+            className="text-sm font-medium text-gray-800 truncate max-w-[200px]"
             title={product.title}
           >
             {product.title}
           </h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Quantity:{" "}
-            <span className="font-medium text-gray-700">
-              {product.quantity}
-            </span>
-          </p>
+
+          <span className="text-xs text-gray-500 mt-1 block">
+            x{product.quantity}
+          </span>
         </div>
       </div>
 
-      {/* Right side: Price */}
-      <div className="text-right">
-        <p className="font-semibold text-orange-600 text-lg">
-          {displayPrice.toLocaleString("en-US")}₫
-        </p>
-
-        {product.salePrice && product.regularPrice && (
-          <p className="text-sm text-gray-400 line-through">
-            {product.regularPrice.toLocaleString("en-US")}₫
-          </p>
+      {/* RIGHT SIDE */}
+      <div className="text-right ml-4 whitespace-nowrap">
+        {/* Giá đơn vị */}
+        {product.salePrice && product.regularPrice ? (
+          <div>
+            <span className="text-sm font-semibold text-gray-800">
+              {product.salePrice.toLocaleString("en-US")}₫
+            </span>
+            <span className="text-xs text-gray-400 line-through ml-1">
+              {product.regularPrice.toLocaleString("en-US")}₫
+            </span>
+          </div>
+        ) : (
+          <span className="text-sm font-semibold text-gray-800">
+            {displayPrice.toLocaleString("en-US")}₫
+          </span>
         )}
+
+        {/* Tổng */}
+        <p className="text-base font-bold text-orange-600 mt-1">
+          {totalPrice.toLocaleString("en-US")}₫
+        </p>
       </div>
     </div>
   );
