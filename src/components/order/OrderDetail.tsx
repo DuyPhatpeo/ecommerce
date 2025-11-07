@@ -30,11 +30,12 @@ const OrderDetail: React.FC = () => {
   if (!order) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* LEFT SIDE */}
-          <div className="lg:col-span-2 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12 overflow-x-hidden">
+      <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* LEFT SIDE: Timeline + Info + Products */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Order Overview */}
             <div className="bg-white rounded-3xl shadow-none lg:shadow-xl p-8 border-2 border-orange-100 space-y-8">
               {/* Header */}
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-orange-200 pb-4">
@@ -121,7 +122,7 @@ const OrderDetail: React.FC = () => {
           </div>
 
           {/* RIGHT SIDE: Summary */}
-          <div className="space-y-6">
+          <div className="lg:col-span-1 space-y-6">
             <div className="bg-white rounded-3xl shadow-none lg:shadow-xl p-8 border-2 border-orange-100 space-y-8">
               <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center gap-2 pb-4 border-b-2 border-orange-200">
                 <ClipboardList className="w-6 h-6 text-orange-600" />
@@ -174,7 +175,7 @@ const InfoItem = ({
     <div className="flex-shrink-0 mt-1">{icon}</div>
     <div>
       <p className="text-sm text-gray-500">{label}</p>
-      <p className="font-medium text-gray-900">{value}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
     </div>
   </div>
 );
