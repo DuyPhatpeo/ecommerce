@@ -8,11 +8,18 @@ import { createOrder } from "../api/orderApi";
 /* =====================
    TYPES
 ===================== */
-interface Product {
+export interface Product {
   id: string;
   title: string;
+  price: number; // bắt buộc
   regularPrice?: number;
   salePrice?: number;
+  category?: string;
+  brand?: string;
+  color?: string;
+  size?: string | string[];
+  description?: string;
+  img?: string;
   images?: string[];
 }
 
@@ -54,19 +61,14 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   const subtotal = useMemo(
     () =>
       state.subtotal ??
-      products.reduce((sum, p) => {
-        const price =
-          p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice || 0;
-        return sum + price * p.quantity;
-      }, 0),
+      products.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0),
     [state.subtotal, products]
   );
-
   const tax = state.tax ?? 0;
   const shipping = state.shipping ?? 0;
   const total = state.total ?? subtotal + tax + shipping;
 
-  /* ---------- Fetch products helper ---------- */
+  /* ---------- Fetch products ---------- */
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const userId = localStorage.getItem("userId");
@@ -81,7 +83,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       let items: (Product & { quantity: number })[] = [];
 
       if (state.selectedItems?.length) {
-        items = await Promise.all(
+        const results = await Promise.all(
           state.selectedItems.map(async (item) => {
             const cartRes = await getCartItem(userId, item.id);
             if (!cartRes) return null;
@@ -89,13 +91,27 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
             const productRes = await getProductById(cartRes.productId);
             if (!productRes) return null;
 
-            return { ...productRes, quantity: item.quantity };
+            return {
+              ...productRes,
+              price: productRes.salePrice || productRes.regularPrice || 0,
+              quantity: item.quantity,
+            };
           })
         );
-        items = items.filter(Boolean) as (Product & { quantity: number })[];
+
+        // Type-safe filter
+        items = results.filter(
+          (p): p is Product & { quantity: number } => p !== null
+        );
       } else if (state.productId && state.quantity) {
         const productRes = await getProductById(state.productId);
-        if (productRes) items.push({ ...productRes, quantity: state.quantity });
+        if (productRes) {
+          items.push({
+            ...productRes,
+            price: productRes.salePrice || productRes.regularPrice || 0,
+            quantity: state.quantity,
+          });
+        }
       }
 
       if (!items.length) {
@@ -105,7 +121,8 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       }
 
       setProducts(items);
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load product data!");
     } finally {
       setLoading(false);
@@ -134,14 +151,16 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     const loadingToast = toast.loading("Processing your order...");
 
     try {
+      // Refresh product prices
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
           const current = res?.data || res;
           return {
             ...p,
-            regularPrice: current.regularPrice,
-            salePrice: current.salePrice,
+            price: current.salePrice || current.regularPrice || 0,
+            regularPrice: current?.regularPrice,
+            salePrice: current?.salePrice,
           };
         })
       );
@@ -165,7 +184,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         items: updatedProducts.map((p) => ({
           productId: p.id,
           quantity: p.quantity,
-          price: p.salePrice && p.salePrice > 0 ? p.salePrice : p.regularPrice,
+          price: p.price,
         })),
         subtotal,
         tax,
@@ -182,7 +201,8 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
 
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: res }, replace: true });
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.dismiss();
       toast.error("Failed to place order, please try again!");
     } finally {
