@@ -25,7 +25,7 @@ export default function useLogin() {
   const [rememberMe, setRememberMe] = useState(false);
 
   /* ==========================
-     🔹 Load email đã lưu (nếu có)
+     🔹 Load saved email (if any)
   ========================== */
   useEffect(() => {
     const savedRememberMe = localStorage.getItem("rememberMe") === "true";
@@ -53,12 +53,12 @@ export default function useLogin() {
     const newErrors: FormErrors = {};
     const { email, password } = formData;
 
-    if (!email.trim()) newErrors.email = "Email là bắt buộc.";
-    if (!password.trim()) newErrors.password = "Mật khẩu là bắt buộc.";
+    if (!email.trim()) newErrors.email = "Email is required.";
+    if (!password.trim()) newErrors.password = "Password is required.";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email))
-      newErrors.email = "Định dạng email không hợp lệ.";
+      newErrors.email = "Invalid email format.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -73,28 +73,28 @@ export default function useLogin() {
 
     setLoading(true);
     try {
-      // 🔸 Lấy toàn bộ người dùng từ Firestore
+      // 🔸 Fetch all users from Firestore
       const users = await getUsers();
 
-      // 🔸 Tìm user theo email (không phân biệt hoa/thường)
+      // 🔸 Find user by email (case-insensitive)
       const user = users.find(
         (u) =>
           u.email.trim().toLowerCase() === formData.email.trim().toLowerCase()
       );
 
       if (!user) {
-        toast.error("Email không tồn tại trong hệ thống.");
+        toast.error("Email does not exist in the system.");
         return;
       }
 
       if (user.password !== formData.password) {
-        toast.error("Mật khẩu không chính xác.");
+        toast.error("Incorrect password.");
         return;
       }
 
       const displayName = user.fullName || user.email;
 
-      // ✅ Ghi nhớ email nếu chọn “Remember Me”
+      // ✅ Remember email if “Remember Me” is checked
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
         localStorage.setItem("email", formData.email);
@@ -103,22 +103,22 @@ export default function useLogin() {
         localStorage.removeItem("email");
       }
 
-      // ✅ Lưu userId (giữ cố định)
+      // ✅ Save userId (fixed)
       if (!user.id) {
-        console.warn("⚠️ User không có field `id` trong Firestore!");
-        toast.error("Không tìm thấy ID người dùng trong Firestore.");
+        console.warn("⚠️ User does not have `id` field in Firestore!");
+        toast.error("User ID not found in Firestore.");
         return;
       }
 
       localStorage.setItem("userId", user.id);
 
-      toast.success(`Chào mừng trở lại, ${displayName}! 🎉`);
+      toast.success(`Welcome back, ${displayName}!`);
       setFormData({ email: "", password: "" });
 
       setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      console.error("❌ Lỗi đăng nhập:", error);
-      toast.error("Đăng nhập thất bại. Vui lòng thử lại.");
+      console.error("❌ Login error:", error);
+      toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
