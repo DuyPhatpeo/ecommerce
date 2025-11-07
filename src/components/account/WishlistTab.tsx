@@ -1,7 +1,6 @@
 // src/pages/account/WishlistTab.tsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import { getProductById } from "../../api/productApi";
 import { getWishlist } from "../../api/wishlistApi";
@@ -18,7 +17,6 @@ interface Product {
 }
 
 const WishlistTab: React.FC = () => {
-  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(6);

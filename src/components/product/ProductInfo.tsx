@@ -1,4 +1,4 @@
-import { useState, memo, useMemo } from "react";
+import { useState, memo } from "react";
 import {
   ShoppingBag,
   Heart,
@@ -144,14 +144,15 @@ const ProductInfo = ({
   const firstImage = images?.[0] || "";
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
-  const effectivePrice = salePrice ?? regularPrice ?? 0;
 
-  const discountPercentage = useMemo(() => {
-    if (regularPrice && salePrice && regularPrice > salePrice) {
-      return Math.round(((regularPrice - salePrice) / regularPrice) * 100);
-    }
-    return 0;
-  }, [regularPrice, salePrice]);
+  /* ✅ Chuẩn hóa logic giá và giảm giá */
+  const hasDiscount =
+    salePrice && regularPrice && salePrice < regularPrice ? true : false;
+  const price = hasDiscount ? salePrice! : regularPrice ?? 0;
+  const oldPrice = hasDiscount ? regularPrice : undefined;
+  const discountPercentage = hasDiscount
+    ? Math.round(((oldPrice! - price) / oldPrice!) * 100)
+    : 0;
 
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
@@ -201,20 +202,20 @@ const ProductInfo = ({
 
       {/* 💰 Price */}
       <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
-        {discountPercentage > 0 && (
+        {hasDiscount && (
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
             -{discountPercentage}%
           </div>
         )}
 
-        {effectivePrice > 0 ? (
+        {price > 0 ? (
           <>
             <div className="text-4xl font-bold text-orange-600 mb-1">
-              {formatVND(effectivePrice)}
+              {formatVND(price)}
             </div>
-            {regularPrice && salePrice && regularPrice > salePrice && (
+            {oldPrice && (
               <div className="text-gray-500 line-through text-lg">
-                {formatVND(regularPrice)}
+                {formatVND(oldPrice)}
               </div>
             )}
           </>
@@ -246,24 +247,24 @@ const ProductInfo = ({
               title,
               stock,
               quantity,
-              price: effectivePrice,
+              price,
               images,
               setLoading,
             })
           }
-          disabled={loading || isOutOfStock || effectivePrice <= 0}
+          disabled={loading || isOutOfStock || price <= 0}
           icon={<ShoppingBag className="w-5 h-5" />}
           label={
             isOutOfStock
               ? "Out of Stock"
-              : effectivePrice <= 0
+              : price <= 0
               ? "No Price"
               : loading
               ? "Adding..."
               : "Add to Cart"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-            isOutOfStock || effectivePrice <= 0
+            isOutOfStock || price <= 0
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-orange-600 text-white hover:bg-orange-700 hover:scale-105 active:scale-100"
           }`}
@@ -274,22 +275,18 @@ const ProductInfo = ({
             handleBuyNow({
               id,
               quantity,
-              price: effectivePrice,
+              price,
               stock,
               image: firstImage,
             } as BuyNowPayload)
           }
-          disabled={isOutOfStock || effectivePrice <= 0}
+          disabled={isOutOfStock || price <= 0}
           icon={<CreditCard className="w-5 h-5" />}
           label={
-            isOutOfStock
-              ? "Out of Stock"
-              : effectivePrice <= 0
-              ? "No Price"
-              : "Buy Now"
+            isOutOfStock ? "Out of Stock" : price <= 0 ? "No Price" : "Buy Now"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-            isOutOfStock || effectivePrice <= 0
+            isOutOfStock || price <= 0
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-100"
           }`}
@@ -313,7 +310,7 @@ const ProductInfo = ({
         />
       </div>
 
-      {/* 🛒 Mobile/Tablet Taskbar - Fixed Bottom */}
+      {/* 🛒 Mobile/Tablet Taskbar */}
       {!isOutOfStock && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
           <div className="max-w-7xl mx-auto px-3 py-2">
@@ -324,15 +321,7 @@ const ProductInfo = ({
                 <Button
                   type="button"
                   label="-"
-                  onClick={() => {
-                    const newVal = quantity - 1;
-                    if (newVal < 1) {
-                      setQuantity(1);
-                      toast.error("Minimum quantity is 1!");
-                    } else {
-                      setQuantity(newVal);
-                    }
-                  }}
+                  onClick={() => setQuantity((q) => (q > 1 ? q - 1 : 1))}
                   disabled={loading || quantity <= 1}
                   className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
                 />
@@ -342,25 +331,22 @@ const ProductInfo = ({
                 <Button
                   type="button"
                   label="+"
-                  onClick={() => {
-                    const newVal = quantity + 1;
-                    if (newVal > stock) {
-                      setQuantity(stock);
-                      toast.error(`Only ${stock} items left in stock!`);
-                    } else {
-                      setQuantity(newVal);
-                    }
-                  }}
+                  onClick={() =>
+                    setQuantity((q) =>
+                      q >= stock
+                        ? (toast.error(`Only ${stock} items left!`), stock)
+                        : q + 1
+                    )
+                  }
                   disabled={loading || quantity >= stock}
                   className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
                 />
               </div>
 
-              {/* Total Price */}
               <div className="text-right">
                 <div className="text-xs text-gray-500">Total</div>
                 <div className="text-base font-bold text-orange-600">
-                  {formatVND(effectivePrice * quantity)}
+                  {formatVND(price * quantity)}
                 </div>
               </div>
             </div>
@@ -374,22 +360,16 @@ const ProductInfo = ({
                     title,
                     stock,
                     quantity,
-                    price: effectivePrice,
+                    price,
                     images,
                     setLoading,
                   })
                 }
-                disabled={loading || effectivePrice <= 0}
+                disabled={loading || price <= 0}
                 icon={<ShoppingBag className="w-4 h-4" />}
-                label={
-                  effectivePrice <= 0
-                    ? "No Price"
-                    : loading
-                    ? "Adding..."
-                    : "Cart"
-                }
+                label={price <= 0 ? "No Price" : loading ? "Adding..." : "Cart"}
                 className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
-                  effectivePrice <= 0
+                  price <= 0
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-orange-600 text-white active:bg-orange-700 active:scale-95"
                 }`}
@@ -400,22 +380,22 @@ const ProductInfo = ({
                   handleBuyNow({
                     id,
                     quantity,
-                    price: effectivePrice,
+                    price,
                     stock,
                     image: firstImage,
                   } as BuyNowPayload)
                 }
-                disabled={effectivePrice <= 0}
+                disabled={price <= 0}
                 icon={<CreditCard className="w-4 h-4" />}
-                label={effectivePrice <= 0 ? "No Price" : "Buy Now"}
+                label={price <= 0 ? "No Price" : "Buy Now"}
                 className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
-                  effectivePrice <= 0
+                  price <= 0
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-black text-white active:bg-gray-800 active:scale-95"
                 }`}
               />
 
-              {/* Wishlist Button */}
+              {/* Wishlist */}
               <Button
                 onClick={handleToggleWishlist}
                 icon={

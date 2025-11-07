@@ -130,16 +130,15 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const { handleAddToCart } = useAddToCart();
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
 
-  const price = salePrice ?? regularPrice ?? 0;
-  const oldPrice =
-    salePrice && regularPrice && regularPrice > salePrice
-      ? regularPrice
-      : undefined;
+  /* ✅ Xử lý giá */
+  const hasDiscount =
+    salePrice && regularPrice && salePrice < regularPrice ? true : false;
+  const price = hasDiscount ? salePrice! : regularPrice ?? 0;
+  const oldPrice = hasDiscount ? regularPrice : undefined;
   const isOutOfStock = stock === 0;
-  const discountPercent =
-    oldPrice && oldPrice > price
-      ? Math.round(((oldPrice - price) / oldPrice) * 100)
-      : 0;
+  const discountPercent = hasDiscount
+    ? Math.round(((oldPrice! - price) / oldPrice!) * 100)
+    : 0;
 
   const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
@@ -215,7 +214,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           />
 
           {/* 🔹 Discount Badge */}
-          {discountPercent > 0 && (
+          {hasDiscount && discountPercent > 0 && (
             <span className="absolute top-3 left-3 bg-orange-500 text-white text-xs sm:text-sm font-bold px-3 py-1 rounded-full shadow-md">
               -{discountPercent}%
             </span>
