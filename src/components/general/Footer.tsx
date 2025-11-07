@@ -87,12 +87,8 @@ const Footer: React.FC = () => {
                   className="relative w-[55px] h-[55px] sm:w-[65px] sm:h-[65px] overflow-hidden 
                              group cursor-pointer transform hover:scale-105 transition-transform duration-300"
                 >
-                  <img
-                    src={src}
-                    alt={`insta-${index}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                  <img src={src} alt={`insta-${index}`} loading="eager" />
+
                   <div className="absolute inset-0 bg-gradient-to-t from-[#ff9f00]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <Instagram
                       size={20}
