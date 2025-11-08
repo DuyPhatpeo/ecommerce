@@ -9,7 +9,7 @@ import ProductCard from "../section/ProductCard";
 interface Product {
   id: string;
   title: string;
-  salePrice?: number; // optional vì API có thể undefined
+  salePrice?: number;
   regularPrice?: number;
   status?: string;
   images?: string[];
@@ -25,8 +25,8 @@ const CategoryProducts: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(9);
 
@@ -152,6 +152,7 @@ const CategoryProducts: React.FC = () => {
         );
         break;
     }
+    // Ưu tiên còn hàng
     items.sort((a, b) => {
       const stockA = a.stock ?? 0;
       const stockB = b.stock ?? 0;
@@ -238,12 +239,12 @@ const CategoryProducts: React.FC = () => {
               sizeFilter={sizeFilter}
               setSizeFilter={setSizeFilter}
               brandOptions={brandOptions}
-              hasActiveFilters={
+              hasActiveFilters={Boolean(
                 brandFilter.length ||
-                colorFilter.length ||
-                sizeFilter.length ||
-                stockFilter !== "all"
-              }
+                  colorFilter.length ||
+                  sizeFilter.length ||
+                  stockFilter !== "all"
+              )} // ✅ ép kiểu boolean đúng chuẩn
               clearFilters={clearFilters}
               priceRange={priceRange}
               setPriceRange={setPriceRange}
