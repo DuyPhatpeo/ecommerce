@@ -15,7 +15,7 @@ interface Product {
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
+  const { id, title, img, salePrice, regularPrice, stock = 0 } = data;
 
   const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
@@ -35,9 +35,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     []
   );
 
-  const handleToggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-  };
+  const handleToggleWishlist = () => setIsWishlisted(!isWishlisted);
 
   const handleAdd = useCallback(
     (e?: React.MouseEvent) => {
@@ -46,7 +44,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       if (isOutOfStock || loading) return;
 
       setLoading(true);
-      // Simulate API call
       setTimeout(() => {
         setLoading(false);
         alert(`Added "${title}" to cart!`);
@@ -63,28 +60,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     <div className="group relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[280px] mx-auto">
       <div onClick={handleCardClick} className="cursor-pointer">
         <div className="relative bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl rounded-[24px] p-3 sm:p-4 shadow-xl border border-white/50 overflow-hidden transition-all duration-500 hover:shadow-2xl">
-          {/* Wishlist Button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleToggleWishlist();
-            }}
-            className={`absolute top-5 right-5 z-20 w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${
-              isWishlisted ? "bg-white/70" : "bg-white/40 hover:bg-white/60"
-            }`}
-          >
-            <Heart
-              size={20}
-              strokeWidth={2.5}
-              className={`transition-all duration-300 ${
-                isWishlisted
-                  ? "fill-red-500 text-red-500 scale-110"
-                  : "text-gray-800 hover:text-red-500"
-              }`}
-            />
-          </button>
-
           {/* Discount Badge */}
           {hasDiscount && discountPercent > 0 && (
             <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
@@ -93,7 +68,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
 
           {/* Product Image */}
-          <div className="relative w-full aspect-[3/4] mb-3 sm:mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+          <div className="relative w-full aspect-[3/4] mb-3 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
             <img
               src={img}
               alt={title}
@@ -111,55 +86,57 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-2 sm:space-y-2.5">
-            <h3 className="text-sm sm:text-base font-bold text-gray-800 leading-tight line-clamp-2 min-h-[40px] sm:min-h-[44px] overflow-hidden">
+          <div className="space-y-2">
+            {/* Tên sản phẩm */}
+            <h3 className="text-sm md:text-base font-bold text-gray-800 leading-tight truncate">
               {title}
             </h3>
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 pt-1">
-              <div className="flex flex-col min-h-[48px] justify-center">
-                <span className="text-lg sm:text-xl font-bold text-gray-900">
-                  {formatVND(price)}
+            {/* Giá */}
+            <div className="flex flex-col gap-1">
+              <span className="text-lg md:text-xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
+                {formatVND(price)}
+              </span>
+              {oldPrice && (
+                <span className="text-xs text-gray-400 line-through">
+                  {formatVND(oldPrice)}
                 </span>
-                {oldPrice && (
-                  <span className="text-xs text-gray-400 line-through">
-                    {formatVND(oldPrice)}
-                  </span>
-                )}
-              </div>
+              )}
+            </div>
 
-              {/* Add to Cart Button */}
+            {/* Add to Cart + Wishlist cùng hàng */}
+            <div className="flex items-center gap-2 pt-2">
               <Button
                 onClick={handleAdd}
                 disabled={isOutOfStock || loading}
-                icon={<ShoppingBag size={14} className="sm:w-4 sm:h-4" />}
-                label={loading ? "Adding..." : "Cart"}
-                className={`gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm shadow-lg w-full sm:w-auto
+                icon={<ShoppingBag size={14} className="w-4 h-4" />}
+                label={loading ? "Adding..." : "Add to Cart"}
+                className={`flex-1 gap-2 px-4 py-3 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
                   ${
                     isOutOfStock || loading
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
                   }`}
               />
-            </div>
 
-            <div className="pt-0.5">
-              {isOutOfStock ? (
-                <span className="inline-flex items-center gap-1.5 text-red-500 text-xs font-semibold">
-                  <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                  Out of stock
-                </span>
-              ) : stock <= 5 ? (
-                <span className="inline-flex items-center gap-1.5 text-amber-600 text-xs font-semibold">
-                  <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
-                  Only {stock} left
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 text-green-600 text-xs font-semibold">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                  In stock
-                </span>
-              )}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleToggleWishlist();
+                }}
+                className={`w-12 h-12 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 hover:scale-110 active:scale-95 ${
+                  isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                <Heart
+                  size={20}
+                  strokeWidth={2.5}
+                  className={
+                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-700"
+                  }
+                />
+              </button>
             </div>
           </div>
         </div>
