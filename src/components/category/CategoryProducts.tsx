@@ -1,19 +1,21 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Sparkles, Filter, ShoppingBag, ArrowUpDown } from "lucide-react";
 import { getProducts } from "../../api/productApi";
-import ShopFilter from "../shop/ShopFilter";
+import ShopFilter from "../section/Filter";
 import Button from "../ui/Button";
-import ProductCard from "../section/ProductCard";
+import ShopList from "../section/ProductList";
+import { useShopFilter } from "../../hooks/useFilter";
+import { useSort } from "../../hooks/useSort";
 
 interface Product {
   id: string;
   title: string;
-  salePrice?: number;
+  salePrice: number;
   regularPrice?: number;
+  stock?: number;
   status?: string;
   images?: string[];
-  stock?: number;
   category?: string;
   brand?: string;
   color?: string;
@@ -22,50 +24,24 @@ interface Product {
 
 const CategoryProducts: React.FC = () => {
   const { category } = useParams<{ category: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
-
   const [products, setProducts] = useState<Product[]>([]);
-  const [, setLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [brandFilter, setBrandFilter] = useState<string[]>(
-    searchParams.getAll("brand")
-  );
-  const [colorFilter, setColorFilter] = useState<string[]>(
-    searchParams.getAll("color")
-  );
-  const [sizeFilter, setSizeFilter] = useState<string[]>(
-    searchParams.getAll("size")
-  );
-  const [stockFilter, setStockFilter] = useState<"all" | "in" | "out">(
-    (searchParams.get("stock") as "all" | "in" | "out") || "all"
-  );
-  const [sortBy, setSortBy] = useState<string>(
-    searchParams.get("sort") || "none"
-  );
-  const [priceRange, setPriceRange] = useState({
-    min: Number(searchParams.get("min")) || 0,
-    max: Number(searchParams.get("max")) || 100000000,
-  });
-
-  // --- Fetch sản phẩm ---
+  // --- Fetch sản phẩm category ---
   useEffect(() => {
+    let mounted = true;
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        setError(null);
-
         const data = await getProducts({ category });
 
-        const normalizedData: Product[] = (data || []).map((p: any) => ({
-          id: p.id,
-          title: p.title || "Untitled",
+        const normalized: Product[] = (data || []).map((p: any) => ({
+          ...p,
           salePrice: p.salePrice ?? p.price ?? 0,
           regularPrice: p.regularPrice ?? p.oldPrice ?? p.salePrice ?? 0,
           stock: p.stock ?? 0,
-          status: p.status,
+          status: p.status ?? "available",
           images: Array.isArray(p.images)
             ? p.images
             : p.image
@@ -77,161 +53,134 @@ const CategoryProducts: React.FC = () => {
           size: p.size ?? "",
         }));
 
-        setProducts(normalizedData);
-      } catch {
-        setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
+        if (mounted) setProducts(normalized);
+      } catch (err) {
+        console.error(err);
+        if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
     fetchProducts();
+    return () => {
+      mounted = false;
+    };
   }, [category]);
 
-  const brandOptions = [
-    ...new Set(
-      products.map((p) => p.brand).filter((b): b is string => Boolean(b))
-    ),
-  ];
+  // --- FILTER logic ---
+  const {
+    stockFilter,
+    setStockFilter,
+    categoryFilter,
+    setCategoryFilter,
+    brandFilter,
+    setBrandFilter,
+    colorFilter,
+    setColorFilter,
+    sizeFilter,
+    setSizeFilter,
+    priceRange,
+    setPriceRange,
+    showFilters,
+    isFiltering,
+    debouncedFilters,
+    toggleFilters,
+    clearFilters,
+    categoryOptions,
+    brandOptions,
+    hasActiveFilters,
+    PRICE_MIN,
+    PRICE_MAX,
+  } = useShopFilter(products);
 
-  useEffect(() => {
-    const params: Record<string, string | string[]> = {};
-    if (brandFilter.length) params.brand = brandFilter;
-    if (colorFilter.length) params.color = colorFilter;
-    if (sizeFilter.length) params.size = sizeFilter;
-    if (stockFilter !== "all") params.stock = stockFilter;
-    if (sortBy !== "none") params.sort = sortBy;
-    if (priceRange.min > 0) params.min = String(priceRange.min);
-    if (priceRange.max < 100000000) params.max = String(priceRange.max);
-    setSearchParams(params as any, { replace: true });
-  }, [brandFilter, colorFilter, sizeFilter, stockFilter, priceRange, sortBy]);
+  // --- SORT + PAGINATION logic ---
+  const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
+    useSort(products, debouncedFilters, { itemsPerLoad: 9 });
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      const matchBrand =
-        brandFilter.length === 0 || brandFilter.includes(p.brand || "");
-      const matchColor =
-        colorFilter.length === 0 || colorFilter.includes(p.color || "");
-      const matchSize =
-        sizeFilter.length === 0 || sizeFilter.includes(p.size || "");
-      const matchStock =
-        stockFilter === "all"
-          ? true
-          : stockFilter === "in"
-          ? (p.stock ?? 0) > 0
-          : (p.stock ?? 0) <= 0;
-      const matchPrice =
-        (p.salePrice ?? 0) >= priceRange.min &&
-        (p.salePrice ?? 0) <= priceRange.max;
+  if (loading)
+    return (
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
 
-      return matchBrand && matchColor && matchSize && matchStock && matchPrice;
-    });
-  }, [products, brandFilter, colorFilter, sizeFilter, stockFilter, priceRange]);
-
-  const sortedProducts = useMemo(() => {
-    const items = [...filteredProducts];
-    switch (sortBy) {
-      case "name-asc":
-        items.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "name-desc":
-        items.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case "price-asc":
-        items.sort((a, b) => (a.salePrice ?? 0) - (b.salePrice ?? 0));
-        break;
-      case "price-desc":
-        items.sort((a, b) => (b.salePrice ?? 0) - (a.salePrice ?? 0));
-        break;
-      case "discount-high":
-        items.sort(
-          (a, b) =>
-            (b.regularPrice ?? 0) -
-            (b.salePrice ?? 0) -
-            ((a.regularPrice ?? 0) - (a.salePrice ?? 0))
-        );
-        break;
-    }
-    // Ưu tiên còn hàng
-    items.sort((a, b) => {
-      const stockA = a.stock ?? 0;
-      const stockB = b.stock ?? 0;
-      if (stockA > 0 && stockB <= 0) return -1;
-      if (stockA <= 0 && stockB > 0) return 1;
-      return 0;
-    });
-    return items;
-  }, [filteredProducts, sortBy]);
-
-  const visibleProducts = sortedProducts.slice(0, visibleCount);
-
-  const clearFilters = () => {
-    setBrandFilter([]);
-    setColorFilter([]);
-    setSizeFilter([]);
-    setStockFilter("all");
-    setSortBy("none");
-    setPriceRange({ min: 0, max: 100000000 });
-    setSearchParams({});
-  };
+  if (error)
+    return (
+      <div className="text-center py-10 text-red-600 font-semibold">
+        {error}
+      </div>
+    );
 
   const capitalize = (text?: string) =>
     text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
   return (
-    <section className="w-full min-h-screen py-5 px-2 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
-      <div className="max-w-7xl mx-auto">
-        {/* Title */}
-        <div className="text-center mb-6 sm:mb-10">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow mb-3">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
+        {/* --- Header --- */}
+        <div className="text-center mb-10 px-2 sm:px-0 overflow-visible">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow mb-4">
             <Sparkles size={16} />
-            <span>{capitalize(category) || "All Products"}</span>
+            <span className="whitespace-normal">
+              {capitalize(category) || "All products"}
+            </span>
             <ShoppingBag size={16} />
           </div>
 
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-snug sm:leading-snug md:leading-normal break-words bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             {category ? `${capitalize(category)} Collection` : "Our Collection"}
           </h2>
         </div>
 
-        {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-6">
+        {/* --- Backdrop Mobile Filter --- */}
+        {showFilters && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            onClick={toggleFilters}
+          />
+        )}
+
+        {/* --- Toolbar --- */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
-            onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-lg shadow-sm text-sm"
-            icon={<Filter size={16} />}
+            onClick={toggleFilters}
+            className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
+            icon={<Filter size={18} />}
             label={"Filter"}
           />
 
-          <div className="ml-auto flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-2 py-1.5 shadow-sm">
-            <ArrowUpDown size={16} className="text-orange-500 shrink-0" />
+          {/* --- Sort Selector --- */}
+          <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
+            <ArrowUpDown size={18} className="text-orange-500 shrink-0" />
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-1 py-1 border-none outline-none bg-transparent text-gray-800 text-sm"
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
             >
               <option value="none">Default</option>
               <option value="name-asc">A → Z</option>
               <option value="name-desc">Z → A</option>
               <option value="price-asc">Low → High</option>
               <option value="price-desc">High → Low</option>
-              <option value="discount-high">Biggest discount</option>
+              <option value="discount-high">Biggest discount (%)</option>
             </select>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-          {/* SIDEBAR */}
-          <div className="lg:w-60 shrink-0">
+        {/* --- Main Layout --- */}
+        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+          {/* Sidebar Filter */}
+          <div className="lg:w-64 shrink-0 self-start">
             <ShopFilter
               context="category"
               showFilters={showFilters}
-              toggleFilters={() => setShowFilters(!showFilters)}
+              toggleFilters={toggleFilters}
               stockFilter={stockFilter}
               setStockFilter={setStockFilter}
-              categoryFilter={[]}
-              setCategoryFilter={() => {}}
-              categoryOptions={[]}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              categoryOptions={categoryOptions}
               brandFilter={brandFilter}
               setBrandFilter={setBrandFilter}
               colorFilter={colorFilter}
@@ -239,48 +188,29 @@ const CategoryProducts: React.FC = () => {
               sizeFilter={sizeFilter}
               setSizeFilter={setSizeFilter}
               brandOptions={brandOptions}
-              hasActiveFilters={Boolean(
-                brandFilter.length ||
-                  colorFilter.length ||
-                  sizeFilter.length ||
-                  stockFilter !== "all"
-              )} // ✅ ép kiểu boolean đúng chuẩn
+              hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}
               priceRange={priceRange}
               setPriceRange={setPriceRange}
-              priceMin={0}
-              priceMax={100000000}
+              priceMin={PRICE_MIN}
+              priceMax={PRICE_MAX}
               priceStep={100000}
             />
           </div>
 
-          {/* PRODUCT GRID */}
+          {/* Product List */}
           <div className="flex-1 relative">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
-              {visibleProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  data={{
-                    id: p.id,
-                    img: p.images?.[0] || "/placeholder.jpg",
-                    title: p.title,
-                    salePrice: p.salePrice ?? 0,
-                    regularPrice: p.regularPrice ?? 0,
-                    stock: p.stock ?? 0,
-                  }}
-                />
-              ))}
-            </div>
-
-            {visibleCount < sortedProducts.length && (
-              <div className="flex justify-center mt-6">
-                <Button
-                  onClick={() => setVisibleCount((prev) => prev + 8)}
-                  label="See More"
-                  className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium shadow transition-all"
-                />
+            {isFiltering && (
+              <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
+            <ShopList
+              paginatedProducts={paginatedProducts}
+              clearFilters={clearFilters}
+              hasMore={hasMore}
+              onSeeMore={handleSeeMore}
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { PackageSearch, X } from "lucide-react";
-import ProductCard from "../section/ProductCard";
+import ProductCard from "./ProductCard";
 import Button from "../ui/Button";
 
 interface Product {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ArrowUpDown, Sparkles, Filter, ShoppingBag } from "lucide-react";
 import { getProducts } from "../../api/productApi";
-import ShopFilter from "./ShopFilter";
+import ShopFilter from "../section/Filter";
 import Button from "../ui/Button";
-import ShopList from "./ShopList";
+import ShopList from "../section/ProductList";
 import { useShopFilter } from "../../hooks/useFilter";
 import { useSort } from "../../hooks/useSort";
 
