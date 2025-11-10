@@ -6,7 +6,8 @@ import {
   AlertCircle,
   CreditCard,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { useAddToCart } from "../../hooks/useAddToCart";

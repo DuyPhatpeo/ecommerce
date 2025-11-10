@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import { getCartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 import { createOrder } from "../api/orderApi";

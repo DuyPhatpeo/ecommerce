@@ -1,6 +1,7 @@
 // src/hooks/useCart.ts
 import { useState, useEffect, useCallback } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import {
   getCart,
   updateCartItem,

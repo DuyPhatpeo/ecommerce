@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./GlobalStyle.css";
 import AppRoutes from "./routes/AppRoutes";
@@ -11,7 +12,16 @@ const App: React.FC = () => {
     <Router>
       <ScrollToTop />
       <AppRoutes />
-      <Toaster position="top-right" reverseOrder={false} />
+      <ToastContainer
+        position="top-right"
+        newestOnTop={false} // tương đương reverseOrder={false}
+        autoClose={5000} // thời gian tự đóng
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
     </Router>
   );
 };

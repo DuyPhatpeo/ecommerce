@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import type { Address } from "../api/addressApi";
 import {
   getUserAddresses,

@@ -1,13 +1,12 @@
 // src/hooks/useAddToCart.ts
 import { useCallback } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../api/cartApi";
 import Button from "../components/ui/Button";
-import { X } from "lucide-react";
 
 interface AddToCartParams {
-  id: string; // productId
+  id: string;
   title: string;
   stock: number;
   quantity: number;
@@ -16,76 +15,53 @@ interface AddToCartParams {
   setLoading: (v: boolean) => void;
 }
 
-/** Hook to handle adding products to cart */
 export const useAddToCart = () => {
   const navigate = useNavigate();
 
-  const formatVND = (val: number) =>
-    val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-
-  /** Custom toast when adding to cart */
   const showCartToast = useCallback(
     (title: string, imageUrl: string, price: number, quantity: number) => {
-      toast.custom(
-        (t) => (
-          <div
-            className={`flex items-center gap-4 p-4 w-[360px] min-h-[110px] bg-white shadow-lg rounded-xl relative transition-all ${
-              t.visible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2"
-            }`}
-          >
-            <img
-              src={imageUrl || "/placeholder.jpg"}
-              alt={title}
-              className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-              onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
+      toast(
+        <div className="flex items-center gap-4 p-4 w-[360px] min-h-[110px] ">
+          <img
+            src={imageUrl || "/placeholder.jpg"}
+            alt={title}
+            className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+            onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
+          />
+          <div className="flex flex-col justify-between flex-1 text-sm">
+            <p className="font-semibold text-gray-800 truncate">{title}</p>
+            <p className="text-gray-600">
+              Added{" "}
+              <span className="text-orange-500 font-semibold">{quantity}</span>{" "}
+              item(s)
+            </p>
+            {price > 0 && (
+              <p className="text-gray-700 font-medium">
+                {price.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </p>
+            )}
+            <Button
+              label="View cart"
+              onClick={() => navigate("/cart")}
+              className="text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg mt-2"
             />
-
-            <div className="flex flex-col justify-between flex-1 h-full text-sm">
-              <div className="space-y-0.5 overflow-hidden">
-                <p className="font-semibold text-gray-800 truncate">{title}</p>
-                <p className="text-gray-600">
-                  Added{" "}
-                  <span className="text-orange-500 font-semibold">
-                    {quantity}
-                  </span>{" "}
-                  item(s)
-                </p>
-                {price > 0 && (
-                  <p className="text-gray-700 font-medium">
-                    {formatVND(price)}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-2">
-                <Button
-                  label="View cart"
-                  onClick={() => {
-                    toast.dismiss(t.id);
-                    navigate("/cart");
-                  }}
-                  className="text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-1 px-3 rounded-lg"
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            >
-              <X size={16} />
-            </button>
           </div>
-        ),
-        { duration: 3000 }
+        </div>,
+        {
+          autoClose: 3000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          hideProgressBar: true, // ✅ ẩn thanh chạy
+        }
       );
     },
     [navigate]
   );
 
-  /** Add product to cart */
   const handleAddToCart = useCallback(
     async ({
       id,
@@ -97,19 +73,14 @@ export const useAddToCart = () => {
       setLoading,
     }: AddToCartParams) => {
       const userId = localStorage.getItem("userId");
-      if (!userId) {
-        toast.error("You need to login to add products to cart!");
-        return;
-      }
-
-      if (quantity > stock) {
-        toast.error(`Only ${stock} items left in stock!`);
-        return;
-      }
+      if (!userId)
+        return toast.error("You need to login to add products to cart!");
+      if (quantity > stock)
+        return toast.error(`Only ${stock} items left in stock!`);
 
       setLoading(true);
       try {
-        await addToCart(userId, id, quantity); // ✅ pass userId
+        await addToCart(userId, id, quantity);
         showCartToast(title, images?.[0] || "", price, quantity);
       } catch {
         toast.error("Failed to add product to cart!");

@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import { getProductById } from "../../api/productApi";
 import { getWishlist } from "../../api/wishlistApi";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 interface Product {
   id: string;

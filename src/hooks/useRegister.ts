@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import { getUsers, registerUser } from "../api/authApi";
 import type { User } from "../api/authApi";
 

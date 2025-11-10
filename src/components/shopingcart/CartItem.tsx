@@ -1,6 +1,7 @@
 import { Plus, Minus, Trash2, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import Checkbox from "../ui/Checkbox";
 import Button from "../ui/Button";
 

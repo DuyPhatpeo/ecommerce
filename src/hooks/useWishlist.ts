@@ -5,7 +5,7 @@ import {
   removeFromWishlist,
   isInWishlist,
 } from "../api/wishlistApi";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export const useWishlist = (productId: string) => {
   const [userId, setUserId] = useState<string | null>(

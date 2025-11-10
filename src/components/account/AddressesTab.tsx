@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, MapPin, Edit2, Trash2, User, Phone, X } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import { useAddresses } from "../../hooks/useAddresses";
 import type { Address } from "../../api/addressApi";
 

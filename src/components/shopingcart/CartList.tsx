@@ -1,7 +1,8 @@
 import { ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
 import CartItem from "./CartItem";
 import Button from "../ui/Button";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import Checkbox from "../ui/Checkbox";
 
 interface ProductType {

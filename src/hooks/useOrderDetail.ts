@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
+
 import { getOrderById } from "../api/orderApi";
 import { getProductById } from "../api/productApi";
 
