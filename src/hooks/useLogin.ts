@@ -97,7 +97,7 @@ export default function useLogin() {
       toast.success(`Welcome back, ${displayName}!`);
       setFormData({ email: "", password: "" });
 
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/"));
     } catch {
       toast.error("Login failed. Please try again.");
     } finally {
