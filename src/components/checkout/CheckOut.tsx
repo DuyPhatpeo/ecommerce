@@ -17,7 +17,6 @@ const CheckOut: React.FC = () => {
     total,
     customerInfo,
     setCustomerInfo,
-    placingOrder,
     handlePlaceOrder,
   } = useCheckout({ state });
 
@@ -49,12 +48,6 @@ const CheckOut: React.FC = () => {
               }
               onPlaceOrder={handlePlaceOrder}
             />
-
-            {placingOrder && (
-              <p className="mt-3 text-center text-orange-500 animate-pulse">
-                Đang xử lý đơn hàng...
-              </p>
-            )}
           </div>
         </div>
       </div>
