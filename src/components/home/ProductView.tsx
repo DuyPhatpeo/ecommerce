@@ -141,7 +141,7 @@ const ProductView: React.FC<ProductViewProps> = ({
         }`}
       >
         <div className="relative">
-          {/* Slider Container với padding bottom để nút không đè lên card */}
+          {/* Slider Container */}
           <div className={mode === "slider" ? "pb-24" : ""}>
             <div
               ref={sliderRef}
@@ -159,7 +159,7 @@ const ProductView: React.FC<ProductViewProps> = ({
               <div
                 className={
                   mode === "slider"
-                    ? "flex gap-3 sm:gap-4 py-2"
+                    ? "flex gap-4 py-2"
                     : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
                 }
               >
@@ -168,7 +168,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                     key={`${p.id}-${index}`}
                     className={
                       mode === "slider"
-                        ? "product-card-item flex-shrink-0 w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]"
+                        ? "product-card-item flex-shrink-0 w-[calc(50%-8px)] sm:w-[calc(33.333%-12px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
                         : ""
                     }
                   >
@@ -188,26 +188,20 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* Nút điều hướng nằm bên ngoài slider */}
+          {/* Nút điều hướng */}
           {mode === "slider" && products.length > visibleCount && (
             <div className="absolute left-1/2 -translate-x-1/2 -bottom-4 flex justify-center gap-4 z-10">
               <Button
                 icon={<ArrowLeft size={22} />}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
-                className="transition-all duration-200 ease-in-out 
-                 hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg 
-                 active:scale-95 
-                 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
+                className="transition-all duration-200 ease-in-out hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
               />
               <Button
                 icon={<ArrowRight size={22} />}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
-                className="transition-all duration-200 ease-in-out 
-                 hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg 
-                 active:scale-95 
-                 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
+                className="transition-all duration-200 ease-in-out hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
               />
             </div>
           )}
