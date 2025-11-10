@@ -63,6 +63,12 @@ export default function RegisterForm() {
             icon={<MapPin size={20} />}
             error={errors.address}
           />
+          <p className="text-sm text-gray-500 ml-1">
+            Format:{" "}
+            <span className="italic">
+              Street, Ward, District, City, Country
+            </span>
+          </p>
         </div>
       </div>
 
