@@ -55,7 +55,7 @@ export const useAddToCart = () => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          hideProgressBar: true, // ✅ ẩn thanh chạy
+          hideProgressBar: true,
         }
       );
     },

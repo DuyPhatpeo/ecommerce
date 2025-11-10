@@ -82,8 +82,8 @@ export const useCart = () => {
   }, [fetchCart]);
 
   /* =====================
-     🔄 UPDATE QUANTITY
-  ===================== */
+   🔄 UPDATE QUANTITY
+===================== */
   const updateQuantity = async (id: string, change: number) => {
     if (!userId) return;
 
@@ -100,12 +100,13 @@ export const useCart = () => {
 
     try {
       await updateCartItem(userId, id, newQty);
-      toast.success("Quantity updated successfully.");
+      // ✅ Không hiện toast nữa
     } catch {
+      // Rollback về số lượng cũ nếu lỗi
       setCartItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, quantity: item.quantity } : i))
       );
-      toast.error("Failed to update quantity.");
+      // ✅ Không hiện toast lỗi
     } finally {
       setUpdating(null);
     }

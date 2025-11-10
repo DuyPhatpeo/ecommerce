@@ -135,6 +135,7 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   }, [fetchProducts]);
 
   /* ---------- Place order ---------- */
+  /* ---------- Place order ---------- */
   const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) return toast.error("Please enter shipping information!");
     const { recipientName, phone, address, paymentMethod, note } = customerInfo;
@@ -149,7 +150,15 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
     }
 
     setPlacingOrder(true);
-    const loadingToast = toast.loading("Processing your order...");
+
+    // 1️⃣ Show loading toast
+    const toastId = toast.loading("Processing your order...", {
+      position: "top-right",
+      autoClose: false, // Không tự đóng
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: false,
+    });
 
     try {
       // Refresh product prices
@@ -197,15 +206,29 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
 
       const res = await createOrder(orderData);
 
-      toast.dismiss(loadingToast);
-      toast.success("Order placed successfully!");
+      // 2️⃣ Update toast từ loading → success
+      toast.update(toastId, {
+        render: "Order placed successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+        draggable: true,
+      });
 
       localStorage.removeItem("checkoutItems");
       navigate("/order-success", { state: { order: res }, replace: true });
     } catch (err) {
       console.error(err);
-      toast.dismiss();
-      toast.error("Failed to place order, please try again!");
+      // 3️⃣ Update toast từ loading → error
+      toast.update(toastId, {
+        render: "Failed to place order, please try again!",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+        draggable: true,
+      });
     } finally {
       setPlacingOrder(false);
     }
