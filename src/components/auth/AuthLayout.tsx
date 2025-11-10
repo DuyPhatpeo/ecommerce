@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus, Home } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
@@ -22,6 +22,17 @@ export default function AuthLayout() {
 
   return (
     <div className="w-full h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center relative overflow-hidden">
+      {/* Nút Home */}
+      <div className="absolute top-4 left-4 lg:top-6 lg:left-6 z-20">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 px-3 py-1.5 bg-white/70 backdrop-blur-md rounded-xl shadow hover:bg-white transition-all text-orange-600 font-semibold"
+        >
+          <Home size={20} />
+          Home
+        </button>
+      </div>
+
       {/* Background hiệu ứng */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-amber-300 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
