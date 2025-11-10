@@ -14,8 +14,8 @@ const App: React.FC = () => {
       <AppRoutes />
       <ToastContainer
         position="top-right"
-        newestOnTop={false} // tương đương reverseOrder={false}
-        autoClose={5000} // thời gian tự đóng
+        newestOnTop={false}
+        autoClose={2000}
         hideProgressBar={false}
         closeOnClick
         pauseOnHover

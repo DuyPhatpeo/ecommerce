@@ -62,7 +62,7 @@ export const useWishlist = (productId: string) => {
     if (isWishlisted) {
       await removeFromWishlist(currentUserId, productId);
       setIsWishlisted(false);
-      toast("Removed from favorites");
+      toast.success("Removed from favorites");
     } else {
       await addToWishlist(currentUserId, productId);
       setIsWishlisted(true);
