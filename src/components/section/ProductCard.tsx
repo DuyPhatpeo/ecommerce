@@ -1,6 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAddToCart } from "../../hooks/useAddToCart";
+import { useWishlist } from "../../hooks/useWishlist";
 import Button from "../ui/Button";
 
 interface Product {
@@ -16,8 +18,9 @@ interface Product {
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const { id, title, img, salePrice, regularPrice, stock = 0 } = data;
+  const { handleAddToCart } = useAddToCart();
+  const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
+  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
   const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
@@ -37,21 +40,35 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     []
   );
 
-  const handleToggleWishlist = () => setIsWishlisted(!isWishlisted);
-
   const handleAdd = useCallback(
     (e?: React.MouseEvent) => {
       e?.preventDefault();
       e?.stopPropagation();
       if (isOutOfStock || loading) return;
 
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        alert(`Added "${title}" to cart!`);
-      }, 1000);
+      const firstImage = images?.[0] || img;
+
+      handleAddToCart({
+        id,
+        title,
+        stock,
+        quantity: 1,
+        price,
+        images: [firstImage],
+        setLoading,
+      });
     },
-    [title, loading, isOutOfStock]
+    [
+      id,
+      title,
+      stock,
+      price,
+      images,
+      img,
+      handleAddToCart,
+      loading,
+      isOutOfStock,
+    ]
   );
 
   const handleCardClick = () => {
@@ -97,7 +114,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               {formatVND(price)}
             </span>
 
-            {/* Giữ chiều cao cố định để không lệch layout */}
             <span
               className={`text-xs text-gray-400 line-through transition-opacity duration-200 ${
                 oldPrice ? "opacity-100" : "opacity-0"
@@ -107,38 +123,41 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 pt-2">
+          <div className="flex items-stretch gap-2 pt-2">
+            {/* Add to Cart */}
             <Button
               onClick={handleAdd}
               disabled={isOutOfStock || loading}
               icon={<ShoppingBag size={14} className="w-4 h-4" />}
               label={loading ? "Adding..." : "Add to Cart"}
               className={`flex-1 gap-2 px-4 py-3 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
-                ${
-                  isOutOfStock || loading
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
-                }`}
+      ${
+        isOutOfStock || loading
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
+      }`}
             />
 
-            <button
+            {/* Wishlist */}
+            <Button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 handleToggleWishlist();
               }}
-              className={`w-12 h-12 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 hover:scale-110 active:scale-95 ${
-                isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"
-              }`}
-            >
-              <Heart
-                size={20}
-                strokeWidth={2.5}
-                className={
-                  isWishlisted ? "fill-red-500 text-red-500" : "text-gray-700"
-                }
-              />
-            </button>
+              icon={
+                <Heart
+                  size={18}
+                  strokeWidth={2.5}
+                  className={
+                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-700"
+                  }
+                />
+              }
+              label="" // Không có text
+              className={`w-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 hover:scale-110 active:scale-95
+      ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}`}
+            />
           </div>
         </div>
       </div>

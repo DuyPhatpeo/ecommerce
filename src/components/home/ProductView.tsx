@@ -119,7 +119,13 @@ const ProductView: React.FC<ProductViewProps> = ({
     );
 
   return (
-    <section className="relative w-full py-8 overflow-hidden md:py-16 bg-gradient-to-br from-gray-50 via-white to-white/40">
+    <section
+      className={`relative w-full py-8 overflow-hidden md:py-16 ${
+        mode === "slider"
+          ? "bg-transparent"
+          : "bg-gradient-to-br from-gray-50 via-white to-white/40"
+      }`}
+    >
       <div className="px-4 mx-auto max-w-7xl md:px-16">
         <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent leading-[1.1] pb-2">
           {title}
@@ -130,7 +136,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       <div
         className={`mt-10 ${
           mode === "slider"
-            ? "px-4 sm:px-8 md:px-12"
+            ? "px-2 sm:px-4 md:px-6"
             : "max-w-7xl mx-auto px-4 md:px-16"
         }`}
       >
@@ -189,11 +195,19 @@ const ProductView: React.FC<ProductViewProps> = ({
                 icon={<ArrowLeft size={22} />}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
+                className="transition-all duration-200 ease-in-out 
+                 hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg 
+                 active:scale-95 
+                 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
               />
               <Button
                 icon={<ArrowRight size={22} />}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
+                className="transition-all duration-200 ease-in-out 
+                 hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg 
+                 active:scale-95 
+                 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
               />
             </div>
           )}
