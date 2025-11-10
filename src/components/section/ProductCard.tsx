@@ -97,10 +97,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               isOutOfStock ? "grayscale opacity-60" : ""
             }`}
           />
+
+          {/* Out of Stock Badge */}
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center">
-              <span className="bg-white text-gray-800 font-bold px-4 py-2 rounded-xl text-sm shadow-xl">
-                OUT OF STOCK
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="px-4 py-1 bg-red-50/90 text-red-600 font-bold text-sm rounded-full border border-red-200 shadow-md uppercase tracking-wider">
+                Out of Stock
               </span>
             </div>
           )}
@@ -118,7 +120,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               {price ? formatVND(price) : "-"}
             </span>
 
-            {/* Giá cũ - giữ khoảng trống để không lệch layout */}
+            {/* Giá cũ */}
             <span
               className={`text-xs text-gray-400 line-through ${
                 oldPrice ? "opacity-100" : "opacity-0"
@@ -128,6 +130,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </span>
           </div>
 
+          {/* Buttons */}
           <div className="flex items-stretch gap-1 pt-2">
             {/* Add to Cart */}
             <Button
