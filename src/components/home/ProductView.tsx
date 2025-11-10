@@ -38,6 +38,7 @@ const ProductView: React.FC<ProductViewProps> = ({
   const [visibleCount, setVisibleCount] = useState(6);
   const sliderRef = useRef<HTMLDivElement>(null);
 
+  // Tính số card hiển thị theo kích thước màn hình
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
     if (w < 640) return 2;
@@ -53,6 +54,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     return () => window.removeEventListener("resize", onResize);
   }, [computeVisible]);
 
+  // Lấy sản phẩm từ API
   useEffect(() => {
     (async () => {
       try {
@@ -94,7 +96,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     ] as HTMLElement;
     if (target)
       sliderRef.current.scrollTo({
-        left: target.offsetLeft - 12,
+        left: target.offsetLeft - 8, // giảm offset một chút
         behavior: "smooth",
       });
   };
@@ -141,7 +143,7 @@ const ProductView: React.FC<ProductViewProps> = ({
         }`}
       >
         <div className="relative">
-          {/* Slider Container */}
+          {/* Slider / Grid Container */}
           <div className={mode === "slider" ? "pb-24" : ""}>
             <div
               ref={sliderRef}
@@ -159,8 +161,8 @@ const ProductView: React.FC<ProductViewProps> = ({
               <div
                 className={
                   mode === "slider"
-                    ? "flex gap-4 py-2"
-                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+                    ? "flex gap-2 sm:gap-4 py-2" // giảm gap trên mobile
+                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4"
                 }
               >
                 {products.map((p, index) => (
@@ -168,7 +170,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                     key={`${p.id}-${index}`}
                     className={
                       mode === "slider"
-                        ? "product-card-item flex-shrink-0 w-[calc(50%-8px)] sm:w-[calc(33.333%-12px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
+                        ? "product-card-item flex-shrink-0 w-[calc(50%-4px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
                         : ""
                     }
                   >
