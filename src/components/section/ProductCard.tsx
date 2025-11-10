@@ -128,20 +128,19 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </span>
           </div>
 
-          {/* Buttons */}
-          <div className="flex items-stretch gap-2 pt-2">
+          <div className="flex items-stretch gap-1 pt-2">
             {/* Add to Cart */}
             <Button
               onClick={handleAdd}
               disabled={isOutOfStock || loading}
               icon={<ShoppingBag size={14} className="w-4 h-4" />}
-              label={loading ? "Adding..." : "Add to Cart"}
-              className={`flex-1 gap-2 px-4 py-3 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
-      ${
-        isOutOfStock || loading
-          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-          : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
-      }`}
+              label={loading ? "Adding..." : "Buy"}
+              className={`flex-1 h-12 gap-2 px-4 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
+    ${
+      isOutOfStock || loading
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
+    }`}
             />
 
             {/* Wishlist */}
@@ -161,8 +160,8 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                 />
               }
               label=""
-              className={`w-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 hover:scale-110 active:scale-95
-      ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}`}
+              className={`w-12 h-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 active:scale-95
+    ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}`}
             />
           </div>
         </div>
