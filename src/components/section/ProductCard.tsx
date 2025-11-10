@@ -22,7 +22,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
   const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
-  const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
+  const hasDiscount = !!salePrice && !!regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
   const oldPrice = hasDiscount ? regularPrice : undefined;
   const discountPercent = hasDiscount
@@ -81,12 +81,14 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       onClick={handleCardClick}
     >
       <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-[24px] p-3 sm:p-4 shadow-lg border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+        {/* Discount Badge */}
         {hasDiscount && discountPercent > 0 && (
           <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
             -{discountPercent}%
           </div>
         )}
 
+        {/* Product Image */}
         <div className="relative w-full aspect-[3/4] mb-3 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
           <img
             src={img}
@@ -104,18 +106,21 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           )}
         </div>
 
+        {/* Title & Price */}
         <div className="space-y-2">
           <h3 className="text-sm md:text-base font-bold text-gray-800 leading-tight truncate">
             {title}
           </h3>
 
           <div className="flex flex-col gap-1">
+            {/* Giá chính */}
             <span className="text-lg md:text-xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
-              {formatVND(price)}
+              {price ? formatVND(price) : "-"}
             </span>
 
+            {/* Giá cũ - giữ khoảng trống để không lệch layout */}
             <span
-              className={`text-xs text-gray-400 line-through transition-opacity duration-200 ${
+              className={`text-xs text-gray-400 line-through ${
                 oldPrice ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -123,6 +128,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </span>
           </div>
 
+          {/* Buttons */}
           <div className="flex items-stretch gap-2 pt-2">
             {/* Add to Cart */}
             <Button
