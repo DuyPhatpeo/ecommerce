@@ -42,7 +42,7 @@ const ScrollToTop = () => {
             z-50 flex items-center justify-center
           "
         >
-          <ArrowUp size={18} strokeWidth={2.5} />
+          <ArrowUp size={15} strokeWidth={2.5} />
         </button>
       )}
     </>
