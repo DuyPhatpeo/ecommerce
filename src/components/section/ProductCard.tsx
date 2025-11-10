@@ -1,8 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import { useAddToCart } from "../../hooks/useAddToCart";
-import { useWishlist } from "../../hooks/useWishlist";
 import Button from "../ui/Button";
 
 interface Product {
@@ -17,9 +14,8 @@ interface Product {
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [loading, setLoading] = useState(false);
-  const { handleAddToCart } = useAddToCart();
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
-  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
 
   const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
@@ -39,40 +35,33 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     []
   );
 
+  const handleToggleWishlist = () => {
+    setIsWishlisted(!isWishlisted);
+  };
+
   const handleAdd = useCallback(
     (e?: React.MouseEvent) => {
       e?.preventDefault();
       e?.stopPropagation();
       if (isOutOfStock || loading) return;
 
-      const firstImage = images?.[0] || img;
-
-      handleAddToCart({
-        id,
-        title,
-        stock,
-        quantity: 1,
-        price,
-        images: [firstImage],
-        setLoading,
-      });
+      setLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        setLoading(false);
+        alert(`Added "${title}" to cart!`);
+      }, 1000);
     },
-    [
-      id,
-      title,
-      stock,
-      price,
-      images,
-      img,
-      handleAddToCart,
-      loading,
-      isOutOfStock,
-    ]
+    [title, loading, isOutOfStock]
   );
+
+  const handleCardClick = () => {
+    console.log(`Navigate to product: ${id}`);
+  };
 
   return (
     <div className="group relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[280px] mx-auto">
-      <NavLink to={`/product/${id}`}>
+      <div onClick={handleCardClick} className="cursor-pointer">
         <div className="relative bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl rounded-[24px] p-3 sm:p-4 shadow-xl border border-white/50 overflow-hidden transition-all duration-500 hover:shadow-2xl">
           {/* Wishlist Button */}
           <button
@@ -81,21 +70,24 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               e.stopPropagation();
               handleToggleWishlist();
             }}
-            className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
+            className={`absolute top-5 right-5 z-20 w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${
+              isWishlisted ? "bg-white/70" : "bg-white/40 hover:bg-white/60"
+            }`}
           >
             <Heart
-              size={18}
-              className={`transition-all ${
+              size={20}
+              strokeWidth={2.5}
+              className={`transition-all duration-300 ${
                 isWishlisted
-                  ? "fill-red-500 text-red-500"
-                  : "text-gray-400 hover:text-red-400"
+                  ? "fill-red-500 text-red-500 scale-110"
+                  : "text-gray-800 hover:text-red-500"
               }`}
             />
           </button>
 
           {/* Discount Badge */}
           {hasDiscount && discountPercent > 0 && (
-            <div className="absolute top-3 left-3 z-20 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
+            <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
               -{discountPercent}%
             </div>
           )}
@@ -105,7 +97,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             <img
               src={img}
               alt={title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
+              className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${
                 isOutOfStock ? "grayscale opacity-60" : ""
               }`}
             />
@@ -136,17 +128,17 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                 )}
               </div>
 
-              {/* ✅ Custom Button */}
+              {/* Add to Cart Button */}
               <Button
                 onClick={handleAdd}
                 disabled={isOutOfStock || loading}
                 icon={<ShoppingBag size={14} className="sm:w-4 sm:h-4" />}
                 label={loading ? "Adding..." : "Cart"}
-                className={`flex items-center gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm shadow-lg w-full sm:w-auto
+                className={`gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm shadow-lg w-full sm:w-auto
                   ${
                     isOutOfStock || loading
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl"
+                      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
                   }`}
               />
             </div>
@@ -171,7 +163,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </div>
           </div>
         </div>
-      </NavLink>
+      </div>
     </div>
   );
 };
