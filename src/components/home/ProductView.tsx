@@ -192,7 +192,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
           {/* Nút điều hướng */}
           {mode === "slider" && products.length > visibleCount && (
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-4 flex justify-center gap-4 z-10">
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 flex justify-center gap-4 z-10">
               <Button
                 icon={<ArrowLeft size={22} />}
                 onClick={() => handleSlide("left")}
