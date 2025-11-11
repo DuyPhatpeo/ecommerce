@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SectionBanner from "../section/SectionBanner";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
@@ -31,9 +31,9 @@ interface Product {
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -43,7 +43,12 @@ export default function ProductDetail() {
 
         const data = await getProductById(id);
 
-        // Normalize data để tránh undefined và lỗi TS
+        if (!data || Object.keys(data).length === 0) {
+          // ✅ Nếu không có dữ liệu → chuyển về trang 404
+          navigate("/404", { replace: true });
+          return;
+        }
+
         const normalized: Product = {
           id: data.id,
           title: data.title || "Untitled",
@@ -64,10 +69,9 @@ export default function ProductDetail() {
         };
 
         setProduct(normalized);
-        setError(null);
       } catch (err) {
         console.error(err);
-        setError("Unable to load product.");
+        navigate("/404", { replace: true }); // ✅ lỗi cũng về 404
       } finally {
         setLoading(false);
       }
@@ -75,7 +79,7 @@ export default function ProductDetail() {
 
     fetchProduct();
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, [id]);
+  }, [id, navigate]);
 
   if (loading)
     return (
@@ -85,17 +89,7 @@ export default function ProductDetail() {
       </div>
     );
 
-  if (error || !product)
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-red-50 to-gray-50">
-        <div className="bg-white p-8 rounded-2xl shadow-xl">
-          <div className="text-red-500 text-6xl mb-4 text-center">⚠️</div>
-          <p className="text-red-600 text-lg font-semibold text-center">
-            {error || "Product not found."}
-          </p>
-        </div>
-      </div>
-    );
+  if (!product) return null;
 
   return (
     <div>

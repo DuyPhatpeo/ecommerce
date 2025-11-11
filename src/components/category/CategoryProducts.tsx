@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Sparkles, Filter, ShoppingBag, ArrowUpDown } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ShopFilter from "../section/Filter";
@@ -24,17 +24,24 @@ interface Product {
 
 const CategoryProducts: React.FC = () => {
   const { category } = useParams<{ category: string }>();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Fetch sản phẩm category ---
+  // --- Fetch sản phẩm theo category ---
   useEffect(() => {
     let mounted = true;
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const data = await getProducts({ category });
+
+        if (!data || data.length === 0) {
+          // ✅ Nếu không có sản phẩm trong category → chuyển về trang 404
+          navigate("/404", { replace: true });
+          return;
+        }
 
         const normalized: Product[] = (data || []).map((p: any) => ({
           ...p,
@@ -56,7 +63,7 @@ const CategoryProducts: React.FC = () => {
         if (mounted) setProducts(normalized);
       } catch (err) {
         console.error(err);
-        if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
+        if (mounted) navigate("/404", { replace: true }); // ✅ lỗi cũng về 404
       } finally {
         if (mounted) setLoading(false);
       }
@@ -66,7 +73,7 @@ const CategoryProducts: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [category]);
+  }, [category, navigate]);
 
   // --- FILTER logic ---
   const {
