@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductItem {
   id: string;
@@ -13,10 +14,18 @@ interface Props {
 }
 
 const OrderProductItem: React.FC<Props> = ({ item }) => {
+  const navigate = useNavigate();
   const totalPrice = item.price * item.quantity;
 
+  const handleClick = () => {
+    navigate(`/product/${item.id}`);
+  };
+
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-none">
+    <div
+      onClick={handleClick}
+      className="flex items-center justify-between py-3 border-b border-gray-100 last:border-none cursor-pointer hover:bg-gray-100 transition rounded-xl px-2"
+    >
       {/* LEFT SIDE */}
       <div className="flex items-center gap-3 min-w-0">
         <img
@@ -41,12 +50,9 @@ const OrderProductItem: React.FC<Props> = ({ item }) => {
 
       {/* RIGHT SIDE */}
       <div className="text-right ml-4 whitespace-nowrap">
-        {/* Unit Price */}
         <span className="text-sm font-semibold text-gray-800">
           {item.price.toLocaleString("en-US")}₫
         </span>
-
-        {/* Total */}
         <p className="text-base font-bold text-orange-600 mt-1">
           {totalPrice.toLocaleString("en-US")}₫
         </p>
