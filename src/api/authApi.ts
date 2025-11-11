@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from "uuid";
    INTERFACES
 ========================== */
 
-// Địa chỉ của người dùng
 export interface Address {
   id: string;
   recipientName: string;
@@ -29,7 +28,6 @@ export interface Address {
   createdAt: string;
 }
 
-// Người dùng
 export interface User {
   id?: string;
   fullName: string;
@@ -65,22 +63,19 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 
 // 🔹 Đăng ký user mới
 export const registerUser = async (data: User): Promise<User> => {
-  const userId = uuidv4(); // ✅ sinh UUID cho cả user.id và doc.id
+  const userId = uuidv4();
   const newUser: User = {
     ...data,
     id: userId,
     createdAt: new Date().toISOString(),
   };
 
-  // Lưu với doc ID = userId luôn (đồng bộ)
   await setDoc(doc(db, "users", userId), newUser);
-
   return newUser;
 };
 
-// 🔹 Lấy thông tin user theo user.id (field trong document)
+// 🔹 Lấy thông tin user theo field id
 export const getUserProfile = async (userId: string): Promise<User> => {
-  // 🔍 Tìm document có field "id" = userId (thay vì doc.id)
   const q = query(collection(db, "users"), where("id", "==", userId));
   const snapshot = await getDocs(q);
   if (snapshot.empty) throw new Error("User not found");
@@ -89,29 +84,25 @@ export const getUserProfile = async (userId: string): Promise<User> => {
   return { id: docData.id, ...docData.data() } as User;
 };
 
-// 🔹 Cập nhật thông tin user — merge dữ liệu
+// 🔹 Cập nhật profile
 export const updateUserProfile = async (
   userId: string,
   data: Partial<User>
 ): Promise<void> => {
-  // 🔍 Lấy document theo field "id"
   const q = query(collection(db, "users"), where("id", "==", userId));
   const snapshot = await getDocs(q);
   if (snapshot.empty) throw new Error("User not found");
 
   const userRef = doc(db, "users", snapshot.docs[0].id);
-  const currentData = snapshot.docs[0].data();
-  const updatedUser = { ...currentData, ...data };
-  await updateDoc(userRef, updatedUser);
+  await updateDoc(userRef, data);
 };
 
-// 🔹 Đổi mật khẩu — giữ nguyên dữ liệu khác
+// 🔹 Đổi mật khẩu
 export const changeUserPassword = async (
   userId: string,
   oldPassword: string,
   newPassword: string
 ): Promise<void> => {
-  // 🔍 Tìm document theo field "id"
   const q = query(collection(db, "users"), where("id", "==", userId));
   const snapshot = await getDocs(q);
   if (snapshot.empty) throw new Error("User not found");
@@ -119,9 +110,8 @@ export const changeUserPassword = async (
   const userRef = doc(db, "users", snapshot.docs[0].id);
   const user = snapshot.docs[0].data() as User;
 
-  if (user.password !== oldPassword) {
-    throw new Error("Mật khẩu hiện tại không chính xác");
-  }
+  if (user.password !== oldPassword)
+    throw new Error("Current password is incorrect");
 
   await updateDoc(userRef, { password: newPassword });
 };
