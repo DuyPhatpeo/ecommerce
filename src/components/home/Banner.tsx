@@ -8,20 +8,20 @@ const Banner: React.FC = () => {
     {
       title: "Nike New Collection!",
       description:
-        "Khám phá bộ sưu tập mới nhất kết hợp giữa phong cách thể thao và hiện đại. Thoải mái, nhẹ nhàng và nổi bật với phong cách riêng của bạn.",
-      productImage: "/banner-img.png",
+        "Discover the latest collection combining sporty style with modern design. Comfortable, lightweight, and stand out with your unique style.",
+      productImage: "/banner-1.png",
     },
     {
       title: "Air Jordan Retro Series",
       description:
-        "Trở lại với phong cách cổ điển nhưng mang hơi thở hiện đại. Giới hạn số lượng, dành cho người thật sự đam mê.",
-      productImage: "/banner-img.png",
+        "Return to a classic style with a modern touch. Limited edition, for true enthusiasts only.",
+      productImage: "/banner-2.png",
     },
     {
       title: "Run Faster, Go Further!",
       description:
-        "Khám phá giày chạy bộ mới nhất — nhẹ, êm và bền hơn bao giờ hết. Cảm nhận tốc độ trong từng bước.",
-      productImage: "/banner-img.png",
+        "Explore the newest running shoes — lighter, softer, and more durable than ever. Feel the speed in every step.",
+      productImage: "/banner-3.png",
     },
   ];
 
