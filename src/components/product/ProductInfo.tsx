@@ -73,6 +73,9 @@ const QuantitySelector = memo(
       }
     };
 
+    const disableMinus = disabled || quantity <= 1;
+    const disablePlus = disabled || quantity >= stock;
+
     return (
       <div
         className={`flex items-center gap-2 ${
@@ -86,7 +89,7 @@ const QuantitySelector = memo(
           type="button"
           label="-"
           onClick={() => handleChange(quantity - 1)}
-          disabled={disabled || quantity <= 1}
+          disabled={disableMinus}
           className={`${
             isMobile ? "w-8 h-8" : "w-10 h-10"
           } border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-lg font-semibold transition-colors`}
@@ -107,7 +110,7 @@ const QuantitySelector = memo(
           type="button"
           label="+"
           onClick={() => handleChange(quantity + 1)}
-          disabled={disabled || quantity >= stock}
+          disabled={disablePlus}
           className={`${
             isMobile ? "w-8 h-8" : "w-10 h-10"
           } border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-lg font-semibold transition-colors`}
@@ -146,7 +149,6 @@ const ProductInfo = ({
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  /* ✅ Chuẩn hóa logic giá và giảm giá */
   const hasDiscount =
     salePrice && regularPrice && salePrice < regularPrice ? true : false;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
@@ -158,7 +160,13 @@ const ProductInfo = ({
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
-  /* ------------------- UI ------------------- */
+  // ✅ Gom các điều kiện disabled vào biến riêng
+  const isNoPrice = !price || price <= 0;
+  const disableCart = loading || isOutOfStock || isNoPrice;
+  const disableBuy = isOutOfStock || isNoPrice;
+  const disableMinus = loading || quantity <= 1;
+  const disablePlus = loading || quantity >= stock;
+
   return (
     <div className={`flex flex-col ${loading ? "opacity-80" : ""}`}>
       <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
@@ -227,7 +235,7 @@ const ProductInfo = ({
         )}
       </div>
 
-      {/* 🔢 Quantity - Desktop Only */}
+      {/* 🔢 Quantity - Desktop */}
       {!isOutOfStock && (
         <div className="hidden lg:block mb-6">
           <QuantitySelector
@@ -239,7 +247,7 @@ const ProductInfo = ({
         </div>
       )}
 
-      {/* 🛒 Buttons - Desktop Only */}
+      {/* 🛒 Buttons - Desktop */}
       <div className="hidden lg:flex gap-3 mb-6 items-center">
         <Button
           onClick={() =>
@@ -253,19 +261,19 @@ const ProductInfo = ({
               setLoading,
             })
           }
-          disabled={loading || isOutOfStock || price <= 0}
+          disabled={disableCart}
           icon={<ShoppingBag className="w-5 h-5" />}
           label={
             isOutOfStock
               ? "Out of Stock"
-              : price <= 0
+              : isNoPrice
               ? "No Price"
               : loading
               ? "Adding..."
               : "Add to Cart"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-            isOutOfStock || price <= 0
+            disableCart
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-orange-600 text-white hover:bg-orange-700 hover:scale-105 active:scale-100"
           }`}
@@ -281,19 +289,19 @@ const ProductInfo = ({
               image: firstImage,
             } as BuyNowPayload)
           }
-          disabled={isOutOfStock || price <= 0}
+          disabled={disableBuy}
           icon={<CreditCard className="w-5 h-5" />}
           label={
-            isOutOfStock ? "Out of Stock" : price <= 0 ? "No Price" : "Buy Now"
+            isOutOfStock ? "Out of Stock" : isNoPrice ? "No Price" : "Buy Now"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-            isOutOfStock || price <= 0
+            disableBuy
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-100"
           }`}
         />
 
-        {/* ❤️ Wishlist - Desktop */}
+        {/* ❤️ Wishlist */}
         <Button
           onClick={handleToggleWishlist}
           icon={
@@ -311,11 +319,10 @@ const ProductInfo = ({
         />
       </div>
 
-      {/* 🛒 Mobile/Tablet Taskbar */}
+      {/* 🛒 Mobile Taskbar */}
       {!isOutOfStock && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
           <div className="max-w-7xl mx-auto px-3 py-2">
-            {/* Quantity & Total Price */}
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-medium text-gray-600">Qty:</span>
@@ -323,7 +330,7 @@ const ProductInfo = ({
                   type="button"
                   label="-"
                   onClick={() => setQuantity((q) => (q > 1 ? q - 1 : 1))}
-                  disabled={loading || quantity <= 1}
+                  disabled={disableMinus}
                   className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
                 />
                 <span className="w-8 text-center font-semibold text-sm">
@@ -339,7 +346,7 @@ const ProductInfo = ({
                         : q + 1
                     )
                   }
-                  disabled={loading || quantity >= stock}
+                  disabled={disablePlus}
                   className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
                 />
               </div>
@@ -352,7 +359,6 @@ const ProductInfo = ({
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-2">
               <Button
                 onClick={() =>
@@ -366,11 +372,11 @@ const ProductInfo = ({
                     setLoading,
                   })
                 }
-                disabled={loading || price <= 0}
+                disabled={disableCart}
                 icon={<ShoppingBag className="w-4 h-4" />}
-                label={price <= 0 ? "No Price" : loading ? "Adding..." : "Cart"}
+                label={isNoPrice ? "No Price" : loading ? "Adding..." : "Cart"}
                 className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
-                  price <= 0
+                  disableCart
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-orange-600 text-white active:bg-orange-700 active:scale-95"
                 }`}
@@ -386,17 +392,16 @@ const ProductInfo = ({
                     image: firstImage,
                   } as BuyNowPayload)
                 }
-                disabled={price <= 0}
+                disabled={disableBuy}
                 icon={<CreditCard className="w-4 h-4" />}
-                label={price <= 0 ? "No Price" : "Buy Now"}
+                label={isNoPrice ? "No Price" : "Buy Now"}
                 className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
-                  price <= 0
+                  disableBuy
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-black text-white active:bg-gray-800 active:scale-95"
                 }`}
               />
 
-              {/* Wishlist */}
               <Button
                 onClick={handleToggleWishlist}
                 icon={
