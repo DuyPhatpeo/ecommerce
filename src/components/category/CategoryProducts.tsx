@@ -27,7 +27,7 @@ const CategoryProducts: React.FC = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   // --- Fetch sản phẩm theo category ---
   useEffect(() => {
