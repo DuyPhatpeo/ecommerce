@@ -124,17 +124,19 @@ const Banner: React.FC = () => {
             </div>
 
             {/* RIGHT IMAGE */}
+            {/* RIGHT */}
             <motion.div
-              className="relative w-full md:w-1/2 flex justify-center"
-              initial={{ opacity: 0, rotate: -10, y: 40 }}
-              animate={{ opacity: 1, rotate: -5, y: 0 }}
+              className="relative w-full md:w-1/2 flex justify-center items-center"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.7 }}
             >
               <motion.img
                 src={banners[current].productImage}
                 alt={banners[current].title}
-                className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full drop-shadow-2xl transition-transform duration-700 ease-in-out"
-                whileHover={{ scale: 1.1, rotate: 0 }}
+                className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full object-contain"
+                whileHover={{ scale: 1.05 }} // chỉ phóng to nhẹ, không nghiêng
+                transition={{ duration: 0.3 }}
               />
             </motion.div>
           </motion.div>
