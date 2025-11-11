@@ -144,7 +144,7 @@ const Banner: React.FC = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="absolute bottom-8 right-8 flex items-center gap-4 z-30">
+      <div className="absolute bottom-20 right-8 flex items-center gap-4 z-30">
         <Button
           onClick={prevSlide}
           icon={<ArrowLeft size={22} />}
