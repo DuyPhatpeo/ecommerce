@@ -14,8 +14,9 @@ const CategoryPage = lazy(() => import("../pages/CategoryPage"));
 const AccountPage = lazy(() => import("../pages/AccountPage"));
 const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage")); // ✅ added
 
-// ✅ Cuộn về đầu mỗi khi đổi route
+// ✅ Auto scroll to top when route changes
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -29,41 +30,37 @@ const AppRoutes = () => {
 
   return (
     <Suspense
-      key={location.pathname} // ⚡ ép unmount trang cũ khi đổi route
+      key={location.pathname}
       fallback={
         <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">
-          Đang tải trang...
+          Loading page...
         </div>
       }
     >
       <ScrollToTop />
       <Routes location={location}>
+        {/* Main pages */}
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
+        <Route path="/shop/:category" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/checkout" element={<CheckOutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+
+        {/* Auth */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/shop/:category" element={<CategoryPage />} />
 
         {/* Account */}
         <Route path="/account" element={<AccountPage />} />
         <Route path="/account/:tab" element={<AccountPage />} />
         <Route path="/account/order/:id" element={<OrderDetailPage />} />
 
-        {/* 404 Page */}
-        <Route
-          path="*"
-          element={
-            <div className="flex items-center justify-center min-h-screen text-xl text-gray-500">
-              404 - Trang không tồn tại 😢
-            </div>
-          }
-        />
+        {/* 404 - Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );
