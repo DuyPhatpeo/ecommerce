@@ -91,20 +91,53 @@ const Account = () => {
 
   if (!userId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6 py-10">
-        <div className="bg-white shadow-lg rounded-2xl p-8 text-center max-w-md w-full">
-          <h2 className="text-xl font-bold text-gray-800">
+      <div className="min-h-screen flex items-start justify-center bg-gradient-to-br from-orange-50 via-white to-blue-50 px-6 pt-24 pb-24">
+        <div className="bg-white shadow-2xl rounded-3xl max-w-md w-full p-10 flex flex-col items-center text-center">
+          {/* Icon */}
+          <div className="w-24 h-24 flex items-center justify-center rounded-full bg-orange-100 mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-orange-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 11c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2zm0 0c0-1.105.895-2 2-2s2 .895 2 2-.895 2-2 2-2-.895-2-2z"
+              />
+            </svg>
+          </div>
+
+          {/* Text */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
             You are not logged in
           </h2>
-          <p className="mt-2 text-gray-500">
-            Please log in to access your account.
+          <p className="text-gray-500 mb-6">
+            Please log in to access your account and manage your orders,
+            wishlist, and more.
           </p>
+
+          {/* Login Button */}
           <button
             onClick={() => navigate("/login")}
-            className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold shadow hover:from-orange-600 hover:to-orange-700 transition-all"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:-translate-y-0.5"
           >
             Log in now
           </button>
+
+          {/* Register Link */}
+          <div className="mt-6 text-gray-400 text-sm">
+            Don't have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-orange-600 font-semibold hover:underline"
+            >
+              Register
+            </button>
+          </div>
         </div>
       </div>
     );
