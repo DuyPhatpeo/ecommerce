@@ -123,8 +123,6 @@ const Banner: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* RIGHT IMAGE */}
-            {/* RIGHT */}
             <motion.div
               className="relative w-full md:w-1/2 flex justify-center items-center"
               initial={{ opacity: 0, y: 40 }}
