@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../ui/Button";
 
 const HotDeal: React.FC = () => {
+  const navigate = useNavigate();
+
   // =============== Countdown ===============
   const [targetDate] = useState(() => {
     const date = new Date();
-    date.setDate(date.getDate() + 30);
+    date.setDate(date.getDate() + 30); // 30 ngày tới
     return date;
   });
 
@@ -36,36 +39,58 @@ const HotDeal: React.FC = () => {
       id: 1,
       name: "Adidas New Hammer Sole",
       img: "e-p1.png",
-      salePrice: 150,
-      regularPrice: 210,
+      salePrice: 5000000,
+      regularPrice: 6500000,
     },
     {
       id: 2,
       name: "Nike Air Zoom Pegasus 40",
       img: "e-p2.png",
-      salePrice: 180,
-      regularPrice: 230,
+      salePrice: 5500000,
+      regularPrice: 7000000,
     },
     {
       id: 3,
       name: "Puma RS-X Reinvent",
       img: "e-p3.png",
-      salePrice: 140,
-      regularPrice: 200,
+      salePrice: 4800000,
+      regularPrice: 6200000,
     },
   ];
 
+  const formatVND = (num: number) =>
+    num.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto slide every 5s
+  const startAutoSlide = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setDirection(1);
+      setCurrentIndex((prev) => (prev + 1) % products.length);
+    }, 5000);
+  }, [products.length]);
+
+  useEffect(() => {
+    startAutoSlide();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [startAutoSlide]);
 
   const handleNext = () => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % products.length);
+    startAutoSlide();
   };
 
   const handlePrev = () => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev === 0 ? products.length - 1 : prev - 1));
+    startAutoSlide();
   };
 
   const variants = {
@@ -92,7 +117,6 @@ const HotDeal: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black/60" />
-
         <div className="relative z-10 text-center px-5 sm:px-10 md:px-12 lg:px-16 max-w-md sm:max-w-lg md:max-w-xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
             Exclusive Hot Deal Ends Soon!
@@ -139,6 +163,7 @@ const HotDeal: React.FC = () => {
           <Button
             type="button"
             label="SHOP NOW"
+            onClick={() => navigate("/shop")}
             className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-full transition shadow-md"
           />
         </div>
@@ -166,21 +191,20 @@ const HotDeal: React.FC = () => {
             </div>
 
             <p className="text-gray-400 line-through text-xs sm:text-sm">
-              ${products[currentIndex].regularPrice.toFixed(2)}
+              {formatVND(products[currentIndex].regularPrice)}
             </p>
             <p className="text-lg sm:text-xl md:text-2xl font-semibold mb-1 text-orange-600">
-              ${products[currentIndex].salePrice.toFixed(2)}
+              {formatVND(products[currentIndex].salePrice)}
             </p>
             <h3 className="text-xs sm:text-sm md:text-base font-bold uppercase mb-5 max-w-xs sm:max-w-md">
               {products[currentIndex].name}
             </h3>
 
-            {/* Add to Bag */}
             <Button
               type="button"
               icon={<ShoppingBag size={18} />}
               label="Add to Bag"
-              className="flex items-center gap-2 text-gray-800 font-semibold text-xs sm:text-sm md:text-base bg-white hover:bg-orange-500 hover:text-white px-4 py-2 rounded-full transition"
+              className="flex items-center gap-2 text-white font-semibold text-xs sm:text-sm md:text-base bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full transition"
             />
           </motion.div>
         </AnimatePresence>
