@@ -35,6 +35,7 @@ const ProfileTab: React.FC = () => {
     handlePasswordUpdate,
   } = useProfile();
 
+  // Khóa cuộn và lắng nghe ESC
   useEffect(() => {
     if (showModal) {
       document.body.style.overflow = "hidden";
@@ -42,10 +43,20 @@ const ProfileTab: React.FC = () => {
       document.body.style.overflow = "unset";
     }
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showModal) {
+        setShowModal(false);
+        setPasswords({ current: "", new: "", confirm: "" });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showModal]);
+  }, [showModal, setShowModal, setPasswords]);
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
@@ -174,13 +185,7 @@ const ProfileTab: React.FC = () => {
       {showModal && (
         <>
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md"
-            onClick={() => {
-              setShowModal(false);
-              setPasswords({ current: "", new: "", confirm: "" });
-            }}
-          />
+          <div className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md" />
 
           {/* Modal */}
           <div className="fixed inset-0 z-90 flex items-center justify-center p-4">

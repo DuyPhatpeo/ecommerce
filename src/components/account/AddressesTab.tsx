@@ -105,10 +105,9 @@ const AddressCard: React.FC<AddressCardProps> = ({
 // ============================================
 // AddressModal Component
 // ============================================
-
 interface AddressModalProps {
   open: boolean;
-  address?: Partial<Address> & { line?: string }; // thêm line để nhận chuỗi địa chỉ đầy đủ
+  address?: Partial<Address> & { line?: string };
   onClose: () => void;
   onSave: (data: Partial<Address> & { line?: string }) => void;
 }
@@ -127,12 +126,24 @@ const AddressModal: React.FC<AddressModalProps> = ({
     setForm(address || {});
   }, [address]);
 
+  // ESC + lock scroll
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "unset";
+    if (!open) return;
+
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -148,11 +159,8 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md"
-        onClick={onClose}
-      />
+      {/* Backdrop - Không tắt modal khi click */}
+      <div className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md" />
 
       {/* Modal */}
       <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
@@ -251,6 +259,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
     </>
   );
 };
+
 // ============================================
 // AddressesTab Component (Main)
 // ============================================
