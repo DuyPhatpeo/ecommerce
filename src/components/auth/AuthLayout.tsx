@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogIn, UserPlus, Home } from "lucide-react";
+import { Home, LogIn, UserPlus } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
@@ -20,7 +20,7 @@ export default function AuthLayout() {
   };
 
   return (
-    <div className="w-full h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden bg-white relative">
+    <div className="w-full min-h-screen flex flex-col lg:grid lg:grid-cols-2 bg-white relative overflow-hidden">
       {/* NÚT HOME */}
       <button
         onClick={() => navigate("/")}
@@ -32,52 +32,60 @@ export default function AuthLayout() {
         Home
       </button>
 
-      {/* LEFT (FORM) */}
-      <div className="flex flex-col justify-center items-center px-8 sm:px-12 lg:px-20">
+      {/* HÌNH NỀN MOBILE */}
+      <div className="lg:hidden relative w-full h-25 sm:h-52">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/auth-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+
+      {/* FORM */}
+      <div className="flex flex-col justify-center items-center px-8 sm:px-12 lg:px-20 pt-4 lg:pt-8 pb-8">
         <img
           src="/logo.png"
           alt="Logo"
-          className="w-28 h-28 object-contain mb-6 cursor-pointer"
+          className="w-24 h-24 object-contain mb-2 cursor-pointer"
           onClick={() => navigate("/")}
         />
 
         {/* Tabs */}
-        <div className="flex w-full max-w-md bg-orange-50 p-1.5 rounded-2xl border border-orange-100 mb-8">
+        <div className="flex w-full max-w-md bg-orange-50 p-1.5 rounded-2xl border border-orange-100 mb-6">
           <button
             onClick={() => handleSwitch(true)}
             className={`flex-1 py-2 rounded-xl font-semibold transition-all
-              ${
-                isLogin
-                  ? "bg-orange-500 text-white shadow"
-                  : "text-orange-600 hover:bg-orange-100"
-              }`}
+        ${
+          isLogin
+            ? "bg-orange-500 text-white shadow"
+            : "text-orange-600 hover:bg-orange-100"
+        }`}
           >
             Sign In
           </button>
           <button
             onClick={() => handleSwitch(false)}
             className={`flex-1 py-2 rounded-xl font-semibold transition-all
-              ${
-                !isLogin
-                  ? "bg-orange-500 text-white shadow"
-                  : "text-orange-600 hover:bg-orange-100"
-              }`}
+        ${
+          !isLogin
+            ? "bg-orange-500 text-white shadow"
+            : "text-orange-600 hover:bg-orange-100"
+        }`}
           >
             Sign Up
           </button>
         </div>
 
-        {/* FORM */}
-        <div className="w-full max-w-md transition-all duration-300">
+        <div className="w-full max-w-md">
           {isLogin ? <LoginForm /> : <RegisterForm />}
         </div>
 
-        <div className="text-center text-xs text-gray-500 mt-8">
+        <div className="text-center text-xs text-gray-500 mt-6 lg:mt-10">
           © 2025 YourShop. All rights reserved.
         </div>
       </div>
 
-      {/* RIGHT (IMAGE) */}
+      {/* HÌNH Ở DESKTOP */}
       <div className="relative hidden lg:flex items-center justify-center">
         <div
           className="absolute inset-0 bg-cover bg-center"

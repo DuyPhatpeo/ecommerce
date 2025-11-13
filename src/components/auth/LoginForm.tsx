@@ -19,7 +19,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-3.5">
       {/* Email */}
       <InputField
         label="Email Address"
@@ -45,7 +45,7 @@ export default function LoginForm() {
       />
 
       {/* Remember + Forgot */}
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between text-sm mt-1">
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -71,7 +71,7 @@ export default function LoginForm() {
         icon={<LogIn size={20} />}
         label={loading ? "Signing in..." : "Sign In"}
         justify="center"
-        className={`w-full py-4 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
+        className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
           loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"
         }`}
       />

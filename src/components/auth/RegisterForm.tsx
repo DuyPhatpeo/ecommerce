@@ -13,9 +13,9 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full">
+    <form onSubmit={handleSubmit} className="space-y-3.5 w-full">
       {/* Full Name & Phone */}
-      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
+      <div className="grid grid-cols-2 gap-3 max-[420px]:grid-cols-1">
         <InputField
           label="Full Name"
           name="fullName"
@@ -38,8 +38,8 @@ export default function RegisterForm() {
         />
       </div>
 
-      {/* Email & Address (full width each) */}
-      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
+      {/* Email & Address */}
+      <div className="grid grid-cols-2 gap-3 max-[420px]:grid-cols-1">
         <div className="col-span-2">
           <InputField
             label="Email Address"
@@ -63,7 +63,7 @@ export default function RegisterForm() {
             icon={<MapPin size={20} />}
             error={errors.address}
           />
-          <p className="text-sm text-gray-500 ml-1">
+          <p className="text-xs text-gray-500 ml-1 mt-1">
             Format:{" "}
             <span className="italic">
               Street, Ward, District, City, Country
@@ -73,7 +73,7 @@ export default function RegisterForm() {
       </div>
 
       {/* Password & Confirm Password */}
-      <div className="grid grid-cols-2 gap-4 max-[420px]:grid-cols-1">
+      <div className="grid grid-cols-2 gap-3 max-[420px]:grid-cols-1">
         <PasswordField
           label="Password"
           name="password"
@@ -103,7 +103,7 @@ export default function RegisterForm() {
         icon={<UserPlus size={20} />}
         label={loading ? "Creating..." : "Create Account"}
         justify="center"
-        className={`w-full py-4 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
+        className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
           loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"
         }`}
       />
