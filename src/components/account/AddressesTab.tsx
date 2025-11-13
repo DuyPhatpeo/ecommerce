@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Plus, MapPin, Edit2, Trash2, User, Phone, X } from "lucide-react";
 import { toast } from "react-toastify";
-
 import { useAddresses } from "../../hooks/useAddresses";
 import type { Address } from "../../api/addressApi";
+import Button from "../ui/Button";
+import Toggle from "../ui/Toggle";
 
 // ============================================
 // AddressCard Component
@@ -45,30 +46,13 @@ const AddressCard: React.FC<AddressCardProps> = ({
         </div>
 
         {/* Toggle */}
-        <div
-          className={`flex items-center gap-2 sm:static absolute top-0 right-0`}
-        >
-          <button
-            onClick={() => {
-              if (!address.isDefault) onSetDefault(address.id!);
-            }}
-            className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
-              address.isDefault ? "bg-green-500" : "bg-gray-300"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform duration-300 ${
-                address.isDefault ? "translate-x-5" : "translate-x-0"
-              }`}
-            />
-          </button>
-          <span
-            className={`text-xs font-medium ${
-              address.isDefault ? "text-green-700" : "text-gray-500"
-            } select-none`}
-          >
-            Default
-          </span>
+        <div className="flex items-center gap-2 sm:static absolute top-0 right-0">
+          <Toggle
+            checked={address.isDefault ?? false}
+            onChange={() => !address.isDefault && onSetDefault(address.id!)}
+            label="Default"
+            color="green"
+          />
         </div>
       </div>
 
@@ -84,19 +68,18 @@ const AddressCard: React.FC<AddressCardProps> = ({
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3 justify-end pt-5 border-t border-gray-100 mt-5">
-        <button
+        <Button
           onClick={() => onEdit(address)}
-          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
-        >
-          <Edit2 size={14} /> Edit
-        </button>
-
-        <button
+          icon={<Edit2 size={14} />}
+          label="Edit"
+          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+        />
+        <Button
           onClick={() => onDelete(address.id!)}
-          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
-        >
-          <Trash2 size={14} /> Delete
-        </button>
+          icon={<Trash2 size={14} />}
+          label="Delete"
+          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+        />
       </div>
     </div>
   </div>
@@ -131,14 +114,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
     if (!open) return;
 
     document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
+    const handleKeyDown = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleKeyDown);
@@ -159,10 +137,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   return (
     <>
-      {/* Backdrop - Không tắt modal khi click */}
       <div className="fixed inset-0 z-80 bg-black/60 backdrop-blur-md" />
-
-      {/* Modal */}
       <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
         <div className="relative w-full max-w-lg overflow-hidden bg-white shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
           {/* Header */}
@@ -182,12 +157,13 @@ const AddressModal: React.FC<AddressModalProps> = ({
                   </p>
                 </div>
               </div>
-              <button
+              <Button
                 onClick={onClose}
-                className="flex items-center justify-center w-10 h-10 transition-all duration-300 bg-white/20 rounded-xl hover:bg-white/30"
-              >
-                <X className="text-white" size={20} />
-              </button>
+                icon={<X size={18} />}
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white 
+             hover:bg-white/25 hover:scale-105 transition-all duration-300"
+                aria-label="Close"
+              />
             </div>
           </div>
 
@@ -241,18 +217,16 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
           {/* Footer */}
           <div className="flex gap-3 p-6 border-t border-gray-100 bg-gray-50">
-            <button
+            <Button
               onClick={handleSave}
-              className="flex items-center justify-center flex-1 gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
-            >
-              Save Address
-            </button>
-            <button
+              label="Save Address"
+              className="flex-1 gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+            />
+            <Button
               onClick={onClose}
+              label="Cancel"
               className="px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
-            >
-              Cancel
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -261,7 +235,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
 };
 
 // ============================================
-// AddressesTab Component (Main)
+// AddressesTab Component
 // ============================================
 const AddressesTab: React.FC = () => {
   const { addressesFormatted, handleSave, handleDelete, handleSetDefault } =
@@ -278,7 +252,6 @@ const AddressesTab: React.FC = () => {
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-      {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
 
       <div className="relative p-6 sm:p-8">
@@ -296,16 +269,15 @@ const AddressesTab: React.FC = () => {
             </div>
           </div>
 
-          <button
+          <Button
             onClick={() => openModal()}
+            icon={<Plus size={18} />}
+            label="Add New"
             className="flex items-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
-          >
-            <Plus size={18} />
-            <span className="hidden sm:inline">Add New</span>
-          </button>
+          />
         </div>
 
-        {/* Address List or Empty State */}
+        {/* Address List */}
         {addressesFormatted.length === 0 ? (
           <div className="py-16 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
@@ -319,13 +291,12 @@ const AddressesTab: React.FC = () => {
               <br />
               Start by adding your first one ✨
             </p>
-            <button
+            <Button
               onClick={() => openModal()}
+              icon={<Plus size={18} />}
+              label="Add Your First Address"
               className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
-            >
-              <Plus size={18} />
-              Add Your First Address
-            </button>
+            />
           </div>
         ) : (
           <div className="space-y-4">

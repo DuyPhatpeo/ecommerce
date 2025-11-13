@@ -207,15 +207,17 @@ const ProfileTab: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <button
+                  <Button
                     onClick={() => {
                       setShowModal(false);
                       setPasswords({ current: "", new: "", confirm: "" });
                     }}
-                    className="flex items-center justify-center flex-shrink-0 w-8 h-8 transition-all duration-300 sm:w-10 sm:h-10 bg-white/20 rounded-xl hover:bg-white/30"
-                  >
-                    <X className="text-white" size={18} />
-                  </button>
+                    icon={<X size={18} />}
+                    className="flex items-center justify-center flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10
+             rounded-xl bg-white/15 text-white hover:bg-white/25 hover:scale-105
+             transition-all duration-300"
+                    aria-label="Close"
+                  />
                 </div>
               </div>
 
