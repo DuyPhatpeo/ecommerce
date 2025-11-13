@@ -55,6 +55,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     useState<boolean>(false);
 
   // 🟠 Chọn mặc định address khi load
+  // 🟠 Chọn mặc định address khi load
   useEffect(() => {
     if (!selectedId && addressesFormatted.length > 0) {
       const defaultAddr =
@@ -62,6 +63,19 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
       setSelectedId(defaultAddr?.id ?? "");
     }
   }, [addressesFormatted, selectedId]);
+
+  // 🆕 Đóng modal khi nhấn ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowSelectAddressModal(false);
+        setShowAddForm(false); // Nếu muốn tắt luôn form thêm/sửa
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const selectedAddress = addressesFormatted.find((a) => a.id === selectedId);
 
