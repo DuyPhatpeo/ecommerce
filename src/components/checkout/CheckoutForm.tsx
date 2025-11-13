@@ -55,7 +55,6 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     useState<boolean>(false);
 
   // 🟠 Chọn mặc định address khi load
-  // 🟠 Chọn mặc định address khi load
   useEffect(() => {
     if (!selectedId && addressesFormatted.length > 0) {
       const defaultAddr =
