@@ -1,9 +1,6 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
-type NavigateFn = (
-  to: string | number,
-  options?: { replace?: boolean; state?: any }
-) => void;
+import type { NavigateFunction } from "react-router-dom";
 
 type BuyNowPayload = {
   id: string;
@@ -14,11 +11,19 @@ type BuyNowPayload = {
 };
 
 type BuyNowState = {
-  handleBuyNow: (payload: BuyNowPayload, navigate: NavigateFn | null) => void;
+  handleBuyNow: (
+    payload: BuyNowPayload,
+    navigate: NavigateFunction | null
+  ) => void;
 };
 
-export const useBuyNowStore = create<BuyNowState>((set) => ({
+export const useBuyNowStore = create<BuyNowState>(() => ({
   handleBuyNow: (payload, navigate) => {
+    if (!navigate) {
+      toast.error("Navigation not ready!");
+      return;
+    }
+
     const { id, quantity, price, stock } = payload;
 
     if (stock <= 0) return toast.error("This product is out of stock!");
