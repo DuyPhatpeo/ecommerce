@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import Loader from "../components/general/Loader";
 
 // ✅ Lazy load pages
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -14,7 +15,7 @@ const CategoryPage = lazy(() => import("../pages/CategoryPage"));
 const AccountPage = lazy(() => import("../pages/AccountPage"));
 const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
-const NotFoundPage = lazy(() => import("../pages/NotFoundPage")); // ✅ added
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 
 // ✅ Auto scroll to top when route changes
 const ScrollToTop = () => {
@@ -29,14 +30,7 @@ const AppRoutes = () => {
   const location = useLocation();
 
   return (
-    <Suspense
-      key={location.pathname}
-      fallback={
-        <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">
-          Loading page...
-        </div>
-      }
-    >
+    <Suspense key={location.pathname} fallback={<Loader />}>
       <ScrollToTop />
       <Routes location={location}>
         {/* Main pages */}
