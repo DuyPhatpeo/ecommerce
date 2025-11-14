@@ -8,17 +8,12 @@ const Loader = () => {
           <div className="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent animate-spin"></div>
         </div>
 
-        {/* Loading text with pulse animation */}
-        <p className="text-lg font-medium text-gray-700 animate-pulse">
-          Đang tải...
-        </p>
-
         {/* Dots animation */}
-        <div className="flex justify-center gap-1 mt-3">
+        {/* <div className="flex justify-center gap-1 mt-3">
           <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
           <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
           <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"></span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
