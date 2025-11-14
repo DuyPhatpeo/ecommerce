@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import { useAddToCart } from "../../hooks/useAddToCart";
+import { useCartStore } from "../../stores/cartStore";
 import { useWishlistStore } from "../../stores/wishlistStore";
 import { useBuyNowStore } from "../../stores/buyNowStore";
 
@@ -45,7 +45,7 @@ const ProductInfo = ({
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { handleAddToCart } = useAddToCart();
+  const handleAddToCart = useCartStore((state) => state.addItemToCart);
 
   const handleBuyNow = useBuyNowStore((state) => state.handleBuyNow);
 
@@ -170,7 +170,7 @@ const ProductInfo = ({
               quantity,
               price,
               images,
-              setLoading,
+              navigate,
             })
           }
           disabled={disableCart}
