@@ -1,4 +1,4 @@
-import { useState, memo, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import {
   ShoppingBag,
   Heart,
@@ -7,14 +7,14 @@ import {
   CreditCard,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { useAddToCart } from "../../hooks/useAddToCart";
-import { useBuyNow } from "../../hooks/useBuyNow";
-import { useWishlistStore } from "../../stores/wishlistStore"; //zustand
+import { useWishlistStore } from "../../stores/wishlistStore";
+import { useBuyNowStore } from "../../stores/buyNowStore";
 
-/* ------------------- Types ------------------- */
 interface ProductInfoProps {
   id: string;
   title: string;
@@ -28,104 +28,6 @@ interface ProductInfoProps {
   sku?: string;
 }
 
-interface BuyNowPayload {
-  id: string;
-  quantity: number;
-  price: number;
-  stock: number;
-  image?: string;
-}
-
-/* ------------------- Quantity Selector ------------------- */
-const QuantitySelector = memo(
-  ({
-    quantity,
-    setQuantity,
-    stock,
-    disabled = false,
-    isMobile = false,
-  }: {
-    quantity: number;
-    setQuantity: (val: number) => void;
-    stock: number;
-    disabled?: boolean;
-    isMobile?: boolean;
-  }) => {
-    const handleChange = (val: number) => {
-      if (val < 1) {
-        setQuantity(1);
-        toast.error("Minimum quantity is 1!");
-      } else if (val > stock) {
-        setQuantity(stock);
-        toast.error(`Only ${stock} items left in stock!`);
-      } else {
-        setQuantity(val);
-      }
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        handleChange(quantity + 1);
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
-        handleChange(quantity - 1);
-      }
-    };
-
-    const disableMinus = disabled || quantity <= 1;
-    const disablePlus = disabled || quantity >= stock;
-
-    return (
-      <div
-        className={`flex items-center gap-2 ${
-          isMobile ? "justify-center" : ""
-        }`}
-      >
-        {isMobile && (
-          <span className="text-sm font-medium text-gray-700 mr-2">Qty:</span>
-        )}
-        <Button
-          type="button"
-          label="-"
-          onClick={() => handleChange(quantity - 1)}
-          disabled={disableMinus}
-          className={`${
-            isMobile ? "w-8 h-8" : "w-10 h-10"
-          } border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-lg font-semibold transition-colors`}
-        />
-        <Input
-          type="number"
-          value={quantity}
-          onChange={(e) => handleChange(parseInt(e.target.value) || 1)}
-          onKeyDown={handleKeyDown}
-          disabled={disabled}
-          min={1}
-          max={stock}
-          className={`${
-            isMobile ? "w-14 h-8" : "w-20 h-10"
-          } text-center font-semibold border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200`}
-        />
-        <Button
-          type="button"
-          label="+"
-          onClick={() => handleChange(quantity + 1)}
-          disabled={disablePlus}
-          className={`${
-            isMobile ? "w-8 h-8" : "w-10 h-10"
-          } border-2 border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-lg font-semibold transition-colors`}
-        />
-        {isMobile && (
-          <span className="text-sm text-gray-500 ml-2">/ {stock}</span>
-        )}
-      </div>
-    );
-  }
-);
-
-QuantitySelector.displayName = "QuantitySelector";
-
-/* ------------------- Product Info ------------------- */
 const ProductInfo = ({
   id,
   title,
@@ -140,28 +42,26 @@ const ProductInfo = ({
 }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const { handleAddToCart } = useAddToCart();
-  const { handleBuyNow } = useBuyNow();
+  const handleBuyNow = useBuyNowStore((state) => state.handleBuyNow);
 
-  // ✅ Sử dụng Zustand store trực tiếp
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const checkWishlistStatus = useWishlistStore(
     (state) => state.checkWishlistStatus
   );
 
-  // ✅ Check wishlist status khi component mount
   useEffect(() => {
     checkWishlistStatus(id);
   }, [id, checkWishlistStatus]);
 
-  const firstImage = images?.[0] || "";
+  const firstImage = images[0] || "";
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  const hasDiscount =
-    salePrice && regularPrice && salePrice < regularPrice ? true : false;
+  const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
   const oldPrice = hasDiscount ? regularPrice : undefined;
   const discountPercentage = hasDiscount
@@ -171,23 +71,13 @@ const ProductInfo = ({
   const formatVND = (val: number) =>
     val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
-  // ✅ Gom các điều kiện disabled vào biến riêng
-  const isNoPrice = !price || price <= 0;
-  const disableCart = loading || isOutOfStock || isNoPrice;
-  const disableBuy = isOutOfStock || isNoPrice;
-  const disableMinus = loading || quantity <= 1;
-  const disablePlus = loading || quantity >= stock;
-
-  // ✅ Handler cho wishlist
-  const handleToggleWishlist = () => {
-    toggleWishlist(id);
-  };
+  const disableCart = loading || isOutOfStock || price <= 0;
+  const disableBuy = isOutOfStock || price <= 0;
 
   return (
     <div className={`flex flex-col ${loading ? "opacity-80" : ""}`}>
+      {/* Title & Rating */}
       <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
-
-      {/* ⭐ Rating */}
       <div className="flex items-center gap-2 mb-6">
         {Array.from({ length: 5 }, (_, i) => (
           <Star
@@ -200,39 +90,29 @@ const ProductInfo = ({
         <span className="text-gray-600">(128 reviews)</span>
       </div>
 
-      {/* ⚠️ Stock Notice */}
+      {/* Stock Notice */}
       {isOutOfStock && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-          <div>
-            <p className="text-red-700 font-semibold mb-1">Out of Stock</p>
-            <p className="text-sm text-gray-600">
-              This item is currently unavailable.
-            </p>
-          </div>
-        </div>
+        <Notice
+          type="error"
+          message="Out of Stock"
+          subMessage="This item is currently unavailable."
+        />
       )}
-
       {!isOutOfStock && isLowStock && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <div>
-            <p className="text-amber-700 font-semibold mb-1">Low Stock</p>
-            <p className="text-sm text-gray-600">
-              Only {stock} left! Order soon.
-            </p>
-          </div>
-        </div>
+        <Notice
+          type="warning"
+          message="Low Stock"
+          subMessage={`Only ${stock} left! Order soon.`}
+        />
       )}
 
-      {/* 💰 Price */}
+      {/* Price */}
       <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
         {hasDiscount && (
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
             -{discountPercentage}%
           </div>
         )}
-
         {price > 0 ? (
           <>
             <div className="text-4xl font-bold text-orange-600 mb-1">
@@ -251,19 +131,17 @@ const ProductInfo = ({
         )}
       </div>
 
-      {/* 🔢 Quantity - Desktop */}
+      {/* Quantity Selector */}
       {!isOutOfStock && (
-        <div className="hidden lg:block mb-6">
-          <QuantitySelector
-            quantity={quantity}
-            setQuantity={setQuantity}
-            stock={stock}
-            disabled={loading}
-          />
-        </div>
+        <QuantitySelector
+          quantity={quantity}
+          setQuantity={setQuantity}
+          stock={stock}
+          disabled={loading}
+        />
       )}
 
-      {/* 🛒 Buttons - Desktop */}
+      {/* Buttons Desktop */}
       <div className="hidden lg:flex gap-3 mb-6 items-center">
         <Button
           onClick={() =>
@@ -280,10 +158,10 @@ const ProductInfo = ({
           disabled={disableCart}
           icon={<ShoppingBag className="w-5 h-5" />}
           label={
-            isOutOfStock
-              ? "Out of Stock"
-              : isNoPrice
-              ? "No Price"
+            disableCart
+              ? isOutOfStock
+                ? "Out of Stock"
+                : "No Price"
               : loading
               ? "Adding..."
               : "Add to Cart"
@@ -291,35 +169,33 @@ const ProductInfo = ({
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
             disableCart
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-orange-600 text-white hover:bg-orange-700 hover:scale-105 active:scale-100"
+              : "bg-orange-600 text-white hover:bg-orange-700"
           }`}
         />
-
         <Button
           onClick={() =>
-            handleBuyNow({
-              id,
-              quantity,
-              price,
-              stock,
-              image: firstImage,
-            } as BuyNowPayload)
+            handleBuyNow(
+              { id, quantity, price, stock, image: firstImage },
+              navigate
+            )
           }
           disabled={disableBuy}
           icon={<CreditCard className="w-5 h-5" />}
           label={
-            isOutOfStock ? "Out of Stock" : isNoPrice ? "No Price" : "Buy Now"
+            disableBuy
+              ? isOutOfStock
+                ? "Out of Stock"
+                : "No Price"
+              : "Buy Now"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
             disableBuy
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-100"
+              : "bg-black text-white hover:bg-gray-800"
           }`}
         />
-
-        {/* ❤️ Wishlist */}
         <Button
-          onClick={handleToggleWishlist}
+          onClick={() => toggleWishlist(id)}
           icon={
             <Heart
               className={`w-6 h-6 transition-colors ${
@@ -335,19 +211,18 @@ const ProductInfo = ({
         />
       </div>
 
-      {/* 🛒 Mobile Taskbar */}
+      {/* Mobile Taskbar */}
       {!isOutOfStock && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-          <div className="max-w-7xl mx-auto px-3 py-2">
-            <div className="mb-2 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-3 py-2 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-gray-600">Qty:</span>
                 <Button
                   type="button"
                   label="-"
-                  onClick={() => setQuantity((q) => (q > 1 ? q - 1 : 1))}
-                  disabled={disableMinus}
-                  className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                  className="w-7 h-7 border border-gray-300 rounded-md text-sm font-semibold hover:border-orange-500 hover:text-orange-500"
                 />
                 <span className="w-8 text-center font-semibold text-sm">
                   {quantity}
@@ -355,18 +230,11 @@ const ProductInfo = ({
                 <Button
                   type="button"
                   label="+"
-                  onClick={() =>
-                    setQuantity((q) =>
-                      q >= stock
-                        ? (toast.error(`Only ${stock} items left!`), stock)
-                        : q + 1
-                    )
-                  }
-                  disabled={disablePlus}
-                  className="w-7 h-7 border border-gray-300 hover:border-orange-500 hover:text-orange-500 active:border-orange-500 active:text-orange-500 disabled:opacity-50 rounded-md font-semibold text-sm"
+                  onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
+                  disabled={quantity >= stock}
+                  className="w-7 h-7 border border-gray-300 rounded-md text-sm font-semibold hover:border-orange-500 hover:text-orange-500"
                 />
               </div>
-
               <div className="text-right">
                 <div className="text-xs text-gray-500">Total</div>
                 <div className="text-base font-bold text-orange-600">
@@ -390,36 +258,33 @@ const ProductInfo = ({
                 }
                 disabled={disableCart}
                 icon={<ShoppingBag className="w-4 h-4" />}
-                label={isNoPrice ? "No Price" : loading ? "Adding..." : "Cart"}
-                className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
+                label={
+                  disableCart ? "No Price" : loading ? "Adding..." : "Cart"
+                }
+                className={`flex-1 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 ${
                   disableCart
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-orange-600 text-white active:bg-orange-700 active:scale-95"
+                    : "bg-orange-600 text-white active:bg-orange-700"
                 }`}
               />
-
               <Button
                 onClick={() =>
-                  handleBuyNow({
-                    id,
-                    quantity,
-                    price,
-                    stock,
-                    image: firstImage,
-                  } as BuyNowPayload)
+                  handleBuyNow(
+                    { id, quantity, price, stock, image: firstImage },
+                    navigate
+                  )
                 }
                 disabled={disableBuy}
                 icon={<CreditCard className="w-4 h-4" />}
-                label={isNoPrice ? "No Price" : "Buy Now"}
-                className={`flex-1 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
+                label={disableBuy ? "No Price" : "Buy Now"}
+                className={`flex-1 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 ${
                   disableBuy
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-black text-white active:bg-gray-800 active:scale-95"
+                    : "bg-black text-white active:bg-gray-800"
                 }`}
               />
-
               <Button
-                onClick={handleToggleWishlist}
+                onClick={() => toggleWishlist(id)}
                 icon={
                   <Heart
                     className={`w-4 h-4 transition-colors ${
@@ -427,7 +292,7 @@ const ProductInfo = ({
                     }`}
                   />
                 }
-                className={`w-11 h-11 border rounded-lg flex items-center justify-center transition-all ${
+                className={`w-11 h-11 border rounded-lg flex items-center justify-center ${
                   isWishlisted
                     ? "border-red-500 bg-red-50"
                     : "border-gray-300 active:border-red-500 active:bg-red-50"
@@ -438,7 +303,7 @@ const ProductInfo = ({
         </div>
       )}
 
-      {/* ℹ️ Product Info */}
+      {/* Product Info */}
       <div className="border-t pt-6 space-y-3 text-sm text-gray-600 mb-4 lg:mb-0">
         <div className="flex justify-between">
           <span className="text-gray-500">Category:</span>
@@ -468,10 +333,83 @@ const ProductInfo = ({
         )}
       </div>
 
-      {/* Spacer for mobile taskbar */}
       <div className="lg:hidden h-28" />
     </div>
   );
 };
 
 export default memo(ProductInfo);
+
+/* ------------------- Notice Component ------------------- */
+const Notice = ({
+  type,
+  message,
+  subMessage,
+}: {
+  type: "error" | "warning";
+  message: string;
+  subMessage: string;
+}) => {
+  const color = type === "error" ? "red" : "amber";
+  return (
+    <div
+      className={`bg-${color}-50 border border-${color}-200 rounded-xl p-4 mb-6 flex items-start gap-3`}
+    >
+      <AlertCircle className={`w-5 h-5 text-${color}-600 flex-shrink-0`} />
+      <div>
+        <p className={`text-${color}-700 font-semibold mb-1`}>{message}</p>
+        <p className="text-sm text-gray-600">{subMessage}</p>
+      </div>
+    </div>
+  );
+};
+
+/* ------------------- QuantitySelector ------------------- */
+const QuantitySelector = memo(
+  ({
+    quantity,
+    setQuantity,
+    stock,
+    disabled,
+  }: {
+    quantity: number;
+    setQuantity: (val: number) => void;
+    stock: number;
+    disabled?: boolean;
+  }) => {
+    const handleChange = (val: number) => {
+      if (val < 1) return toast.error("Minimum quantity is 1!"), setQuantity(1);
+      if (val > stock)
+        return toast.error(`Only ${stock} items left!`), setQuantity(stock);
+      setQuantity(val);
+    };
+    return (
+      <div className="flex items-center gap-2 mb-6">
+        <Button
+          type="button"
+          label="-"
+          onClick={() => handleChange(quantity - 1)}
+          disabled={disabled || quantity <= 1}
+          className="w-10 h-10 border-2 border-gray-300 rounded-lg font-semibold hover:border-orange-500 hover:text-orange-500"
+        />
+        <Input
+          type="number"
+          value={quantity}
+          onChange={(e) => handleChange(parseInt(e.target.value) || 1)}
+          min={1}
+          max={stock}
+          disabled={disabled}
+          className="w-20 h-10 text-center font-semibold border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+        />
+        <Button
+          type="button"
+          label="+"
+          onClick={() => handleChange(quantity + 1)}
+          disabled={disabled || quantity >= stock}
+          className="w-10 h-10 border-2 border-gray-300 rounded-lg font-semibold hover:border-orange-500 hover:text-orange-500"
+        />
+      </div>
+    );
+  }
+);
+QuantitySelector.displayName = "QuantitySelector";
