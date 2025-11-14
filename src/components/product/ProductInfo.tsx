@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import {
   ShoppingBag,
   Heart,
@@ -12,7 +12,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { useAddToCart } from "../../hooks/useAddToCart";
 import { useBuyNow } from "../../hooks/useBuyNow";
-import { useWishlist } from "../../hooks/useWishlist";
+import { useWishlistStore } from "../../stores/wishlistStore";
 
 /* ------------------- Types ------------------- */
 interface ProductInfoProps {
@@ -143,7 +143,18 @@ const ProductInfo = ({
 
   const { handleAddToCart } = useAddToCart();
   const { handleBuyNow } = useBuyNow();
-  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
+
+  // ✅ Sử dụng Zustand store trực tiếp
+  const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const checkWishlistStatus = useWishlistStore(
+    (state) => state.checkWishlistStatus
+  );
+
+  // ✅ Check wishlist status khi component mount
+  useEffect(() => {
+    checkWishlistStatus(id);
+  }, [id, checkWishlistStatus]);
 
   const firstImage = images?.[0] || "";
   const isOutOfStock = stock === 0;
@@ -166,6 +177,11 @@ const ProductInfo = ({
   const disableBuy = isOutOfStock || isNoPrice;
   const disableMinus = loading || quantity <= 1;
   const disablePlus = loading || quantity >= stock;
+
+  // ✅ Handler cho wishlist
+  const handleToggleWishlist = () => {
+    toggleWishlist(id);
+  };
 
   return (
     <div className={`flex flex-col ${loading ? "opacity-80" : ""}`}>
