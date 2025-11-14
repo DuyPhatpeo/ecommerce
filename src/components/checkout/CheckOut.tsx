@@ -1,11 +1,13 @@
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import CheckoutForm from "./CheckoutForm";
 import CheckoutProductList from "./CheckoutProductList";
 import CheckoutSummary from "./CheckoutSummary";
-import { useCheckout } from "../../hooks/useCheckout";
+import { useCheckoutStore } from "../../stores/checkoutStore";
 
 const CheckOut: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state || {};
 
   const {
@@ -17,8 +19,23 @@ const CheckOut: React.FC = () => {
     total,
     customerInfo,
     setCustomerInfo,
+    fetchProducts,
     handlePlaceOrder,
-  } = useCheckout({ state });
+  } = useCheckoutStore();
+
+  // Fetch products on mount
+  useEffect(() => {
+    fetchProducts({
+      selectedItems: state.selectedItems,
+      productId: state.productId,
+      quantity: state.quantity,
+      subtotal: state.subtotal,
+      tax: state.tax,
+      shipping: state.shipping,
+      total: state.total,
+      navigate,
+    });
+  }, []); // Empty dependency array - chỉ chạy 1 lần khi mount
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12">
@@ -46,7 +63,7 @@ const CheckOut: React.FC = () => {
                   paymentMethod: "cod",
                 }
               }
-              onPlaceOrder={handlePlaceOrder}
+              onPlaceOrder={() => handlePlaceOrder(navigate)}
             />
           </div>
         </div>

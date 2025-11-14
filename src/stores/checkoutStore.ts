@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { create } from "zustand";
 import { toast } from "react-toastify";
 
 import { getCartItem } from "../api/cartApi";
@@ -12,7 +11,7 @@ import { createOrder } from "../api/orderApi";
 export interface Product {
   id: string;
   title: string;
-  price: number; // bắt buộc
+  price: number;
   regularPrice?: number;
   salePrice?: number;
   category?: string;
@@ -24,16 +23,6 @@ export interface Product {
   images?: string[];
 }
 
-interface CheckoutData {
-  subtotal?: number;
-  tax?: number;
-  shipping?: number;
-  total?: number;
-  selectedItems?: { id: string; quantity: number }[];
-  productId?: string;
-  quantity?: number;
-}
-
 export interface CustomerInfo {
   recipientName: string;
   phone: string;
@@ -42,50 +31,80 @@ export interface CustomerInfo {
   paymentMethod: "cod" | "banking" | "momo";
 }
 
-interface UseCheckoutProps {
-  state: CheckoutData;
+interface CheckoutState {
+  // State
+  products: (Product & { quantity: number })[];
+  loading: boolean;
+  placingOrder: boolean;
+  customerInfo: CustomerInfo | null;
+
+  // Checkout data
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  total: number;
+
+  // Actions
+  setCustomerInfo: (info: CustomerInfo | null) => void;
+  fetchProducts: (params: {
+    selectedItems?: { id: string; quantity: number }[];
+    productId?: string;
+    quantity?: number;
+    subtotal?: number;
+    tax?: number;
+    shipping?: number;
+    total?: number;
+    navigate: (path: string, options?: any) => void;
+  }) => Promise<void>;
+  handlePlaceOrder: (
+    navigate: (path: string, options?: any) => void
+  ) => Promise<void>;
+  reset: () => void;
 }
 
-/* =====================
-   HOOK
-===================== */
-export const useCheckout = ({ state }: UseCheckoutProps) => {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState<(Product & { quantity: number })[]>(
-    []
-  );
-  const [loading, setLoading] = useState(false);
-  const [placingOrder, setPlacingOrder] = useState(false);
-  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
+const initialState = {
+  products: [],
+  loading: false,
+  placingOrder: false,
+  customerInfo: null,
+  subtotal: 0,
+  tax: 0,
+  shipping: 0,
+  total: 0,
+};
 
-  /* ---------- Calculate totals ---------- */
-  const subtotal = useMemo(
-    () =>
-      state.subtotal ??
-      products.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0),
-    [state.subtotal, products]
-  );
-  const tax = state.tax ?? 0;
-  const shipping = state.shipping ?? 0;
-  const total = state.total ?? subtotal + tax + shipping;
+export const useCheckoutStore = create<CheckoutState>((set, get) => ({
+  ...initialState,
 
-  /* ---------- Fetch products ---------- */
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
+  setCustomerInfo: (info) => set({ customerInfo: info }),
+
+  fetchProducts: async ({
+    selectedItems,
+    productId,
+    quantity,
+    subtotal: providedSubtotal,
+    tax: providedTax = 0,
+    shipping: providedShipping = 0,
+    total: providedTotal,
+    navigate,
+  }) => {
+    set({ loading: true });
+
     const userId = localStorage.getItem("userId");
     if (!userId) {
       toast.error("Please login to proceed with checkout!");
       navigate("/login");
-      setLoading(false);
+      set({ loading: false });
       return;
     }
 
     try {
       let items: (Product & { quantity: number })[] = [];
 
-      if (state.selectedItems?.length) {
+      // Fetch from cart items
+      if (selectedItems?.length) {
         const results = await Promise.all(
-          state.selectedItems.map(async (item) => {
+          selectedItems.map(async (item) => {
             const cartRes = await getCartItem(userId, item.id);
             if (!cartRes) return null;
 
@@ -100,17 +119,18 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
           })
         );
 
-        // Type-safe filter
         items = results.filter(
           (p): p is Product & { quantity: number } => p !== null
         );
-      } else if (state.productId && state.quantity) {
-        const productRes = await getProductById(state.productId);
+      }
+      // Fetch single product (Buy Now)
+      else if (productId && quantity) {
+        const productRes = await getProductById(productId);
         if (productRes) {
           items.push({
             ...productRes,
             price: productRes.salePrice || productRes.regularPrice || 0,
-            quantity: state.quantity,
+            quantity,
           });
         }
       }
@@ -121,25 +141,42 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         return;
       }
 
-      setProducts(items);
+      // Calculate totals
+      const calculatedSubtotal =
+        providedSubtotal ??
+        items.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0);
+
+      const calculatedTotal =
+        providedTotal ?? calculatedSubtotal + providedTax + providedShipping;
+
+      set({
+        products: items,
+        subtotal: calculatedSubtotal,
+        tax: providedTax,
+        shipping: providedShipping,
+        total: calculatedTotal,
+      });
     } catch (err) {
       console.error(err);
       toast.error("Failed to load product data!");
     } finally {
-      setLoading(false);
+      set({ loading: false });
     }
-  }, [state, navigate]);
+  },
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  handlePlaceOrder: async (navigate) => {
+    const { customerInfo, products, subtotal, tax, shipping, total } = get();
 
-  /* ---------- Place order ---------- */
-  const handlePlaceOrder = useCallback(async () => {
-    if (!customerInfo) return toast.error("Please enter shipping information!");
+    if (!customerInfo) {
+      toast.error("Please enter shipping information!");
+      return;
+    }
+
     const { recipientName, phone, address, paymentMethod, note } = customerInfo;
-    if (!recipientName || !phone || !address)
-      return toast.error("Please fill in all required information!");
+    if (!recipientName || !phone || !address) {
+      toast.error("Please fill in all required information!");
+      return;
+    }
 
     const userId = localStorage.getItem("userId");
     if (!userId) {
@@ -148,12 +185,11 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       return;
     }
 
-    setPlacingOrder(true);
+    set({ placingOrder: true });
 
-    // 1️⃣ Show loading toast
     const toastId = toast.loading("Processing your order...", {
       position: "top-right",
-      autoClose: false, // Không tự đóng
+      autoClose: false,
       closeOnClick: false,
       pauseOnHover: true,
       draggable: false,
@@ -205,7 +241,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
 
       const res = await createOrder(orderData);
 
-      // 2️⃣ Update toast từ loading → success
       toast.update(toastId, {
         render: "Order placed successfully!",
         type: "success",
@@ -216,10 +251,13 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
       });
 
       localStorage.removeItem("checkoutItems");
+
+      // Reset store
+      set(initialState);
+
       navigate("/order-success", { state: { order: res }, replace: true });
     } catch (err) {
       console.error(err);
-      // 3️⃣ Update toast từ loading → error
       toast.update(toastId, {
         render: "Failed to place order, please try again!",
         type: "error",
@@ -229,20 +267,9 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
         draggable: true,
       });
     } finally {
-      setPlacingOrder(false);
+      set({ placingOrder: false });
     }
-  }, [customerInfo, products, subtotal, tax, shipping, total, navigate]);
+  },
 
-  return {
-    products,
-    loading,
-    subtotal,
-    tax,
-    shipping,
-    total,
-    customerInfo,
-    setCustomerInfo,
-    placingOrder,
-    handlePlaceOrder,
-  };
-};
+  reset: () => set(initialState),
+}));
