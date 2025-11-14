@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAddToCart } from "../../hooks/useAddToCart";
-import { useWishlist } from "../../hooks/useWishlist";
+import { useWishlistStore } from "../../stores/wishlistStore";
 import Button from "../ui/Button";
 
 interface Product {
@@ -20,7 +20,19 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const { handleAddToCart } = useAddToCart();
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
-  const { isWishlisted, handleToggleWishlist } = useWishlist(id);
+
+  // ✅ Sử dụng Zustand store thay vì hook
+  const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const checkWishlistStatus = useWishlistStore(
+    (state) => state.checkWishlistStatus
+  );
+  const wishlistLoading = useWishlistStore((state) => state.loading[id]);
+
+  // ✅ Check wishlist status khi component mount
+  useEffect(() => {
+    checkWishlistStatus(id);
+  }, [id, checkWishlistStatus]);
 
   const hasDiscount = !!salePrice && !!regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
@@ -74,6 +86,11 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
+
+  // ✅ Handle wishlist toggle
+  const handleToggleWishlist = useCallback(() => {
+    toggleWishlist(id);
+  }, [id, toggleWishlist]);
 
   return (
     <div
@@ -153,6 +170,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                 e.stopPropagation();
                 handleToggleWishlist();
               }}
+              disabled={wishlistLoading}
               icon={
                 <Heart
                   size={18}
@@ -164,7 +182,8 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               }
               label=""
               className={`w-12 h-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 active:scale-95
-    ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}`}
+    ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}
+    ${wishlistLoading ? "opacity-50 cursor-wait" : ""}`}
             />
           </div>
         </div>
