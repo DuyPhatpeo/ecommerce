@@ -12,7 +12,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { useAddToCart } from "../../hooks/useAddToCart";
 import { useBuyNow } from "../../hooks/useBuyNow";
-import { useWishlistStore } from "../../stores/wishlistStore";
+import { useWishlistStore } from "../../stores/wishlistStore"; //zustand
 
 /* ------------------- Types ------------------- */
 interface ProductInfoProps {

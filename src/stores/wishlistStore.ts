@@ -1,3 +1,4 @@
+// stores/WishlistStore.ts
 import { create } from "zustand";
 import {
   addToWishlist,

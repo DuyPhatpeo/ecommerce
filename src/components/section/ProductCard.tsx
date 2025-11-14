@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAddToCart } from "../../hooks/useAddToCart";
-import { useWishlistStore } from "../../stores/wishlistStore";
+import { useWishlistStore } from "../../stores/wishlistStore"; //zustand
 import Button from "../ui/Button";
 
 interface Product {
