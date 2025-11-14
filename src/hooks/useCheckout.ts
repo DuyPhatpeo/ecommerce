@@ -135,7 +135,6 @@ export const useCheckout = ({ state }: UseCheckoutProps) => {
   }, [fetchProducts]);
 
   /* ---------- Place order ---------- */
-  /* ---------- Place order ---------- */
   const handlePlaceOrder = useCallback(async () => {
     if (!customerInfo) return toast.error("Please enter shipping information!");
     const { recipientName, phone, address, paymentMethod, note } = customerInfo;
