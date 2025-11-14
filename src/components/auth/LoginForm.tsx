@@ -1,22 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, LogIn } from "lucide-react";
-import useLogin from "../../hooks/useLogin";
+import { useNavigate } from "react-router-dom";
+
+import { useAuthStore } from "../../stores/authStore";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
 
 export default function LoginForm() {
-  const {
-    formData,
-    errors,
-    loading,
-    rememberMe,
-    setRememberMe,
-    handleChange,
-    handleSubmit,
-  } = useLogin();
-
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🔹 Lấy state và action từ Zustand
+  const {
+    loginForm,
+    loginErrors,
+    loginLoading,
+    rememberMe,
+    setLoginForm,
+    setRememberMe,
+    login,
+  } = useAuthStore();
+
+  // 🔹 Đồng bộ email với localStorage khi có rememberMe
+  useEffect(() => {
+    const savedRememberMe = localStorage.getItem("rememberMe") === "true";
+    const savedEmail = localStorage.getItem("email");
+    if (savedRememberMe && savedEmail) {
+      setRememberMe(true);
+      setLoginForm({ email: savedEmail });
+    }
+  }, [setRememberMe, setLoginForm]);
+
+  // 🔹 Handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginForm({ [name]: value });
+  };
+
+  // 🔹 Handle submit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await login(navigate);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -25,23 +51,23 @@ export default function LoginForm() {
         label="Email Address"
         name="email"
         type="email"
-        value={formData.email}
+        value={loginForm.email}
         onChange={handleChange}
         placeholder="you@example.com"
         icon={<Mail size={20} />}
-        error={errors.email}
+        error={loginErrors.email}
       />
 
       {/* Password */}
       <PasswordField
         label="Password"
         name="password"
-        value={formData.password}
+        value={loginForm.password}
         onChange={handleChange}
         placeholder="Enter your password"
         show={showPassword}
         toggle={() => setShowPassword(!showPassword)}
-        error={errors.password}
+        error={loginErrors.password}
       />
 
       {/* Remember + Forgot */}
@@ -67,12 +93,14 @@ export default function LoginForm() {
       {/* Submit button */}
       <Button
         type="submit"
-        disabled={loading}
+        disabled={loginLoading}
         icon={<LogIn size={20} />}
-        label={loading ? "Signing in..." : "Sign In"}
+        label={loginLoading ? "Signing in..." : "Sign In"}
         justify="center"
         className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
-          loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"
+          loginLoading
+            ? "opacity-70 cursor-not-allowed"
+            : "hover:-translate-y-0.5"
         }`}
       />
 

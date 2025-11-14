@@ -1,40 +1,58 @@
 import { useState } from "react";
 import { User, Phone, Mail, MapPin, UserPlus } from "lucide-react";
-import useRegister from "../../hooks/useRegister";
+import { useAuthStore } from "../../stores/authStore";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
-  const { formData, errors, loading, handleChange, handleSubmit } =
-    useRegister();
-
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const {
+    registerForm,
+    registerErrors,
+    registerLoading,
+    setRegisterForm,
+    register,
+  } = useAuthStore();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setRegisterForm({ [name]: value });
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-3.5 w-full">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        register(navigate);
+      }}
+      className="space-y-3.5 w-full"
+    >
       {/* Full Name & Phone */}
       <div className="grid grid-cols-2 gap-3 max-[420px]:grid-cols-1">
         <InputField
           label="Full Name"
           name="fullName"
           type="text"
-          value={formData.fullName}
+          value={registerForm.fullName}
           onChange={handleChange}
           placeholder="John Doe"
           icon={<User size={20} />}
-          error={errors.fullName}
+          error={registerErrors.fullName}
         />
         <InputField
           label="Phone Number"
           name="phone"
           type="tel"
-          value={formData.phone}
+          value={registerForm.phone}
           onChange={handleChange}
           placeholder="+84 123 456 789"
           icon={<Phone size={20} />}
-          error={errors.phone}
+          error={registerErrors.phone}
         />
       </div>
 
@@ -45,11 +63,11 @@ export default function RegisterForm() {
             label="Email Address"
             name="email"
             type="email"
-            value={formData.email}
+            value={registerForm.email}
             onChange={handleChange}
             placeholder="you@example.com"
             icon={<Mail size={20} />}
-            error={errors.email}
+            error={registerErrors.email}
           />
         </div>
         <div className="col-span-2">
@@ -57,11 +75,11 @@ export default function RegisterForm() {
             label="Address"
             name="address"
             type="text"
-            value={formData.address}
+            value={registerForm.address}
             onChange={handleChange}
             placeholder="Your address"
             icon={<MapPin size={20} />}
-            error={errors.address}
+            error={registerErrors.address}
           />
           <p className="text-xs text-gray-500 ml-1 mt-1">
             Format:{" "}
@@ -77,34 +95,36 @@ export default function RegisterForm() {
         <PasswordField
           label="Password"
           name="password"
-          value={formData.password}
+          value={registerForm.password}
           onChange={handleChange}
           placeholder="Create password"
           show={showPassword}
           toggle={() => setShowPassword(!showPassword)}
-          error={errors.password}
+          error={registerErrors.password}
         />
         <PasswordField
           label="Confirm Password"
           name="confirmPassword"
-          value={formData.confirmPassword}
+          value={registerForm.confirmPassword}
           onChange={handleChange}
           placeholder="Confirm password"
           show={showConfirmPassword}
           toggle={() => setShowConfirmPassword(!showConfirmPassword)}
-          error={errors.confirmPassword}
+          error={registerErrors.confirmPassword}
         />
       </div>
 
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={loading}
+        disabled={registerLoading}
         icon={<UserPlus size={20} />}
-        label={loading ? "Creating..." : "Create Account"}
+        label={registerLoading ? "Creating..." : "Create Account"}
         justify="center"
         className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${
-          loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"
+          registerLoading
+            ? "opacity-70 cursor-not-allowed"
+            : "hover:-translate-y-0.5"
         }`}
       />
     </form>

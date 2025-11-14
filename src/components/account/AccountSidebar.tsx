@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "../../api/authApi";
-import { useLogout } from "../../hooks/useLogout";
+import { useAuthStore } from "../../stores/authStore";
 
 interface Tab {
   id: string;
@@ -32,7 +32,7 @@ interface UserProfile {
 const AccountSidebar: React.FC<AccountSidebarProps> = memo(
   ({ activeTab, onTabChange }) => {
     const navigate = useNavigate();
-    const { logout } = useLogout();
+    const { logout } = useAuthStore();
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -173,7 +173,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
 
               {/* Logout */}
               <button
-                onClick={logout}
+                onClick={() => logout(navigate)}
                 className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
               >
                 <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
