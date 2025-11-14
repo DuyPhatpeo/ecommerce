@@ -42,7 +42,7 @@ const ProductInfo = ({
   sku,
 }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const navigate = useNavigate();
   const handleAddToCart = useCartStore((state) => state.addItemToCart);
