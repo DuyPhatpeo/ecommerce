@@ -1,36 +1,36 @@
-// src/pages/Cart/ShoppingCart.tsx
-import { useCart } from "../../hooks/useCart";
+import { useCartStore } from "../../stores/cartStore";
+import { useEffect } from "react";
 import CartList from "./CartList";
 import CartSummary from "./CartSummary";
 
 export default function ShoppingCart() {
-  const {
-    cartItems,
-    selectedItems,
-    loading,
-    updating,
-    clearing,
-    updateQuantity,
-    removeItem,
-    removeAll,
-    toggleSelect,
-    toggleSelectAll,
-  } = useCart();
+  const cartItems = useCartStore((s) => s.cartItems);
+  const selectedItems = useCartStore((s) => s.selectedItems);
+  const loading = useCartStore((s) => s.loading);
+  const updating = useCartStore((s) => s.updating);
+  const clearing = useCartStore((s) => s.clearing);
 
-  // Map cartItems sang CartItemType để đảm bảo có productid
-  const formattedCartItems = cartItems.map((item) => ({
-    ...item,
-    productid: item.product?.id || "", // nếu không có product, để rỗng string
-  }));
+  const fetchCart = useCartStore((s) => s.fetchCart);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const toggleSelect = useCartStore((s) => s.toggleSelect);
+  const toggleSelectAll = useCartStore((s) => s.toggleSelectAll);
+  const removeAll = useCartStore((s) => s.removeAll);
+
+  // Fetch khi vào trang
+  const userId = useCartStore((s) => s.userId);
+
+  useEffect(() => {
+    if (userId) fetchCart();
+  }, [userId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
-          {/* Cart List */}
           <div className="w-full lg:col-span-2">
             <CartList
-              cartItems={formattedCartItems}
+              cartItems={cartItems}
               selectedItems={selectedItems}
               loading={loading}
               updating={updating}
@@ -43,12 +43,8 @@ export default function ShoppingCart() {
             />
           </div>
 
-          {/* Cart Summary */}
           <div className="w-full">
-            <CartSummary
-              cartItems={formattedCartItems}
-              selectedItems={selectedItems}
-            />
+            <CartSummary cartItems={cartItems} selectedItems={selectedItems} />
           </div>
         </div>
       </div>

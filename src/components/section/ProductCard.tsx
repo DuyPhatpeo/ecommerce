@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAddToCart } from "../../hooks/useAddToCart";
-import { useWishlistStore } from "../../stores/wishlistStore"; //zustand
+import { useCartStore } from "../../stores/cartStore";
+import { useWishlistStore } from "../../stores/wishlistStore";
 import Button from "../ui/Button";
 
 interface Product {
@@ -18,10 +18,17 @@ interface Product {
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { handleAddToCart } = useAddToCart();
+
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
 
-  // ✅ Sử dụng Zustand store thay vì hook
+  /* ===========================
+      🚀 ZUSTAND CART STORE
+  =========================== */
+  const addItemToCart = useCartStore((state) => state.addItemToCart);
+
+  /* ===========================
+      ❤️ ZUSTAND WISHLIST
+  =========================== */
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const checkWishlistStatus = useWishlistStore(
@@ -29,22 +36,25 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   );
   const wishlistLoading = useWishlistStore((state) => state.loading[id]);
 
-  // ✅ Check wishlist status khi component mount
   useEffect(() => {
     checkWishlistStatus(id);
   }, [id, checkWishlistStatus]);
 
+  /* ===========================
+      💰 Price & Discount
+  =========================== */
   const hasDiscount = !!salePrice && !!regularPrice && salePrice < regularPrice;
   const price = hasDiscount ? salePrice! : regularPrice ?? 0;
   const oldPrice = hasDiscount ? regularPrice : undefined;
   const discountPercent = hasDiscount
     ? Math.round(((oldPrice! - price) / oldPrice!) * 100)
     : 0;
+
   const isOutOfStock = stock === 0;
 
   const formatVND = useCallback(
-    (value: number) =>
-      value.toLocaleString("vi-VN", {
+    (v: number) =>
+      v.toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",
         maximumFractionDigits: 0,
@@ -52,23 +62,30 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     []
   );
 
+  /* ===========================
+      🛒 ADD TO CART (Zustand)
+  =========================== */
   const handleAdd = useCallback(
-    (e?: React.MouseEvent) => {
+    async (e?: React.MouseEvent) => {
       e?.preventDefault();
       e?.stopPropagation();
       if (isOutOfStock || loading) return;
 
+      setLoading(true);
+
       const firstImage = images?.[0] || img;
 
-      handleAddToCart({
+      await addItemToCart({
         id,
         title,
         stock,
         quantity: 1,
         price,
         images: [firstImage],
-        setLoading,
+        navigate, // store cần navigate để mở cart
       });
+
+      setLoading(false);
     },
     [
       id,
@@ -77,17 +94,16 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       price,
       images,
       img,
-      handleAddToCart,
+      addItemToCart,
       loading,
       isOutOfStock,
+      navigate,
     ]
   );
 
-  const handleCardClick = () => {
-    navigate(`/product/${id}`);
-  };
-
-  // ✅ Handle wishlist toggle
+  /* ===========================
+      🧡 Toggle Wishlist
+  =========================== */
   const handleToggleWishlist = useCallback(() => {
     toggleWishlist(id);
   }, [id, toggleWishlist]);
@@ -95,7 +111,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   return (
     <div
       className="group relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[280px] mx-auto cursor-pointer"
-      onClick={handleCardClick}
+      onClick={() => navigate(`/product/${id}`)}
     >
       <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-[24px] p-3 sm:p-4 shadow-lg border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
         {/* Discount Badge */}
@@ -115,7 +131,6 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             }`}
           />
 
-          {/* Out of Stock Badge */}
           {isOutOfStock && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="px-4 py-1 bg-red-50/90 text-red-600 font-bold text-sm rounded-full border border-red-200 shadow-md uppercase tracking-wider">
@@ -132,12 +147,10 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           </h3>
 
           <div className="flex flex-col gap-1">
-            {/* Giá chính */}
             <span className="text-lg md:text-xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
-              {price ? formatVND(price) : "-"}
+              {formatVND(price)}
             </span>
 
-            {/* Giá cũ */}
             <span
               className={`text-xs text-gray-400 line-through ${
                 oldPrice ? "opacity-100" : "opacity-0"
@@ -147,20 +160,20 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             </span>
           </div>
 
-          {/* Buttons */}
+          {/* Action Buttons */}
           <div className="flex items-stretch gap-1 pt-2">
-            {/* Add to Cart */}
+            {/* Add To Cart */}
             <Button
               onClick={handleAdd}
               disabled={isOutOfStock || loading}
               icon={<ShoppingBag size={14} className="w-4 h-4" />}
               label={loading ? "Adding..." : "Buy"}
               className={`flex-1 h-12 gap-2 px-4 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
-    ${
-      isOutOfStock || loading
-        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-        : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
-    }`}
+                ${
+                  isOutOfStock || loading
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
+                }`}
             />
 
             {/* Wishlist */}
@@ -180,10 +193,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
                   }
                 />
               }
-              label=""
               className={`w-12 h-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 active:scale-95
-    ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}
-    ${wishlistLoading ? "opacity-50 cursor-wait" : ""}`}
+                ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}
+                ${wishlistLoading ? "opacity-50 cursor-wait" : ""}`}
             />
           </div>
         </div>

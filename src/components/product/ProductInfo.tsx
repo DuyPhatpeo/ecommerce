@@ -28,6 +28,7 @@ interface ProductInfoProps {
   sku?: string;
 }
 
+/* ========================= MAIN COMPONENT ========================= */
 const ProductInfo = ({
   id,
   title,
@@ -42,9 +43,10 @@ const ProductInfo = ({
 }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { handleAddToCart } = useAddToCart();
+
   const handleBuyNow = useBuyNowStore((state) => state.handleBuyNow);
 
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
@@ -58,26 +60,39 @@ const ProductInfo = ({
   }, [id, checkWishlistStatus]);
 
   const firstImage = images[0] || "";
+
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
 
-  const hasDiscount = salePrice && regularPrice && salePrice < regularPrice;
-  const price = hasDiscount ? salePrice! : regularPrice ?? 0;
-  const oldPrice = hasDiscount ? regularPrice : undefined;
+  /* ---------- PRICE LOGIC ---------- */
+  const hasSale = salePrice !== undefined && salePrice > 0;
+  const hasRegular = regularPrice !== undefined && regularPrice > 0;
+
+  // Có giảm giá hợp lệ?
+  const hasDiscount = hasSale && hasRegular && salePrice! < regularPrice!;
+
+  // Giá chính để hiển thị
+  const price = hasSale ? salePrice! : hasRegular ? regularPrice! : 0;
+
+  // Giá gạch ngang
+  const oldPrice = hasDiscount ? regularPrice! : undefined;
+
+  // Tính %
   const discountPercentage = hasDiscount
-    ? Math.round(((oldPrice! - price) / oldPrice!) * 100)
+    ? Math.round(((regularPrice! - salePrice!) / regularPrice!) * 100)
     : 0;
 
-  const formatVND = (val: number) =>
-    val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  const formatVND = (v: number) =>
+    v.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
   const disableCart = loading || isOutOfStock || price <= 0;
   const disableBuy = isOutOfStock || price <= 0;
 
   return (
     <div className={`flex flex-col ${loading ? "opacity-80" : ""}`}>
-      {/* Title & Rating */}
+      {/* TITLE + RATING */}
       <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
+
       <div className="flex items-center gap-2 mb-6">
         {Array.from({ length: 5 }, (_, i) => (
           <Star
@@ -90,7 +105,7 @@ const ProductInfo = ({
         <span className="text-gray-600">(128 reviews)</span>
       </div>
 
-      {/* Stock Notice */}
+      {/* STOCK NOTICE */}
       {isOutOfStock && (
         <Notice
           type="error"
@@ -98,6 +113,7 @@ const ProductInfo = ({
           subMessage="This item is currently unavailable."
         />
       )}
+
       {!isOutOfStock && isLowStock && (
         <Notice
           type="warning"
@@ -106,18 +122,20 @@ const ProductInfo = ({
         />
       )}
 
-      {/* Price */}
+      {/* PRICE BOX */}
       <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
         {hasDiscount && (
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
             -{discountPercentage}%
           </div>
         )}
+
         {price > 0 ? (
           <>
-            <div className="text-4xl font-bold text-orange-600 mb-1">
+            <div className="text-4xl font-bold text-orange-600">
               {formatVND(price)}
             </div>
+
             {oldPrice && (
               <div className="text-gray-500 line-through text-lg">
                 {formatVND(oldPrice)}
@@ -131,7 +149,7 @@ const ProductInfo = ({
         )}
       </div>
 
-      {/* Quantity Selector */}
+      {/* QUANTITY */}
       {!isOutOfStock && (
         <QuantitySelector
           quantity={quantity}
@@ -141,7 +159,7 @@ const ProductInfo = ({
         />
       )}
 
-      {/* Buttons Desktop */}
+      {/* DESKTOP BUTTONS */}
       <div className="hidden lg:flex gap-3 mb-6 items-center">
         <Button
           onClick={() =>
@@ -166,12 +184,13 @@ const ProductInfo = ({
               ? "Adding..."
               : "Add to Cart"
           }
-          className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+          className={`flex-1 py-4 rounded-xl font-semibold ${
             disableCart
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-orange-600 text-white hover:bg-orange-700"
           }`}
         />
+
         <Button
           onClick={() =>
             handleBuyNow(
@@ -188,159 +207,83 @@ const ProductInfo = ({
                 : "No Price"
               : "Buy Now"
           }
-          className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
+          className={`flex-1 py-4 rounded-xl font-semibold ${
             disableBuy
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-black text-white hover:bg-gray-800"
           }`}
         />
+
         <Button
           onClick={() => toggleWishlist(id)}
           icon={
             <Heart
-              className={`w-6 h-6 transition-colors ${
+              className={`w-6 h-6 ${
                 isWishlisted ? "fill-red-500 text-red-500" : ""
               }`}
             />
           }
-          className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center transition-all ${
+          className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center ${
             isWishlisted
               ? "border-red-500 bg-red-50"
-              : "border-gray-300 hover:border-red-500 hover:text-red-500 hover:bg-red-50"
+              : "border-gray-300 hover:border-red-500 hover:bg-red-50"
           }`}
         />
       </div>
 
-      {/* Mobile Taskbar */}
-      {!isOutOfStock && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-          <div className="max-w-7xl mx-auto px-3 py-2 flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  label="-"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
-                  className="w-7 h-7 border border-gray-300 rounded-md text-sm font-semibold hover:border-orange-500 hover:text-orange-500"
-                />
-                <span className="w-8 text-center font-semibold text-sm">
-                  {quantity}
-                </span>
-                <Button
-                  type="button"
-                  label="+"
-                  onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
-                  disabled={quantity >= stock}
-                  className="w-7 h-7 border border-gray-300 rounded-md text-sm font-semibold hover:border-orange-500 hover:text-orange-500"
-                />
-              </div>
-              <div className="text-right">
-                <div className="text-xs text-gray-500">Total</div>
-                <div className="text-base font-bold text-orange-600">
-                  {formatVND(price * quantity)}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  handleAddToCart({
-                    id,
-                    title,
-                    stock,
-                    quantity,
-                    price,
-                    images,
-                    setLoading,
-                  })
-                }
-                disabled={disableCart}
-                icon={<ShoppingBag className="w-4 h-4" />}
-                label={
-                  disableCart ? "No Price" : loading ? "Adding..." : "Cart"
-                }
-                className={`flex-1 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 ${
-                  disableCart
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-orange-600 text-white active:bg-orange-700"
-                }`}
-              />
-              <Button
-                onClick={() =>
-                  handleBuyNow(
-                    { id, quantity, price, stock, image: firstImage },
-                    navigate
-                  )
-                }
-                disabled={disableBuy}
-                icon={<CreditCard className="w-4 h-4" />}
-                label={disableBuy ? "No Price" : "Buy Now"}
-                className={`flex-1 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 ${
-                  disableBuy
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-black text-white active:bg-gray-800"
-                }`}
-              />
-              <Button
-                onClick={() => toggleWishlist(id)}
-                icon={
-                  <Heart
-                    className={`w-4 h-4 transition-colors ${
-                      isWishlisted ? "fill-red-500 text-red-500" : ""
-                    }`}
-                  />
-                }
-                className={`w-11 h-11 border rounded-lg flex items-center justify-center ${
-                  isWishlisted
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300 active:border-red-500 active:bg-red-50"
-                }`}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Product Info */}
-      <div className="border-t pt-6 space-y-3 text-sm text-gray-600 mb-4 lg:mb-0">
-        <div className="flex justify-between">
-          <span className="text-gray-500">Category:</span>
-          <span className="font-semibold text-gray-900">{category}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-500">Brand:</span>
-          <span className="font-semibold text-gray-900">{brand}</span>
-        </div>
-        {sku && (
-          <div className="flex justify-between">
-            <span className="text-gray-500">SKU:</span>
-            <span className="font-semibold text-gray-900">{sku}</span>
-          </div>
-        )}
+      {/* PRODUCT INFO */}
+      <div className="border-t pt-6 space-y-3 text-sm text-gray-600 mb-4">
+        <InfoRow label="Category" value={category} />
+        <InfoRow label="Brand" value={brand} />
+        {sku && <InfoRow label="SKU" value={sku} />}
         {!isOutOfStock && (
-          <div className="flex justify-between">
-            <span className="text-gray-500">Availability:</span>
-            <span
-              className={`font-semibold ${
-                isLowStock ? "text-amber-600" : "text-green-600"
-              }`}
-            >
-              {stock} in stock
-            </span>
-          </div>
+          <InfoRow
+            label="Availability"
+            value={`${stock} in stock`}
+            valueClass={isLowStock ? "text-amber-600" : "text-green-600"}
+          />
         )}
       </div>
-
-      <div className="lg:hidden h-28" />
     </div>
   );
 };
 
 export default memo(ProductInfo);
 
-/* ------------------- Notice Component ------------------- */
+/* ========================= SMALL COMPONENTS ========================= */
+
+const InfoRow = ({
+  label,
+  value,
+  valueClass = "",
+}: {
+  label: string;
+  value: string;
+  valueClass?: string;
+}) => (
+  <div className="flex justify-between">
+    <span className="text-gray-500">{label}:</span>
+    <span className={`font-semibold text-gray-900 ${valueClass}`}>{value}</span>
+  </div>
+);
+
+/* --------------------- NOTICE --------------------- */
+
+const colorMap = {
+  error: {
+    bg: "bg-red-50",
+    border: "border-red-200",
+    text: "text-red-700",
+    icon: "text-red-600",
+  },
+  warning: {
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    text: "text-amber-700",
+    icon: "text-amber-600",
+  },
+};
+
 const Notice = ({
   type,
   message,
@@ -350,21 +293,23 @@ const Notice = ({
   message: string;
   subMessage: string;
 }) => {
-  const color = type === "error" ? "red" : "amber";
+  const c = colorMap[type];
+
   return (
     <div
-      className={`bg-${color}-50 border border-${color}-200 rounded-xl p-4 mb-6 flex items-start gap-3`}
+      className={`${c.bg} ${c.border} border rounded-xl p-4 mb-6 flex gap-3`}
     >
-      <AlertCircle className={`w-5 h-5 text-${color}-600 flex-shrink-0`} />
+      <AlertCircle className={`w-5 h-5 ${c.icon}`} />
       <div>
-        <p className={`text-${color}-700 font-semibold mb-1`}>{message}</p>
+        <p className={`${c.text} font-semibold`}>{message}</p>
         <p className="text-sm text-gray-600">{subMessage}</p>
       </div>
     </div>
   );
 };
 
-/* ------------------- QuantitySelector ------------------- */
+/* --------------------- QUANTITY SELECTOR --------------------- */
+
 const QuantitySelector = memo(
   ({
     quantity,
@@ -373,36 +318,42 @@ const QuantitySelector = memo(
     disabled,
   }: {
     quantity: number;
-    setQuantity: (val: number) => void;
+    setQuantity: (v: number) => void;
     stock: number;
     disabled?: boolean;
   }) => {
-    const handleChange = (val: number) => {
-      if (val < 1) return toast.error("Minimum quantity is 1!"), setQuantity(1);
-      if (val > stock)
-        return toast.error(`Only ${stock} items left!`), setQuantity(stock);
-      setQuantity(val);
+    const handleChange = (v: number) => {
+      if (v < 1) {
+        toast.error("Minimum quantity is 1");
+        return setQuantity(1);
+      }
+      if (v > stock) {
+        toast.error(`Only ${stock} items left`);
+        return setQuantity(stock);
+      }
+      setQuantity(v);
     };
+
     return (
       <div className="flex items-center gap-2 mb-6">
         <Button
-          type="button"
           label="-"
           onClick={() => handleChange(quantity - 1)}
           disabled={disabled || quantity <= 1}
           className="w-10 h-10 border-2 border-gray-300 rounded-lg font-semibold hover:border-orange-500 hover:text-orange-500"
         />
+
         <Input
           type="number"
           value={quantity}
-          onChange={(e) => handleChange(parseInt(e.target.value) || 1)}
+          onChange={(e) => handleChange(Number(e.target.value) || 1)}
           min={1}
           max={stock}
           disabled={disabled}
           className="w-20 h-10 text-center font-semibold border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
         />
+
         <Button
-          type="button"
           label="+"
           onClick={() => handleChange(quantity + 1)}
           disabled={disabled || quantity >= stock}
@@ -412,4 +363,5 @@ const QuantitySelector = memo(
     );
   }
 );
+
 QuantitySelector.displayName = "QuantitySelector";
