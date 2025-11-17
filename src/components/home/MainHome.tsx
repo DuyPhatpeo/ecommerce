@@ -7,9 +7,10 @@ import HotDeal from "./HotDeal";
 import BrandStrip from "./BrandStrip";
 import ProductView from "./ProductView";
 import { useAppConfig } from "../../hooks/useAppConfig";
+import Loader from "../general/Loader"; // optional: nếu cần loading
 
-const MainHome = () => {
-  // Config backend (giả lập)
+const MainHome: React.FC = () => {
+  // Config backend giả lập
   const remoteConfig = {
     sectionOrder: {
       Promo: { order: 1 },
@@ -48,7 +49,7 @@ const MainHome = () => {
 
   const { normalizemode, modeDefault } = useAppConfig(remoteConfig);
 
-  // Danh sách component có thể render
+  // Mapping section keys → component
   const sectionMap: Record<string, React.FC<any>> = {
     Banner,
     Features,
@@ -58,7 +59,7 @@ const MainHome = () => {
     ProductView,
   };
 
-  // Chuẩn hóa danh sách section
+  // Chuẩn hóa danh sách section theo order
   const displaySections = Object.entries(remoteConfig.sectionOrder ?? {})
     .map(([key, cfg]) => {
       const baseKey = key.split("_")[0];
@@ -70,6 +71,8 @@ const MainHome = () => {
     })
     .filter(({ baseKey }) => baseKey in sectionMap)
     .sort((a, b) => a.order - b.order);
+
+  if (!displaySections.length) return <Loader />; // optional: fallback khi không có section
 
   return (
     <>
@@ -87,7 +90,7 @@ const MainHome = () => {
             : props;
 
         return (
-          <section key={key}>
+          <section key={key} className="mb-12">
             <Component {...finalProps} />
           </section>
         );
