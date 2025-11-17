@@ -12,10 +12,10 @@ import {
   X,
   Trash2,
   Edit,
-  ChevronDown, // Icon cho nút mở modal
+  ChevronDown,
 } from "lucide-react";
 import Radio from "../ui/Radio";
-import { useAddresses } from "../../hooks/useAddresses";
+import { useAddressStore } from "../../stores/addressStore";
 import Button from "../ui/Button";
 
 /* =====================
@@ -43,7 +43,11 @@ interface PaymentMethod {
    MAIN COMPONENT
 ===================== */
 export default function CheckoutForm({ onChange }: CheckoutFormProps) {
-  const { addressesFormatted, handleSave, handleDelete } = useAddresses();
+  const { getAddressesFormatted, handleSave, handleDelete, fetchAddresses } =
+    useAddressStore();
+
+  const userId = localStorage.getItem("userId") || "";
+  const addressesFormatted = getAddressesFormatted();
 
   const [selectedId, setSelectedId] = useState<string>("");
   const [note, setNote] = useState<string>("");
@@ -51,9 +55,15 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     useState<CustomerInfo["paymentMethod"]>("cod");
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
-  // State mới cho modal chọn địa chỉ
   const [showSelectAddressModal, setShowSelectAddressModal] =
     useState<boolean>(false);
+
+  // 🔹 Fetch addresses on mount
+  useEffect(() => {
+    if (userId) {
+      fetchAddresses(userId);
+    }
+  }, [userId, fetchAddresses]);
 
   // 🟠 Chọn mặc định address khi load
   useEffect(() => {
@@ -69,7 +79,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setShowSelectAddressModal(false);
-        setShowAddForm(false); // Nếu muốn tắt luôn form thêm/sửa
+        setShowAddForm(false);
       }
     };
 
@@ -169,9 +179,9 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
           selectedId={selectedId}
           onSelect={(id) => {
             setSelectedId(id);
-            setShowSelectAddressModal(false); // Đóng modal sau khi chọn
+            setShowSelectAddressModal(false);
           }}
-          onDelete={handleDelete}
+          onDelete={(id) => handleDelete(userId, id)}
           onEdit={setEditingAddress}
           onAdd={() => setShowAddForm(true)}
           onClose={() => setShowSelectAddressModal(false)}
@@ -182,7 +192,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
         <AddAddressModal
           onClose={() => setShowAddForm(false)}
           onSave={async (data) => {
-            await handleSave({
+            await handleSave(userId, {
               ...data,
               isDefault: addressesFormatted.length === 0,
             });
@@ -196,7 +206,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
           address={editingAddress}
           onClose={() => setEditingAddress(null)}
           onSave={async (data) => {
-            await handleSave({ ...data, id: editingAddress.id });
+            await handleSave(userId, { ...data, id: editingAddress.id });
             setEditingAddress(null);
           }}
         />
@@ -209,7 +219,6 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
    SUBCOMPONENTS
 ===================== */
 
-// Component mới: Modal chọn địa chỉ
 const SelectAddressModal = ({
   addresses,
   selectedId,
@@ -242,7 +251,6 @@ const SelectAddressModal = ({
   </Modal>
 );
 
-// Giữ nguyên AddressList (để tái sử dụng trong modal)
 const AddressList = ({
   addresses,
   selectedId,
@@ -434,6 +442,18 @@ const AddAddressModal = ({
     onSave(form);
   };
 
+  // Enter to submit
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [form]);
+
   return (
     <Modal onClose={onClose}>
       <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2 border-b border-orange-100 pb-3">
@@ -512,7 +532,6 @@ const Modal = ({
   onClose: () => void;
   children: React.ReactNode;
 }) => {
-  // 🧩 Chặn scroll khi modal mở
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -523,11 +542,11 @@ const Modal = ({
   return (
     <div
       className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-90"
-      onClick={onClose} // click outside -> close modal
+      onClick={onClose}
     >
       <div
         className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl relative border border-gray-200 overflow-y-auto max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()} // ngăn lan sự kiện ra ngoài
+        onClick={(e) => e.stopPropagation()}
       >
         <Button
           onClick={onClose}

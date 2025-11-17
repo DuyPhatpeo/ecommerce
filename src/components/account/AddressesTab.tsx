@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, MapPin, Edit2, Trash2, User, Phone, X } from "lucide-react";
 import { toast } from "react-toastify";
-import { useAddresses } from "../../hooks/useAddresses";
+import { useAddressStore } from "../../stores/addressStore";
 import type { Address } from "../../api/addressApi";
 import Button from "../ui/Button";
 import Toggle from "../ui/Toggle";
@@ -238,12 +238,28 @@ const AddressModal: React.FC<AddressModalProps> = ({
 // AddressesTab Component
 // ============================================
 const AddressesTab: React.FC = () => {
-  const { addressesFormatted, handleSave, handleDelete, handleSetDefault } =
-    useAddresses();
+  const {
+    getAddressesFormatted,
+    handleSave,
+    handleDelete,
+    handleSetDefault,
+    fetchAddresses,
+  } = useAddressStore();
+
   const [currentAddress, setCurrentAddress] = useState<Partial<Address> | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const userId = localStorage.getItem("userId") || "";
+  const addressesFormatted = getAddressesFormatted();
+
+  // Fetch addresses on mount
+  useEffect(() => {
+    if (userId) {
+      fetchAddresses(userId);
+    }
+  }, [userId, fetchAddresses]);
 
   const openModal = (address?: Partial<Address>) => {
     setCurrentAddress(address || null);
@@ -305,8 +321,8 @@ const AddressesTab: React.FC = () => {
                 key={addr.id}
                 address={addr}
                 onEdit={() => openModal(addr)}
-                onDelete={() => handleDelete(addr.id!)}
-                onSetDefault={() => handleSetDefault(addr.id!)}
+                onDelete={() => handleDelete(userId, addr.id!)}
+                onSetDefault={() => handleSetDefault(userId, addr.id!)}
               />
             ))}
           </div>
@@ -319,7 +335,7 @@ const AddressesTab: React.FC = () => {
         address={currentAddress || undefined}
         onClose={() => setIsModalOpen(false)}
         onSave={(data) => {
-          handleSave(data);
+          handleSave(userId, data);
           setIsModalOpen(false);
         }}
       />
