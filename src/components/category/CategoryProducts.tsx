@@ -87,7 +87,6 @@ const CategoryProducts: React.FC = () => {
     priceRange,
     setPriceRange,
     showFilters,
-    isFiltering,
     debouncedFilters,
     toggleFilters,
     clearFilters,
@@ -120,7 +119,7 @@ const CategoryProducts: React.FC = () => {
             <ShoppingBag size={16} />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-snug sm:leading-snug md:leading-normal break-words bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-snug break-words bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             {category ? `${capitalize(category)} Collection` : "Our Collection"}
           </h2>
         </div>
@@ -189,7 +188,8 @@ const CategoryProducts: React.FC = () => {
           </div>
 
           <div className="flex-1 relative">
-            {isFiltering && (
+            {/* --- Overlay khi filter/sort --- */}
+            {loading && products.length > 0 && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <Loader />
               </div>

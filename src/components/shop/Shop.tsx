@@ -74,7 +74,6 @@ const Shop: React.FC = () => {
     priceRange,
     setPriceRange,
     showFilters,
-    isFiltering,
     debouncedFilters,
     toggleFilters,
     clearFilters,
@@ -178,11 +177,13 @@ const Shop: React.FC = () => {
           </div>
 
           <div className="flex-1 relative">
-            {isFiltering && (
+            {/* --- Overlay khi filter/sort --- */}
+            {loading && products.length > 0 && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <Loader />
               </div>
             )}
+
             <ShopList
               paginatedProducts={paginatedProducts}
               clearFilters={clearFilters}
