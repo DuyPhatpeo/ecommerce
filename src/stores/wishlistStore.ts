@@ -4,13 +4,27 @@ import {
   addToWishlist,
   removeFromWishlist,
   isInWishlist,
+  getWishlist,
 } from "../api/wishlistApi";
+import { getProductById } from "../api/productApi";
 import { toast } from "react-toastify";
+
+interface Product {
+  id: string;
+  title: string;
+  img: string;
+  images?: string[];
+  salePrice?: number;
+  regularPrice?: number;
+  stock?: number;
+}
 
 interface WishlistState {
   // State
   wishlistedProducts: Set<string>;
+  wishlistItems: Product[];
   loading: Record<string, boolean>;
+  isLoadingList: boolean;
   userId: string | null;
 
   // Actions
@@ -19,17 +33,76 @@ interface WishlistState {
   toggleWishlist: (productId: string) => Promise<void>;
   isWishlisted: (productId: string) => boolean;
   clearWishlist: () => void;
+  fetchWishlistItems: () => Promise<void>;
 }
 
 export const useWishlistStore = create<WishlistState>((set, get) => ({
   // ✅ Initial state
   wishlistedProducts: new Set<string>(),
+  wishlistItems: [],
   loading: {},
+  isLoadingList: false,
   userId: typeof window !== "undefined" ? localStorage.getItem("userId") : null,
 
   // ✅ Set user ID
   setUserId: (userId) => {
     set({ userId });
+  },
+
+  // ✅ Fetch wishlist items (danh sách sản phẩm)
+  fetchWishlistItems: async () => {
+    const { userId } = get();
+
+    if (!userId) {
+      set({ wishlistItems: [], isLoadingList: false });
+      return;
+    }
+
+    set({ isLoadingList: true });
+
+    try {
+      const wishlistData = await getWishlist(userId);
+
+      if (!wishlistData.length) {
+        set({ wishlistItems: [], isLoadingList: false });
+        return;
+      }
+
+      // Sắp xếp từ mới đến cũ dựa theo createdAt hoặc id (nếu API trả về thứ tự cũ -> mới)
+      wishlistData.sort((a, b) => {
+        // Nếu có createdAt
+        if (a.createdAt && b.createdAt) {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+        // fallback: đảo thứ tự nếu không có createdAt
+        return 0;
+      });
+
+      const productFetches = wishlistData.map((item) =>
+        getProductById(item.productId)
+      );
+
+      const productResults = await Promise.all(productFetches);
+
+      const formattedProducts = productResults.map((p) => ({
+        ...p,
+        img: p.images?.[0] || "/placeholder.png",
+      }));
+
+      const productIds = new Set(formattedProducts.map((p) => p.id));
+
+      set({
+        wishlistItems: formattedProducts,
+        wishlistedProducts: productIds,
+        isLoadingList: false,
+      });
+    } catch (error) {
+      console.error("Error fetching wishlist items:", error);
+      toast.error("Không thể tải danh sách yêu thích.");
+      set({ isLoadingList: false });
+    }
   },
 
   // ✅ Check if product is in wishlist
@@ -107,9 +180,15 @@ export const useWishlistStore = create<WishlistState>((set, get) => ({
       if (isCurrentlyWishlisted) {
         await removeFromWishlist(currentUserId, productId);
         toast.success("Removed from favorites");
+
+        // ✅ Reload lại danh sách sau khi xóa
+        get().fetchWishlistItems();
       } else {
         await addToWishlist(currentUserId, productId);
         toast.success("Added to favorites");
+
+        // ✅ Reload lại danh sách sau khi thêm
+        get().fetchWishlistItems();
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error);
@@ -136,7 +215,11 @@ export const useWishlistStore = create<WishlistState>((set, get) => ({
 
   // ✅ Clear wishlist (khi logout)
   clearWishlist: () => {
-    set({ wishlistedProducts: new Set<string>(), loading: {} });
+    set({
+      wishlistedProducts: new Set<string>(),
+      wishlistItems: [],
+      loading: {},
+    });
   },
 }));
 
@@ -150,6 +233,9 @@ if (typeof window !== "undefined") {
       // Clear wishlist nếu user logout
       if (!e.newValue) {
         useWishlistStore.getState().clearWishlist();
+      } else {
+        // Load wishlist khi user login
+        useWishlistStore.getState().fetchWishlistItems();
       }
     }
   });

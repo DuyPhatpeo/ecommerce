@@ -2,68 +2,21 @@
 import React, { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import ProductCard from "../section/ProductCard";
-import { getProductById } from "../../api/productApi";
-import { getWishlist } from "../../api/wishlistApi";
-import { toast } from "react-toastify";
-
-interface Product {
-  id: string;
-  title: string;
-  img: string;
-  images?: string[];
-  salePrice?: number;
-  regularPrice?: number;
-  stock?: number;
-}
+import { useWishlistStore } from "../../stores/wishlistStore";
 
 const WishlistTab: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(6);
 
+  // ✅ Lấy data từ Zustand store
+  const { wishlistItems, isLoadingList, fetchWishlistItems } =
+    useWishlistStore();
+
   useEffect(() => {
-    const fetchWishlistProducts = async () => {
-      const userId = localStorage.getItem("userId");
+    // ✅ Load wishlist khi component mount
+    fetchWishlistItems();
+  }, [fetchWishlistItems]);
 
-      if (!userId) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const wishlistItems = await getWishlist(userId);
-
-        if (!wishlistItems.length) {
-          setProducts([]);
-          setLoading(false);
-          return;
-        }
-
-        const productFetches = wishlistItems.map((item) =>
-          getProductById(item.productId)
-        );
-
-        const productResults = await Promise.all(productFetches);
-
-        const formattedProducts = productResults.map((p) => ({
-          ...p,
-          img: p.images?.[0] || "/placeholder.png",
-        }));
-
-        setProducts(formattedProducts);
-      } catch (err) {
-        console.error(err);
-        toast.error("Không thể tải danh sách yêu thích.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWishlistProducts();
-  }, []);
-
-  const visibleProducts = products.slice(0, visibleCount);
+  const visibleProducts = wishlistItems.slice(0, visibleCount);
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
@@ -83,18 +36,17 @@ const WishlistTab: React.FC = () => {
               </p>
             </div>
           </div>
-          {/* ❌ Bỏ phần hiển thị số lượng item */}
         </div>
 
         {/* Content */}
-        {loading ? (
+        {isLoadingList ? (
           <div className="py-16 text-center">
             <div className="inline-block w-12 h-12 border-4 border-pink-200 rounded-full animate-spin border-t-pink-500" />
             <p className="mt-4 text-sm font-medium text-gray-600">
               Loading your wishlist...
             </p>
           </div>
-        ) : products.length === 0 ? (
+        ) : wishlistItems.length === 0 ? (
           <div className="py-16 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-pink-100 to-orange-200">
               <Heart className="text-pink-600" size={32} />
@@ -116,13 +68,13 @@ const WishlistTab: React.FC = () => {
               ))}
             </div>
 
-            {visibleCount < products.length && (
+            {visibleCount < wishlistItems.length && (
               <div className="mt-6 text-center">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + 6)}
                   className="px-6 py-3 font-semibold text-pink-600 transition-all duration-300 border-2 border-pink-500 rounded-xl hover:bg-pink-500 hover:text-white"
                 >
-                  Load More ({products.length - visibleCount} more)
+                  Load More ({wishlistItems.length - visibleCount} more)
                 </button>
               </div>
             )}
