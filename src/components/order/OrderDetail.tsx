@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Truck,
   CreditCard,
@@ -9,13 +9,31 @@ import {
   Phone,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { useOrderDetail } from "../../hooks/useOrderDetail";
+import { useOrderStore } from "../../stores/orderStore";
 import OrderTimeline from "./OrderTimeline";
 import OrderProductList from "./OrderProductList";
 
 const OrderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { order, products, loading } = useOrderDetail(id);
+
+  // Lấy actions
+  const fetchOrderDetail = useOrderStore((state) => state.fetchOrderDetail);
+
+  // Lấy toàn bộ state objects (stable references)
+  const orders = useOrderStore((state) => state.orders);
+  const products = useOrderStore((state) => state.products);
+  const loadingStates = useOrderStore((state) => state.loading);
+
+  // Tính toán data từ state đã subscribe
+  const order = id ? orders[id] : null;
+  const productList = id ? products[id] || [] : [];
+  const loading = id ? loadingStates[id] || false : false;
+
+  useEffect(() => {
+    if (id) {
+      fetchOrderDetail(id);
+    }
+  }, [id, fetchOrderDetail]);
 
   if (loading)
     return (
@@ -118,7 +136,7 @@ const OrderDetail: React.FC = () => {
             </div>
 
             {/* Product List */}
-            <OrderProductList items={products} />
+            <OrderProductList items={productList} />
           </div>
 
           {/* RIGHT SIDE: Summary */}

@@ -66,7 +66,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
 
     const tabs: Tab[] = [
       { id: "profile", label: "Profile", icon: User },
-      { id: "orders", label: "Orders", icon: Package },
+      { id: "order", label: "Order", icon: Package },
       { id: "addresses", label: "Addresses", icon: MapPin },
       { id: "wishlist", label: "Wishlist", icon: Heart },
     ];

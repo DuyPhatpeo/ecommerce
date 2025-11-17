@@ -1,4 +1,3 @@
-// src/components/account/OrdersTab.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,61 +8,33 @@ import {
   ChevronRight,
   LogIn,
 } from "lucide-react";
-import { getOrdersByUser } from "../../api/orderApi";
-
-interface Order {
-  id: string;
-  createdAt: string;
-  status: string;
-  total: number;
-  items: number;
-}
+import { useOrderStore } from "../../stores/orderStore";
 
 const OrdersTab: React.FC = () => {
   const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(5);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
+  const userId = localStorage.getItem("userId") || "";
+
+  // FIX: Lấy actions và data riêng biệt, KHÔNG dùng inline function
+  const fetchUserOrders = useOrderStore((state) => state.fetchUserOrders);
+  const userOrders = useOrderStore((state) => state.userOrders);
+  const loadingStates = useOrderStore((state) => state.loading);
+
+  // Tính toán orders và loading từ state đã subscribe
+  const orders = userOrders[userId] || [];
+  const loading = loadingStates[`user_${userId}`] || false;
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        // ✅ Lấy userId từ localStorage (đã lưu trực tiếp dạng chuỗi)
-        const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setIsLoggedIn(false);
+      return;
+    }
 
-        if (!userId) {
-          console.warn("⚠️ User chưa đăng nhập");
-          setIsLoggedIn(false);
-          setOrders([]);
-          setLoading(false);
-          return;
-        }
-
-        setIsLoggedIn(true);
-
-        // ✅ Gọi đúng hàm lấy đơn của người dùng
-        const data = await getOrdersByUser(userId);
-
-        const formattedOrders = data.map((order: any) => ({
-          id: order.id,
-          createdAt: order.createdAt,
-          status: order.status || "pending",
-          total: order.total || 0,
-          items: order.items?.length || 0,
-        }));
-
-        setOrders(formattedOrders);
-      } catch (err) {
-        console.error("❌ Failed to fetch user orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
+    setIsLoggedIn(true);
+    fetchUserOrders(userId);
+  }, [userId, fetchUserOrders]); // Có thể giữ fetchUserOrders vì nó stable
 
   const sortedOrders = [...orders].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

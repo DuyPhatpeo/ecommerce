@@ -10,7 +10,7 @@ import WishlistTab from "./WishlistTab";
 
 const TAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   profile: () => <ProfileTab />,
-  orders: () => <OrdersTab />,
+  order: () => <OrdersTab />,
   addresses: () => <AddressesTab />,
   wishlist: () => <WishlistTab />,
 };
