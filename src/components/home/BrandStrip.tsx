@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 
-const animation = { duration: 35000, easing: (t: number) => t }; // chậm, tuyến tính
+const animation = { duration: 35000, easing: (t: number) => t };
 
 export default function BrandStrip() {
   const brands = [
@@ -19,22 +20,18 @@ export default function BrandStrip() {
 
   const duplicatedBrands = [...brands, ...brands];
 
-  const [sliderRef] = useKeenSlider<HTMLDivElement>({
+  const [sliderRef, slider] = useKeenSlider<HTMLDivElement>({
     loop: true,
     renderMode: "performance",
     drag: false,
-    slides: { perView: 5, spacing: 10 }, // default
+    slides: { perView: 5, spacing: 10 },
+
     breakpoints: {
-      "(max-width: 1024px)": {
-        slides: { perView: 4, spacing: 10 }, // tablet
-      },
-      "(max-width: 768px)": {
-        slides: { perView: 3, spacing: 8 }, // mobile
-      },
-      "(max-width: 480px)": {
-        slides: { perView: 2, spacing: 6 }, // nhỏ hơn
-      },
+      "(max-width: 1024px)": { slides: { perView: 4, spacing: 10 } },
+      "(max-width: 768px)": { slides: { perView: 3, spacing: 8 } },
+      "(max-width: 480px)": { slides: { perView: 2, spacing: 6 } },
     },
+
     created(s) {
       s.moveToIdx(brands.length, true, animation);
     },
@@ -46,6 +43,25 @@ export default function BrandStrip() {
     },
   });
 
+  // ---- PAUSE / RESUME LOGIC ----
+  useEffect(() => {
+    if (!slider.current) return;
+
+    const s = slider.current;
+    let paused = false;
+
+    (s as any).pause = () => {
+      paused = true;
+      s.animator.stop();
+    };
+
+    (s as any).resume = () => {
+      if (!paused) return;
+      paused = false;
+      s.moveToIdx(s.track.details.abs + brands.length, true, animation);
+    };
+  }, [slider]);
+
   return (
     <section className="bg-white py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
@@ -55,11 +71,16 @@ export default function BrandStrip() {
 
         <div ref={sliderRef} className="keen-slider overflow-hidden">
           {duplicatedBrands.map((src, i) => (
-            <div key={i} className="keen-slider__slide flex justify-center">
+            <div
+              key={i}
+              className="keen-slider__slide flex justify-center items-center"
+            >
               <img
                 src={src}
                 alt={`brand-${i}`}
-                className="h-12 sm:h-14 md:h-16 opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-300 ease-in-out cursor-pointer"
+                className="h-12 sm:h-14 md:h-16 opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"
+                onMouseEnter={() => (slider.current as any)?.pause()}
+                onMouseLeave={() => (slider.current as any)?.resume()}
               />
             </div>
           ))}
