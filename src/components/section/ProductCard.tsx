@@ -116,7 +116,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-[24px] p-3 sm:p-4 shadow-lg border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
         {/* Discount Badge */}
         {hasDiscount && discountPercent > 0 && (
-          <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
+          <div className="absolute top-4 left-4 z-5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
             -{discountPercent}%
           </div>
         )}
