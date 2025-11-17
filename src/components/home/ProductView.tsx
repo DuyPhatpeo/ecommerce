@@ -36,6 +36,11 @@ const ProductView: React.FC<ProductViewProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(6);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [dragDistance, setDragDistance] = useState(0);
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // Tính số card hiển thị theo kích thước màn hình
@@ -84,22 +89,118 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const maxIndex = Math.max(products.length - visibleCount, 0);
 
-  const handleSlide = (dir: "left" | "right") => {
-    if (!sliderRef.current) return;
-    const next =
-      dir === "left"
-        ? Math.max(0, currentIndex - 1)
-        : Math.min(maxIndex, currentIndex + 1);
-    setCurrentIndex(next);
-    const target = sliderRef.current.querySelectorAll(".product-card-item")[
-      next
-    ] as HTMLElement;
-    if (target)
-      sliderRef.current.scrollTo({
-        left: target.offsetLeft - 8, // giảm offset một chút
-        behavior: "smooth",
+  const handleSlide = useCallback(
+    (dir: "left" | "right") => {
+      if (!sliderRef.current) return;
+      const next =
+        dir === "left"
+          ? Math.max(0, currentIndex - 1)
+          : Math.min(maxIndex, currentIndex + 1);
+      setCurrentIndex(next);
+      const target = sliderRef.current.querySelectorAll(".product-card-item")[
+        next
+      ] as HTMLElement;
+      if (target)
+        sliderRef.current.scrollTo({
+          left: target.offsetLeft - 8,
+          behavior: "smooth",
+        });
+    },
+    [currentIndex, maxIndex]
+  );
+
+  // Xử lý drag to scroll
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (!sliderRef.current || mode !== "slider") return;
+      setIsDragging(true);
+      setStartX(e.pageX - sliderRef.current.offsetLeft);
+      setScrollLeft(sliderRef.current.scrollLeft);
+      setDragDistance(0);
+      sliderRef.current.style.cursor = "grabbing";
+      e.preventDefault();
+    },
+    [mode]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDragging || !sliderRef.current) return;
+      e.preventDefault();
+      const x = e.pageX - sliderRef.current.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      setDragDistance(Math.abs(walk));
+      sliderRef.current.scrollLeft = scrollLeft - walk;
+    },
+    [isDragging, startX, scrollLeft]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    if (!sliderRef.current || !isDragging) return;
+
+    setIsDragging(false);
+    sliderRef.current.style.cursor = "grab";
+
+    // Chỉ snap nếu kéo đủ xa (tránh snap khi click)
+    if (dragDistance > 5) {
+      const cards = sliderRef.current.querySelectorAll(".product-card-item");
+      let closestIndex = 0;
+      let minDiff = Infinity;
+
+      cards.forEach((card, index) => {
+        const el = card as HTMLElement;
+        const diff = Math.abs(el.offsetLeft - sliderRef.current!.scrollLeft);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = index;
+        }
       });
-  };
+
+      setCurrentIndex(Math.min(closestIndex, maxIndex));
+
+      // Smooth scroll đến card gần nhất
+      const targetCard = cards[closestIndex] as HTMLElement;
+      if (targetCard) {
+        sliderRef.current.scrollTo({
+          left: targetCard.offsetLeft - 8,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [isDragging, dragDistance, maxIndex]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (isDragging) {
+      handleMouseUp();
+    }
+  }, [isDragging, handleMouseUp]);
+
+  // Touch support cho mobile
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (!sliderRef.current || mode !== "slider") return;
+      setIsDragging(true);
+      setStartX(e.touches[0].pageX - sliderRef.current.offsetLeft);
+      setScrollLeft(sliderRef.current.scrollLeft);
+      setDragDistance(0);
+    },
+    [mode]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!isDragging || !sliderRef.current) return;
+      const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      setDragDistance(Math.abs(walk));
+      sliderRef.current.scrollLeft = scrollLeft - walk;
+    },
+    [isDragging, startX, scrollLeft]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    handleMouseUp();
+  }, [handleMouseUp]);
 
   const canLeft = currentIndex > 0;
   const canRight = currentIndex < maxIndex;
@@ -154,14 +255,27 @@ const ProductView: React.FC<ProductViewProps> = ({
               }
               style={
                 mode === "slider"
-                  ? { scrollbarWidth: "none", msOverflowStyle: "none" }
+                  ? {
+                      scrollbarWidth: "none",
+                      msOverflowStyle: "none",
+                      cursor: isDragging ? "grabbing" : "grab",
+                      userSelect: "none",
+                      WebkitUserSelect: "none",
+                    }
                   : {}
               }
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               <div
                 className={
                   mode === "slider"
-                    ? "flex gap-2 sm:gap-4 py-2" // giảm gap trên mobile
+                    ? "flex gap-2 sm:gap-4 py-2"
                     : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4"
                 }
               >
@@ -173,6 +287,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                         ? "product-card-item flex-shrink-0 w-[calc(50%-4px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
                         : ""
                     }
+                    style={{ pointerEvents: isDragging ? "none" : "auto" }}
                   >
                     <ProductCard
                       data={{
