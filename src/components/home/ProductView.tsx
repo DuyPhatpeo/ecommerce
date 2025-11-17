@@ -136,13 +136,15 @@ const ProductView: React.FC<ProductViewProps> = ({
   );
 
   const handleMouseUp = useCallback(() => {
-    if (!sliderRef.current || !isDragging) return;
+    if (!sliderRef.current) return;
+
+    const wasDragging = dragDistance > 10; // Tăng threshold lên 10px
 
     setIsDragging(false);
     sliderRef.current.style.cursor = "grab";
 
-    // Chỉ snap nếu kéo đủ xa (tránh snap khi click)
-    if (dragDistance > 5) {
+    // Chỉ snap nếu thực sự kéo (> 10px)
+    if (wasDragging) {
       const cards = sliderRef.current.querySelectorAll(".product-card-item");
       let closestIndex = 0;
       let minDiff = Infinity;
@@ -167,7 +169,10 @@ const ProductView: React.FC<ProductViewProps> = ({
         });
       }
     }
-  }, [isDragging, dragDistance, maxIndex]);
+
+    // Reset drag distance
+    setTimeout(() => setDragDistance(0), 100);
+  }, [dragDistance, maxIndex]);
 
   const handleMouseLeave = useCallback(() => {
     if (isDragging) {
@@ -287,7 +292,16 @@ const ProductView: React.FC<ProductViewProps> = ({
                         ? "product-card-item flex-shrink-0 w-[calc(50%-4px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
                         : ""
                     }
-                    style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                    style={{
+                      pointerEvents: dragDistance > 10 ? "none" : "auto",
+                    }}
+                    onClick={(e) => {
+                      // Ngăn click nếu vừa kéo
+                      if (dragDistance > 10) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
                   >
                     <ProductCard
                       data={{
