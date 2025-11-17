@@ -5,7 +5,7 @@ import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
 import ProductTabs from "./ProductTabs";
 import { getProductById } from "../../api/productApi";
-
+import Loader from "../general/Loader";
 interface Review {
   id: string;
   name: string;
@@ -81,13 +81,7 @@ export default function ProductDetail() {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, [id, navigate]);
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
-        <p className="text-gray-600 text-lg font-medium">Loading product...</p>
-      </div>
-    );
+  if (loading) return <Loader />;
 
   if (!product) return null;
 

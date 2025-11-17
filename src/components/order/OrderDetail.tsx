@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useOrderStore } from "../../stores/orderStore";
 import OrderTimeline from "./OrderTimeline";
 import OrderProductList from "./OrderProductList";
+import Loader from "../general/Loader";
 
 const OrderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,15 +36,7 @@ const OrderDetail: React.FC = () => {
     }
   }, [id, fetchOrderDetail]);
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-blue-50">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading order details...</p>
-        </div>
-      </div>
-    );
+  if (loading) return <Loader />;
 
   if (!order) return null;
 
