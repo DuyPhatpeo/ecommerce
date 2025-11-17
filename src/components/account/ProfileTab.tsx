@@ -15,7 +15,7 @@ import {
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import Button from "../ui/Button";
-import { useProfile } from "../../hooks/useProfile";
+import { useUserStore } from "../../stores/userStore";
 
 const ProfileTab: React.FC = () => {
   const {
@@ -25,15 +25,27 @@ const ProfileTab: React.FC = () => {
     showModal,
     showPassword,
     passwords,
+    loading,
+    fetchProfile,
     setShowModal,
     setShowPassword,
     setPasswords,
+    resetPasswordForm,
     handleChangeProfile,
     handleEdit,
     handleCancel,
     handleSave,
     handlePasswordUpdate,
-  } = useProfile();
+  } = useUserStore();
+
+  const userId = localStorage.getItem("userId") || "";
+
+  // Fetch profile on mount
+  useEffect(() => {
+    if (userId) {
+      fetchProfile(userId);
+    }
+  }, [userId, fetchProfile]);
 
   // Khóa cuộn và lắng nghe ESC
   useEffect(() => {
@@ -46,7 +58,10 @@ const ProfileTab: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && showModal) {
         setShowModal(false);
-        setPasswords({ current: "", new: "", confirm: "" });
+        resetPasswordForm();
+      } else if (e.key === "Enter" && showModal && !e.shiftKey) {
+        e.preventDefault();
+        handlePasswordUpdate(userId);
       }
     };
 
@@ -56,7 +71,13 @@ const ProfileTab: React.FC = () => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showModal, setShowModal, setPasswords]);
+  }, [
+    showModal,
+    userId,
+    setShowModal,
+    resetPasswordForm,
+    handlePasswordUpdate,
+  ]);
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
@@ -86,99 +107,113 @@ const ProfileTab: React.FC = () => {
               label="Edit"
               icon={<Edit3 size={16} />}
               onClick={handleEdit}
-              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 sm:w-auto"
+              disabled={loading.profile}
+              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             />
           ) : (
             <div className="flex gap-2">
               <Button
-                label="Save"
+                label={loading.update ? "Saving..." : "Save"}
                 icon={<Check size={16} />}
-                onClick={handleSave}
-                className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 sm:flex-none"
+                onClick={() => handleSave(userId)}
+                disabled={loading.update}
+                className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <Button
                 label="Cancel"
                 icon={<XCircle size={16} />}
                 onClick={handleCancel}
-                className="flex-1 px-5 py-2.5 font-semibold text-gray-700 transition-all duration-300 bg-gray-100 rounded-xl hover:bg-gray-200 sm:flex-none"
+                disabled={loading.update}
+                className="flex-1 px-5 py-2.5 font-semibold text-gray-700 transition-all duration-300 bg-gray-100 rounded-xl hover:bg-gray-200 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           )}
         </div>
 
-        {/* Account Details Section */}
-        <div className="mb-6 space-y-4 sm:space-y-6">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <Mail className="text-orange-500" size={16} />
-            <h3 className="text-sm font-bold text-gray-800 sm:text-base">
-              Account Details
-            </h3>
+        {/* Loading State */}
+        {loading.profile ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
           </div>
-
-          {/* Email Field */}
-          <div className="relative">
-            <InputField
-              label="Email Address"
-              name="email"
-              type="email"
-              value={profile.email}
-              onChange={() => {}}
-              placeholder="Enter your email"
-              icon={<Mail size={18} />}
-              disabled
-            />
-            <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50 sm:px-3">
-              Verified
-            </div>
-          </div>
-
-          {/* Name & Phone Grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <InputField
-              label="Full Name"
-              name="fullName"
-              value={editedProfile.fullName}
-              onChange={(e) => handleChangeProfile("fullName", e.target.value)}
-              placeholder="Enter your full name"
-              icon={<User size={18} />}
-              disabled={!isEditing}
-            />
-            <InputField
-              label="Phone Number"
-              name="phone"
-              type="tel"
-              value={editedProfile.phone}
-              onChange={(e) => handleChangeProfile("phone", e.target.value)}
-              placeholder="Enter your phone number"
-              icon={<Phone size={18} />}
-              disabled={!isEditing}
-            />
-          </div>
-        </div>
-
-        {/* Security Section */}
-        <div className="pt-6 border-t border-gray-100">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <Lock className="text-blue-500 flex-shrink-0" size={16} />
-              <div>
+        ) : (
+          <>
+            {/* Account Details Section */}
+            <div className="mb-6 space-y-4 sm:space-y-6">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <Mail className="text-orange-500" size={16} />
                 <h3 className="text-sm font-bold text-gray-800 sm:text-base">
-                  Security Settings
+                  Account Details
                 </h3>
-                <p className="text-xs text-gray-600 sm:text-sm">
-                  Keep your account secure
-                </p>
+              </div>
+
+              {/* Email Field */}
+              <div className="relative">
+                <InputField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={profile.email}
+                  onChange={() => {}}
+                  placeholder="Enter your email"
+                  icon={<Mail size={18} />}
+                  disabled
+                />
+                <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50 sm:px-3">
+                  Verified
+                </div>
+              </div>
+
+              {/* Name & Phone Grid */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <InputField
+                  label="Full Name"
+                  name="fullName"
+                  value={editedProfile.fullName}
+                  onChange={(e) =>
+                    handleChangeProfile("fullName", e.target.value)
+                  }
+                  placeholder="Enter your full name"
+                  icon={<User size={18} />}
+                  disabled={!isEditing}
+                />
+                <InputField
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  value={editedProfile.phone}
+                  onChange={(e) => handleChangeProfile("phone", e.target.value)}
+                  placeholder="Enter your phone number"
+                  icon={<Phone size={18} />}
+                  disabled={!isEditing}
+                />
               </div>
             </div>
 
-            <Button
-              label="Change Password"
-              icon={<Key size={16} />}
-              onClick={() => setShowModal(true)}
-              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5 sm:w-auto whitespace-nowrap"
-            />
-          </div>
-        </div>
+            {/* Security Section */}
+            <div className="pt-6 border-t border-gray-100">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <Lock className="text-blue-500 flex-shrink-0" size={16} />
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-800 sm:text-base">
+                      Security Settings
+                    </h3>
+                    <p className="text-xs text-gray-600 sm:text-sm">
+                      Keep your account secure
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  label="Change Password"
+                  icon={<Key size={16} />}
+                  onClick={() => setShowModal(true)}
+                  className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5 sm:w-auto whitespace-nowrap"
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Password Change Modal */}
@@ -210,7 +245,7 @@ const ProfileTab: React.FC = () => {
                   <Button
                     onClick={() => {
                       setShowModal(false);
-                      setPasswords({ current: "", new: "", confirm: "" });
+                      resetPasswordForm();
                     }}
                     icon={<X size={18} />}
                     className="flex items-center justify-center flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10
@@ -223,34 +258,53 @@ const ProfileTab: React.FC = () => {
 
               {/* Form Content - Scrollable */}
               <div className="flex-1 p-4 space-y-4 overflow-y-auto sm:p-6 sm:space-y-5">
-                {["current", "new", "confirm"].map((field) => (
-                  <div key={field}>
-                    <PasswordField
-                      label={
-                        field === "current"
-                          ? "Current Password"
-                          : field === "new"
-                          ? "New Password"
-                          : "Confirm New Password"
-                      }
-                      name={field}
-                      value={passwords[field as keyof typeof passwords]}
-                      show={showPassword[field as keyof typeof showPassword]}
-                      toggle={() =>
-                        setShowPassword((p) => ({
-                          ...p,
-                          [field]: !p[field as keyof typeof p],
-                        }))
-                      }
-                      onChange={(e) =>
-                        setPasswords((p) => ({
-                          ...p,
-                          [field]: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                ))}
+                <PasswordField
+                  label="Current Password"
+                  name="current"
+                  value={passwords.current}
+                  show={showPassword.current}
+                  toggle={() =>
+                    setShowPassword("current", !showPassword.current)
+                  }
+                  onChange={(e) => setPasswords("current", e.target.value)}
+                  placeholder="Enter current password"
+                />
+
+                <PasswordField
+                  label="New Password"
+                  name="new"
+                  value={passwords.new}
+                  show={showPassword.new}
+                  toggle={() => setShowPassword("new", !showPassword.new)}
+                  onChange={(e) => setPasswords("new", e.target.value)}
+                  placeholder="Enter new password"
+                  error={
+                    passwords.new && passwords.new.length < 6
+                      ? "Password must be at least 6 characters"
+                      : passwords.new &&
+                        passwords.current &&
+                        passwords.current === passwords.new
+                      ? "Must be different from current password"
+                      : undefined
+                  }
+                />
+
+                <PasswordField
+                  label="Confirm New Password"
+                  name="confirm"
+                  value={passwords.confirm}
+                  show={showPassword.confirm}
+                  toggle={() =>
+                    setShowPassword("confirm", !showPassword.confirm)
+                  }
+                  onChange={(e) => setPasswords("confirm", e.target.value)}
+                  placeholder="Confirm new password"
+                  error={
+                    passwords.confirm && passwords.new !== passwords.confirm
+                      ? "Passwords do not match"
+                      : undefined
+                  }
+                />
               </div>
 
               {/* Footer Actions */}
@@ -260,16 +314,18 @@ const ProfileTab: React.FC = () => {
                   icon={<XCircle size={16} />}
                   onClick={() => {
                     setShowModal(false);
-                    setPasswords({ current: "", new: "", confirm: "" });
+                    resetPasswordForm();
                   }}
-                  className="flex-1 px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50"
+                  disabled={loading.password}
+                  className="flex-1 px-6 py-3 font-semibold text-gray-700 transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
 
                 <Button
-                  label="Update"
+                  label={loading.password ? "Updating..." : "Update"}
                   icon={<Save size={16} />}
-                  onClick={handlePasswordUpdate}
-                  className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5"
+                  onClick={() => handlePasswordUpdate(userId)}
+                  disabled={loading.password}
+                  className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
