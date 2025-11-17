@@ -22,22 +22,14 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
   };
 
   return (
-    <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
+    <div className="overflow-hidden border border-orange-200 rounded-lg bg-orange-50/60">
       <Button
         onClick={toggle}
         justify="between"
         aria-label="Toggle size"
-        className="
-    w-full flex items-center
-    px-3 py-2 rounded-lg
-    border border-gray-200
-    bg-white hover:bg-orange-50
-    text-sm font-medium text-gray-800
-    transition-all duration-200
-    shadow-sm hover:shadow
-  "
+        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-800 transition-all duration-200 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-orange-50 hover:shadow"
         label={
-          <span className="flex items-center gap-2 h-5">
+          <span className="flex items-center h-5 gap-2">
             <Ruler size={15} className="text-orange-500" /> Size
           </span>
         }
@@ -53,7 +45,7 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
       />
 
       {open && (
-        <div className="p-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 p-3">
           {sizes.map((size) => (
             <label
               key={size}
