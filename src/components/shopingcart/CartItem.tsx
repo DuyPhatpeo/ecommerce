@@ -63,7 +63,6 @@ export default function CartItem({
     if (isOutOfStock) return toast.error("Product is out of stock!");
     if (quantity >= maxStock)
       return toast.warning(`Maximum stock available: ${maxStock}`);
-
     updateQuantity(id, 1);
   };
 
@@ -72,7 +71,6 @@ export default function CartItem({
     if (isOutOfStock) return toast.error("Product is out of stock!");
     if (quantity <= 1)
       return toast.info("Minimum quantity is 1. Use delete to remove.");
-
     updateQuantity(id, -1);
   };
 
@@ -89,15 +87,11 @@ export default function CartItem({
 
   return (
     <div
-      className={`
-        relative p-3 sm:p-4 border-b transition-all duration-200
-        ${
-          selected
-            ? "bg-orange-50/70 border-orange-200"
-            : "bg-white border-gray-200"
-        }
-        ${isOutOfStock ? "opacity-70" : "hover:bg-gray-50/80 hover:shadow-sm"}
-      `}
+      className={`relative p-3 sm:p-4 border-b transition-all duration-200 ${
+        selected
+          ? "bg-orange-50/70 border-orange-200"
+          : "bg-white border-gray-200"
+      } ${isOutOfStock ? "opacity-70" : "hover:bg-gray-50/80 hover:shadow-sm"}`}
     >
       {/* Top Right Buttons */}
       <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
@@ -113,10 +107,7 @@ export default function CartItem({
           <Button
             onClick={handleRemove}
             icon={<Trash2 className="w-4 h-4" />}
-            className="
-              p-2 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm
-              text-gray-500 hover:text-red-600 hover:bg-red-50 hover:shadow-md
-            "
+            className="p-2 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm text-gray-500 hover:text-red-600 hover:bg-red-50 hover:shadow-md"
           />
         )}
       </div>
@@ -134,16 +125,11 @@ export default function CartItem({
         {/* Image */}
         <Link
           to={`/product/${product?.id}`}
-          className={`
-            relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-lg self-center
-            bg-gray-100 border-2 transition-all duration-200
-            ${
-              isOutOfStock
-                ? "grayscale border-gray-300"
-                : "border-gray-200 hover:border-orange-300 hover:shadow-md"
-            }
-            ${selected ? "border-orange-400 ring-2 ring-orange-200" : ""}
-          `}
+          className={`relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-lg self-center bg-gray-100 border-2 transition-all duration-200 ${
+            isOutOfStock
+              ? "grayscale border-gray-300"
+              : "border-gray-200 hover:border-orange-300 hover:shadow-md"
+          }`}
         >
           <img
             src={imageSrc}
@@ -190,16 +176,18 @@ export default function CartItem({
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex flex-col gap-0.5">
+                    {/* SALE PRICE ON TOP */}
+                    <span className="font-bold text-orange-600 text-base sm:text-lg">
+                      {formatPrice(displayPrice)}
+                    </span>
+
+                    {/* ORIGINAL PRICE BELOW */}
                     {hasDiscount && (
                       <span className="text-xs sm:text-sm text-gray-400 line-through">
                         {formatPrice(product.regularPrice!)}
                       </span>
                     )}
-
-                    <span className="font-bold text-orange-600 text-base sm:text-lg">
-                      {formatPrice(displayPrice)}
-                    </span>
                   </div>
 
                   {maxStock <= 5 && maxStock > 0 && (
@@ -217,14 +205,11 @@ export default function CartItem({
               <Button
                 onClick={handleDecrease}
                 disabled={isOutOfStock || quantity <= 1}
-                className={`
-                  px-2 py-1.5 sm:px-3 sm:py-2
-                  ${
-                    quantity <= 1
-                      ? "bg-gray-100 opacity-40 cursor-not-allowed"
-                      : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
-                  }
-                `}
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 ${
+                  quantity <= 1
+                    ? "bg-gray-100 opacity-40 cursor-not-allowed"
+                    : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
+                }`}
                 icon={<Minus className="w-4 h-4 text-gray-700" />}
               />
 
@@ -235,14 +220,11 @@ export default function CartItem({
               <Button
                 onClick={handleIncrease}
                 disabled={isOutOfStock || quantity >= maxStock}
-                className={`
-                  px-2 py-1.5 sm:px-3 sm:py-2
-                  ${
-                    quantity >= maxStock
-                      ? "bg-gray-100 opacity-40 cursor-not-allowed"
-                      : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
-                  }
-                `}
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 ${
+                  quantity >= maxStock
+                    ? "bg-gray-100 opacity-40 cursor-not-allowed"
+                    : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
+                }`}
                 icon={<Plus className="w-4 h-4 text-gray-700" />}
               />
             </div>
