@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
@@ -21,62 +21,40 @@ const Account = () => {
   const userId = localStorage.getItem("userId");
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>(
+    tab || (!isMobile ? "profile" : null)
+  );
 
-  // Initialize activeTab:
-  // Desktop -> default "profile"
-  // Mobile -> show tab if URL param exists, otherwise null
-  const initialTab = tab || (!isMobile ? "profile" : null);
-  const [activeTab, setActiveTab] = useState<string | null>(initialTab);
-
-  // Handle resize
+  // --- Handle window resize ---
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-
-      // If switching from mobile -> desktop and no activeTab, set profile
       if (!mobile && !activeTab) setActiveTab("profile");
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [activeTab]);
 
-  // Sync URL param -> activeTab
+  // --- Sync URL param -> activeTab ---
   useEffect(() => {
-    if (tab) {
+    if (tab && tab !== activeTab) {
       setActiveTab(tab);
     } else if (!isMobile && !activeTab) {
-      setActiveTab("profile"); // Desktop default
+      setActiveTab("profile");
     }
   }, [tab, isMobile, activeTab]);
 
   const handleTabChange = (tabId: string) => {
     if (tabId === activeTab) return;
-
-    // Start transition
-    setIsTransitioning(true);
-
-    // Small delay for smooth fade out
-    setTimeout(() => {
-      navigate(`/account/${tabId}`);
-      setActiveTab(tabId);
-
-      // End transition after content loads
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 150);
+    setActiveTab(tabId);
+    navigate(`/account/${tabId}`);
   };
 
   const handleBack = () => {
-    setIsTransitioning(true);
-
-    setTimeout(() => {
-      navigate("/account", { replace: true });
-      if (!isMobile) setActiveTab("profile");
-      else setActiveTab(null);
-
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 150);
+    navigate("/account", { replace: true });
+    if (!isMobile) setActiveTab("profile");
+    else setActiveTab(null);
   };
 
   const sidebar = useMemo(
@@ -99,7 +77,6 @@ const Account = () => {
     return (
       <div className="min-h-screen flex items-start justify-center bg-gradient-to-br from-orange-50 via-white to-blue-50 px-6 pt-24 pb-24">
         <div className="bg-white shadow-2xl rounded-3xl max-w-md w-full p-10 flex flex-col items-center text-center">
-          {/* Icon */}
           <div className="w-24 h-24 flex items-center justify-center rounded-full bg-orange-100 mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -116,8 +93,6 @@ const Account = () => {
               />
             </svg>
           </div>
-
-          {/* Text */}
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             You are not logged in
           </h2>
@@ -125,16 +100,12 @@ const Account = () => {
             Please log in to access your account and manage your orders,
             wishlist, and more.
           </p>
-
-          {/* Login Button */}
           <button
             onClick={() => navigate("/login")}
             className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:-translate-y-0.5"
           >
             Log in now
           </button>
-
-          {/* Register Link */}
           <div className="mt-6 text-gray-400 text-sm">
             Don't have an account?{" "}
             <button
@@ -153,7 +124,6 @@ const Account = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       <div className="py-10 sm:py-14 lg:py-20 max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
         <div className={`flex gap-6 ${isMobile ? "flex-col" : "lg:flex-row"}`}>
-          {/* Sidebar */}
           {(isMobile ? !activeTab : true) && (
             <div className="w-full lg:w-80">
               <div className="bg-white/90 backdrop-blur-md shadow-md rounded-2xl border border-orange-100 overflow-hidden">
@@ -162,7 +132,6 @@ const Account = () => {
             </div>
           )}
 
-          {/* Tab content */}
           {activeTab && (
             <div className="flex-1 w-full">
               {isMobile && (
@@ -175,16 +144,7 @@ const Account = () => {
                 </button>
               )}
 
-              <div
-                key={activeTab}
-                className={`transition-all duration-300 ${
-                  isTransitioning
-                    ? "opacity-0 translate-y-4"
-                    : "opacity-100 translate-y-0"
-                }`}
-              >
-                {currentTab}
-              </div>
+              <div key={activeTab}>{currentTab}</div>
             </div>
           )}
         </div>
