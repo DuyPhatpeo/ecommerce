@@ -21,7 +21,7 @@ const Account = () => {
   const userId = localStorage.getItem("userId");
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Initialize activeTab:
   // Desktop -> default "profile"
@@ -53,25 +53,31 @@ const Account = () => {
 
   const handleTabChange = (tabId: string) => {
     if (tabId === activeTab) return;
-    setIsLoading(true);
-    navigate(`/account/${tabId}`);
-    setActiveTab(tabId);
+
+    // Start transition
+    setIsTransitioning(true);
+
+    // Small delay for smooth fade out
+    setTimeout(() => {
+      navigate(`/account/${tabId}`);
+      setActiveTab(tabId);
+
+      // End transition after content loads
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 150);
   };
 
   const handleBack = () => {
-    setIsLoading(true);
-    navigate("/account", { replace: true });
-    if (!isMobile) setActiveTab("profile"); // Desktop default
-    else setActiveTab(null); // Mobile overview
-  };
+    setIsTransitioning(true);
 
-  // Stop loading animation
-  useEffect(() => {
-    if (isLoading) {
-      const timeout = setTimeout(() => setIsLoading(false), 250);
-      return () => clearTimeout(timeout);
-    }
-  }, [activeTab, isLoading]);
+    setTimeout(() => {
+      navigate("/account", { replace: true });
+      if (!isMobile) setActiveTab("profile");
+      else setActiveTab(null);
+
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 150);
+  };
 
   const sidebar = useMemo(
     () => (
@@ -169,22 +175,16 @@ const Account = () => {
                 </button>
               )}
 
-              {isLoading ? (
-                <div className="flex items-center justify-center py-20">
-                  <div className="text-center">
-                    <div className="relative inline-block">
-                      <div className="w-16 h-16 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
-                    </div>
-                    <p className="mt-4 text-sm font-semibold text-gray-700">
-                      Loading...
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div key={activeTab} className="animate-fadeIn">
-                  {currentTab}
-                </div>
-              )}
+              <div
+                key={activeTab}
+                className={`transition-all duration-300 ${
+                  isTransitioning
+                    ? "opacity-0 translate-y-4"
+                    : "opacity-100 translate-y-0"
+                }`}
+              >
+                {currentTab}
+              </div>
             </div>
           )}
         </div>
