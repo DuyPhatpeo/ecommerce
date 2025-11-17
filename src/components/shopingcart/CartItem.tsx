@@ -135,7 +135,7 @@ export default function CartItem({
         <Link
           to={`/product/${product?.id}`}
           className={`
-            relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-lg
+            relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-lg self-center
             bg-gray-100 border-2 transition-all duration-200
             ${
               isOutOfStock
@@ -145,7 +145,12 @@ export default function CartItem({
             ${selected ? "border-orange-400 ring-2 ring-orange-200" : ""}
           `}
         >
-          <img src={imageSrc} className="w-full h-full object-cover" />
+          <img
+            src={imageSrc}
+            alt={product?.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
         </Link>
 
         {/* Info */}
@@ -154,7 +159,15 @@ export default function CartItem({
           <div className="flex-1 pr-12 sm:pr-16">
             <Link
               to={`/product/${product?.id}`}
-              className="block font-semibold text-gray-900 hover:text-orange-600 mb-1.5 text-sm sm:text-base line-clamp-2"
+              className="block font-semibold text-gray-900 hover:text-orange-600 transition-colors mb-1.5 text-sm sm:text-base line-clamp-2 leading-tight"
+              title={product?.title}
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
             >
               {product?.title}
             </Link>

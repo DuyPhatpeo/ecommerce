@@ -22,6 +22,9 @@ interface CartState {
   updating: string | null;
   clearing: boolean;
 
+  cartCount: number; // 👈 NEW
+  updateCartCount: () => void; // 👈 NEW
+
   // Actions
   setUserId: (userId: string | null) => void;
   fetchCart: () => Promise<void>;
@@ -49,6 +52,7 @@ const initialState = {
   loading: true,
   updating: null,
   clearing: false,
+  cartCount: 0,
 };
 
 /* =====================
@@ -56,6 +60,14 @@ const initialState = {
 ===================== */
 export const useCartStore = create<CartState>((set, get) => ({
   ...initialState,
+
+  /* =====================
+     🔢 UPDATE CART COUNT
+  ===================== */
+  updateCartCount: () => {
+    const total = get().cartItems.length; // 👈 chỉ đếm số sản phẩm
+    set({ cartCount: total });
+  },
 
   /* =====================
      SET USER ID
@@ -70,6 +82,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
     if (!userId) {
       set({ cartItems: [], loading: false });
+      get().updateCartCount();
       return;
     }
 
@@ -79,6 +92,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       if (!cart || cart.length === 0) {
         set({ cartItems: [], selectedItems: [] });
+        get().updateCartCount();
         return;
       }
 
@@ -101,6 +115,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       toast.error("Failed to load cart.");
     } finally {
       set({ loading: false });
+      get().updateCartCount(); // 👈 Cập nhật số lượng
     }
   },
 
@@ -126,15 +141,18 @@ export const useCartStore = create<CartState>((set, get) => ({
       ),
     });
 
+    get().updateCartCount();
+
     try {
       await updateCartItem(userId, id, newQty);
     } catch {
-      // Rollback on error
+      // Rollback
       set({
         cartItems: cartItems.map((i) =>
           i.id === id ? { ...i, quantity: item.quantity } : i
         ),
       });
+      get().updateCartCount();
     } finally {
       set({ updating: null });
     }
@@ -149,11 +167,12 @@ export const useCartStore = create<CartState>((set, get) => ({
 
     const prev = [...cartItems];
 
-    // Optimistic update
     set({
       cartItems: cartItems.filter((i) => i.id !== id),
       selectedItems: selectedItems.filter((sid) => sid !== id),
     });
+
+    get().updateCartCount();
 
     try {
       await deleteCartItem(userId, id);
@@ -161,6 +180,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch {
       set({ cartItems: prev });
       toast.error("Failed to remove item.");
+      get().updateCartCount();
     }
   },
 
@@ -172,10 +192,10 @@ export const useCartStore = create<CartState>((set, get) => ({
     if (!userId || cartItems.length === 0) return;
 
     set({ clearing: true });
-    const prev = [...cartItems];
 
-    // Optimistic update
+    const prev = [...cartItems];
     set({ cartItems: [], selectedItems: [] });
+    get().updateCartCount();
 
     try {
       await clearCart(userId);
@@ -183,13 +203,14 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch {
       set({ cartItems: prev });
       toast.error("Failed to clear cart.");
+      get().updateCartCount();
     } finally {
       set({ clearing: false });
     }
   },
 
   /* =====================
-     ✅ SELECT ITEMS
+     SELECT ITEMS
   ===================== */
   toggleSelect: (id) => {
     const { selectedItems } = get();
@@ -241,7 +262,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     try {
       await addToCart(userId, id, quantity);
 
-      // Show custom toast with product info
+      // UI toast
       toast(
         <div className="flex items-center gap-4 p-4 w-[360px] min-h-[110px]">
           <img
@@ -252,7 +273,6 @@ export const useCartStore = create<CartState>((set, get) => ({
           />
 
           <div className="flex flex-col justify-between flex-1 text-sm">
-            {/* Tên sản phẩm — giới hạn hiển thị 2 dòng, không tràn */}
             <p className="font-semibold text-gray-800 overflow-hidden text-ellipsis line-clamp-2">
               {title}
             </p>
@@ -289,15 +309,16 @@ export const useCartStore = create<CartState>((set, get) => ({
         }
       );
 
-      // Refresh cart after adding
+      // Refresh cart
       await get().fetchCart();
+      get().updateCartCount();
     } catch {
       toast.error("Failed to add product to cart!");
     }
   },
 
   /* =====================
-     🔄 RESET
+     RESET
   ===================== */
   reset: () => set(initialState),
 }));

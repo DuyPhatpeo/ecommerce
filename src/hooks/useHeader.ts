@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getCart } from "../api/cartApi";
 import { getCategories } from "../api/categoryApi";
+import { useCartStore } from "../stores/cartStore";
 
 export interface MenuItem {
   label: string;
@@ -22,7 +22,6 @@ export const useHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<{ name?: string; id?: string } | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -30,6 +29,10 @@ export const useHeader = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // 🛒 Lấy dữ liệu từ Zustand Store
+  const cartCount = useCartStore((state) => state.cartCount);
+  const fetchCart = useCartStore((state) => state.fetchCart);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -60,20 +63,6 @@ export const useHeader = () => {
     ],
     [user]
   );
-
-  const fetchCartCount = useCallback(async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        setCartCount(0);
-        return;
-      }
-      const cartItems = await getCart(userId);
-      setCartCount(cartItems.length);
-    } catch {
-      setCartCount(0);
-    }
-  }, []);
 
   const handleSearchSubmit = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -107,10 +96,12 @@ export const useHeader = () => {
     setActiveMenu(null);
   }, []);
 
+  // 📌 Load Category Menu
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const categories = await getCategories();
+
         if (!Array.isArray(categories) || categories.length === 0) {
           setMenuItems(baseMenu);
           return;
@@ -141,8 +132,9 @@ export const useHeader = () => {
     fetchCategories();
   }, [baseMenu]);
 
+  // 🛒 Đồng bộ cart từ Zustand mỗi khi đổi route
   useEffect(() => {
-    fetchCartCount();
+    fetchCart(); // lấy cart + updateCartCount()
 
     const storedUser = localStorage.getItem("user");
     const storedUserId = localStorage.getItem("userId");
@@ -160,14 +152,16 @@ export const useHeader = () => {
       localStorage.removeItem("userId");
       setUser(null);
     }
-  }, [fetchCartCount, location.pathname]);
+  }, [location.pathname, fetchCart]);
 
+  // 📌 Scroll detection
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // 📌 Focus search
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       const timer = setTimeout(() => searchInputRef.current?.focus(), 100);
@@ -175,21 +169,25 @@ export const useHeader = () => {
     }
   }, [searchOpen]);
 
+  // 📌 Close when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
+
       if (
         searchOpen &&
         searchBoxRef.current &&
         !searchBoxRef.current.contains(target)
       )
         setSearchOpen(false);
+
       if (
         mobileOpen &&
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(target)
       )
         closeMobileMenu();
+
       if (
         categoryMenuOpen &&
         categoryMenuRef.current &&
@@ -205,6 +203,7 @@ export const useHeader = () => {
     }
   }, [searchOpen, mobileOpen, categoryMenuOpen, closeMobileMenu]);
 
+  // 📌 Close menu when route changes
   useEffect(() => {
     closeMobileMenu();
     setCategoryMenuOpen(false);
@@ -215,7 +214,7 @@ export const useHeader = () => {
     activeMenu,
     mobileOpen,
     searchOpen,
-    cartCount,
+    cartCount, // 🔥 lấy từ Zustand
     searchQuery,
     user,
     menuItems,
@@ -233,7 +232,6 @@ export const useHeader = () => {
     handleMouseLeave,
     toggleSubMenu,
     closeMobileMenu,
-    fetchCartCount,
     taskbarItems,
     location,
     navigate,
