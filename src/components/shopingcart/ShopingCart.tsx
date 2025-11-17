@@ -30,13 +30,6 @@ export default function ShoppingCart() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8 relative">
-      {/* --- Overlay loader khi updating hoặc clearing --- */}
-      {(updating || clearing) && (
-        <div className="absolute inset-0 bg-white/60 flex justify-center items-center z-10">
-          <Loader />
-        </div>
-      )}
-
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
           <div className="w-full lg:col-span-2">
