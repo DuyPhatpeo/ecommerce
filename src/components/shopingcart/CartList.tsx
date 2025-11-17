@@ -41,7 +41,6 @@ export default function CartList({
   cartItems,
   selectedItems,
   loading,
-  updating,
   updateQuantity,
   removeItem,
   toggleSelect,
@@ -167,7 +166,6 @@ export default function CartList({
                   key={item.id}
                   item={item}
                   selected={selectedItems.includes(item.id)}
-                  updating={updating}
                   updateQuantity={updateQuantity}
                   removeItem={removeItem}
                   toggleSelect={toggleSelect}
