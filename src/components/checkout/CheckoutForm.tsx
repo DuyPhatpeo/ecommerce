@@ -95,7 +95,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
     onChange({
       recipientName: selectedAddress.recipientName,
       phone: selectedAddress.phone,
-      address: selectedAddress.line,
+      address: selectedAddress.line ?? "",
       note,
       paymentMethod,
     });
@@ -137,7 +137,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
                 <InfoRow icon={<Phone />} text={selectedAddress.phone} />
                 <InfoRow
                   icon={<Home />}
-                  text={selectedAddress.line}
+                  text={selectedAddress.line ?? ""}
                   multiline
                 />
               </div>
