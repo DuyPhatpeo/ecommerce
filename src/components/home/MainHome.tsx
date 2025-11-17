@@ -6,8 +6,8 @@ import Promo from "./Promo";
 import HotDeal from "./HotDeal";
 import BrandStrip from "./BrandStrip";
 import ProductView from "./ProductView";
-import { useAppConfig } from "../../hooks/useAppConfig";
-import Loader from "../general/Loader"; // optional: nếu cần loading
+import { getAppConfig } from "../../lib/utils/appConfig";
+import Loader from "../general/Loader";
 
 const MainHome: React.FC = () => {
   // Config backend giả lập
@@ -47,7 +47,7 @@ const MainHome: React.FC = () => {
     },
   };
 
-  const { normalizemode, modeDefault } = useAppConfig(remoteConfig);
+  const { normalizemode, modeDefault } = getAppConfig(remoteConfig);
 
   // Mapping section keys → component
   const sectionMap: Record<string, React.FC<any>> = {

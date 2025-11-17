@@ -1,4 +1,3 @@
-// src/hooks/useAppConfig.ts
 export type mode = "slider" | "grid";
 
 interface AppConfig {
@@ -20,7 +19,7 @@ export function normalizemode(value: any): mode {
   return DEFAULT_CONFIG.modeDefault;
 }
 
-export function useAppConfig(remoteConfig?: Record<string, any>) {
+export function getAppConfig(remoteConfig?: Record<string, any>) {
   const nestedmode =
     remoteConfig?.mode ??
     Object.values(remoteConfig?.sectionOrder ?? {}).find(
