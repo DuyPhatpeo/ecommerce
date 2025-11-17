@@ -58,25 +58,23 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
     return (
       <div className="sticky top-6">
         <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+          <div className="absolute inset-0 opacity-50 bg-gradient-to-br from-orange-50 via-white to-orange-50" />
           <div className="relative p-6">
             {/* User Profile Card */}
-            <div className="mb-6 pb-6 border-b border-gray-100">
-              <div className="flex items-center gap-4">
+            <div className="pb-6 mb-6 border-b border-gray-100">
+              <div className="flex flex-col items-center gap-3 text-center">
                 {/* Avatar */}
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  <div className="flex items-center justify-center w-24 h-24 text-3xl font-bold text-white rounded-full shadow-xl bg-gradient-to-br from-orange-400 to-orange-600">
                     {getInitials(profile.fullName)}
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
+                  <div className="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"></div>
                 </div>
 
-                {/* User Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-800 text-lg truncate">
-                    {profile.fullName || "User Name"}
-                  </h3>
-                </div>
+                {/* Name */}
+                <h3 className="text-xl font-bold text-gray-800">
+                  {profile.fullName || "User Name"}
+                </h3>
               </div>
             </div>
 
@@ -147,7 +145,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
                 onClick={handleLogout}
                 className="relative flex items-center justify-between w-full gap-3 px-5 py-3.5 overflow-hidden font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white"
               >
-                <div className="absolute inset-0 transition-all duration-300 scale-x-0 origin-left bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
+                <div className="absolute inset-0 transition-all duration-300 origin-left scale-x-0 bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
                 <div className="relative flex items-center gap-3">
                   <div className="p-2 transition-all duration-300 bg-red-100 rounded-lg group-hover:bg-white/20">
                     <LogOut
