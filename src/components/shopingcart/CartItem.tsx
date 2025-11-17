@@ -98,12 +98,7 @@ export default function CartItem({
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (
-      window.confirm("Are you sure you want to remove this item from cart?")
-    ) {
-      removeItem(id);
-      toast.success("Item removed from cart");
-    }
+    removeItem(id);
   };
 
   return (
