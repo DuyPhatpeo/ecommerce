@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search as SearchIcon, ArrowUpDown } from "lucide-react";
 import ProductCard from "../section/ProductCard";
 import Button from "../ui/Button";
 import { useSort } from "../../hooks/useSort";
@@ -112,7 +112,7 @@ const Search: React.FC = () => {
             {/* Header + Sort */}
             <div className="flex flex-wrap justify-between items-center mb-5 gap-3">
               <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-                <Search
+                <SearchIcon
                   className="inline-block mr-1.5 text-orange-500"
                   size={16}
                 />
