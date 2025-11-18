@@ -33,7 +33,23 @@ const CheckOut: React.FC = () => {
       total: state.total,
       navigate,
     });
-  }, []); // Empty dependency array - chỉ chạy 1 lần khi mount
+
+    // Cleanup function to reset store when leaving checkout
+    return () => {
+      // Optional: Reset store on unmount if needed
+      // reset();
+    };
+  }, [
+    state.selectedItems,
+    state.productId,
+    state.quantity,
+    state.subtotal,
+    state.tax,
+    state.shipping,
+    state.total,
+    navigate,
+    fetchProducts,
+  ]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12">
@@ -53,13 +69,13 @@ const CheckOut: React.FC = () => {
               total={total}
               products={products}
               customerInfo={
-                customerInfo ?? {
-                  recipientName: "",
-                  phone: "",
-                  address: "",
-                  note: "",
-                  paymentMethod: "cod",
-                }
+                customerInfo
+                  ? {
+                      name: customerInfo.recipientName,
+                      phone: customerInfo.phone,
+                      address: customerInfo.address,
+                    }
+                  : undefined
               }
               onPlaceOrder={() => handlePlaceOrder(navigate)}
             />
