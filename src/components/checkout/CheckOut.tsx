@@ -18,10 +18,9 @@ const CheckOut: React.FC = () => {
     customerInfo,
     setCustomerInfo,
     fetchProducts,
-    handlePlaceOrder,
   } = useCheckoutStore();
 
-  // Fetch products on mount
+  // Load sản phẩm khi vào trang Checkout
   useEffect(() => {
     fetchProducts({
       selectedItems: state.selectedItems,
@@ -33,12 +32,6 @@ const CheckOut: React.FC = () => {
       total: state.total,
       navigate,
     });
-
-    // Cleanup function to reset store when leaving checkout
-    return () => {
-      // Optional: Reset store on unmount if needed
-      // reset();
-    };
   }, [
     state.selectedItems,
     state.productId,
@@ -51,16 +44,33 @@ const CheckOut: React.FC = () => {
     fetchProducts,
   ]);
 
+  // Hàm chuyển sang trang confirm-payment
+  const handleGoToConfirm = () => {
+    if (!customerInfo) {
+      alert("Vui lòng nhập đầy đủ thông tin nhận hàng!");
+      return;
+    }
+
+    const { recipientName, phone, address } = customerInfo;
+
+    if (!recipientName || !phone || !address) {
+      alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+      return;
+    }
+
+    navigate("/confirm-payment");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-12">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 md:px-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Form & Product List */}
+          {/* Form thông tin */}
           <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
           </div>
 
-          {/* Summary */}
+          {/* Tóm tắt */}
           <div className="lg:col-span-1">
             <CheckoutSummary
               subtotal={subtotal}
@@ -77,7 +87,7 @@ const CheckOut: React.FC = () => {
                     }
                   : undefined
               }
-              onPlaceOrder={() => handlePlaceOrder(navigate)}
+              onPlaceOrder={handleGoToConfirm}
             />
           </div>
         </div>

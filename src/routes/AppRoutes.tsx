@@ -16,6 +16,7 @@ const AccountPage = lazy(() => import("../pages/AccountPage"));
 const OrderDetailPage = lazy(() => import("../pages/OrderDetailPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const ConfirmPaymentPage = lazy(() => import("../pages/ConfirmPaymentPage"));
 
 // ✅ Auto scroll to top when route changes
 const ScrollToTop = () => {
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/confirm-payment" element={<ConfirmPaymentPage />} />
 
         {/* Auth */}
         <Route path="/login" element={<AuthPage />} />

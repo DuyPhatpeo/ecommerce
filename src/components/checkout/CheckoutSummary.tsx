@@ -129,7 +129,7 @@ const CheckoutSummary: React.FC<Props> = ({
             }`}
           >
             <ShieldCheck className="w-6 h-6" />
-            Place Order
+            Confirm Payment
           </button>
         </div>
 
@@ -162,7 +162,7 @@ const CheckoutSummary: React.FC<Props> = ({
             }`}
           >
             <CreditCard className="w-4 h-4" />
-            Place Order
+            Confirm Payment
           </button>
         </div>
       </div>

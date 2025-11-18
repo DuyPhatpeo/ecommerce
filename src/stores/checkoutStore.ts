@@ -1,13 +1,9 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
-
 import { getCartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 import { createOrder } from "../api/orderApi";
 
-/* =====================
-   TYPES
-===================== */
 export interface Product {
   id: string;
   title: string;
@@ -27,25 +23,23 @@ export interface CustomerInfo {
   recipientName: string;
   phone: string;
   address: string;
-  note: string;
+  note?: string;
   paymentMethod: "cod" | "banking" | "momo";
 }
 
 interface CheckoutState {
-  // State
   products: (Product & { quantity: number })[];
   loading: boolean;
   placingOrder: boolean;
   customerInfo: CustomerInfo | null;
-
-  // Checkout data
   subtotal: number;
   tax: number;
   shipping: number;
   total: number;
 
-  // Actions
   setCustomerInfo: (info: CustomerInfo | null) => void;
+  setProducts: (products: (Product & { quantity: number })[]) => void;
+
   fetchProducts: (params: {
     selectedItems?: { id: string; quantity: number }[];
     productId?: string;
@@ -56,11 +50,15 @@ interface CheckoutState {
     total?: number;
     navigate: (path: string, options?: any) => void;
   }) => Promise<void>;
+
+  goToConfirmPayment: (navigate: (path: string, options?: any) => void) => void;
   handlePlaceOrder: (
     navigate: (path: string, options?: any) => void
   ) => Promise<void>;
   reset: () => void;
 }
+
+const LOCAL_STORAGE_KEY = "checkoutData";
 
 const initialState = {
   products: [],
@@ -76,18 +74,50 @@ const initialState = {
 export const useCheckoutStore = create<CheckoutState>((set, get) => ({
   ...initialState,
 
-  setCustomerInfo: (info) => set({ customerInfo: info }),
+  setCustomerInfo: (info) => {
+    set({ customerInfo: info });
+    const current = get();
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        customerInfo: info,
+        products: current.products,
+        subtotal: current.subtotal,
+        tax: current.tax,
+        shipping: current.shipping,
+        total: current.total,
+      })
+    );
+  },
 
-  fetchProducts: async ({
-    selectedItems,
-    productId,
-    quantity,
-    subtotal: providedSubtotal,
-    tax: providedTax = 0,
-    shipping: providedShipping = 0,
-    total: providedTotal,
-    navigate,
-  }) => {
+  setProducts: (products) => {
+    set({ products });
+    const current = get();
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        customerInfo: current.customerInfo,
+        products,
+        subtotal: current.subtotal,
+        tax: current.tax,
+        shipping: current.shipping,
+        total: current.total,
+      })
+    );
+  },
+
+  fetchProducts: async (params) => {
+    const {
+      selectedItems,
+      productId,
+      quantity,
+      subtotal: providedSubtotal,
+      tax: providedTax = 0,
+      shipping: providedShipping = 0,
+      total: providedTotal,
+      navigate,
+    } = params;
+
     set({ loading: true });
 
     const userId = localStorage.getItem("userId");
@@ -101,16 +131,13 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
     try {
       let items: (Product & { quantity: number })[] = [];
 
-      // Fetch from cart items
       if (selectedItems?.length) {
         const results = await Promise.all(
           selectedItems.map(async (item) => {
             const cartRes = await getCartItem(userId, item.id);
             if (!cartRes) return null;
-
             const productRes = await getProductById(cartRes.productId);
             if (!productRes) return null;
-
             return {
               ...productRes,
               price: productRes.salePrice || productRes.regularPrice || 0,
@@ -118,13 +145,8 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
             };
           })
         );
-
-        items = results.filter(
-          (p): p is Product & { quantity: number } => p !== null
-        );
-      }
-      // Fetch single product (Buy Now)
-      else if (productId && quantity) {
+        items = results.filter(Boolean) as any;
+      } else if (productId && quantity) {
         const productRes = await getProductById(productId);
         if (productRes) {
           items.push({
@@ -141,11 +163,9 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         return;
       }
 
-      // Calculate totals
       const calculatedSubtotal =
         providedSubtotal ??
         items.reduce((sum, p) => sum + (p.price || 0) * p.quantity, 0);
-
       const calculatedTotal =
         providedTotal ?? calculatedSubtotal + providedTax + providedShipping;
 
@@ -156,6 +176,20 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         shipping: providedShipping,
         total: calculatedTotal,
       });
+
+      // Lưu vào localStorage
+      const current = get();
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          customerInfo: current.customerInfo,
+          products: items,
+          subtotal: calculatedSubtotal,
+          tax: providedTax,
+          shipping: providedShipping,
+          total: calculatedTotal,
+        })
+      );
     } catch (err) {
       console.error(err);
       toast.error("Failed to load product data!");
@@ -164,17 +198,20 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
     }
   },
 
+  goToConfirmPayment: (navigate) => {
+    const { customerInfo } = get();
+    if (!customerInfo) {
+      toast.error("Please enter shipping information!");
+      return;
+    }
+    navigate("/confirm-payment");
+  },
+
   handlePlaceOrder: async (navigate) => {
     const { customerInfo, products, subtotal, tax, shipping, total } = get();
 
     if (!customerInfo) {
       toast.error("Please enter shipping information!");
-      return;
-    }
-
-    const { recipientName, phone, address, paymentMethod, note } = customerInfo;
-    if (!recipientName || !phone || !address) {
-      toast.error("Please fill in all required information!");
       return;
     }
 
@@ -186,45 +223,31 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
     }
 
     set({ placingOrder: true });
-
-    const toastId = toast.loading("Processing your order...", {
-      position: "top-right",
-      autoClose: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: false,
-    });
+    const toastId = toast.loading("Processing your order...");
 
     try {
-      // Refresh product prices
       const updatedProducts = await Promise.all(
         products.map(async (p) => {
           const res = await getProductById(p.id);
-          const current = res?.data || res;
+          const current = res.data || res;
           return {
             ...p,
             price: current.salePrice || current.regularPrice || 0,
-            regularPrice: current?.regularPrice,
-            salePrice: current?.salePrice,
+            regularPrice: current.regularPrice,
+            salePrice: current.salePrice,
           };
         })
       );
 
-      const statusMap: Record<string, string> = {
-        cod: "pending",
-        banking: "banking",
-        momo: "paid",
-      };
-      const status = statusMap[paymentMethod] ?? "pending";
-
+      const statusMap = { cod: "pending", banking: "banking", momo: "paid" };
       const orderData = {
         customer: {
           id: userId,
-          recipientName,
-          phone,
-          address,
-          note,
-          paymentMethod,
+          recipientName: customerInfo.recipientName,
+          phone: customerInfo.phone,
+          address: customerInfo.address,
+          note: customerInfo.note,
+          paymentMethod: customerInfo.paymentMethod,
         },
         items: updatedProducts.map((p) => ({
           productId: p.id,
@@ -235,7 +258,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         tax,
         shipping,
         total,
-        status,
+        status: statusMap[customerInfo.paymentMethod],
         createdAt: new Date().toISOString(),
       };
 
@@ -245,31 +268,27 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         render: "Order placed successfully!",
         type: "success",
         isLoading: false,
-        autoClose: 3000,
-        closeOnClick: true,
-        draggable: true,
+        autoClose: 2500,
       });
 
-      localStorage.removeItem("checkoutItems");
-
-      // Reset store
       set(initialState);
-
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
       navigate("/order-success", { state: { order: res }, replace: true });
     } catch (err) {
       console.error(err);
       toast.update(toastId, {
-        render: "Failed to place order, please try again!",
+        render: "Order failed, please try again!",
         type: "error",
         isLoading: false,
         autoClose: 3000,
-        closeOnClick: true,
-        draggable: true,
       });
     } finally {
       set({ placingOrder: false });
     }
   },
 
-  reset: () => set(initialState),
+  reset: () => {
+    set(initialState);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  },
 }));
