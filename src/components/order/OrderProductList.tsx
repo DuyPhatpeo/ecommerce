@@ -20,7 +20,7 @@ const OrderProductList: React.FC<Props> = ({ items }) => {
       {/* Header */}
       <h2 className="font-bold text-xl mb-4 text-gray-900 flex items-center gap-2">
         <Package className="w-6 h-6 text-orange-600" />
-        Products in this Order ({items.length})
+        Products in Order ({items.length})
       </h2>
 
       {/* Content */}
