@@ -1,5 +1,12 @@
 import { create } from "zustand";
 import { getCategories } from "../api/categoryApi";
+export interface TaskbarItem {
+  path: string;
+  icon: any;
+  label: string;
+  badge?: number;
+  activeCheck?: string[];
+}
 
 export interface MenuItem {
   label: string;
