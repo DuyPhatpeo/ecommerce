@@ -1,12 +1,18 @@
 import Footer from "../components/general/Footer";
 import Header from "../components/general/Header";
-import MainOrderDetail from "../components/order/MainOrderDetail";
+import OrderDetail from "../components/order/OrderDetail";
+import SectionBanner from "../components/section/SectionBanner";
 
 const OrderDetailPage = () => {
   return (
     <>
       <Header />
-      <MainOrderDetail />
+      <SectionBanner
+        bgImage="/banner-bg.jpg"
+        title="Order Details"
+        subtitle="Review your order information and status"
+      />
+      <OrderDetail />
       <Footer />
     </>
   );

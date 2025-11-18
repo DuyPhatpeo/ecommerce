@@ -1,16 +1,9 @@
 import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import SectionBanner from "../section/SectionBanner";
 
-const MainContact: React.FC = () => {
+const Contact: React.FC = () => {
   return (
     <>
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Contact Us"
-        subtitle="Have a question or feedback? Let’s talk!"
-      />
-
       <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10">
           <div className="flex flex-col md:flex-row gap-10">
@@ -96,4 +89,4 @@ const MainContact: React.FC = () => {
   );
 };
 
-export default MainContact;
+export default Contact;

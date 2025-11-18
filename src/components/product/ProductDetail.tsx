@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import SectionBanner from "../section/SectionBanner";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
 import ProductTabs from "./ProductTabs";
 import { getProductById } from "../../api/productApi";
 import Loader from "../general/Loader";
+
 interface Review {
   id: string;
   name: string;
@@ -29,7 +29,11 @@ interface Product {
   stock?: number;
 }
 
-export default function ProductDetail() {
+interface ProductDetailProps {
+  onLoadTitle?: (title: string) => void;
+}
+
+export default function ProductDetail({ onLoadTitle }: ProductDetailProps) {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
@@ -44,7 +48,6 @@ export default function ProductDetail() {
         const data = await getProductById(id);
 
         if (!data || Object.keys(data).length === 0) {
-          // ✅ Nếu không có dữ liệu → chuyển về trang 404
           navigate("/404", { replace: true });
           return;
         }
@@ -69,9 +72,10 @@ export default function ProductDetail() {
         };
 
         setProduct(normalized);
+        if (onLoadTitle) onLoadTitle(normalized.title);
       } catch (err) {
         console.error(err);
-        navigate("/404", { replace: true }); // ✅ lỗi cũng về 404
+        navigate("/404", { replace: true });
       } finally {
         setLoading(false);
       }
@@ -79,44 +83,35 @@ export default function ProductDetail() {
 
     fetchProduct();
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, [id, navigate]);
+  }, [id, navigate, onLoadTitle]);
 
   if (loading) return <Loader />;
-
   if (!product) return null;
 
   return (
-    <div>
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title={product.title}
-        subtitle="Explore featured product details"
-      />
-
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-300 hover:shadow-2xl">
-            <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">
-              <ProductGallery images={product.images} title={product.title} />
-              <ProductInfo
-                id={product.id}
-                title={product.title}
-                salePrice={product.salePrice!}
-                regularPrice={product.regularPrice!}
-                category={product.category}
-                brand={product.brand}
-                images={product.images}
-                stock={product.stock!}
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-300 hover:shadow-2xl">
+          <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">
+            <ProductGallery images={product.images} title={product.title} />
+            <ProductInfo
+              id={product.id}
+              title={product.title}
+              salePrice={product.salePrice!}
+              regularPrice={product.regularPrice!}
+              category={product.category}
+              brand={product.brand}
+              images={product.images}
+              stock={product.stock!}
+            />
           </div>
-
-          <ProductTabs
-            description={product.description}
-            specs={product.specs}
-            reviews={product.reviews || []}
-          />
         </div>
+
+        <ProductTabs
+          description={product.description}
+          specs={product.specs}
+          reviews={product.reviews || []}
+        />
       </div>
     </div>
   );

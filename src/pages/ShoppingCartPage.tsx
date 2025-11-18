@@ -1,12 +1,18 @@
 import Header from "../components/general/Header";
 import Footer from "../components/general/Footer";
-import MainShopingCart from "../components/shopingcart/MainShopingCart";
+import SectionBanner from "../components/section/SectionBanner";
+import ShoppingCart from "../components/shopingcart/ShopingCart";
 
 const ShopingCartPage = () => {
   return (
     <>
       <Header />
-      <MainShopingCart />
+      <SectionBanner
+        bgImage="/banner-bg.jpg"
+        title="Shopping Cart"
+        subtitle="Review your items and proceed to checkout"
+      />
+      <ShoppingCart />
       <Footer />
     </>
   );

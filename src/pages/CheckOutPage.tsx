@@ -1,13 +1,19 @@
 import Header from "../components/general/Header";
 import Footer from "../components/general/Footer";
-import MainCheckOut from "../components/checkout/MainCheckOut";
+import SectionBanner from "../components/section/SectionBanner";
+import CheckOut from "../components/checkout/CheckOut";
 
 const CheckOutPage = () => {
   return (
     <>
       <Header />
 
-      <MainCheckOut />
+      <SectionBanner
+        bgImage="/banner-bg.jpg"
+        title="Check Out"
+        subtitle="Complete your purchase"
+      />
+      <CheckOut />
       <Footer />
     </>
   );

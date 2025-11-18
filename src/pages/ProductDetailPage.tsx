@@ -1,12 +1,21 @@
+import { useState } from "react";
 import Header from "../components/general/Header";
 import Footer from "../components/general/Footer";
+import SectionBanner from "../components/section/SectionBanner";
 import ProductDetail from "../components/product/ProductDetail";
 
 const ProductDetailPage = () => {
+  const [title, setTitle] = useState("Product Details");
+
   return (
     <>
       <Header />
-      <ProductDetail />
+      <SectionBanner
+        bgImage="/banner-bg.jpg"
+        title={title}
+        subtitle="Explore featured product details"
+      />
+      <ProductDetail onLoadTitle={setTitle} />
       <Footer />
     </>
   );

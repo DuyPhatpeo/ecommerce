@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
 import { Search, ArrowUpDown } from "lucide-react";
 import ProductCard from "../section/ProductCard";
-import SectionBanner from "../section/SectionBanner";
 import Button from "../ui/Button";
 import { useSort } from "../../hooks/useSort";
 
@@ -28,7 +27,7 @@ export interface Product {
 
 const ITEMS_PER_PAGE = 8;
 
-const MainSearch: React.FC = () => {
+const Search: React.FC = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,12 +102,6 @@ const MainSearch: React.FC = () => {
 
   return (
     <>
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Search Results"
-        subtitle="Discover products that match your keyword"
-      />
-
       <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-8 sm:py-12 min-h-screen">
         {loading ? (
           <p className="text-center text-gray-500 animate-pulse">
@@ -192,4 +185,4 @@ const MainSearch: React.FC = () => {
   );
 };
 
-export default MainSearch;
+export default Search;

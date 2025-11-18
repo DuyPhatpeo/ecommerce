@@ -9,7 +9,7 @@ import ProductView from "./ProductView";
 import { getAppConfig } from "../../lib/utils/appConfig";
 import Loader from "../general/Loader";
 
-const MainHome: React.FC = () => {
+const Home: React.FC = () => {
   // Config backend giả lập
   const remoteConfig = {
     sectionOrder: {
@@ -99,4 +99,4 @@ const MainHome: React.FC = () => {
   );
 };
 
-export default MainHome;
+export default Home;

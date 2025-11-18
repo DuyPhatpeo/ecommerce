@@ -1,12 +1,18 @@
 import Footer from "../components/general/Footer";
 import Header from "../components/general/Header";
-import MainSearch from "../components/search/MainSearch";
+import Search from "../components/search/Search";
+import SectionBanner from "../components/section/SectionBanner";
 
 const SearchPage = () => {
   return (
     <>
       <Header />
-      <MainSearch />
+      <SectionBanner
+        bgImage="/banner-bg.jpg"
+        title="Search Results"
+        subtitle="Discover products that match your keyword"
+      />
+      <Search />
       <Footer />
     </>
   );
