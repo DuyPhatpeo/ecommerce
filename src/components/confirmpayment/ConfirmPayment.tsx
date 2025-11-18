@@ -9,6 +9,9 @@ import {
   DollarSign,
   ArrowLeft,
   Check,
+  User,
+  Phone,
+  FileText,
 } from "lucide-react";
 
 import ConfirmPaymentProductList from "./ConfirmPaymentProductList";
@@ -66,49 +69,39 @@ const ConfirmPayment = () => {
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16 py-8">
       <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-orange-200">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-orange-100 rounded-full mb-4">
-            <CreditCard className="text-orange-600" size={40} />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Confirm Payment
-          </h2>
-          <p className="text-gray-600">Please review your order information</p>
-        </div>
-
-        {/* Delivery Info */}
+        {/* Delivery Info - Đồng bộ với OrderDetail */}
         <div className="bg-orange-50 rounded-lg p-6 border border-orange-200 mb-6">
           <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
             <MapPin size={20} className="text-orange-600" /> Delivery
             Information
           </h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-gray-600 mb-1">Full Name:</p>
-              <p className="font-semibold text-gray-800">
-                {customerInfo.recipientName}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-600 mb-1">Phone Number:</p>
-              <p className="font-semibold text-gray-800">
-                {customerInfo.phone}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-600 mb-1">Address:</p>
-              <p className="font-semibold text-gray-800">
-                {customerInfo.address}
-              </p>
-            </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <InfoItem
+              icon={<User className="text-blue-500 w-5 h-5" />}
+              label="Full Name"
+              value={customerInfo.recipientName}
+            />
+            <InfoItem
+              icon={<Phone className="text-green-500 w-5 h-5" />}
+              label="Phone Number"
+              value={customerInfo.phone}
+            />
+            <InfoItem
+              icon={<MapPin className="text-red-500 w-5 h-5" />}
+              label="Address"
+              value={customerInfo.address}
+            />
+            <InfoItem
+              icon={<CreditCard className="text-purple-500 w-5 h-5" />}
+              label="Payment Method"
+              value={getPaymentMethodName(customerInfo.paymentMethod)}
+            />
             {customerInfo.note && (
-              <div>
-                <p className="text-gray-600 mb-1">Note:</p>
-                <p className="font-semibold text-gray-800">
-                  {customerInfo.note}
-                </p>
-              </div>
+              <InfoItem
+                icon={<FileText className="text-orange-500 w-5 h-5" />}
+                label="Note"
+                value={customerInfo.note}
+              />
             )}
           </div>
         </div>
@@ -116,17 +109,7 @@ const ConfirmPayment = () => {
         {/* Order Items */}
         <ConfirmPaymentProductList products={products} />
 
-        {/* Payment */}
-        <div className="border border-gray-200 rounded-lg p-6 mt-6">
-          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-            <CreditCard size={20} className="text-orange-600" /> Payment
-          </h3>
-          <p className="text-gray-700">
-            {getPaymentMethodName(customerInfo.paymentMethod)}
-          </p>
-        </div>
-
-        {/* Price Summary */}
+        {/* Price Summary - Giữ nguyên (đã đồng bộ rồi) */}
         <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 mt-6">
           <div className="space-y-3">
             <div className="flex justify-between text-gray-700">
@@ -183,20 +166,16 @@ const ConfirmPayment = () => {
         </div>
       </div>
 
-      {/* ================== Mobile Taskbar ================== */}
+      {/* Mobile Taskbar - Giữ nguyên */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 space-y-2">
-          {/* Total Price */}
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-500">Total</span>
             <span className="text-lg font-semibold text-orange-600">
               {formatVND(total)}
             </span>
           </div>
-
-          {/* Buttons */}
           <div className="flex gap-3">
-            {/* Back Button */}
             <Button
               onClick={handleBack}
               label="Back to Edit"
@@ -205,8 +184,6 @@ const ConfirmPayment = () => {
               className="flex-1 py-2.5 text-sm border-2 border-orange-500 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition"
               justify="center"
             />
-
-            {/* Confirm Order Button */}
             <Button
               onClick={() => handlePlaceOrder(navigate)}
               label="Confirm Order"
@@ -219,10 +196,28 @@ const ConfirmPayment = () => {
         </div>
       </div>
 
-      {/* Spacer tránh che nội dung bởi taskbar */}
       <div className="lg:hidden h-28" />
     </div>
   );
 };
+
+// InfoItem component - Giống OrderDetail
+const InfoItem = ({
+  icon,
+  label,
+  value,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value: string;
+}) => (
+  <div className="flex items-start gap-3 bg-white rounded-lg p-3 border border-orange-100 transition hover:shadow-sm">
+    {icon && <div className="flex-shrink-0 mt-1">{icon}</div>}
+    <div>
+      <p className="text-sm text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
+    </div>
+  </div>
+);
 
 export default ConfirmPayment;

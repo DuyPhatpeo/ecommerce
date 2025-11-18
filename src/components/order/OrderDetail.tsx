@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-  Truck,
   CreditCard,
   MapPin,
   Calendar,
   ClipboardList,
   User,
   Phone,
+  Tag,
+  DollarSign,
+  Truck,
 } from "lucide-react";
 import { useOrderStore } from "../../stores/orderStore";
 import OrderTimeline from "./OrderTimeline";
@@ -46,30 +48,18 @@ const OrderDetail: React.FC = () => {
     }
   };
 
+  const formatVND = (value: number) => `${value.toLocaleString("vi-VN")}₫`;
+
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16 py-8">
       <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-orange-200 space-y-6">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-orange-100 rounded-full mb-4">
-            <CreditCard className="text-orange-600" size={40} />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Order Detail
-          </h2>
-          <p className="text-gray-600">Review your order information</p>
-        </div>
-
-        {/* Timeline */}
-        <div className="bg-orange-50 rounded-lg p-4 border border-orange-200 mb-6">
-          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-            <Truck className="text-orange-600" /> Order Progress
-          </h3>
-          <OrderTimeline status={order.status ?? ""} />
+        {/* Timeline - Standalone */}
+        <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
+          <OrderTimeline status={order.status ?? ""} orderId={id} />
         </div>
 
         {/* Customer Info */}
-        <div className="bg-orange-50 rounded-lg p-6 border border-orange-200 mb-6">
+        <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
           <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
             <ClipboardList className="text-orange-600" /> Customer Information
           </h3>
@@ -115,49 +105,43 @@ const OrderDetail: React.FC = () => {
         {/* Product List */}
         <OrderProductList items={productList} />
 
-        {/* Payment Info */}
-        <div className="border border-gray-200 rounded-lg p-6 mt-6">
-          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-            <CreditCard className="text-orange-600 w-5 h-5" /> Payment
-          </h3>
-          <p className="text-gray-700">
-            {getPaymentMethodName(order.customer.paymentMethod)}
-          </p>
-        </div>
-
         {/* Price Summary */}
-        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 mt-6">
-          <Row label="Subtotal" value={order.subtotal ?? 0} />
-          <Row label="Tax (10%)" value={order.tax ?? 0} />
-          <Row label="Shipping" value={0} free />
-          <div className="border-t-2 border-gray-300 pt-4 flex justify-between items-center">
-            <span className="text-xl font-bold text-gray-800">Total</span>
-            <span className="text-3xl font-bold text-orange-600">
-              {(order.total ?? 0).toLocaleString("vi-VN")}₫
-            </span>
+        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <div className="space-y-3">
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+              </span>
+              <span className="font-medium">
+                {formatVND(order.subtotal ?? 0)}
+              </span>
+            </div>
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+              </span>
+              <span className="font-medium">{formatVND(order.tax ?? 0)}</span>
+            </div>
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-2">
+                <Truck className="w-4 h-4 text-blue-500" /> Shipping
+              </span>
+              <span className="font-medium text-green-600 font-semibold">
+                Free
+              </span>
+            </div>
+            <div className="border-t-2 border-gray-300 pt-3 flex justify-between items-center">
+              <span className="text-xl font-bold text-gray-800">Total</span>
+              <span className="text-3xl font-bold text-orange-600">
+                {formatVND(order.total ?? 0)}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-const Row = ({
-  label,
-  value,
-  free,
-}: {
-  label: string;
-  value: number;
-  free?: boolean;
-}) => (
-  <div className="flex justify-between text-gray-700">
-    <span>{label}</span>
-    <span className={`font-medium ${free ? "text-green-600" : ""}`}>
-      {free ? "Free" : value.toLocaleString("vi-VN") + "₫"}
-    </span>
-  </div>
-);
 
 const InfoItem = ({
   icon,
@@ -168,7 +152,7 @@ const InfoItem = ({
   label: string;
   value: string;
 }) => (
-  <div className="flex items-start gap-3 bg-orange-50 rounded-xl p-3 transition">
+  <div className="flex items-start gap-3 bg-white rounded-lg p-3 border border-orange-100 transition hover:shadow-sm">
     {icon && <div className="flex-shrink-0 mt-1">{icon}</div>}
     <div>
       <p className="text-sm text-gray-500">{label}</p>

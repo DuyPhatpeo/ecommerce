@@ -6,13 +6,15 @@ import {
   CheckCircle,
   XCircle,
   RotateCcw,
+  Hash,
 } from "lucide-react";
 
 interface Props {
   status: string;
+  orderId?: string;
 }
 
-const OrderTimeline: React.FC<Props> = ({ status }) => {
+const OrderTimeline: React.FC<Props> = ({ status, orderId }) => {
   const statusMap: Record<string, string> = {
     pending: "Order Placed",
     processing: "Confirmed",
@@ -34,47 +36,78 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
 
   const isCancelled = status === "cancelled";
   const isRefunded = status === "refunded";
+  const isCompleted = status === "completed";
 
+  // Tính phần trăm tiến trình
   const calculateProgress = () => {
-    if (isCancelled || isRefunded) return 0;
-    if (activeIndex === -1) return 0;
-
-    const totalSteps = steps.length;
-    const stepWidth = 100 / (totalSteps - 1);
-    return activeIndex * stepWidth;
+    if (isCancelled || isRefunded || activeIndex <= 0) return 0;
+    return (activeIndex * 100) / (steps.length - 1);
   };
 
   const progressPercent = calculateProgress();
 
+  // Lấy badge status
+  const getStatusBadge = () => {
+    if (isCancelled)
+      return { bg: "bg-red-100", text: "text-red-700", label: "Cancelled" };
+    if (isRefunded)
+      return { bg: "bg-blue-100", text: "text-blue-700", label: "Refunded" };
+    if (isCompleted)
+      return { bg: "bg-green-100", text: "text-green-700", label: "Delivered" };
+    return {
+      bg: "bg-orange-100",
+      text: "text-orange-700",
+      label: currentLabel,
+    };
+  };
+
+  const badge = getStatusBadge();
+
   return (
-    <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-10">
-      {/* Header */}
-      <div className="mb-8 text-center">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
-          Order Status
-        </h2>
-        <p className="text-gray-500 text-xs sm:text-sm">
-          Track your order journey from placement to delivery
-        </p>
+    <div className="w-full">
+      {/* Header với Order ID và Status Badge */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+            Order Status
+          </h3>
+          <span
+            className={`${badge.bg} ${badge.text} px-3 py-1 rounded-full text-xs font-semibold`}
+          >
+            {badge.label}
+          </span>
+        </div>
+
+        {orderId && (
+          <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg">
+            <Hash className="w-4 h-4 text-gray-500" />
+            <span className="font-medium">Order ID: {orderId}</span>
+          </div>
+        )}
       </div>
 
+      {/* Timeline */}
       <div className="relative">
         {/* Thanh nền */}
-        <div className="absolute top-4 sm:top-5 left-0 right-0 h-2 bg-gray-200 rounded-full" />
+        <div
+          className="absolute top-4 sm:top-5 left-0 right-0 h-2 bg-gray-200 rounded-full"
+          style={{ marginLeft: "20px", marginRight: "20px" }}
+        />
 
         {/* Thanh tiến trình */}
-        {!isCancelled && !isRefunded && (
+        {!isCancelled && !isRefunded && progressPercent > 0 && (
           <div
-            className="absolute top-4 sm:top-5 left-0 h-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 transition-all duration-1000 ease-out shadow-lg"
+            className="absolute top-4 sm:top-5 h-2 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 transition-all duration-1000 ease-out"
             style={{
-              width: `${Math.max(progressPercent, 8)}%`,
+              left: "20px",
+              width: `calc((100% - 40px) * ${progressPercent / 100})`,
               boxShadow: "0 0 20px rgba(251, 146, 60, 0.4)",
             }}
           />
         )}
 
         {/* Các bước */}
-        <div className="relative flex justify-between items-start flex-wrap sm:flex-nowrap gap-y-6">
+        <div className="relative flex justify-between items-start">
           {steps.map(({ label, icon: Icon }, i) => {
             const isActive = i === activeIndex;
             const isCompleted = i < activeIndex;
@@ -106,7 +139,7 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
             return (
               <div
                 key={label}
-                className="flex flex-col items-center flex-1 text-center relative z-10 min-w-[70px] sm:min-w-[100px]"
+                className="flex flex-col items-center flex-1 text-center relative z-10"
               >
                 {/* Icon circle */}
                 <div
@@ -120,7 +153,7 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
 
                 {/* Label */}
                 <p
-                  className={`text-[10px] sm:text-xs md:text-sm mt-2 sm:mt-3 transition-all duration-300 px-1 sm:px-2 ${labelClasses}`}
+                  className={`text-xs sm:text-sm mt-2 sm:mt-3 transition-all duration-300 ${labelClasses}`}
                 >
                   {label}
                 </p>
@@ -132,14 +165,14 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
 
       {/* Trạng thái đặc biệt */}
       {(isCancelled || isRefunded) && (
-        <div className="mt-8 text-center bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <div className="flex justify-center items-center gap-3">
+        <div className="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
             {isCancelled ? (
               <>
-                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                   <XCircle className="text-red-600 w-5 h-5" />
                 </div>
-                <div className="text-left">
+                <div className="text-center sm:text-left">
                   <p className="font-semibold text-red-600 text-sm">
                     Order Cancelled
                   </p>
@@ -150,10 +183,10 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
               </>
             ) : (
               <>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                   <RotateCcw className="text-blue-600 w-5 h-5" />
                 </div>
-                <div className="text-left">
+                <div className="text-center sm:text-left">
                   <p className="font-semibold text-blue-600 text-sm">
                     Order Refunded
                   </p>
@@ -163,6 +196,25 @@ const OrderTimeline: React.FC<Props> = ({ status }) => {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Completed Status */}
+      {isCompleted && (
+        <div className="mt-6 bg-green-50 rounded-lg p-4 border border-green-200">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+              <CheckCircle className="text-green-600 w-5 h-5" />
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="font-semibold text-green-600 text-sm">
+                Order Delivered Successfully! 🎉
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Thank you for your purchase
+              </p>
+            </div>
           </div>
         </div>
       )}

@@ -125,7 +125,7 @@ const CheckoutSummary: React.FC<Props> = ({
         <div className="hidden lg:block">
           <Button
             onClick={onPlaceOrder}
-            label="Place Order"
+            label="Confirm Order"
             icon={<ShieldCheck className="w-6 h-6" />}
             justify="center"
             className="w-full py-5 text-lg rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:from-orange-600 hover:to-amber-600"
@@ -154,7 +154,7 @@ const CheckoutSummary: React.FC<Props> = ({
           {/* Checkout Button - Mobile & Tablet only */}
           <Button
             onClick={onPlaceOrder}
-            label="Place Order"
+            label="Confirm Order"
             icon={<CreditCard className="w-4 h-4" />}
             justify="center"
             className="w-full py-2.5 rounded-md text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
