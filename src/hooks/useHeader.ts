@@ -1,54 +1,45 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getCategories } from "../api/categoryApi";
+import { useHeaderStore } from "../stores/headerStore";
+import type { TaskbarItem } from "../stores/headerStore";
 import { useCartStore } from "../stores/cartStore";
 
-export interface MenuItem {
-  label: string;
-  path?: string;
-  subMenu?: MenuItem[];
-}
-
-export interface TaskbarItem {
-  path: string;
-  icon: any;
-  label: string;
-  badge?: number;
-  activeCheck?: string[];
-}
-
 export const useHeader = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<{ name?: string; id?: string } | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
-
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🛒 Lấy dữ liệu từ Zustand Store
-  const cartCount = useCartStore((state) => state.cartCount);
-  const fetchCart = useCartStore((state) => state.fetchCart);
+  // 🔥 Zustand Stores
+  const {
+    isScrolled,
+    activeMenu,
+    mobileOpen,
+    searchOpen,
+    searchQuery,
+    user,
+    menuItems,
+    categoryMenuOpen,
+    setActiveMenu,
+    setSearchOpen,
+    setMobileOpen,
+    setSearchQuery,
+    setCategoryMenuOpen,
+    toggleSubMenu,
+    closeMobileMenu,
+    fetchMenuItems,
+    loadUser,
+    handleScroll,
+  } = useHeaderStore();
 
+  const { cartCount, fetchCart } = useCartStore();
+
+  // Refs
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const categoryMenuRef = useRef<HTMLDivElement | null>(null);
 
-  const baseMenu: MenuItem[] = useMemo(
-    () => [
-      { label: "HOME", path: "/" },
-      { label: "SHOP", path: "/shop" },
-      { label: "CONTACT", path: "/contact" },
-    ],
-    []
-  );
-
+  // Taskbar Items
   const taskbarItems: TaskbarItem[] = useMemo(
     () => [
       { path: "/", icon: "Home", label: "Home" },
@@ -64,6 +55,7 @@ export const useHeader = () => {
     [user]
   );
 
+  // Handle Search Submit
   const handleSearchSubmit = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter" && searchQuery.trim()) {
@@ -72,96 +64,44 @@ export const useHeader = () => {
         setSearchQuery("");
       }
     },
-    [searchQuery, navigate]
+    [searchQuery, navigate, setSearchOpen, setSearchQuery]
   );
 
-  const handleMouseEnter = useCallback((label: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setActiveMenu(label);
-  }, []);
+  // Mouse Handlers
+  const handleMouseEnter = useCallback(
+    (label: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      setActiveMenu(label);
+    },
+    [setActiveMenu]
+  );
 
   const handleMouseLeave = useCallback(() => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
-  }, []);
+  }, [setActiveMenu]);
 
-  const toggleSubMenu = useCallback((label: string) => {
-    setActiveMenu((prev) => (prev === label ? null : label));
-  }, []);
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileOpen(false);
-    setActiveMenu(null);
-  }, []);
-
-  // 📌 Load Category Menu
+  // 📌 Load Categories & User on Mount
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categories = await getCategories();
+    fetchMenuItems();
+    loadUser();
+  }, [fetchMenuItems, loadUser]);
 
-        if (!Array.isArray(categories) || categories.length === 0) {
-          setMenuItems(baseMenu);
-          return;
-        }
-
-        const categoryMenu: MenuItem = {
-          label: "CATEGORY",
-          subMenu: categories.map((cat: string) => ({
-            label: cat.charAt(0).toUpperCase() + cat.slice(1),
-            path: `/shop/${cat.toLowerCase().replace(/\s+/g, "-")}`,
-          })),
-        };
-
-        const updated = [...baseMenu];
-        const shopIndex = updated.findIndex((m) => m.label === "SHOP");
-        if (shopIndex !== -1) {
-          updated.splice(shopIndex + 1, 0, categoryMenu);
-        } else {
-          updated.push(categoryMenu);
-        }
-
-        setMenuItems(updated);
-      } catch {
-        setMenuItems(baseMenu);
-      }
-    };
-
-    fetchCategories();
-  }, [baseMenu]);
-
-  // 🛒 Đồng bộ cart từ Zustand mỗi khi đổi route
+  // 🛒 Sync Cart on Route Change
   useEffect(() => {
-    fetchCart(); // lấy cart + updateCartCount()
+    fetchCart();
+    loadUser();
+  }, [location.pathname, fetchCart, loadUser]);
 
-    const storedUser = localStorage.getItem("user");
-    const storedUserId = localStorage.getItem("userId");
-
-    try {
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else if (storedUserId) {
-        setUser({ id: storedUserId });
-      } else {
-        setUser(null);
-      }
-    } catch {
-      localStorage.removeItem("user");
-      localStorage.removeItem("userId");
-      setUser(null);
-    }
-  }, [location.pathname, fetchCart]);
-
-  // 📌 Scroll detection
+  // 📌 Scroll Detection
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
 
-  // 📌 Focus search
+  // 📌 Focus Search Input
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       const timer = setTimeout(() => searchInputRef.current?.focus(), 100);
@@ -169,7 +109,7 @@ export const useHeader = () => {
     }
   }, [searchOpen]);
 
-  // 📌 Close when clicking outside
+  // 📌 Click Outside Handler
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -201,20 +141,27 @@ export const useHeader = () => {
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [searchOpen, mobileOpen, categoryMenuOpen, closeMobileMenu]);
+  }, [
+    searchOpen,
+    mobileOpen,
+    categoryMenuOpen,
+    setSearchOpen,
+    closeMobileMenu,
+    setCategoryMenuOpen,
+  ]);
 
-  // 📌 Close menu when route changes
+  // 📌 Close Menus on Route Change
   useEffect(() => {
     closeMobileMenu();
     setCategoryMenuOpen(false);
-  }, [location.pathname, closeMobileMenu]);
+  }, [location.pathname, closeMobileMenu, setCategoryMenuOpen]);
 
   return {
     isScrolled,
     activeMenu,
     mobileOpen,
     searchOpen,
-    cartCount, // 🔥 lấy từ Zustand
+    cartCount,
     searchQuery,
     user,
     menuItems,
