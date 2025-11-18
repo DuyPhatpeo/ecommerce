@@ -202,7 +202,7 @@ const DesktopNavItem = ({
           >
             <div
               className={`grid gap-1 ${
-                item.subMenu!.length > 8
+                item.subMenu!.length > 6
                   ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                   : "grid-cols-1"
               } auto-rows-min`}
