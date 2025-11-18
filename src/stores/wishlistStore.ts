@@ -68,33 +68,51 @@ export const useWishlistStore = create<WishlistState>((set, get) => ({
         return;
       }
 
-      // Sắp xếp từ mới đến cũ dựa theo createdAt hoặc id (nếu API trả về thứ tự cũ -> mới)
+      // Sắp xếp từ mới đến cũ
       wishlistData.sort((a, b) => {
-        // Nếu có createdAt
         if (a.createdAt && b.createdAt) {
           return (
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
         }
-        // fallback: đảo thứ tự nếu không có createdAt
         return 0;
       });
 
-      const productFetches = wishlistData.map((item) =>
-        getProductById(item.productId)
+      // ❗ FIX BUG: dùng Promise.allSettled để không crash khi có sản phẩm bị xóa
+      const productResults = await Promise.allSettled(
+        wishlistData.map((item) => getProductById(item.productId))
       );
 
-      const productResults = await Promise.all(productFetches);
+      const validProducts: Product[] = [];
+      const invalidIds: string[] = [];
 
-      const formattedProducts = productResults.map((p) => ({
-        ...p,
-        img: p.images?.[0] || "/placeholder.png",
-      }));
+      productResults.forEach((res, index) => {
+        if (res.status === "fulfilled") {
+          const p = res.value;
+          validProducts.push({
+            ...p,
+            img: p.images?.[0] || "/placeholder.png",
+          });
+        } else {
+          // ❗ ID sản phẩm đã bị xóa khỏi database
+          invalidIds.push(wishlistData[index].productId);
+        }
+      });
 
-      const productIds = new Set(formattedProducts.map((p) => p.id));
+      // ❗ Nếu có sản phẩm chết → xóa khỏi wishlist DB
+      if (invalidIds.length > 0) {
+        console.warn("Removed invalid wishlist product IDs:", invalidIds);
+
+        for (const id of invalidIds) {
+          await removeFromWishlist(userId, id);
+        }
+      }
+
+      // Set state
+      const productIds = new Set(validProducts.map((p) => p.id));
 
       set({
-        wishlistItems: formattedProducts,
+        wishlistItems: validProducts,
         wishlistedProducts: productIds,
         isLoadingList: false,
       });
