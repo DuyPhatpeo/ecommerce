@@ -196,11 +196,11 @@ export default function CartSummary({
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
           {/* Total Price */}
-          <div className="text-start">
-            <div className="text-[11px] text-gray-500 leading-tight">Total</div>
-            <div className="text-base font-semibold text-orange-600">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">Total</span>
+            <span className="text-lg font-semibold text-orange-600">
               {formatPrice(total)}
-            </div>
+            </span>
           </div>
 
           {/* Checkout Button (Mobile + Tablet only) */}

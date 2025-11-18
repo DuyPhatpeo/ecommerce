@@ -8,6 +8,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import CheckoutProductList from "./CheckoutProductList";
+import Button from "../ui/Button";
 
 interface Product {
   id: string;
@@ -20,6 +21,7 @@ interface Product {
 
 interface CustomerInfo {
   name: string;
+  email: string;
   phone: string;
   address: string;
 }
@@ -32,6 +34,7 @@ interface Props {
   customerInfo?: CustomerInfo;
   products: Product[];
   onPlaceOrder: () => void;
+  loading?: boolean; // optional, cho trạng thái loading
 }
 
 const CheckoutSummary: React.FC<Props> = ({
@@ -41,6 +44,7 @@ const CheckoutSummary: React.FC<Props> = ({
   total,
   products,
   onPlaceOrder,
+  loading = false,
 }) => {
   const formatVND = (value: number) => `${value.toLocaleString("vi-VN")}₫`;
 
@@ -119,18 +123,14 @@ const CheckoutSummary: React.FC<Props> = ({
 
         {/* Checkout Button - Desktop only */}
         <div className="hidden lg:block">
-          <button
+          <Button
             onClick={onPlaceOrder}
-            disabled={subtotal <= 0}
-            className={`w-full py-5 font-semibold text-lg rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-              subtotal > 0
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
-                : "bg-gray-100 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            <ShieldCheck className="w-6 h-6" />
-            Confirm Payment
-          </button>
+            label="Place Order"
+            icon={<ShieldCheck className="w-6 h-6" />}
+            justify="center"
+            className="w-full py-5 text-lg rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:from-orange-600 hover:to-amber-600"
+            loading={loading}
+          />
         </div>
 
         {/* Secure note */}
@@ -144,26 +144,22 @@ const CheckoutSummary: React.FC<Props> = ({
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
           {/* Total Price */}
-          <div className="text-start">
-            <div className="text-[11px] text-gray-500 leading-tight">Total</div>
-            <div className="text-base font-semibold text-orange-600">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">Total</span>
+            <span className="text-lg font-semibold text-orange-600">
               {formatVND(total)}
-            </div>
+            </span>
           </div>
 
           {/* Checkout Button - Mobile & Tablet only */}
-          <button
+          <Button
             onClick={onPlaceOrder}
-            disabled={subtotal <= 0}
-            className={`w-full py-2.5 rounded-md font-semibold text-sm transition-all flex items-center justify-center gap-1.5 ${
-              subtotal > 0
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
-                : "bg-gray-100 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            <CreditCard className="w-4 h-4" />
-            Confirm Payment
-          </button>
+            label="Place Order"
+            icon={<CreditCard className="w-4 h-4" />}
+            justify="center"
+            className="w-full py-2.5 rounded-md text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
+            loading={loading}
+          />
         </div>
       </div>
 

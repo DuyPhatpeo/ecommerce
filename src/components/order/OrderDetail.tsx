@@ -47,7 +47,7 @@ const OrderDetail: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16 py-8">
       <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-orange-200 space-y-6">
         {/* Header */}
         <div className="text-center mb-8">
