@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import { toast } from "react-toastify";
 
 import Checkbox from "../ui/Checkbox";
+import Loader from "../general/Loader";
 
 interface ProductType {
   id: string;
@@ -129,12 +130,7 @@ export default function CartList({
         {/* BODY */}
         <div>
           {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-orange-600 mx-auto mb-4"></div>
-              <p className="text-gray-500 text-lg font-medium">
-                Loading cart...
-              </p>
-            </div>
+            <Loader />
           ) : formattedCartItems.length === 0 ? (
             <div className="text-center py-16">
               <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
