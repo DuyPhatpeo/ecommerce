@@ -86,38 +86,8 @@ export default function ProductReviews({ reviews = [] }: Props) {
         Customer Reviews
       </h3>
 
-      {/* --- Review List --- */}
-      {allReviews.length > 0 && (
-        <div className="space-y-4 mb-8">
-          {allReviews.map((review) => (
-            <div
-              key={review.id}
-              className="p-4 border rounded-xl bg-gray-50 hover:shadow-md transition-all"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <strong>{review.name}</strong>
-                <span className="text-orange-400 flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`w-4 h-4 ${
-                        star <= review.rating
-                          ? "fill-orange-400 text-orange-400"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </span>
-              </div>
-              <p className="text-gray-600">{review.comment}</p>
-              <p className="text-gray-400 text-sm mt-1">{review.date}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* --- Review Form --- */}
-      <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 border-2 border-dashed border-gray-300">
+      <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 border-2 border-dashed border-gray-300 mb-6">
         <h4 className="font-bold text-gray-800 mb-3">Write Your Review</h4>
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Star Rating */}
@@ -166,6 +136,36 @@ export default function ProductReviews({ reviews = [] }: Props) {
           </button>
         </form>
       </div>
+
+      {/* --- Review List --- */}
+      {allReviews.length > 0 && (
+        <div className="space-y-4">
+          {allReviews.map((review) => (
+            <div
+              key={review.id}
+              className="p-4 border rounded-xl bg-gray-50 hover:shadow-md transition-all"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <strong>{review.name}</strong>
+                <span className="text-orange-400 flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-4 h-4 ${
+                        star <= review.rating
+                          ? "fill-orange-400 text-orange-400"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </span>
+              </div>
+              <p className="text-gray-600">{review.comment}</p>
+              <p className="text-gray-400 text-sm mt-1">{review.date}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
