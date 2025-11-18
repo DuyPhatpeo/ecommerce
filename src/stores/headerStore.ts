@@ -7,16 +7,7 @@ export interface MenuItem {
   subMenu?: MenuItem[];
 }
 
-export interface TaskbarItem {
-  path: string;
-  icon: any;
-  label: string;
-  badge?: number;
-  activeCheck?: string[];
-}
-
 interface HeaderState {
-  // State
   isScrolled: boolean;
   activeMenu: string | null;
   mobileOpen: boolean;
@@ -26,7 +17,6 @@ interface HeaderState {
   menuItems: MenuItem[];
   categoryMenuOpen: boolean;
 
-  // Actions
   setIsScrolled: (value: boolean) => void;
   setActiveMenu: (menu: string | null) => void;
   setMobileOpen: (value: boolean) => void;
@@ -35,7 +25,6 @@ interface HeaderState {
   setUser: (user: { name?: string; id?: string } | null) => void;
   setCategoryMenuOpen: (value: boolean) => void;
 
-  // Methods
   toggleSubMenu: (label: string) => void;
   closeMobileMenu: () => void;
   fetchMenuItems: () => Promise<void>;
@@ -46,11 +35,11 @@ interface HeaderState {
 const baseMenu: MenuItem[] = [
   { label: "HOME", path: "/" },
   { label: "SHOP", path: "/shop" },
+  { label: "CATEGORY", subMenu: [] },
   { label: "CONTACT", path: "/contact" },
 ];
 
 export const useHeaderStore = create<HeaderState>((set, get) => ({
-  // Initial State
   isScrolled: false,
   activeMenu: null,
   mobileOpen: false,
@@ -60,7 +49,6 @@ export const useHeaderStore = create<HeaderState>((set, get) => ({
   menuItems: baseMenu,
   categoryMenuOpen: false,
 
-  // Setters
   setIsScrolled: (value) => set({ isScrolled: value }),
   setActiveMenu: (menu) => set({ activeMenu: menu }),
   setMobileOpen: (value) => set({ mobileOpen: value }),
@@ -69,63 +57,57 @@ export const useHeaderStore = create<HeaderState>((set, get) => ({
   setUser: (user) => set({ user }),
   setCategoryMenuOpen: (value) => set({ categoryMenuOpen: value }),
 
-  // Toggle SubMenu
   toggleSubMenu: (label) => {
     const { activeMenu } = get();
     set({ activeMenu: activeMenu === label ? null : label });
   },
 
-  // Close Mobile Menu
-  closeMobileMenu: () => {
-    set({ mobileOpen: false, activeMenu: null });
-  },
+  closeMobileMenu: () => set({ mobileOpen: false, activeMenu: null }),
 
-  // Fetch Categories & Build Menu
   fetchMenuItems: async () => {
     try {
       const categories = await getCategories();
+      const updated = get().menuItems.map((item) => {
+        if (item.label === "CATEGORY") {
+          return {
+            ...item,
+            subMenu: Array.isArray(categories)
+              ? categories.map((cat: string) => ({
+                  label: cat.charAt(0).toUpperCase() + cat.slice(1),
+                  path: `/shop/${cat.toLowerCase().replace(/\s+/g, "-")}`,
+                }))
+              : [],
+          };
+        }
+        return item;
+      });
 
-      if (!Array.isArray(categories) || categories.length === 0) {
-        set({ menuItems: baseMenu });
-        return;
-      }
-
-      const categoryMenu: MenuItem = {
-        label: "CATEGORY",
-        subMenu: categories.map((cat: string) => ({
-          label: cat.charAt(0).toUpperCase() + cat.slice(1),
-          path: `/shop/${cat.toLowerCase().replace(/\s+/g, "-")}`,
-        })),
-      };
-
-      const updated = [...baseMenu];
       const shopIndex = updated.findIndex((m) => m.label === "SHOP");
+      const categoryIndex = updated.findIndex((m) => m.label === "CATEGORY");
 
-      if (shopIndex !== -1) {
-        updated.splice(shopIndex + 1, 0, categoryMenu);
-      } else {
-        updated.push(categoryMenu);
+      if (
+        shopIndex !== -1 &&
+        categoryIndex !== -1 &&
+        categoryIndex !== shopIndex + 1
+      ) {
+        const [categoryItem] = updated.splice(categoryIndex, 1);
+        updated.splice(shopIndex + 1, 0, categoryItem);
       }
 
       set({ menuItems: updated });
     } catch {
-      set({ menuItems: baseMenu });
+      set({ menuItems: get().menuItems });
     }
   },
 
-  // Load User from LocalStorage
   loadUser: () => {
-    const storedUser = localStorage.getItem("user");
-    const storedUserId = localStorage.getItem("userId");
-
     try {
-      if (storedUser) {
-        set({ user: JSON.parse(storedUser) });
-      } else if (storedUserId) {
-        set({ user: { id: storedUserId } });
-      } else {
-        set({ user: null });
-      }
+      const storedUser = localStorage.getItem("user");
+      const storedUserId = localStorage.getItem("userId");
+
+      if (storedUser) set({ user: JSON.parse(storedUser) });
+      else if (storedUserId) set({ user: { id: storedUserId } });
+      else set({ user: null });
     } catch {
       localStorage.removeItem("user");
       localStorage.removeItem("userId");
@@ -133,8 +115,5 @@ export const useHeaderStore = create<HeaderState>((set, get) => ({
     }
   },
 
-  // Handle Scroll
-  handleScroll: () => {
-    set({ isScrolled: window.scrollY > 50 });
-  },
+  handleScroll: () => set({ isScrolled: window.scrollY > 50 }),
 }));
