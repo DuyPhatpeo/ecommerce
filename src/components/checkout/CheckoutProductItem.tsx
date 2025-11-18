@@ -9,63 +9,41 @@ interface Product {
   salePrice?: number;
 }
 
-interface Props {
+interface ProductItemProps {
   product: Product;
+  formatVND: (value: number) => string;
 }
 
-const CheckoutProductItem: React.FC<Props> = ({ product }) => {
+const CheckoutProductItem: React.FC<ProductItemProps> = ({
+  product,
+  formatVND,
+}) => {
   const displayPrice = product.salePrice ?? product.regularPrice ?? 0;
   const totalPrice = displayPrice * product.quantity;
 
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-none">
-      {/* LEFT SIDE */}
-      <div className="flex items-center gap-3 min-w-0">
-        <img
-          src={
-            Array.isArray(product.images) && product.images.length > 0
-              ? product.images[0]
-              : "/placeholder.png"
-          }
-          alt={product.title}
-          className="w-16 h-16 rounded-lg object-cover"
-        />
-
-        <div className="min-w-0">
-          <h3
-            className="text-sm font-medium text-gray-800 truncate max-w-[200px]"
-            title={product.title}
-          >
-            {product.title}
-          </h3>
-
-          <span className="text-xs text-gray-500 mt-1 block">
-            x{product.quantity}
-          </span>
-        </div>
+    <div className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-none">
+      <img
+        src={
+          Array.isArray(product.images) && product.images.length > 0
+            ? product.images[0]
+            : "/placeholder.png"
+        }
+        alt={product.title}
+        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+      />
+      <div className="flex-1 min-w-0">
+        <p
+          className="text-sm font-medium text-gray-800 truncate"
+          title={product.title}
+        >
+          {product.title}
+        </p>
+        <p className="text-xs text-gray-500">x{product.quantity}</p>
       </div>
-
-      {/* RIGHT SIDE */}
-      <div className="text-right ml-4 whitespace-nowrap">
-        {/* Giá đơn vị */}
-        {product.salePrice && product.regularPrice ? (
-          <div>
-            <span className="text-sm font-semibold text-gray-800">
-              {product.salePrice.toLocaleString("en-US")}₫
-            </span>
-            <span className="text-xs text-gray-400 line-through ml-1">
-              {product.regularPrice.toLocaleString("en-US")}₫
-            </span>
-          </div>
-        ) : (
-          <span className="text-sm font-semibold text-gray-800">
-            {displayPrice.toLocaleString("en-US")}₫
-          </span>
-        )}
-
-        {/* Tổng */}
-        <p className="text-base font-bold text-orange-600 mt-1">
-          {totalPrice.toLocaleString("en-US")}₫
+      <div className="text-right flex-shrink-0">
+        <p className="text-sm font-semibold text-orange-600">
+          {formatVND(totalPrice)}
         </p>
       </div>
     </div>

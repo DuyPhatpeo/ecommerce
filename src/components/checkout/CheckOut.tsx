@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckoutForm from "./CheckoutForm";
-import CheckoutProductList from "./CheckoutProductList";
 import CheckoutSummary from "./CheckoutSummary";
 import { useCheckoutStore } from "../../stores/checkoutStore";
 
@@ -12,7 +11,6 @@ const CheckOut: React.FC = () => {
 
   const {
     products,
-    loading,
     subtotal,
     tax,
     shipping,
@@ -44,7 +42,6 @@ const CheckOut: React.FC = () => {
           {/* Form & Product List */}
           <div className="space-y-6 lg:col-span-2">
             <CheckoutForm onChange={setCustomerInfo} />
-            <CheckoutProductList products={products} loading={loading} />
           </div>
 
           {/* Summary */}
@@ -54,6 +51,7 @@ const CheckOut: React.FC = () => {
               tax={tax}
               shipping={shipping}
               total={total}
+              products={products}
               customerInfo={
                 customerInfo ?? {
                   recipientName: "",

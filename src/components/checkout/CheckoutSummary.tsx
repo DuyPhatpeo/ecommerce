@@ -7,7 +7,23 @@ import {
   ShieldCheck,
   ShoppingCart,
 } from "lucide-react";
-import type { CustomerInfo } from "./CheckoutForm";
+import CheckoutProductList from "./CheckoutProductList";
+
+interface Product {
+  id: string;
+  title: string;
+  images?: string[];
+  quantity: number;
+  regularPrice?: number;
+  salePrice?: number;
+}
+
+interface CustomerInfo {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
 
 interface Props {
   subtotal: number;
@@ -15,6 +31,7 @@ interface Props {
   shipping: number;
   total: number;
   customerInfo?: CustomerInfo;
+  products: Product[];
   onPlaceOrder: () => void;
 }
 
@@ -23,6 +40,7 @@ const CheckoutSummary: React.FC<Props> = ({
   tax,
   shipping,
   total,
+  products,
   onPlaceOrder,
 }) => {
   const formatVND = (value: number) => `${value.toLocaleString("vi-VN")}₫`;
@@ -38,6 +56,9 @@ const CheckoutSummary: React.FC<Props> = ({
             <h3 className="text-xl font-bold text-gray-900">Order Summary</h3>
           </div>
         </div>
+
+        {/* Products List */}
+        <CheckoutProductList products={products} formatVND={formatVND} />
 
         {/* Price summary */}
         <div className="text-gray-700 space-y-2">
