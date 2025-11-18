@@ -28,7 +28,7 @@ const CheckoutProductList: React.FC<ProductListProps> = ({
           Products ({products.length})
         </h4>
       </div>
-      <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-orange-300 scrollbar-track-orange-50">
+      <div className="space-y-3 pr-2">
         {products.length === 0 ? (
           <p className="text-sm text-gray-500 text-center py-4">
             No products in cart
