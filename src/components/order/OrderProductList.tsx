@@ -16,7 +16,7 @@ interface Props {
 
 const OrderProductList: React.FC<Props> = ({ items }) => {
   return (
-    <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-orange-100 space-y-8">
+    <div className="bg-white rounded-3xl  p-8 border-2 border-orange-100 space-y-8">
       {/* Header */}
       <h2 className="font-bold text-xl mb-4 text-gray-900 flex items-center gap-2">
         <Package className="w-6 h-6 text-orange-600" />

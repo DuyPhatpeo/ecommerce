@@ -15,7 +15,7 @@ interface Props {
 
 const OrderProductItem: React.FC<Props> = ({ item }) => {
   const navigate = useNavigate();
-  const totalPrice = item.price * item.quantity;
+  const total = item.price * item.quantity;
 
   const handleClick = () => {
     navigate(`/product/${item.id}`);
@@ -24,37 +24,27 @@ const OrderProductItem: React.FC<Props> = ({ item }) => {
   return (
     <div
       onClick={handleClick}
-      className="flex items-center justify-between py-3 border-b border-gray-100 last:border-none cursor-pointer hover:bg-gray-100 transition rounded-xl px-2"
+      className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0 cursor-pointer"
     >
-      {/* LEFT SIDE */}
-      <div className="flex items-center gap-3 min-w-0">
-        <img
-          src={item.image || "/placeholder.png"}
-          alt={item.title}
-          className="w-16 h-16 rounded-lg object-cover"
-        />
+      {/* Ảnh */}
+      <img
+        src={item.image || "/placeholder.png"}
+        alt={item.title}
+        className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+      />
 
-        <div className="min-w-0">
-          <p
-            className="text-sm font-medium text-gray-800 truncate max-w-[200px]"
-            title={item.title}
-          >
-            {item.title}
-          </p>
-
-          <span className="text-xs text-gray-500 mt-1 block">
-            x{item.quantity}
-          </span>
-        </div>
+      {/* Tên + số lượng */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-gray-800 truncate hover:text-orange-500">
+          {item.title}
+        </p>
+        <p className="text-xs text-gray-500">x{item.quantity}</p>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="text-right ml-4 whitespace-nowrap">
-        <span className="text-sm font-semibold text-gray-800">
-          {item.price.toLocaleString("en-US")}₫
-        </span>
-        <p className="text-base font-bold text-orange-600 mt-1">
-          {totalPrice.toLocaleString("en-US")}₫
+      {/* Giá */}
+      <div className="flex-shrink-0 text-right">
+        <p className="text-sm font-bold text-orange-600 mt-0.5">
+          {total.toLocaleString("vi-VN")}₫
         </p>
       </div>
     </div>
