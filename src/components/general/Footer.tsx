@@ -107,16 +107,46 @@ const Footer: React.FC = () => {
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-[#ff9f00] to-[#ffb347]" />
             </h3>
 
-            <div className="overflow-hidden mb-2 max-w-[250px]">
-              <iframe
-                src="https://www.facebook.com/plugins/page.php?href=https://www.facebook.com/nike&tabs=&width=250&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
-                width="100%"
-                height="130"
-                style={{ border: "none", overflow: "hidden" }}
-                scrolling="no"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              ></iframe>
+            <div className="mb-4 max-w-[280px]">
+              <a
+                href="https://www.facebook.com/nike"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block bg-[#2a2a2a]/60 rounded-lg border border-gray-700 hover:border-[#ff9f00] transition-all duration-300 hover:shadow-lg hover:shadow-[#ff9f00]/20 overflow-hidden"
+              >
+                {/* Profile Section */}
+                <div className="relative px-4 py-4">
+                  {/* Avatar */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-16 h-16 rounded-lg bg-white overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-lg transition-all duration-300">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/200px-Logo_NIKE.svg.png"
+                        alt="Nike Logo"
+                        className="w-full h-full object-contain p-2"
+                      />
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-white font-bold text-base group-hover:text-[#ff9f00] transition-colors truncate">
+                        Nike
+                      </h4>
+                      <p className="text-gray-400 text-xs">
+                        Sports & Recreation
+                      </p>
+                      <p className="text-gray-500 text-xs mt-0.5">
+                        37M followers
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Follow Button */}
+                  <button className="w-full py-2.5 bg-gradient-to-r from-[#1877f2] to-[#0c63d4] hover:from-[#166fe5] hover:to-[#0b58c0] text-white text-sm font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-md">
+                    <Facebook size={16} />
+                    Follow on Facebook
+                  </button>
+                </div>
+              </a>
             </div>
 
             {/* Social Icons */}
