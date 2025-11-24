@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Sparkles, Filter as FilterIcon, ShoppingBag } from "lucide-react";
+import { Sparkles, Filter, ShoppingBag } from "lucide-react";
 import { getProducts } from "../../api/productApi";
-import Filter from "../section/Filter";
+import ProductFilters from "../section/ProductFilters";
 import Button from "../ui/Button";
 import ShopList from "../section/ProductList";
 import { useShopFilter } from "../../hooks/useFilter";
@@ -156,7 +156,7 @@ const CategoryProducts: React.FC = () => {
           <Button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
-            icon={<FilterIcon size={18} />}
+            icon={<Filter size={18} />}
             label={"Filter"}
           />
 
@@ -178,7 +178,7 @@ const CategoryProducts: React.FC = () => {
         {/* --- Main Layout --- */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           <div className="lg:w-64 shrink-0 self-start">
-            <Filter
+            <ProductFilters
               context="category"
               showFilters={showFilters}
               toggleFilters={toggleFilters}

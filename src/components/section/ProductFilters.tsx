@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Filter as FilterIcon, X } from "lucide-react";
+import { Filter, X } from "lucide-react";
 import Button from "../ui/Button";
 import CategoryFilter from "./filters/CategoryFilter";
 import BrandFilter from "./filters/BrandFilter";
@@ -33,7 +33,7 @@ interface Props {
   setSizeFilter: (v: string[]) => void;
 }
 
-const Filter: React.FC<Props> = ({
+const ProductFilters: React.FC<Props> = ({
   context = "shop",
   showFilters,
   toggleFilters,
@@ -133,7 +133,7 @@ const Filter: React.FC<Props> = ({
       {/* --- Header --- */}
       <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
-          <FilterIcon size={18} className="text-orange-500" /> Filters
+          <Filter size={18} className="text-orange-500" /> Filters
         </h3>
         <Button
           onClick={toggleFilters}
@@ -234,4 +234,4 @@ const Filter: React.FC<Props> = ({
   );
 };
 
-export default Filter;
+export default ProductFilters;
