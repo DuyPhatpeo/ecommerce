@@ -43,7 +43,6 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Tính số card hiển thị theo kích thước màn hình
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
     if (w < 640) return 2;
@@ -59,7 +58,6 @@ const ProductView: React.FC<ProductViewProps> = ({
     return () => window.removeEventListener("resize", onResize);
   }, [computeVisible]);
 
-  // Lấy sản phẩm từ API
   useEffect(() => {
     (async () => {
       try {
@@ -109,7 +107,6 @@ const ProductView: React.FC<ProductViewProps> = ({
     [currentIndex, maxIndex]
   );
 
-  // Xử lý drag to scroll
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (!sliderRef.current || mode !== "slider") return;
@@ -138,12 +135,11 @@ const ProductView: React.FC<ProductViewProps> = ({
   const handleMouseUp = useCallback(() => {
     if (!sliderRef.current) return;
 
-    const wasDragging = dragDistance > 10; // Tăng threshold lên 10px
+    const wasDragging = dragDistance > 10;
 
     setIsDragging(false);
     sliderRef.current.style.cursor = "grab";
 
-    // Chỉ snap nếu thực sự kéo (> 10px)
     if (wasDragging) {
       const cards = sliderRef.current.querySelectorAll(".product-card-item");
       let closestIndex = 0;
@@ -160,7 +156,6 @@ const ProductView: React.FC<ProductViewProps> = ({
 
       setCurrentIndex(Math.min(closestIndex, maxIndex));
 
-      // Smooth scroll đến card gần nhất
       const targetCard = cards[closestIndex] as HTMLElement;
       if (targetCard) {
         sliderRef.current.scrollTo({
@@ -170,7 +165,6 @@ const ProductView: React.FC<ProductViewProps> = ({
       }
     }
 
-    // Reset drag distance
     setTimeout(() => setDragDistance(0), 100);
   }, [dragDistance, maxIndex]);
 
@@ -180,7 +174,6 @@ const ProductView: React.FC<ProductViewProps> = ({
     }
   }, [isDragging, handleMouseUp]);
 
-  // Touch support cho mobile
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
       if (!sliderRef.current || mode !== "slider") return;
@@ -212,45 +205,60 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   if (isLoading)
     return (
-      <div className="py-16 text-center text-gray-500">
-        <div className="w-8 h-8 mx-auto border-4 border-orange-500 rounded-full border-t-transparent animate-spin" />
-        <p className="mt-3 text-sm">Loading product...</p>
+      <div className="py-20 text-center">
+        <div className="relative inline-flex items-center justify-center">
+          <div className="w-16 h-16 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+          <Sparkles
+            className="absolute text-orange-500 animate-pulse"
+            size={24}
+          />
+        </div>
+        <p className="mt-4 text-sm font-medium text-gray-600">
+          Đang tải sản phẩm...
+        </p>
       </div>
     );
 
   if (!products.length)
     return (
-      <div className="py-16 text-center text-gray-500">
-        <Sparkles size={48} className="mx-auto mb-4 text-gray-300" />
-        <p>There are no products.</p>
+      <div className="py-20 text-center">
+        <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50">
+          <Sparkles size={40} className="text-orange-400" />
+        </div>
+        <p className="text-lg font-medium text-gray-700">
+          Không có sản phẩm nào
+        </p>
+        <p className="mt-1 text-sm text-gray-500">Vui lòng thử lại sau</p>
       </div>
     );
 
   return (
     <section
-      className={`relative w-full py-8 overflow-hidden md:py-16 ${
+      className={`relative w-full py-12 md:py-20 overflow-hidden ${
         mode === "slider"
           ? "bg-transparent"
-          : "bg-gradient-to-br from-gray-50 via-white to-white/40"
+          : "bg-gradient-to-br from-orange-50/30 via-white to-orange-50/20"
       }`}
     >
       <div className="px-4 mx-auto max-w-7xl md:px-16">
-        <h2 className="relative inline-block text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-600 to-orange-800 bg-clip-text text-transparent leading-[1.1] pb-2">
-          {title}
-          <span className="absolute left-0 -bottom-1 h-[3px] w-20 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700" />
-        </h2>
+        {/* Title với animation gradient */}
+        <div className="relative inline-block">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
+            {title}
+          </h2>
+          <div className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent w-24 animate-pulse" />
+        </div>
       </div>
 
       <div
-        className={`mt-10 ${
+        className={`mt-12 ${
           mode === "slider"
             ? "px-2 sm:px-4 md:px-6"
             : "max-w-7xl mx-auto px-4 md:px-16"
         }`}
       >
         <div className="relative">
-          {/* Slider / Grid Container */}
-          <div className={mode === "slider" ? "pb-24" : ""}>
+          <div className={mode === "slider" ? "pb-20" : ""}>
             <div
               ref={sliderRef}
               className={
@@ -280,8 +288,8 @@ const ProductView: React.FC<ProductViewProps> = ({
               <div
                 className={
                   mode === "slider"
-                    ? "flex gap-2 sm:gap-4 py-2"
-                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4"
+                    ? "flex gap-3 sm:gap-4 py-2"
+                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
                 }
               >
                 {products.map((p, index) => (
@@ -289,14 +297,13 @@ const ProductView: React.FC<ProductViewProps> = ({
                     key={`${p.id}-${index}`}
                     className={
                       mode === "slider"
-                        ? "product-card-item flex-shrink-0 w-[calc(50%-4px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
+                        ? "product-card-item flex-shrink-0 w-[calc(50%-6px)] sm:w-[calc(33.333%-10px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
                         : ""
                     }
                     style={{
                       pointerEvents: dragDistance > 10 ? "none" : "auto",
                     }}
                     onClick={(e) => {
-                      // Ngăn click nếu vừa kéo
                       if (dragDistance > 10) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -319,21 +326,66 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* Nút điều hướng */}
+          {/* Navigation buttons với style cải tiến */}
           {mode === "slider" && products.length > visibleCount && (
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 flex justify-center gap-4 z-10">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-2 flex justify-center gap-3 z-10">
               <Button
-                icon={<ArrowLeft size={22} />}
+                icon={<ArrowLeft size={20} strokeWidth={2.5} />}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
-                className="transition-all duration-200 ease-in-out hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
-              />
+                className={`
+                  group relative overflow-hidden
+                  bg-white shadow-lg rounded-full p-3
+                  transition-all duration-300 ease-out
+                  ${
+                    canLeft
+                      ? "hover:bg-orange-500 hover:shadow-xl hover:scale-110 active:scale-95"
+                      : "opacity-40 cursor-not-allowed"
+                  }
+                `}
+              >
+                <span
+                  className={`
+                  block transition-colors duration-300
+                  ${
+                    canLeft
+                      ? "text-orange-600 group-hover:text-white"
+                      : "text-gray-400"
+                  }
+                `}
+                >
+                  <ArrowLeft size={20} strokeWidth={2.5} />
+                </span>
+              </Button>
+
               <Button
-                icon={<ArrowRight size={22} />}
+                icon={<ArrowRight size={20} strokeWidth={2.5} />}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
-                className="transition-all duration-200 ease-in-out hover:bg-orange-100 hover:text-orange-600 hover:scale-110 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded-full p-2"
-              />
+                className={`
+                  group relative overflow-hidden
+                  bg-white shadow-lg rounded-full p-3
+                  transition-all duration-300 ease-out
+                  ${
+                    canRight
+                      ? "hover:bg-orange-500 hover:shadow-xl hover:scale-110 active:scale-95"
+                      : "opacity-40 cursor-not-allowed"
+                  }
+                `}
+              >
+                <span
+                  className={`
+                  block transition-colors duration-300
+                  ${
+                    canRight
+                      ? "text-orange-600 group-hover:text-white"
+                      : "text-gray-400"
+                  }
+                `}
+                >
+                  <ArrowRight size={20} strokeWidth={2.5} />
+                </span>
+              </Button>
             </div>
           )}
         </div>
