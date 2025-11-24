@@ -135,19 +135,19 @@ const Footer: React.FC = () => {
             <div className="flex flex-wrap gap-3">
               <Button
                 icon={<Facebook size={18} />}
-                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#1877f2] hover:border-[#1877f2]"
+                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#1877f2] hover:border-[#1877f2] bg-gray-800 hover:bg-[#1877f2]/20"
               />
               <Button
                 icon={<Twitter size={18} />}
-                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#1da1f2] hover:border-[#1da1f2]"
+                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#1da1f2] hover:border-[#1da1f2] bg-gray-800 hover:bg-[#1da1f2]/20"
               />
               <Button
                 icon={<Dribbble size={18} />}
-                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#ea4c89] hover:border-[#ea4c89]"
+                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-[#ea4c89] hover:border-[#ea4c89] bg-gray-800 hover:bg-[#ea4c89]/20"
               />
               <Button
                 icon={<Instagram size={18} />}
-                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:text-transparent relative"
+                className="w-10 h-10 sm:w-11 sm:h-11 border border-gray-700 text-gray-300 rounded-full transition-all duration-300 transform hover:scale-110 hover:shadow-lg relative group"
               >
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#feda75] via-[#fa7e1e] to-[#d62976] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
