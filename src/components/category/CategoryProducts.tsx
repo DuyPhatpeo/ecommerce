@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Sparkles, Filter, ShoppingBag, ArrowUpDown } from "lucide-react";
+import { Sparkles, Filter, ShoppingBag } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ShopFilter from "../section/Filter";
 import Button from "../ui/Button";
 import ShopList from "../section/ProductList";
 import { useShopFilter } from "../../hooks/useFilter";
-import { useSort } from "../../hooks/useSort";
 import Loader from "../general/Loader";
+import Select from "../ui/Select";
+import { useSortStore } from "../../stores/sortStore";
 
 interface Product {
   id: string;
@@ -29,6 +30,18 @@ const CategoryProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // --- Zustand Store ---
+  const {
+    sortBy,
+    setSortBy,
+    paginatedProducts,
+    hasMore,
+    handleSeeMore,
+    setProducts: setStoreProducts,
+    setFilters: setStoreFilters,
+  } = useSortStore();
+
+  // --- FETCH DATA ---
   useEffect(() => {
     let mounted = true;
     const fetchProducts = async () => {
@@ -58,7 +71,10 @@ const CategoryProducts: React.FC = () => {
           size: p.size ?? "",
         }));
 
-        if (mounted) setProducts(normalized);
+        if (mounted) {
+          setProducts(normalized);
+          setStoreProducts(normalized); // cập nhật vào Zustand
+        }
       } catch (err) {
         console.error(err);
         if (mounted) navigate("/404", { replace: true });
@@ -71,8 +87,9 @@ const CategoryProducts: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [category, navigate]);
+  }, [category, navigate, setStoreProducts]);
 
+  // --- FILTER ---
   const {
     stockFilter,
     setStockFilter,
@@ -97,8 +114,10 @@ const CategoryProducts: React.FC = () => {
     PRICE_MAX,
   } = useShopFilter(products);
 
-  const { sortBy, setSortBy, paginatedProducts, hasMore, handleSeeMore } =
-    useSort(products, debouncedFilters, { itemsPerLoad: 9 });
+  // --- Đồng bộ filter với Zustand ---
+  useEffect(() => {
+    setStoreFilters(debouncedFilters);
+  }, [debouncedFilters, setStoreFilters]);
 
   // --- Spinner lần đầu load ---
   if (loading && products.length === 0) return <Loader />;
@@ -141,21 +160,19 @@ const CategoryProducts: React.FC = () => {
             label={"Filter"}
           />
 
-          <div className="ml-auto flex items-center gap-2 bg-white border-2 border-gray-200 rounded-xl px-3 py-2 shadow-sm">
-            <ArrowUpDown size={18} className="text-orange-500 shrink-0" />
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-2 py-1 rounded-lg border-none outline-none bg-transparent text-gray-800 font-medium cursor-pointer text-sm"
-            >
-              <option value="none">Default</option>
-              <option value="name-asc">A → Z</option>
-              <option value="name-desc">Z → A</option>
-              <option value="price-asc">Low → High</option>
-              <option value="price-desc">High → Low</option>
-              <option value="discount-high">Biggest discount (%)</option>
-            </select>
-          </div>
+          <Select
+            value={sortBy}
+            onChange={(v) => setSortBy(v as any)} // kiểu đã nằm trong store
+            className="ml-auto"
+            options={[
+              { label: "Default", value: "none" },
+              { label: "A → Z", value: "name-asc" },
+              { label: "Z → A", value: "name-desc" },
+              { label: "Low → High", value: "price-asc" },
+              { label: "High → Low", value: "price-desc" },
+              { label: "Biggest discount (%)", value: "discount-high" },
+            ]}
+          />
         </div>
 
         {/* --- Main Layout --- */}
@@ -196,9 +213,9 @@ const CategoryProducts: React.FC = () => {
             )}
 
             <ShopList
-              paginatedProducts={paginatedProducts}
+              paginatedProducts={paginatedProducts()}
               clearFilters={clearFilters}
-              hasMore={hasMore}
+              hasMore={hasMore()}
               onSeeMore={handleSeeMore}
             />
           </div>
