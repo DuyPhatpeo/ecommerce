@@ -35,11 +35,6 @@ export interface User {
   password: string;
   phone?: string;
   createdAt?: string;
-  token?: {
-    accessToken: string;
-    refreshToken: string;
-    expiresAt: string;
-  };
   addresses?: Address[];
 }
 
