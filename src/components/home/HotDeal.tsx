@@ -9,23 +9,38 @@ const HotDeal: React.FC = () => {
 
   // =============== Countdown ===============
   const [targetDate] = useState(() => {
+    const saved = localStorage.getItem("hotdeal_expire");
+    if (saved) return new Date(saved);
+
     const date = new Date();
     date.setDate(date.getDate() + 30); // 30 ngày tới
+    localStorage.setItem("hotdeal_expire", date.toISOString());
     return date;
   });
 
-  const calculateTimeLeft = () => {
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft());
+
+  function calculateTimeLeft() {
     const diff = targetDate.getTime() - new Date().getTime();
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+    if (diff <= 0) {
+      // Khi countdown hết → tạo vòng mới
+      const newDate = new Date();
+      newDate.setDate(newDate.getDate() + 30);
+      localStorage.setItem("hotdeal_expire", newDate.toISOString());
+      targetDate.setTime(newDate.getTime());
+      setCurrentIndex(0); // reset slide về đầu
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+
     return {
       days: Math.floor(diff / (1000 * 60 * 60 * 24)),
       hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((diff / (1000 * 60)) % 60),
       seconds: Math.floor((diff / 1000) % 60),
     };
-  };
+  }
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
