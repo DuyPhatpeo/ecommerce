@@ -149,7 +149,7 @@ const Shop: React.FC = () => {
 
           <Select
             value={sortBy}
-            onChange={(v) => setSortBy(v)}
+            onChange={(v) => setSortBy(v as any)}
             className="ml-auto"
             options={[
               { label: "Default", value: "none" },
