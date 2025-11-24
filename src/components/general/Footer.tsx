@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
 
             <div className="overflow-hidden mb-2 max-w-[250px]">
               <iframe
-                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fsweetsoftvn&tabs=&width=250&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
+                src="https://www.facebook.com/plugins/page.php?href=https://www.facebook.com/nike&tabs=&width=250&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
                 width="100%"
                 height="130"
                 style={{ border: "none", overflow: "hidden" }}
