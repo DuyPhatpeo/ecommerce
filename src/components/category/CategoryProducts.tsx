@@ -5,7 +5,7 @@ import { getProducts } from "../../api/productApi";
 import ProductFilters from "../section/ProductFilters";
 import Button from "../ui/Button";
 import ShopList from "../section/ProductList";
-import { useShopFilter } from "../../hooks/useFilter";
+import { useShopFilter } from "../../stores/filterStore";
 import Loader from "../general/Loader";
 import Select from "../ui/Select";
 import { useSortStore } from "../../stores/sortStore";
@@ -21,7 +21,7 @@ interface Product {
   category?: string;
   brand?: string;
   color?: string;
-  size?: string;
+  size?: string | string[];
 }
 
 const CategoryProducts: React.FC = () => {
@@ -30,7 +30,7 @@ const CategoryProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- Zustand Store ---
+  // --- Sort Store ---
   const {
     sortBy,
     setSortBy,
@@ -40,6 +40,31 @@ const CategoryProducts: React.FC = () => {
     setProducts: setStoreProducts,
     setFilters: setStoreFilters,
   } = useSortStore();
+
+  // --- Filter Store ---
+  const {
+    stockFilter,
+    setStockFilter,
+    categoryFilter,
+    setCategoryFilter,
+    brandFilter,
+    setBrandFilter,
+    colorFilter,
+    setColorFilter,
+    sizeFilter,
+    setSizeFilter,
+    priceRange,
+    setPriceRange,
+    showFilters,
+    debouncedFilters,
+    toggleFilters,
+    clearFilters,
+    categoryOptions,
+    brandOptions,
+    hasActiveFilters,
+    PRICE_MIN,
+    PRICE_MAX,
+  } = useShopFilter(products);
 
   // --- FETCH DATA ---
   useEffect(() => {
@@ -73,7 +98,7 @@ const CategoryProducts: React.FC = () => {
 
         if (mounted) {
           setProducts(normalized);
-          setStoreProducts(normalized); // cập nhật vào Zustand
+          setStoreProducts(normalized);
         }
       } catch (err) {
         console.error(err);
@@ -89,37 +114,12 @@ const CategoryProducts: React.FC = () => {
     };
   }, [category, navigate, setStoreProducts]);
 
-  // --- FILTER ---
-  const {
-    stockFilter,
-    setStockFilter,
-    categoryFilter,
-    setCategoryFilter,
-    brandFilter,
-    setBrandFilter,
-    colorFilter,
-    setColorFilter,
-    sizeFilter,
-    setSizeFilter,
-    priceRange,
-    setPriceRange,
-    showFilters,
-    debouncedFilters,
-    toggleFilters,
-    clearFilters,
-    categoryOptions,
-    brandOptions,
-    hasActiveFilters,
-    PRICE_MIN,
-    PRICE_MAX,
-  } = useShopFilter(products);
-
-  // --- Đồng bộ filter với Zustand ---
+  // --- Sync filters with Sort Store ---
   useEffect(() => {
     setStoreFilters(debouncedFilters);
   }, [debouncedFilters, setStoreFilters]);
 
-  // --- Spinner lần đầu load ---
+  // --- Loading state ---
   if (loading && products.length === 0) return <Loader />;
 
   const capitalize = (text?: string) =>
@@ -157,12 +157,12 @@ const CategoryProducts: React.FC = () => {
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
             icon={<Filter size={18} />}
-            label={"Filter"}
+            label="Filter"
           />
 
           <Select
             value={sortBy}
-            onChange={(v) => setSortBy(v as any)} // kiểu đã nằm trong store
+            onChange={(v) => setSortBy(v as any)}
             className="ml-auto"
             options={[
               { label: "Default", value: "none" },
@@ -189,11 +189,11 @@ const CategoryProducts: React.FC = () => {
               categoryOptions={categoryOptions}
               brandFilter={brandFilter}
               setBrandFilter={setBrandFilter}
+              brandOptions={brandOptions}
               colorFilter={colorFilter}
               setColorFilter={setColorFilter}
               sizeFilter={sizeFilter}
               setSizeFilter={setSizeFilter}
-              brandOptions={brandOptions}
               hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}
               priceRange={priceRange}
@@ -205,7 +205,7 @@ const CategoryProducts: React.FC = () => {
           </div>
 
           <div className="flex-1 relative">
-            {/* --- Overlay khi filter/sort --- */}
+            {/* --- Loading overlay --- */}
             {loading && products.length > 0 && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <Loader />

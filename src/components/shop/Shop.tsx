@@ -4,7 +4,7 @@ import { getProducts } from "../../api/productApi";
 import ProductFilters from "../section/ProductFilters";
 import Button from "../ui/Button";
 import ShopList from "../section/ProductList";
-import { useShopFilter } from "../../hooks/useFilter";
+import { useShopFilter } from "../../stores/filterStore";
 import Loader from "../general/Loader";
 import Select from "../ui/Select";
 import { useSortStore } from "../../stores/sortStore";
@@ -19,6 +19,8 @@ interface Product {
   stock?: number;
   category?: string;
   brand?: string;
+  color?: string;
+  size?: string | string[];
 }
 
 const Shop: React.FC = () => {
@@ -26,7 +28,7 @@ const Shop: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Zustand Store ---
+  // --- Sort Store ---
   const {
     sortBy,
     setSortBy,
@@ -37,45 +39,7 @@ const Shop: React.FC = () => {
     setFilters: setStoreFilters,
   } = useSortStore();
 
-  // --- FETCH DATA ---
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const dataFromApi = await getProducts();
-
-        if (!Array.isArray(dataFromApi))
-          throw new Error("Invalid product data");
-
-        const normalized: Product[] = dataFromApi.map((p) => ({
-          ...p,
-          salePrice: p.salePrice ?? 0,
-          regularPrice: p.regularPrice ?? 0,
-          stock: p.stock ?? 0,
-          status: p.status ?? "available",
-        }));
-
-        if (mounted) {
-          setProducts(normalized);
-          setStoreProducts(normalized); // cập nhật vào Zustand luôn
-        }
-      } catch (err) {
-        console.error(err);
-        if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    fetchData();
-    return () => {
-      mounted = false;
-    };
-  }, [setStoreProducts]);
-
-  // --- FILTER ---
+  // --- Filter Store ---
   const {
     stockFilter,
     setStockFilter,
@@ -100,12 +64,50 @@ const Shop: React.FC = () => {
     PRICE_MAX,
   } = useShopFilter(products);
 
-  // --- Đồng bộ filter với Zustand ---
+  // --- FETCH DATA ---
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const dataFromApi = await getProducts();
+
+        if (!Array.isArray(dataFromApi))
+          throw new Error("Invalid product data");
+
+        const normalized: Product[] = dataFromApi.map((p) => ({
+          ...p,
+          salePrice: p.salePrice ?? 0,
+          regularPrice: p.regularPrice ?? 0,
+          stock: p.stock ?? 0,
+          status: p.status ?? "available",
+        }));
+
+        if (mounted) {
+          setProducts(normalized);
+          setStoreProducts(normalized);
+        }
+      } catch (err) {
+        console.error(err);
+        if (mounted) setError("Không thể tải sản phẩm. Vui lòng thử lại sau.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    fetchData();
+    return () => {
+      mounted = false;
+    };
+  }, [setStoreProducts]);
+
+  // --- Sync filters with Sort Store ---
   useEffect(() => {
     setStoreFilters(debouncedFilters);
   }, [debouncedFilters, setStoreFilters]);
 
-  // --- Loading lần đầu ---
+  // --- Loading state ---
   if (loading && products.length === 0) return <Loader />;
 
   if (error)
@@ -144,7 +146,7 @@ const Shop: React.FC = () => {
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
             icon={<Filter size={18} />}
-            label={"Filter"}
+            label="Filter"
           />
 
           <Select
@@ -176,11 +178,11 @@ const Shop: React.FC = () => {
               categoryOptions={categoryOptions}
               brandFilter={brandFilter}
               setBrandFilter={setBrandFilter}
+              brandOptions={brandOptions}
               colorFilter={colorFilter}
               setColorFilter={setColorFilter}
               sizeFilter={sizeFilter}
               setSizeFilter={setSizeFilter}
-              brandOptions={brandOptions}
               hasActiveFilters={hasActiveFilters}
               clearFilters={clearFilters}
               priceRange={priceRange}
@@ -192,7 +194,7 @@ const Shop: React.FC = () => {
           </div>
 
           <div className="flex-1 relative">
-            {/* --- Overlay khi filter/sort --- */}
+            {/* --- Loading overlay --- */}
             {loading && products.length > 0 && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <Loader />
