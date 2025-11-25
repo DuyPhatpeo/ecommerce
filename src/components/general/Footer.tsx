@@ -146,18 +146,45 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="pt-2">
               <p className="text-gray-400 text-sm mb-3">Connect with us:</p>
+
               <div className="flex flex-wrap gap-3">
+                {/* Facebook */}
                 <Button
                   icon={<Facebook size={18} />}
-                  className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all hover:scale-110 hover:shadow-lg hover:shadow-blue-500"
+                  className="
+        w-10 h-10 rounded-full text-white
+        bg-blue-600
+        shadow-md
+        transition-all
+        hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50
+        hover:bg-blue-700
+      "
                 />
+
+                {/* Twitter */}
                 <Button
                   icon={<Twitter size={18} />}
-                  className="w-10 h-10 bg-sky-500 hover:bg-sky-600 text-white rounded-full transition-all hover:scale-110 hover:shadow-lg hover:shadow-sky-400"
+                  className="
+        w-10 h-10 rounded-full text-white
+        bg-sky-500
+        shadow-md
+        transition-all
+        hover:scale-110 hover:shadow-lg hover:shadow-sky-400/50
+        hover:bg-sky-600
+      "
                 />
+
+                {/* Instagram */}
                 <Button
                   icon={<Instagram size={18} />}
-                  className="w-10 h-10 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-600 rounded-full text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-pink-500"
+                  className="
+        w-10 h-10 rounded-full text-white
+        bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf]
+        shadow-md
+        transition-all
+        hover:scale-110 hover:shadow-lg hover:shadow-pink-500/40
+        hover:from-[#feda75] hover:via-[#e72c80] hover:to-[#b43cdf]
+      "
                 />
               </div>
             </div>
