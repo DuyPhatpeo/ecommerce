@@ -28,9 +28,11 @@ export default function Footer() {
         backgroundImage: "url('/footer-bg.jpg')",
       }}
     >
+      {/* Overlay gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/80 to-black/90"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-0 py-30 sm:py-30 lg:py-24">
+      {/* Container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 md:px-10 lg:px-16 py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {/* About */}
           <div className="space-y-4">
@@ -105,40 +107,17 @@ export default function Footer() {
               <h4 className="text-white font-semibold text-sm mb-3">
                 Quick Links
               </h4>
-
               <ul className="grid grid-cols-2 gap-y-2 gap-x-6">
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
-                  >
-                    FAQ
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
-                  >
-                    Our Services
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
-                  >
-                    Blog
-                  </a>
-                </li>
+                {["About Us", "FAQ", "Our Services", "Blog"].map((item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -159,7 +138,7 @@ export default function Footer() {
                 style={{ border: "none", overflow: "hidden" }}
                 scrolling="no"
                 frameBorder="0"
-                allowFullScreen={true}
+                allowFullScreen
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
               ></iframe>
             </div>
@@ -187,35 +166,40 @@ export default function Footer() {
             <div className="pt-4">
               <p className="text-gray-400 text-sm mb-3">We Accept:</p>
               <div className="flex flex-wrap gap-3">
-                {/* VISA */}
-                <div className="group relative bg-gradient-to-br from-blue-50 to-white w-20 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-blue-100 hover:border-blue-300 p-2">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-blue-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <img
-                    src="https://logos-world.net/wp-content/uploads/2020/05/Visa-Logo-700x394.png"
-                    alt="VISA"
-                    className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-
-                {/* Mastercard */}
-                <div className="group relative bg-gradient-to-br from-orange-50 to-white w-20 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-orange-100 hover:border-orange-300 p-2">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <img
-                    src="https://logos-world.net/wp-content/uploads/2023/02/Masterpass-Logo-500x281.png"
-                    alt="Mastercard"
-                    className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-
-                {/* PayPal */}
-                <div className="group relative bg-gradient-to-br from-blue-50 to-white w-20 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-blue-100 hover:border-blue-300 p-2">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <img
-                    src="https://logos-world.net/wp-content/uploads/2023/01/PayPal-Logo-500x281.png"
-                    alt="PayPal"
-                    className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
+                {[
+                  {
+                    src: "https://logos-world.net/wp-content/uploads/2020/05/Visa-Logo-700x394.png",
+                    alt: "VISA",
+                    from: "blue-50",
+                    to: "white",
+                    border: "blue-100",
+                  },
+                  {
+                    src: "https://logos-world.net/wp-content/uploads/2023/02/Masterpass-Logo-500x281.png",
+                    alt: "Mastercard",
+                    from: "orange-50",
+                    to: "white",
+                    border: "orange-100",
+                  },
+                  {
+                    src: "https://logos-world.net/wp-content/uploads/2023/01/PayPal-Logo-500x281.png",
+                    alt: "PayPal",
+                    from: "blue-50",
+                    to: "white",
+                    border: "blue-100",
+                  },
+                ].map((card) => (
+                  <div
+                    key={card.alt}
+                    className={`group relative bg-gradient-to-br from-${card.from} to-${card.to} w-20 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-${card.border} hover:border-${card.border}-300 p-2`}
+                  >
+                    <img
+                      src={card.src}
+                      alt={card.alt}
+                      className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -243,24 +227,17 @@ export default function Footer() {
             </div>
 
             <div className="flex gap-6 text-xs sm:text-sm">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-orange-400 transition-colors"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-orange-400 transition-colors"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-orange-400 transition-colors"
-              >
-                Contact Us
-              </a>
+              {["Privacy Policy", "Terms of Service", "Contact Us"].map(
+                (item) => (
+                  <a
+                    key={item}
+                    href="#"
+                    className="text-gray-400 hover:text-orange-400 transition-colors"
+                  >
+                    {item}
+                  </a>
+                )
+              )}
             </div>
           </div>
         </div>
