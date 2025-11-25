@@ -32,7 +32,7 @@ const ScrollToTop = () => {
             fixed 
             bottom-30 right-1               
             sm:bottom-28 sm:right-8         
-            lg:bottom-10 lg:right-10        
+            lg:bottom-20 lg:right-10        
             bg-orange-500 hover:bg-orange-600
             text-white 
             p-2 sm:p-3 
