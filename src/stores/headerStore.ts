@@ -43,7 +43,7 @@ const baseMenu: MenuItem[] = [
   { label: "HOME", path: "/" },
   { label: "SHOP", path: "/shop" },
   { label: "CATEGORY", subMenu: [] },
-  { label: "CONTACT", path: "/contact" },
+  // { label: "CONTACT", path: "/contact" },
 ];
 
 export const useHeaderStore = create<HeaderState>((set, get) => ({
