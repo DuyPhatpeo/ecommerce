@@ -61,8 +61,8 @@ const ProductFilters: React.FC<Props> = ({
   const MAX = priceMax;
 
   const [open, setOpen] = useState({
-    category: context === "shop",
-    brand: true,
+    category: context === "shop", // mở category nếu là shop
+    brand: context !== "shop", // nếu ko phải shop thì mở brand
     color: false,
     size: false,
     availability: false,
