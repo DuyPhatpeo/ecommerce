@@ -97,7 +97,11 @@ const Shop: React.FC = () => {
     };
 
     fetchData();
-    return () => (mounted = false);
+
+    // Fixed: cleanup function should return void, not boolean
+    return () => {
+      mounted = false;
+    };
   }, [setStoreProducts]);
 
   //   Sync filters → sortStore

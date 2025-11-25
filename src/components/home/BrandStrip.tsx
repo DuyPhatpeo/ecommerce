@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import "swiper/css";
+import "swiper/swiper-bundle.css";
+
+import type { Swiper as SwiperClass } from "swiper";
 
 export default function BrandStrip() {
-  const swiperRef = useRef(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
 
   const brands = [
     "https://logos-world.net/wp-content/uploads/2020/06/Nike-Logo-500x281.png",
@@ -20,15 +22,11 @@ export default function BrandStrip() {
   ];
 
   const handleMouseEnter = () => {
-    if (swiperRef.current && swiperRef.current.autoplay) {
-      swiperRef.current.autoplay.stop();
-    }
+    swiperRef.current?.autoplay?.stop();
   };
 
   const handleMouseLeave = () => {
-    if (swiperRef.current && swiperRef.current.autoplay) {
-      swiperRef.current.autoplay.start();
-    }
+    swiperRef.current?.autoplay?.start();
   };
 
   return (
@@ -49,22 +47,10 @@ export default function BrandStrip() {
             disableOnInteraction: false,
           }}
           breakpoints={{
-            480: {
-              slidesPerView: 2,
-              spaceBetween: 6,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 8,
-            },
-            1024: {
-              slidesPerView: 4,
-              spaceBetween: 10,
-            },
-            1280: {
-              slidesPerView: 5,
-              spaceBetween: 10,
-            },
+            480: { slidesPerView: 2, spaceBetween: 6 },
+            768: { slidesPerView: 3, spaceBetween: 8 },
+            1024: { slidesPerView: 4, spaceBetween: 10 },
+            1280: { slidesPerView: 5, spaceBetween: 10 },
           }}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
