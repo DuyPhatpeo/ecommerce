@@ -25,8 +25,7 @@ export default function Footer() {
     <footer
       className="relative text-gray-300 bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=1920&h=800&fit=crop&q=80')",
+        backgroundImage: "url('/footer-bg.jpg')",
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/80 to-black/90"></div>
