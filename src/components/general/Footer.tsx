@@ -175,14 +175,14 @@ export default function Footer() {
                     border: "border-blue-200",
                   },
                   {
-                    src: "https://logos-world.net/wp-content/uploads/2023/02/Masterpass-Logo-500x281.png",
+                    src: "https://logos-world.net/wp-content/uploads/2020/09/Mastercard-Logo-700x394.png",
                     alt: "Mastercard",
                     bg: "bg-red-50",
                     gradient: "from-red-100 to-yellow-50",
                     border: "border-red-200",
                   },
                   {
-                    src: "https://logos-world.net/wp-content/uploads/2023/01/PayPal-Logo-500x281.png",
+                    src: "https://logos-world.net/wp-content/uploads/2020/08/PayPal-Symbol-500x281.png",
                     alt: "PayPal",
                     bg: "bg-blue-50",
                     gradient: "from-blue-50 to-blue-100",
@@ -193,7 +193,7 @@ export default function Footer() {
                     key={card.alt}
                     className={`
           group relative ${card.bg} bg-gradient-to-br ${card.gradient} ${card.border} 
-          w-20 h-12 flex items-center justify-center rounded-xl 
+          w-15 h-10 flex items-center justify-center rounded-xl 
           shadow-md hover:shadow-xl transition-all duration-300 
           hover:-translate-y-1 cursor-pointer overflow-hidden p-2
         `}
