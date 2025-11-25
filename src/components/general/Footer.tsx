@@ -170,28 +170,33 @@ export default function Footer() {
                   {
                     src: "https://logos-world.net/wp-content/uploads/2020/05/Visa-Logo-700x394.png",
                     alt: "VISA",
-                    from: "blue-50",
-                    to: "white",
-                    border: "blue-100",
+                    bg: "bg-blue-50",
+                    gradient: "from-blue-100 to-blue-50",
+                    border: "border-blue-200",
                   },
                   {
                     src: "https://logos-world.net/wp-content/uploads/2023/02/Masterpass-Logo-500x281.png",
                     alt: "Mastercard",
-                    from: "orange-50",
-                    to: "white",
-                    border: "orange-100",
+                    bg: "bg-red-50",
+                    gradient: "from-red-100 to-yellow-50",
+                    border: "border-red-200",
                   },
                   {
                     src: "https://logos-world.net/wp-content/uploads/2023/01/PayPal-Logo-500x281.png",
                     alt: "PayPal",
-                    from: "blue-50",
-                    to: "white",
-                    border: "blue-100",
+                    bg: "bg-blue-50",
+                    gradient: "from-blue-50 to-blue-100",
+                    border: "border-blue-200",
                   },
                 ].map((card) => (
                   <div
                     key={card.alt}
-                    className={`group relative bg-gradient-to-br from-${card.from} to-${card.to} w-20 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-${card.border} hover:border-${card.border}-300 p-2`}
+                    className={`
+          group relative ${card.bg} bg-gradient-to-br ${card.gradient} ${card.border} 
+          w-20 h-12 flex items-center justify-center rounded-xl 
+          shadow-md hover:shadow-xl transition-all duration-300 
+          hover:-translate-y-1 cursor-pointer overflow-hidden p-2
+        `}
                   >
                     <img
                       src={card.src}
