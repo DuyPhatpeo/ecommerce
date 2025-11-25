@@ -232,17 +232,19 @@ export default function Footer() {
             </div>
 
             <div className="flex gap-6 text-xs sm:text-sm">
-              {["Privacy Policy", "Terms of Service", "Contact Us"].map(
-                (item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="text-gray-400 hover:text-orange-400 transition-colors"
-                  >
-                    {item}
-                  </a>
-                )
-              )}
+              {[
+                { label: "Privacy Policy", href: "#" },
+                { label: "Terms of Service", href: "#" },
+                { label: "Contact Us", href: "/contact" },
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-gray-400 hover:text-orange-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
           </div>
         </div>
