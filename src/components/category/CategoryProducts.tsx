@@ -177,7 +177,7 @@ const CategoryProducts: React.FC = () => {
 
         {/* --- Main Layout --- */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-          <div className="lg:w-64 shrink-0 self-start">
+          <div className="lg:sticky lg:top-22 lg:w-64 shrink-0 self-start">
             <ProductFilters
               context="category"
               showFilters={showFilters}

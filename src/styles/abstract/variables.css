@@ -39,3 +39,20 @@
     --warning-subtle: #fbbf241a;
   }
 }
+/* Scrollbar siêu mảnh */
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #f5a052;
+  border-radius: 12px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #ff8c3a;
+}

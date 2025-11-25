@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// Tất cả type nằm trong store luôn
+// -------------------- TYPES --------------------
 type SortOption =
   | "none"
   | "name-asc"
@@ -38,6 +38,7 @@ interface SortState<T> {
   hasMore: () => boolean;
 }
 
+// -------------------- STORE --------------------
 export const useSortStore = create<SortState<any>>()(
   persist(
     (set, get) => ({
@@ -47,13 +48,19 @@ export const useSortStore = create<SortState<any>>()(
       visibleCount: 9,
       itemsPerLoad: 9,
 
+      // -------------------- SETTERS --------------------
       setProducts: (products) => set({ products }),
-      setFilters: (filters) => set({ debouncedFilters: filters }),
-      setSortBy: (sortBy) => set({ sortBy }),
+      setFilters: (filters) => {
+        set({ debouncedFilters: filters, visibleCount: get().itemsPerLoad });
+      },
+      setSortBy: (sortBy) => {
+        set({ sortBy, visibleCount: get().itemsPerLoad });
+      },
       handleSeeMore: () =>
         set((s) => ({ visibleCount: s.visibleCount + s.itemsPerLoad })),
       resetPagination: () => set((s) => ({ visibleCount: s.itemsPerLoad })),
 
+      // -------------------- HELPERS --------------------
       getFinalPrice: (p) => {
         if (p.salePrice && p.salePrice > 0) return p.salePrice;
         if (p.regularPrice && p.regularPrice > 0) return p.regularPrice;
@@ -67,6 +74,7 @@ export const useSortStore = create<SortState<any>>()(
         return 0;
       },
 
+      // -------------------- SORT --------------------
       sortedProducts: () => {
         const { products, sortBy, getFinalPrice, getDiscountPercent } = get();
         let sorted = [...products];
@@ -95,6 +103,7 @@ export const useSortStore = create<SortState<any>>()(
             break;
         }
 
+        // Stock sắp xếp: luôn ưu tiên còn hàng
         sorted.sort((a, b) => {
           const aStock = a.stock ?? 0;
           const bStock = b.stock ?? 0;
@@ -106,37 +115,51 @@ export const useSortStore = create<SortState<any>>()(
         return sorted;
       },
 
+      // -------------------- FILTER --------------------
       filteredProducts: () => {
-        const { debouncedFilters, getFinalPrice, sortedProducts } = get();
-        const sorted = sortedProducts();
-        if (!debouncedFilters) return sorted;
+        const { debouncedFilters, sortedProducts, getFinalPrice } = get();
+        let result = sortedProducts();
 
-        let result = [...sorted];
+        if (!debouncedFilters) return result;
 
-        if (debouncedFilters.stock === "in")
+        // Stock
+        if (debouncedFilters.stock === "in") {
           result = result.filter((p) => (p.stock ?? 0) > 0);
-        else if (debouncedFilters.stock === "out")
+        } else if (debouncedFilters.stock === "out") {
           result = result.filter((p) => (p.stock ?? 0) <= 0);
+        }
 
-        if (debouncedFilters.category.length)
-          result = result.filter((p) =>
-            debouncedFilters.category.includes((p.category || "").toLowerCase())
+        // Category
+        if (debouncedFilters.category.length > 0) {
+          const categorySet = new Set(
+            debouncedFilters.category.map((c) => c.toLowerCase())
           );
-
-        if (debouncedFilters.brand.length)
           result = result.filter((p) =>
-            debouncedFilters.brand.includes((p.brand || "").toLowerCase())
+            categorySet.has((p.category || "").toLowerCase())
           );
+        }
 
+        // Brand
+        if (debouncedFilters.brand.length > 0) {
+          const brandSet = new Set(
+            debouncedFilters.brand.map((b) => b.toLowerCase())
+          );
+          result = result.filter((p) =>
+            brandSet.has((p.brand || "").toLowerCase())
+          );
+        }
+
+        // Price
         result = result.filter(
           (p) =>
-            getFinalPrice(p) >= debouncedFilters.price.min &&
-            getFinalPrice(p) <= debouncedFilters.price.max
+            getFinalPrice(p) >= (debouncedFilters.price?.min ?? 0) &&
+            getFinalPrice(p) <= (debouncedFilters.price?.max ?? Infinity)
         );
 
         return result;
       },
 
+      // -------------------- PAGINATION --------------------
       paginatedProducts: () => {
         const { visibleCount } = get();
         return get().filteredProducts().slice(0, visibleCount);

@@ -28,7 +28,7 @@ const Shop: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Sort Store ---
+  //   Sort Store
   const {
     sortBy,
     setSortBy,
@@ -39,7 +39,7 @@ const Shop: React.FC = () => {
     setFilters: setStoreFilters,
   } = useSortStore();
 
-  // --- Filter Store ---
+  //   Filter Store
   const {
     stockFilter,
     setStockFilter,
@@ -64,7 +64,7 @@ const Shop: React.FC = () => {
     PRICE_MAX,
   } = useShopFilter(products);
 
-  // --- FETCH DATA ---
+  //   Fetch products
   useEffect(() => {
     let mounted = true;
 
@@ -97,17 +97,15 @@ const Shop: React.FC = () => {
     };
 
     fetchData();
-    return () => {
-      mounted = false;
-    };
+    return () => (mounted = false);
   }, [setStoreProducts]);
 
-  // --- Sync filters with Sort Store ---
+  //   Sync filters → sortStore
   useEffect(() => {
     setStoreFilters(debouncedFilters);
   }, [debouncedFilters, setStoreFilters]);
 
-  // --- Loading state ---
+  //   Loading initial
   if (loading && products.length === 0) return <Loader />;
 
   if (error)
@@ -120,19 +118,20 @@ const Shop: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        {/* --- Header --- */}
+        {/* ================= HEADER ================= */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
             <Sparkles size={18} />
             <span>All products</span>
             <ShoppingBag size={18} />
           </div>
+
           <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
             Our Collection
           </h2>
         </div>
 
-        {/* --- Backdrop Mobile Filter --- */}
+        {/* ================= Mobile Backdrop ================= */}
         {showFilters && (
           <div
             className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -140,7 +139,7 @@ const Shop: React.FC = () => {
           />
         )}
 
-        {/* --- Toolbar --- */}
+        {/* ================= TOOLBAR ================= */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Button
             onClick={toggleFilters}
@@ -164,9 +163,10 @@ const Shop: React.FC = () => {
           />
         </div>
 
-        {/* --- Main Layout --- */}
+        {/* ================= MAIN LAYOUT ================= */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-          <div className="lg:w-64 shrink-0 self-start">
+          {/* -------- FILTERS (LEFT) -------- */}
+          <aside className="lg:sticky lg:top-24 lg:w-64 shrink-0 self-start">
             <ProductFilters
               context="shop"
               showFilters={showFilters}
@@ -191,10 +191,11 @@ const Shop: React.FC = () => {
               priceMax={PRICE_MAX}
               priceStep={100000}
             />
-          </div>
+          </aside>
 
+          {/* -------- PRODUCT LIST -------- */}
           <div className="flex-1 relative">
-            {/* --- Loading overlay --- */}
+            {/* Loading overlay when filters or sort update */}
             {loading && products.length > 0 && (
               <div className="absolute inset-0 flex justify-center pt-20 bg-white/60 z-10">
                 <Loader />

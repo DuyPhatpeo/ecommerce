@@ -9,7 +9,7 @@ import AvailabilityFilter from "./filters/AvailabilityFilter";
 import PriceFilter from "./filters/PriceFilter";
 
 interface Props {
-  context?: "shop" | "category"; // 👈 thêm context
+  context?: "shop" | "category";
   showFilters: boolean;
   toggleFilters: () => void;
   stockFilter: "all" | "in" | "out";
@@ -71,7 +71,6 @@ const ProductFilters: React.FC<Props> = ({
   const toggleSection = (name: keyof typeof open) =>
     setOpen((prev) => ({ ...prev, [name]: !prev[name] }));
 
-  // --- Tổng hợp các filter đang được chọn ---
   const activeFilters = useMemo(
     () => [
       ...(context === "shop"
@@ -110,7 +109,6 @@ const ProductFilters: React.FC<Props> = ({
     ]
   );
 
-  // --- Xử lý xóa từng filter ---
   const handleRemoveFilter = (f: { label: string; type: string }) => {
     if (f.type === "category")
       setCategoryFilter(categoryFilter.filter((c) => c !== f.label));
@@ -126,11 +124,17 @@ const ProductFilters: React.FC<Props> = ({
 
   return (
     <aside
-      className={`fixed lg:static inset-y-0 right-0 w-full lg:w-64 bg-white z-50 lg:z-0 transform ${
-        showFilters ? "translate-x-0" : "translate-x-full"
-      } lg:translate-x-0 transition-transform duration-300 ease-out shadow-xl lg:shadow-md rounded-none lg:rounded-xl border border-orange-100 flex flex-col`}
+      className={`
+        fixed lg:static inset-y-0 right-0 w-full lg:w-64 bg-white z-50 lg:z-0
+        transform ${showFilters ? "translate-x-0" : "translate-x-full"}
+        lg:translate-x-0 transition-transform duration-300 ease-out
+        shadow-xl lg:shadow-md rounded-none lg:rounded-xl
+        border border-orange-100 flex flex-col
+        h-[90vh]
+ overflow-y-auto custom-scroll
+      `}
     >
-      {/* --- Header --- */}
+      {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
           <Filter size={18} className="text-orange-500" /> Filters
@@ -139,11 +143,10 @@ const ProductFilters: React.FC<Props> = ({
           onClick={toggleFilters}
           icon={<X size={18} />}
           className="lg:hidden text-gray-400 hover:text-gray-600 p-2 rounded-lg transition-colors"
-          aria-label="Close filters"
         />
       </div>
 
-      {/* --- Active Filters --- */}
+      {/* Active Filters */}
       {hasActiveFilters && (
         <div className="p-3 border-b border-orange-100 bg-orange-50/50">
           <div className="flex justify-between items-center mb-2">
@@ -152,10 +155,11 @@ const ProductFilters: React.FC<Props> = ({
             </p>
             <Button
               onClick={clearFilters}
-              label={"Clear All"}
+              label="Clear All"
               className="text-xs text-orange-600 hover:underline font-medium"
             />
           </div>
+
           <div className="flex flex-wrap gap-2">
             {activeFilters.map((f, i) => (
               <span
@@ -167,7 +171,6 @@ const ProductFilters: React.FC<Props> = ({
                   onClick={() => handleRemoveFilter(f)}
                   icon={<X size={12} />}
                   className="hover:text-red-500 transition-colors"
-                  aria-label={`Remove ${f.label} filter`}
                 />
               </span>
             ))}
@@ -175,9 +178,8 @@ const ProductFilters: React.FC<Props> = ({
         </div>
       )}
 
-      {/* --- Filters --- */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-orange-50">
-        {/* Giá */}
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll">
         <PriceFilter
           priceRange={priceRange}
           setPriceRange={setPriceRange}
@@ -186,7 +188,6 @@ const ProductFilters: React.FC<Props> = ({
           step={priceStep}
         />
 
-        {/* Danh mục (ẩn khi context=category) */}
         {context === "shop" && (
           <CategoryFilter
             open={open.category}
@@ -197,7 +198,6 @@ const ProductFilters: React.FC<Props> = ({
           />
         )}
 
-        {/* Thương hiệu */}
         <BrandFilter
           open={open.brand}
           toggle={() => toggleSection("brand")}
@@ -206,7 +206,6 @@ const ProductFilters: React.FC<Props> = ({
           onChange={setBrandFilter}
         />
 
-        {/* Màu sắc */}
         <ColorFilter
           open={open.color}
           toggle={() => toggleSection("color")}
@@ -214,7 +213,6 @@ const ProductFilters: React.FC<Props> = ({
           onChange={setColorFilter}
         />
 
-        {/* Kích thước */}
         <SizeFilter
           open={open.size}
           toggle={() => toggleSection("size")}
@@ -222,7 +220,6 @@ const ProductFilters: React.FC<Props> = ({
           onChange={setSizeFilter}
         />
 
-        {/* Tình trạng hàng */}
         <AvailabilityFilter
           open={open.availability}
           toggle={() => toggleSection("availability")}
