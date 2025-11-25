@@ -132,7 +132,7 @@ const HotDeal: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 text-center px-5 sm:px-10 md:px-12 lg:px-16 max-w-md sm:max-w-lg md:max-w-xl">
+        <div className="relative z-10 text-center px-5 sm:px-10 md:px-12 lg:px-0 max-w-md sm:max-w-lg md:max-w-xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
             Exclusive Hot Deal Ends Soon!
           </h2>

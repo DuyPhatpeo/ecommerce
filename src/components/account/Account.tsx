@@ -121,8 +121,8 @@ const Account = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
-      <div className="py-10 sm:py-14 lg:py-20 max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className={`flex gap-6 ${isMobile ? "flex-col" : "lg:flex-row"}`}>
           {(isMobile ? !activeTab : true) && (
             <div className="w-full lg:w-80">
@@ -156,7 +156,7 @@ const Account = () => {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

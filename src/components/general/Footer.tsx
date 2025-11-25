@@ -30,7 +30,7 @@ export default function Footer() {
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/80 to-black/90"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-16 py-30 sm:py-30 lg:py-24">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-0 py-30 sm:py-30 lg:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {/* About */}
           <div className="space-y-4">

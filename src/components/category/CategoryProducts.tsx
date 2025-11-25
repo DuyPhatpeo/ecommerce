@@ -126,7 +126,7 @@ const CategoryProducts: React.FC = () => {
     text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
   return (
-    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* --- Header --- */}
         <div className="text-center mb-10 px-2 sm:px-0 overflow-visible">

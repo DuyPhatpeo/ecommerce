@@ -30,7 +30,7 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
         className={`absolute inset-0 ${bgImage ? "bg-black/30" : bgColor}`}
       ></div>
       <div className="relative z-10 px-2 mx-auto text-center text-white max-w-7xl sm:px-6 md:px-16">
-        <h1 className="mb-3 overflow-hidden text-2xl font-bold leading-tight sm:text-3xl md:text-5xl lg:text-6xl text-ellipsis line-clamp-2">
+        <h1 className="mb-3 overflow-hidden text-2xl font-bold leading-snug sm:text-3xl md:text-5xl lg:text-6xl text-ellipsis line-clamp-2">
           {title}
         </h1>
         {subtitle && (
