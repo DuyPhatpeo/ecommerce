@@ -170,7 +170,7 @@ const Shop: React.FC = () => {
         {/* ================= MAIN LAYOUT ================= */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           {/* -------- FILTERS (LEFT) -------- */}
-          <aside className="lg:sticky lg:top-22 lg:w-64 shrink-0 self-start">
+          <div className="lg:sticky lg:top-22 lg:w-64 shrink-0 self-start">
             <ProductFilters
               context="shop"
               showFilters={showFilters}
@@ -195,7 +195,7 @@ const Shop: React.FC = () => {
               priceMax={PRICE_MAX}
               priceStep={100000}
             />
-          </aside>
+          </div>
 
           {/* -------- PRODUCT LIST -------- */}
           <div className="flex-1 relative">
