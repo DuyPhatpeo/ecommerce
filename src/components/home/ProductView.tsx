@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Sparkles, ArrowLeft, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ProductCard from "../section/ProductCard";
-import Button from "../ui/Button";
 
 interface Product {
   id: string;
@@ -43,6 +42,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
+  // Tính số sản phẩm hiển thị dựa trên màn hình
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
     if (w < 640) return 2;
@@ -51,6 +51,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     return 6;
   }, []);
 
+  // Cập nhật số lượng hiển thị khi resize
   useEffect(() => {
     setVisibleCount(computeVisible());
     const onResize = () => setVisibleCount(computeVisible());
@@ -58,6 +59,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     return () => window.removeEventListener("resize", onResize);
   }, [computeVisible]);
 
+  // Fetch products
   useEffect(() => {
     (async () => {
       try {
@@ -87,6 +89,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const maxIndex = Math.max(products.length - visibleCount, 0);
 
+  // Xử lý slide trái/phải
   const handleSlide = useCallback(
     (dir: "left" | "right") => {
       if (!sliderRef.current) return;
@@ -98,15 +101,17 @@ const ProductView: React.FC<ProductViewProps> = ({
       const target = sliderRef.current.querySelectorAll(".product-card-item")[
         next
       ] as HTMLElement;
-      if (target)
+      if (target) {
         sliderRef.current.scrollTo({
           left: target.offsetLeft - 8,
           behavior: "smooth",
         });
+      }
     },
     [currentIndex, maxIndex]
   );
 
+  // Mouse drag handlers
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (!sliderRef.current || mode !== "slider") return;
@@ -136,7 +141,6 @@ const ProductView: React.FC<ProductViewProps> = ({
     if (!sliderRef.current) return;
 
     const wasDragging = dragDistance > 10;
-
     setIsDragging(false);
     sliderRef.current.style.cursor = "grab";
 
@@ -174,6 +178,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     }
   }, [isDragging, handleMouseUp]);
 
+  // Touch handlers
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
       if (!sliderRef.current || mode !== "slider") return;
@@ -203,7 +208,8 @@ const ProductView: React.FC<ProductViewProps> = ({
   const canLeft = currentIndex > 0;
   const canRight = currentIndex < maxIndex;
 
-  if (isLoading)
+  // Loading state
+  if (isLoading) {
     return (
       <div className="py-20 text-center">
         <div className="relative inline-flex items-center justify-center">
@@ -218,8 +224,10 @@ const ProductView: React.FC<ProductViewProps> = ({
         </p>
       </div>
     );
+  }
 
-  if (!products.length)
+  // Empty state
+  if (!products.length) {
     return (
       <div className="py-20 text-center">
         <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50">
@@ -231,6 +239,7 @@ const ProductView: React.FC<ProductViewProps> = ({
         <p className="mt-1 text-sm text-gray-500">Vui lòng thử lại sau</p>
       </div>
     );
+  }
 
   return (
     <section
@@ -240,20 +249,41 @@ const ProductView: React.FC<ProductViewProps> = ({
           : "bg-gradient-to-br from-orange-50/30 via-white to-orange-50/20"
       }`}
     >
+      {/* Header Section */}
       <div className="px-4 mx-auto max-w-7xl md:px-16">
-        {/* Title với animation gradient */}
-        <div className="relative inline-block">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
-            {title}
-          </h2>
-          <div className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent w-24 animate-pulse" />
+        <div className="flex items-center justify-between gap-4">
+          {/* Title với animation gradient */}
+          <div className="relative inline-block">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
+              {title}
+            </h2>
+            <div className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent w-24 animate-pulse" />
+          </div>
+
+          {/* View All Button - chỉ hiển thị cho grid mode và khi có category */}
+          {mode === "grid" && category && (
+            <a
+              href={`/shop/${Array.isArray(category) ? category[0] : category}`}
+              className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-orange-500 border-2 border-orange-500 rounded-full transition-all duration-300 shadow-md hover:shadow-xl flex-shrink-0"
+            >
+              <span className="text-xs sm:text-sm font-semibold text-orange-600 group-hover:text-white transition-colors whitespace-nowrap">
+                Xem tất cả
+              </span>
+              <ChevronRight
+                size={18}
+                className="text-orange-600 group-hover:text-white group-hover:translate-x-1 transition-all"
+                strokeWidth={2.5}
+              />
+            </a>
+          )}
         </div>
       </div>
 
+      {/* Products Section */}
       <div
         className={`mt-12 ${
           mode === "slider"
-            ? "px-2 sm:px-4 md:px-6"
+            ? "px-4 md:px-8 lg:px-12 xl:px-16"
             : "max-w-7xl mx-auto px-4 md:px-16"
         }`}
       >
@@ -326,66 +356,56 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* Navigation buttons với style cải tiến */}
+          {/* Navigation buttons - chỉ hiển thị cho slider mode */}
           {mode === "slider" && products.length > visibleCount && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-2 flex justify-center gap-3 z-10">
-              <Button
-                icon={<ArrowLeft size={20} strokeWidth={2.5} />}
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-2 z-10">
+              <button
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
                 className={`
-                  group relative overflow-hidden
-                  bg-white shadow-lg rounded-full p-3
-                  transition-all duration-300 ease-out
+                  flex items-center justify-center w-10 h-10 rounded-full
+                  backdrop-blur-md border transition-all duration-200
                   ${
                     canLeft
-                      ? "hover:bg-orange-500 hover:shadow-xl hover:scale-110 active:scale-95"
-                      : "opacity-40 cursor-not-allowed"
+                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md active:scale-95"
+                      : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
                   }
                 `}
+                aria-label="Previous"
               >
-                <span
-                  className={`
-                  block transition-colors duration-300
-                  ${
-                    canLeft
-                      ? "text-orange-600 group-hover:text-white"
-                      : "text-gray-400"
-                  }
-                `}
-                >
-                  <ArrowLeft size={20} strokeWidth={2.5} />
-                </span>
-              </Button>
+                <ArrowLeft
+                  size={18}
+                  className={`transition-colors ${
+                    canLeft ? "text-gray-700 hover:text-white" : "text-gray-400"
+                  }`}
+                  strokeWidth={2}
+                />
+              </button>
 
-              <Button
-                icon={<ArrowRight size={20} strokeWidth={2.5} />}
+              <button
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
                 className={`
-                  group relative overflow-hidden
-                  bg-white shadow-lg rounded-full p-3
-                  transition-all duration-300 ease-out
+                  flex items-center justify-center w-10 h-10 rounded-full
+                  backdrop-blur-md border transition-all duration-200
                   ${
                     canRight
-                      ? "hover:bg-orange-500 hover:shadow-xl hover:scale-110 active:scale-95"
-                      : "opacity-40 cursor-not-allowed"
+                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md active:scale-95"
+                      : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
                   }
                 `}
+                aria-label="Next"
               >
-                <span
-                  className={`
-                  block transition-colors duration-300
-                  ${
+                <ArrowRight
+                  size={18}
+                  className={`transition-colors ${
                     canRight
-                      ? "text-orange-600 group-hover:text-white"
+                      ? "text-gray-700 hover:text-white"
                       : "text-gray-400"
-                  }
-                `}
-                >
-                  <ArrowRight size={20} strokeWidth={2.5} />
-                </span>
-              </Button>
+                  }`}
+                  strokeWidth={2}
+                />
+              </button>
             </div>
           )}
         </div>
