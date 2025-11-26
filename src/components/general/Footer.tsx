@@ -24,33 +24,37 @@ export default function Footer() {
   return (
     <footer
       className="relative text-gray-300 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/footer-bg.jpg')",
-      }}
+      style={{ backgroundImage: "url('/footer-bg.jpg')" }}
     >
-      {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/80 to-black/90"></div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/70 to-black/80"></div>
 
       {/* Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 md:px-10 lg:px-16 py-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-16 py-30">
+        <div
+          className="
+            grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+            gap-8 lg:divide-x lg:divide-gray-700/50
+          "
+        >
           {/* About */}
-          <div className="space-y-4">
-            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-4">
+          <div className="space-y-3">
+            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-3">
               About
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
             </h3>
-            <p className="text-gray-400 text-sm leading-relaxed hover:text-gray-200 transition-colors">
+
+            <p className="text-gray-400 text-sm leading-relaxed hover:text-gray-200 transition">
               We are passionate about delivering the best products and services
               to our customers. Join our community and stay connected with the
               latest trends and updates.
             </p>
 
             <div className="flex gap-3 pt-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-300 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-300 flex items-center justify-center">
                 <Heart size={18} className="text-white" fill="white" />
               </div>
-              <div className="flex-1">
+              <div>
                 <p className="text-white font-semibold text-sm">
                   Quality First
                 </p>
@@ -58,52 +62,69 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Contact Info */}
-            <div className="space-y-2 pt-4">
-              <div className="flex items-center gap-2 text-gray-400 text-sm hover:text-orange-400 transition-colors cursor-pointer">
+            {/* Contact */}
+            <div className="space-y-2 pt-3">
+              <div className="flex items-center gap-2 text-gray-400 text-sm hover:text-orange-400 transition cursor-pointer">
                 <Phone size={14} />
                 <span>+1 234 567 890</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-400 text-sm hover:text-orange-400 transition-colors cursor-pointer">
+              <div className="flex items-center gap-2 text-gray-400 text-sm hover:text-orange-400 transition cursor-pointer">
                 <Mail size={14} />
                 <span>info@company.com</span>
               </div>
-              <div className="flex items-start gap-2 text-gray-400 text-sm hover:text-orange-400 transition-colors cursor-pointer">
-                <MapPin size={14} className="mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-2 text-gray-400 text-sm hover:text-orange-400 transition cursor-pointer">
+                <MapPin size={14} className="mt-0.5" />
                 <span>123 Business St, City, Country</span>
               </div>
             </div>
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-4">
-            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-4">
+          <div className="space-y-3 lg:pl-8">
+            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-3">
               Newsletter
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
             </h3>
+
             <p className="text-gray-400 text-sm">
               Stay updated with our latest news and exclusive offers delivered
               to your inbox.
             </p>
 
-            <div className="flex max-w-md overflow-hidden rounded-lg border border-gray-700 shadow-lg group hover:border-orange-400 transition-all duration-300">
+            {/* Modern Input */}
+            <div
+              className="
+                flex max-w-md overflow-hidden rounded-2xl 
+                border border-gray-700 bg-gray-800/40 backdrop-blur-sm 
+                shadow-lg group hover:border-orange-400 
+                transition-all duration-300
+              "
+            >
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSubscribe()}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-800 bg-opacity-60 text-white text-sm placeholder-gray-500 outline-none transition-colors"
+                className="
+                  flex-1 px-4 py-3 text-white bg-transparent 
+                  text-sm placeholder-gray-500 outline-none
+                "
               />
               <Button
                 onClick={handleSubscribe}
                 icon={<Send size={16} />}
-                className="px-5 py-3 bg-gradient-to-r from-orange-400 to-orange-300 hover:from-orange-500 hover:to-orange-400 text-white transition-all duration-300 hover:shadow-lg"
+                className="
+                  px-5 py-3 rounded-xl
+                  bg-gradient-to-r from-orange-400 to-orange-300 
+                  hover:from-orange-500 hover:to-orange-400 
+                  text-white transition-all duration-300
+                "
               />
             </div>
 
             {/* Quick Links */}
-            <div className="pt-4">
+            <div className="pt-3">
               <h4 className="text-white font-semibold text-sm mb-3">
                 Quick Links
               </h4>
@@ -112,7 +133,10 @@ export default function Footer() {
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-400 text-sm hover:text-orange-400 transition-all hover:pl-2 inline-block duration-300"
+                      className="
+                        text-gray-400 text-sm hover:text-orange-400 
+                        transition-all hover:pl-2 block duration-300
+                      "
                     >
                       {item}
                     </a>
@@ -123,14 +147,14 @@ export default function Footer() {
           </div>
 
           {/* Follow Us */}
-          <div className="space-y-4">
-            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-4">
+          <div className="space-y-3 lg:pl-8">
+            <h3 className="text-white font-bold text-lg sm:text-xl relative inline-block mb-3">
               Follow Us
               <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
             </h3>
 
-            {/* Facebook Page Plugin */}
-            <div className="w-[280px] bg-white bg-opacity-5 backdrop-blur-sm rounded-lg overflow-hidden border border-gray-700 hover:border-orange-400 transition-all duration-300">
+            {/* FB Plugin */}
+            <div className="w-[280px] bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden border border-gray-700 hover:border-orange-400 transition">
               <iframe
                 src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fnike&tabs=timeline&width=280&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
                 width="280"
@@ -144,47 +168,38 @@ export default function Footer() {
             </div>
 
             {/* Social Icons */}
-            <div className="pt-2">
+            <div className="pt-1">
               <p className="text-gray-400 text-sm mb-3">Connect with us:</p>
 
               <div className="flex flex-wrap gap-3">
-                {/* Facebook */}
                 <Button
                   icon={<Facebook size={18} />}
                   className="
-        w-10 h-10 rounded-full text-white
-        bg-blue-600
-        shadow-md
-        transition-all
-        hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50
-        hover:bg-blue-700
-      "
+                    w-11 h-11 rounded-2xl text-white
+                    bg-blue-600
+                    transition-all hover:scale-110
+                    hover:bg-blue-700 shadow-md hover:shadow-blue-500/40
+                  "
                 />
 
-                {/* Twitter */}
                 <Button
                   icon={<Twitter size={18} />}
                   className="
-        w-10 h-10 rounded-full text-white
-        bg-sky-500
-        shadow-md
-        transition-all
-        hover:scale-110 hover:shadow-lg hover:shadow-sky-400/50
-        hover:bg-sky-600
-      "
+                    w-11 h-11 rounded-2xl text-white
+                    bg-sky-500
+                    transition-all hover:scale-110 shadow-md
+                    hover:bg-sky-600 hover:shadow-sky-400/40
+                  "
                 />
 
-                {/* Instagram */}
                 <Button
                   icon={<Instagram size={18} />}
                   className="
-        w-10 h-10 rounded-full text-white
-        bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf]
-        shadow-md
-        transition-all
-        hover:scale-110 hover:shadow-lg hover:shadow-pink-500/40
-        hover:from-[#feda75] hover:via-[#e72c80] hover:to-[#b43cdf]
-      "
+                    w-11 h-11 rounded-2xl text-white
+                    bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf]
+                    transition-all hover:scale-110 shadow-md hover:shadow-pink-500/40
+                    hover:from-[#feda75] hover:via-[#e72c80] hover:to-[#b43cdf]
+                  "
                 />
               </div>
             </div>
@@ -192,6 +207,7 @@ export default function Footer() {
             {/* Payment Methods */}
             <div className="pt-4">
               <p className="text-gray-400 text-sm mb-3">We Accept:</p>
+
               <div className="flex flex-wrap gap-3">
                 {[
                   {
@@ -219,16 +235,19 @@ export default function Footer() {
                   <div
                     key={card.alt}
                     className={`
-          group relative ${card.bg} bg-gradient-to-br ${card.gradient} ${card.border} 
-          w-15 h-10 flex items-center justify-center rounded-xl 
-          shadow-md hover:shadow-xl transition-all duration-300 
-          hover:-translate-y-1 cursor-pointer overflow-hidden p-2
-        `}
+                      group relative ${card.bg} bg-gradient-to-br ${card.gradient} ${card.border}
+                      w-15 h-10 rounded-xl flex items-center justify-center
+                      shadow-md hover:shadow-xl transition hover:-translate-y-1
+                      cursor-pointer overflow-hidden p-2
+                    `}
                   >
                     <img
                       src={card.src}
                       alt={card.alt}
-                      className="w-full h-full object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
+                      className="
+                        w-full h-full object-contain z-10 
+                        group-hover:scale-110 transition-transform
+                      "
                     />
                   </div>
                 ))}
@@ -238,14 +257,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
+        <div className="mt-10 pt-6 border-t border-gray-800 text-center md:text-left">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1 flex-wrap">
+            <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1">
               © 2025 Made with
               <Heart
                 size={14}
                 fill="rgb(251 146 60)"
-                className="animate-pulse text-orange-400"
+                className="text-orange-400 animate-pulse"
               />
               by
               <a
@@ -267,7 +286,7 @@ export default function Footer() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="text-gray-400 hover:text-orange-400 transition-colors"
+                  className="text-gray-400 hover:text-orange-400 transition"
                 >
                   {item.label}
                 </a>
