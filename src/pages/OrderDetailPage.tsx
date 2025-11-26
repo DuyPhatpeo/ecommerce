@@ -7,11 +7,7 @@ const OrderDetailPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Order Details"
-        subtitle="Review your order information and status"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Order Details" />
       <OrderDetail />
       <Footer />
     </>

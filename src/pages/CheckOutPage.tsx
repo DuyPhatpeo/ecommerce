@@ -8,11 +8,7 @@ const CheckOutPage = () => {
     <>
       <Header />
 
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Check Out"
-        subtitle="Complete your purchase"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Check Out" />
       <CheckOut />
       <Footer />
     </>

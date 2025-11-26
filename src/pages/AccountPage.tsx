@@ -12,27 +12,22 @@ const AccountPage = () => {
       case "profile":
         return {
           title: "My Profile",
-          subtitle: "Manage your personal information and preferences",
         };
       case "order":
         return {
           title: "Order History",
-          subtitle: "Track and manage your orders",
         };
       case "addresses":
         return {
           title: "Saved Addresses",
-          subtitle: "Manage your delivery and billing addresses",
         };
       case "wishlist":
         return {
           title: "My Wishlist",
-          subtitle: "Your favorite products collection",
         };
       default:
         return {
           title: "My Account",
-          subtitle: "Manage your personal information and orders",
         };
     }
   };
@@ -42,11 +37,7 @@ const AccountPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title={bannerInfo.title}
-        subtitle={bannerInfo.subtitle}
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title={bannerInfo.title} />
       <Account />
       <Footer />
     </>

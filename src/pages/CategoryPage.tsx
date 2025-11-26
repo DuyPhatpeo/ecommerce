@@ -7,11 +7,7 @@ const CategoryPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Category"
-        subtitle="Discover items curated just for your favorite style."
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Category" />
       <CategoryProducts />
       <Footer />
     </>

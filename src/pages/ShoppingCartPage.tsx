@@ -7,11 +7,7 @@ const ShopingCartPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Shopping Cart"
-        subtitle="Review your items and proceed to checkout"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Shopping Cart" />
       <ShoppingCart />
       <Footer />
     </>

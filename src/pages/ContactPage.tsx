@@ -7,11 +7,7 @@ const ContactPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Contact Us"
-        subtitle="Have a question or feedback? Let’s talk!"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Contact Us" />
       <Contact />
       <Footer />
     </>

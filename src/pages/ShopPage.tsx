@@ -7,11 +7,7 @@ const ShopPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Shop"
-        subtitle="Step into a world of fashion that speaks your personality."
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Shop" />
       <Shop />
       <Footer />
     </>

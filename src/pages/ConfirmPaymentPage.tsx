@@ -7,11 +7,7 @@ const ConfirmPaymentPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Confirm Payment"
-        subtitle="Review and confirm your payment details"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Confirm Payment" />
       <ConfirmPayment />
       <Footer />
     </>

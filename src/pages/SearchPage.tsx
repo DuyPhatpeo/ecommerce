@@ -7,11 +7,7 @@ const SearchPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title="Search Results"
-        subtitle="Discover products that match your keyword"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Search Results" />
       <Search />
       <Footer />
     </>

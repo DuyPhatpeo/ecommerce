@@ -10,11 +10,7 @@ const ProductDetailPage = () => {
   return (
     <>
       <Header />
-      <SectionBanner
-        bgImage="/banner-bg.jpg"
-        title={title}
-        subtitle="Explore featured product details"
-      />
+      <SectionBanner bgImage="/banner-bg.jpg" title={title} />
       <ProductDetail onLoadTitle={setTitle} />
       <Footer />
     </>
