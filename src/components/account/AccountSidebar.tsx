@@ -56,7 +56,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
     };
 
     return (
-      <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
+      <div className="relative overflow-hidden bg-white border border-orange-100 shadow-xl  backdrop-blur-md rounded-3xl">
         <div className="absolute inset-0 opacity-50 bg-gradient-to-br from-orange-50 via-white to-orange-50" />
         <div className="relative p-6">
           {/* User Profile Card */}
