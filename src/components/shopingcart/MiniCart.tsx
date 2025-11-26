@@ -13,11 +13,11 @@ const MiniCart = ({ cartCount }: MiniCartProps) => {
 
   return (
     <div
-      className="w-96 bg-white rounded-xl shadow-2xl border border-gray-200 absolute right-0 top-full mt-0"
+      className="w-96 bg-white rounded-xl shadow-2xl border border-gray-200 absolute -right-8 top-full mt-0"
       style={{ zIndex: 9999 }}
     >
       {/* Arrow - Căn với icon giỏ hàng */}
-      <div className="absolute -top-2 right-2 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45"></div>
+      <div className="absolute -top-2.5 right-9 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45"></div>
 
       {/* Header */}
       <div className="p-4 border-b border-gray-100 relative z-20 bg-white rounded-t-xl">
