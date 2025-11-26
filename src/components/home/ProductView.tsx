@@ -27,7 +27,7 @@ interface ProductViewProps {
 const ProductView: React.FC<ProductViewProps> = ({
   status,
   category,
-  title = "Sản phẩm",
+  title = "Products",
   maxProducts,
   mode = "grid",
 }) => {
@@ -42,7 +42,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Tính số sản phẩm hiển thị dựa trên màn hình
+  // Calculate number of visible products based on screen width
   const computeVisible = useCallback(() => {
     const w = window.innerWidth;
     if (w < 640) return 2;
@@ -51,7 +51,7 @@ const ProductView: React.FC<ProductViewProps> = ({
     return 6;
   }, []);
 
-  // Cập nhật số lượng hiển thị khi resize
+  // Update visible count on window resize
   useEffect(() => {
     setVisibleCount(computeVisible());
     const onResize = () => setVisibleCount(computeVisible());
@@ -79,7 +79,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
         setProducts(filtered);
       } catch (e) {
-        console.error("Lỗi khi tải sản phẩm:", e);
+        console.error("Error loading products:", e);
         setProducts([]);
       } finally {
         setIsLoading(false);
@@ -89,7 +89,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   const maxIndex = Math.max(products.length - visibleCount, 0);
 
-  // Xử lý slide trái/phải
+  // Handle slide left/right
   const handleSlide = useCallback(
     (dir: "left" | "right") => {
       if (!sliderRef.current) return;
@@ -220,7 +220,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           />
         </div>
         <p className="mt-4 text-sm font-medium text-gray-600">
-          Đang tải sản phẩm...
+          Loading products...
         </p>
       </div>
     );
@@ -233,10 +233,8 @@ const ProductView: React.FC<ProductViewProps> = ({
         <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50">
           <Sparkles size={40} className="text-orange-400" />
         </div>
-        <p className="text-lg font-medium text-gray-700">
-          Không có sản phẩm nào
-        </p>
-        <p className="mt-1 text-sm text-gray-500">Vui lòng thử lại sau</p>
+        <p className="text-lg font-medium text-gray-700">No products found</p>
+        <p className="mt-1 text-sm text-gray-500">Please try again later</p>
       </div>
     );
   }
@@ -252,7 +250,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       {/* Header Section */}
       <div className="px-4 mx-auto max-w-7xl md:px-16">
         <div className="flex items-center justify-between gap-4">
-          {/* Title với animation gradient */}
+          {/* Title with gradient animation */}
           <div className="relative inline-block">
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
               {title}
@@ -260,14 +258,14 @@ const ProductView: React.FC<ProductViewProps> = ({
             <div className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent w-24 animate-pulse" />
           </div>
 
-          {/* View All Button - chỉ hiển thị cho grid mode và khi có category */}
+          {/* View All Button - only shown in grid mode and when category exists */}
           {mode === "grid" && category && (
             <a
               href={`/shop/${Array.isArray(category) ? category[0] : category}`}
               className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-orange-500 border-2 border-orange-500 rounded-full transition-all duration-300 shadow-md hover:shadow-xl flex-shrink-0"
             >
               <span className="text-xs sm:text-sm font-semibold text-orange-600 group-hover:text-white transition-colors whitespace-nowrap">
-                Xem tất cả
+                View All
               </span>
               <ChevronRight
                 size={18}
@@ -356,7 +354,7 @@ const ProductView: React.FC<ProductViewProps> = ({
             </div>
           </div>
 
-          {/* Navigation buttons - chỉ hiển thị cho slider mode */}
+          {/* Navigation buttons - only for slider mode */}
           {mode === "slider" && products.length > visibleCount && (
             <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-2 z-10">
               <button

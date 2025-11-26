@@ -2,22 +2,22 @@ import { Truck, RefreshCw, Headphones, Shield } from "lucide-react";
 
 const features = [
   {
-    icon: <Truck className="w-7 h-7 text-gray-700" />,
+    icon: <Truck className="w-10 h-10 text-gray-700" />,
     title: "Free Delivery",
     description: "Free Shipping on all orders",
   },
   {
-    icon: <RefreshCw className="w-7 h-7 text-gray-700" />,
+    icon: <RefreshCw className="w-10 h-10 text-gray-700" />,
     title: "Return Policy",
     description: "30-day money back guarantee",
   },
   {
-    icon: <Headphones className="w-7 h-7 text-gray-700" />,
+    icon: <Headphones className="w-10 h-10 text-gray-700" />,
     title: "24/7 Support",
     description: "We’re here to help anytime",
   },
   {
-    icon: <Shield className="w-7 h-7 text-gray-700" />,
+    icon: <Shield className="w-10 h-10 text-gray-700" />,
     title: "Secure Payment",
     description: "100% protected & safe checkout",
   },
