@@ -83,25 +83,25 @@ export const useHeader = () => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 300);
   }, [setActiveMenu]);
 
-  // 📌 Load Categories & User on Mount
+  //   Load Categories & User on Mount
   useEffect(() => {
     fetchMenuItems();
     loadUser();
   }, [fetchMenuItems, loadUser]);
 
-  // 🛒 Sync Cart on Route Change
+  //   Sync Cart on Route Change
   useEffect(() => {
     fetchCart();
     loadUser();
   }, [location.pathname, fetchCart, loadUser]);
 
-  // 📌 Scroll Detection
+  //   Scroll Detection
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // 📌 Focus Search Input
+  //   Focus Search Input
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
       const timer = setTimeout(() => searchInputRef.current?.focus(), 100);
@@ -109,7 +109,7 @@ export const useHeader = () => {
     }
   }, [searchOpen]);
 
-  // 📌 Click Outside Handler
+  //   Click Outside Handler
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -150,7 +150,7 @@ export const useHeader = () => {
     setCategoryMenuOpen,
   ]);
 
-  // 📌 Close Menus on Route Change
+  //   Close Menus on Route Change
   useEffect(() => {
     closeMobileMenu();
     setCategoryMenuOpen(false);
