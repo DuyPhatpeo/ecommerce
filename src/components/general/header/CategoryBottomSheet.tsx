@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Store } from "lucide-react";
+import { X } from "lucide-react";
 import type { MenuItem } from "../../../stores/headerStore";
 
 interface CategoryBottomSheetProps {
@@ -56,7 +56,7 @@ const CategoryBottomSheet = ({
 
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-gray-800">Categories</h3>
+              <h3 className="text-lg font-bold text-gray-800">Danh mục giày</h3>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -77,11 +77,8 @@ const CategoryBottomSheet = ({
                         onClose();
                       }
                     }}
-                    className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm"
+                    className="flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm"
                   >
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
-                      <Store size={24} className="text-orange-500" />
-                    </div>
                     <span className="text-sm font-semibold text-gray-800 text-center">
                       {category.label}
                     </span>
