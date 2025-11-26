@@ -132,8 +132,11 @@ const ProfileTab: React.FC = () => {
 
         {/* Loading State */}
         {loading.profile ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
+          <div className="py-16 text-center">
+            <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+            <p className="mt-4 text-sm font-medium text-gray-600">
+              Loading your profile...
+            </p>
           </div>
         ) : (
           <>
