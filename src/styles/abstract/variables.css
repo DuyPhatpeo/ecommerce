@@ -39,7 +39,32 @@
     --warning-subtle: #fbbf241a;
   }
 }
-/* Scrollbar siêu mảnh */
+
+/* Scrollbar cho toàn bộ trang */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #f5a052 #ffffff;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #f5a052;
+  border-radius: 12px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff8c3a;
+}
+
+/* Class cho scrollbar tùy chỉnh (giữ lại để dùng cho các component cụ thể) */
 .custom-scroll::-webkit-scrollbar {
   width: 4px;
 }
