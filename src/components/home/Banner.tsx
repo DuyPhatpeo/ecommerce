@@ -46,6 +46,11 @@ const Banner: React.FC = () => {
     setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
+  const goToSlide = (index: number) => {
+    setDirection(index > current ? 1 : -1);
+    setCurrent(index);
+  };
+
   const bgImage = "/banner-bg.jpg";
 
   const variants = {
@@ -133,7 +138,7 @@ const Banner: React.FC = () => {
                 src={banners[current].productImage}
                 alt={banners[current].title}
                 className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full object-contain"
-                whileHover={{ scale: 1.05 }} // chỉ phóng to nhẹ, không nghiêng
+                whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               />
             </motion.div>
@@ -141,18 +146,45 @@ const Banner: React.FC = () => {
         </AnimatePresence>
       </div>
 
+      {/* Progress Indicators - Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
+        {banners.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className="group relative"
+            aria-label={`Go to slide ${index + 1}`}
+          >
+            <div
+              className={`
+                h-2 rounded-full transition-all duration-300
+                ${
+                  current === index
+                    ? "w-8 bg-orange-500 shadow-md"
+                    : "w-2 bg-gray-800/40 hover:bg-gray-800/60 backdrop-blur-sm"
+                }
+              `}
+            />
+          </button>
+        ))}
+      </div>
+
       {/* Navigation Buttons */}
-      <div className="absolute bottom-20 right-8 flex items-center gap-4 z-30">
-        <Button
+      <div className="absolute bottom-8 right-8 flex items-center gap-2 z-30">
+        <button
           onClick={prevSlide}
-          icon={<ArrowLeft size={22} />}
-          className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
-        />
-        <Button
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white backdrop-blur-sm border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
+          aria-label="Previous slide"
+        >
+          <ArrowLeft size={18} strokeWidth={2} />
+        </button>
+        <button
           onClick={nextSlide}
-          icon={<ArrowRight size={22} />}
-          className="p-3 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-orange-500 shadow transition duration-300"
-        />
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white backdrop-blur-sm border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
+          aria-label="Next slide"
+        >
+          <ArrowRight size={18} strokeWidth={2} />
+        </button>
       </div>
     </section>
   );
