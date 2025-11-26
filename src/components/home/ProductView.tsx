@@ -241,7 +241,7 @@ const ProductView: React.FC<ProductViewProps> = ({
 
   return (
     <section
-      className={`relative w-full py-12 md:py-20 overflow-hidden ${
+      className={`relative w-full py-12 md:py-20 overflow-hidden border-t border-gray-200/50 ${
         mode === "slider"
           ? "bg-transparent"
           : "bg-gradient-to-br from-orange-50/30 via-white to-orange-50/20"
