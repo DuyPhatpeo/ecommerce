@@ -170,7 +170,7 @@ const Shop: React.FC = () => {
         {/* ================= MAIN LAYOUT ================= */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
           {/* -------- FILTERS (LEFT) -------- */}
-          <aside className="lg:sticky lg:top-24 lg:w-64 shrink-0 self-start">
+          <aside className="lg:sticky lg:top-22 lg:w-64 shrink-0 self-start">
             <ProductFilters
               context="shop"
               showFilters={showFilters}
