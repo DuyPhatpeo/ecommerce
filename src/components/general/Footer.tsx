@@ -28,7 +28,7 @@ export default function Footer() {
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/70 to-black/80"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-16 py-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-16 py-35 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
           {/* ---------------- ABOUT ---------------- */}
           <div className="space-y-5">
