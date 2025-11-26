@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
 import { Sparkles, ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { getProducts } from "../../api/productApi";
 import ProductCard from "../section/ProductCard";
@@ -41,6 +42,43 @@ const ProductView: React.FC<ProductViewProps> = ({
   const [dragDistance, setDragDistance] = useState(0);
 
   const sliderRef = useRef<HTMLDivElement>(null);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.4, 0.25, 1],
+      },
+    },
+  };
 
   // Calculate number of visible products based on screen width
   const computeVisible = useCallback(() => {
@@ -211,31 +249,70 @@ const ProductView: React.FC<ProductViewProps> = ({
   // Loading state
   if (isLoading) {
     return (
-      <div className="py-20 text-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="py-20 text-center"
+      >
         <div className="relative inline-flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
-          <Sparkles
-            className="absolute text-orange-500 animate-pulse"
-            size={24}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-orange-200 rounded-full border-t-orange-500"
           />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <Sparkles className="absolute text-orange-500" size={24} />
+          </motion.div>
         </div>
-        <p className="mt-4 text-sm font-medium text-gray-600">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-4 text-sm font-medium text-gray-600"
+        >
           Loading products...
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     );
   }
 
   // Empty state
   if (!products.length) {
     return (
-      <div className="py-20 text-center">
-        <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="py-20 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50"
+        >
           <Sparkles size={40} className="text-orange-400" />
-        </div>
-        <p className="text-lg font-medium text-gray-700">No products found</p>
-        <p className="mt-1 text-sm text-gray-500">Please try again later</p>
-      </div>
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-lg font-medium text-gray-700"
+        >
+          No products found
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-1 text-sm text-gray-500"
+        >
+          Please try again later
+        </motion.p>
+      </motion.div>
     );
   }
 
@@ -248,19 +325,35 @@ const ProductView: React.FC<ProductViewProps> = ({
       }`}
     >
       {/* Header Section */}
-      <div className="px-4 mx-auto max-w-7xl md:px-16">
+      <motion.div
+        variants={headerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="px-4 mx-auto max-w-7xl md:px-16"
+      >
         <div className="flex items-center justify-between gap-4">
           {/* Title with gradient animation */}
           <div className="relative inline-block">
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
               {title}
             </h2>
-            <div className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent w-24 animate-pulse" />
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: 96 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent"
+            />
           </div>
 
           {/* View All Button - only shown in grid mode and when category exists */}
           {mode === "grid" && category && (
-            <a
+            <motion.a
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               href={`/shop/${Array.isArray(category) ? category[0] : category}`}
               className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-orange-500 border-2 border-orange-500 rounded-full transition-all duration-300 shadow-md hover:shadow-xl flex-shrink-0"
             >
@@ -272,10 +365,10 @@ const ProductView: React.FC<ProductViewProps> = ({
                 className="text-orange-600 group-hover:text-white group-hover:translate-x-1 transition-all"
                 strokeWidth={2.5}
               />
-            </a>
+            </motion.a>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Products Section */}
       <div
@@ -313,7 +406,11 @@ const ProductView: React.FC<ProductViewProps> = ({
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              <div
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
                 className={
                   mode === "slider"
                     ? "flex gap-3 sm:gap-4 py-2"
@@ -321,8 +418,13 @@ const ProductView: React.FC<ProductViewProps> = ({
                 }
               >
                 {products.map((p, index) => (
-                  <div
+                  <motion.div
                     key={`${p.id}-${index}`}
+                    variants={itemVariants}
+                    whileHover={{
+                      y: -8,
+                      transition: { duration: 0.3 },
+                    }}
                     className={
                       mode === "slider"
                         ? "product-card-item flex-shrink-0 w-[calc(50%-6px)] sm:w-[calc(33.333%-10px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-16px)]"
@@ -348,16 +450,23 @@ const ProductView: React.FC<ProductViewProps> = ({
                         stock: p.stock,
                       }}
                     />
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </div>
 
           {/* Navigation buttons - only for slider mode */}
           {mode === "slider" && products.length > visibleCount && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-2 z-10">
-              <button
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-2 z-10"
+            >
+              <motion.button
+                whileHover={{ scale: canLeft ? 1.1 : 1 }}
+                whileTap={{ scale: canLeft ? 0.9 : 1 }}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
                 className={`
@@ -365,7 +474,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                   backdrop-blur-md border transition-all duration-200
                   ${
                     canLeft
-                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md active:scale-95"
+                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md"
                       : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
                   }
                 `}
@@ -378,9 +487,11 @@ const ProductView: React.FC<ProductViewProps> = ({
                   }`}
                   strokeWidth={2}
                 />
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: canRight ? 1.1 : 1 }}
+                whileTap={{ scale: canRight ? 0.9 : 1 }}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
                 className={`
@@ -388,7 +499,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                   backdrop-blur-md border transition-all duration-200
                   ${
                     canRight
-                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md active:scale-95"
+                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md"
                       : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
                   }
                 `}
@@ -403,8 +514,8 @@ const ProductView: React.FC<ProductViewProps> = ({
                   }`}
                   strokeWidth={2}
                 />
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           )}
         </div>
       </div>
