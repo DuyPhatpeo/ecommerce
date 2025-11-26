@@ -18,7 +18,7 @@ const fadeInUp = (delay = 0) =>
 
 const Promo: React.FC = () => {
   return (
-    <section className="py-10 bg-white overflow-hidden">
+    <section className="py-12 md:py-20 bg-white overflow-hidden border-t border-gray-200/50">
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* Motion container chính */}
         <motion.div
