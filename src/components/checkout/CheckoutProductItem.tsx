@@ -22,7 +22,7 @@ const CheckoutProductItem: React.FC<ProductItemProps> = ({
   const totalPrice = displayPrice * product.quantity;
 
   return (
-    <div className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-none">
+    <div className="flex items-center gap-4 py-3 border-b border-gray-100 last:border-none">
       <img
         src={
           Array.isArray(product.images) && product.images.length > 0
@@ -30,21 +30,21 @@ const CheckoutProductItem: React.FC<ProductItemProps> = ({
             : "/placeholder.png"
         }
         alt={product.title}
-        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+        className="w-16 h-16 rounded-lg object-cover flex-shrink-0 border border-gray-100"
       />
       <div className="flex-1 min-w-0">
         <p
-          className="text-sm font-medium text-gray-800 truncate"
+          className="text-base font-medium text-gray-800 truncate mb-1"
           title={product.title}
         >
           {product.title}
         </p>
-        <p className="text-xs text-gray-500">x{product.quantity}</p>
-      </div>
-      <div className="text-right flex-shrink-0">
-        <p className="text-sm font-semibold text-orange-600">
-          {formatVND(totalPrice)}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-500">x{product.quantity}</p>
+          <p className="text-base font-semibold text-orange-600">
+            {formatVND(totalPrice)}
+          </p>
+        </div>
       </div>
     </div>
   );
