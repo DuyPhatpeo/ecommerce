@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { TbShoe } from "react-icons/tb"; // ICON GIÀY
 import type { MenuItem } from "../../../stores/headerStore";
 
 interface CategoryBottomSheetProps {
@@ -77,8 +78,12 @@ const CategoryBottomSheet = ({
                         onClose();
                       }
                     }}
-                    className="flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm"
+                    className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm"
                   >
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
+                      <TbShoe size={24} className="text-orange-600" />
+                    </div>
+
                     <span className="text-sm font-semibold text-gray-800 text-center">
                       {category.label}
                     </span>
