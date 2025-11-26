@@ -14,7 +14,6 @@ import type { CartItem } from "../api/cartApi";
    TYPES
 ===================== */
 interface CartState {
-  // State
   userId: string | null;
   cartItems: (CartItem & { product?: any })[];
   selectedItems: string[];
@@ -22,10 +21,9 @@ interface CartState {
   updating: string | null;
   clearing: boolean;
 
-  cartCount: number; // 👈 NEW
-  updateCartCount: () => void; // 👈 NEW
+  cartCount: number;
+  updateCartCount: () => void;
 
-  // Actions
   setUserId: (userId: string | null) => void;
   fetchCart: () => Promise<void>;
   updateQuantity: (id: string, change: number) => Promise<void>;
@@ -65,7 +63,7 @@ export const useCartStore = create<CartState>((set, get) => ({
      🔢 UPDATE CART COUNT
   ===================== */
   updateCartCount: () => {
-    const total = get().cartItems.length; // 👈 chỉ đếm số sản phẩm
+    const total = get().cartItems.length;
     set({ cartCount: total });
   },
 
@@ -100,7 +98,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         cart.map((item) => getProductById(item.productId))
       );
 
-      const merged = cart.map((item, i) => ({
+      let merged = cart.map((item, i) => ({
         ...item,
         id: String(item.id),
         product:
@@ -109,13 +107,18 @@ export const useCartStore = create<CartState>((set, get) => ({
             : { name: "Unknown", price: 0, stock: 0 },
       }));
 
+      // 🆕 Sort theo createdAt: mới nhất lên đầu
+      merged = merged.sort(
+        (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+      );
+
       set({ cartItems: merged, selectedItems: [] });
     } catch (error) {
       console.error(error);
       toast.error("Failed to load cart.");
     } finally {
       set({ loading: false });
-      get().updateCartCount(); // 👈 Cập nhật số lượng
+      get().updateCartCount();
     }
   },
 
@@ -309,7 +312,6 @@ export const useCartStore = create<CartState>((set, get) => ({
         }
       );
 
-      // Refresh cart
       await get().fetchCart();
       get().updateCartCount();
     } catch {

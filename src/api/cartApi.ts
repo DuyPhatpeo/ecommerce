@@ -9,6 +9,7 @@ import {
   deleteDoc,
   query,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../lib/firebaseConfig";
 
@@ -20,6 +21,7 @@ export interface CartItem {
   userId: string;
   productId: string;
   quantity: number;
+  createdAt: any; // Firestore Timestamp
 }
 
 /* ============================
@@ -37,7 +39,7 @@ export const getCart = async (userId: string): Promise<CartItem[]> => {
 };
 
 /* ============================
-   🛒 Lấy 1 item trong giỏ hàng theo id (kiểm tra userId)
+   🛒 Lấy 1 item trong giỏ hàng theo id
 ============================ */
 export const getCartItem = async (
   userId: string,
@@ -49,13 +51,12 @@ export const getCartItem = async (
   if (!docSnap.exists()) return null;
   const data = docSnap.data() as CartItem;
 
-  if (data.userId !== userId) return null; // tránh lấy item của user khác
+  if (data.userId !== userId) return null;
   return { ...data, id: docSnap.id };
 };
 
 /* ============================
    ➕ Thêm sản phẩm vào giỏ hàng
-   (hoặc tăng số lượng nếu đã tồn tại)
 ============================ */
 export const addToCart = async (
   userId: string,
@@ -77,14 +78,23 @@ export const addToCart = async (
       userId,
       productId,
       quantity,
+      createdAt: serverTimestamp(), // 👈 thêm ngày tạo
     });
+
     await updateDoc(docRef, { id: docRef.id });
-    return { id: docRef.id, userId, productId, quantity };
+
+    return {
+      id: docRef.id,
+      userId,
+      productId,
+      quantity,
+      createdAt: serverTimestamp(),
+    };
   }
 };
 
 /* ============================
-   🔄 Cập nhật số lượng của 1 item
+   🔄 Cập nhật số lượng item
 ============================ */
 export const updateCartItem = async (
   userId: string,
@@ -96,11 +106,12 @@ export const updateCartItem = async (
 
   const docRef = doc(db, "cart", id);
   await updateDoc(docRef, { quantity });
+
   return { ...item, quantity };
 };
 
 /* ============================
-   ❌ Xóa 1 item khỏi giỏ hàng
+   ❌ Xóa 1 item
 ============================ */
 export const deleteCartItem = async (userId: string, id: string) => {
   const item = await getCartItem(userId, id);
@@ -112,7 +123,7 @@ export const deleteCartItem = async (userId: string, id: string) => {
 };
 
 /* ============================
-   🧹 Xóa toàn bộ giỏ hàng của user
+   🧹 Xóa toàn bộ giỏ hàng
 ============================ */
 export const clearCart = async (userId: string) => {
   const cart = await getCart(userId);
