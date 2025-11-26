@@ -55,7 +55,7 @@ const Banner = () => {
   }, [isAnimating, banners.length]);
 
   const goToSlide = useCallback(
-    (index) => {
+    (index: number) => {
       if (!isAnimating && index !== current) {
         setIsAnimating(true);
         setCurrent(index);
