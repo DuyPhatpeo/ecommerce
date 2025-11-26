@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Search, User, Menu, X, ShoppingBag } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MiniCart from "../../shopingcart/MiniCart";
 
 interface RightActionsProps {
@@ -12,103 +12,53 @@ interface RightActionsProps {
   setMobileOpen: (open: boolean) => void;
 }
 
-const RightActions = ({
+export default function RightActions({
   user,
   cartCount,
   searchOpen,
   mobileOpen,
   setSearchOpen,
   setMobileOpen,
-}: RightActionsProps) => {
-  const [cartOpen, setCartOpen] = useState(false);
+}: RightActionsProps) {
+  const [hoverCart, setHoverCart] = useState(false);
   const location = useLocation();
   const isCartPage = location.pathname === "/cart";
 
-  // Xử lý phím ESC để đóng MiniCart
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && cartOpen) {
-        setCartOpen(false);
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [cartOpen]);
-
-  // Đóng MiniCart khi chuyển sang trang cart
-  useEffect(() => {
-    if (isCartPage) {
-      setCartOpen(false);
-    }
-  }, [isCartPage]);
-
   return (
     <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 text-gray-800">
-      {/* Search button */}
+      {/* SEARCH */}
       <IconButton
         onClick={() => setSearchOpen(!searchOpen)}
         icon={<Search size={20} />}
         ariaLabel="Search"
       />
 
-      {/* Cart - Desktop */}
-      <div className="hidden lg:block relative">
-        {!isCartPage ? (
-          // Nếu KHÔNG ở trang cart: hiện button với MiniCart
-          <>
-            <button
-              onClick={() => setCartOpen(!cartOpen)}
-              className="relative hover:text-orange-500 transition-colors p-1"
-              aria-label="Shopping cart"
-            >
-              <ShoppingBag size={20} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                  {cartCount > 99 ? "99+" : cartCount}
-                </span>
-              )}
-            </button>
-            {cartOpen && <MiniCart onClose={() => setCartOpen(false)} />}
-          </>
-        ) : (
-          // Nếu Ở trang cart: chỉ hiện link
-          <Link
-            to="/cart"
-            className="relative hover:text-orange-500 transition-colors p-1 block"
-            aria-label="Shopping cart"
-          >
-            <ShoppingBag size={20} />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </Link>
+      {/* CART - DESKTOP with Hover MiniCart */}
+      <div
+        className="relative hidden lg:block"
+        onMouseEnter={() => !isCartPage && setHoverCart(true)}
+        onMouseLeave={() => setHoverCart(false)}
+      >
+        <CartIcon cartCount={cartCount} />
+
+        {/* MiniCart Dropdown */}
+        {!isCartPage && hoverCart && (
+          <div className="absolute right-0 top-full pt-2">
+            <MiniCart cartCount={cartCount} />
+          </div>
         )}
       </div>
 
-      {/* Cart - Mobile: luôn là link tới /cart */}
+      {/* CART - MOBILE (Simple Link) */}
       <div className="lg:hidden">
-        <Link
-          to="/cart"
-          className="relative hover:text-orange-500 transition-colors p-1 block"
-          aria-label="Shopping cart"
-        >
-          <ShoppingBag size={20} />
-          {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-              {cartCount > 99 ? "99+" : cartCount}
-            </span>
-          )}
-        </Link>
+        <CartIcon cartCount={cartCount} />
       </div>
 
-      {/* User */}
+      {/* USER */}
       {user ? (
         <Link
           to="/account"
-          className="hover:text-orange-500 transition-colors lg:block hidden p-1"
+          className="hidden lg:block p-1 hover:text-orange-500 transition-colors"
           aria-label="User account"
         >
           <User size={20} />
@@ -122,50 +72,50 @@ const RightActions = ({
         </Link>
       )}
 
-      {/* Mobile menu toggle */}
-      <MobileToggle
-        open={mobileOpen}
+      {/* MOBILE MENU TOGGLE */}
+      <IconButton
         onClick={() => setMobileOpen(!mobileOpen)}
+        icon={mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        ariaLabel={mobileOpen ? "Close menu" : "Open menu"}
+        className="xl:hidden"
       />
     </div>
   );
-};
+}
 
+// Reusable IconButton Component
 const IconButton = ({
   onClick,
   icon,
   ariaLabel,
+  className = "",
 }: {
   onClick: () => void;
   icon: React.ReactNode;
   ariaLabel?: string;
+  className?: string;
 }) => (
   <button
     onClick={onClick}
-    className="hover:text-orange-500 transition-colors p-1"
+    className={`hover:text-orange-500 transition-colors p-1 ${className}`}
     aria-label={ariaLabel}
   >
     {icon}
   </button>
 );
 
-const MobileToggle = ({
-  open,
-  onClick,
-}: {
-  open: boolean;
-  onClick: () => void;
-}) => {
-  const Icon = open ? X : Menu;
-  return (
-    <button
-      onClick={onClick}
-      className="xl:hidden hover:text-orange-500 transition-colors p-1"
-      aria-label={open ? "Close menu" : "Open menu"}
-    >
-      <Icon size={20} />
-    </button>
-  );
-};
-
-export default RightActions;
+// Cart Icon with Badge Component
+const CartIcon = ({ cartCount }: { cartCount: number }) => (
+  <Link
+    to="/cart"
+    className="relative p-1 block hover:text-orange-500 transition-colors"
+    aria-label={`Shopping cart with ${cartCount} items`}
+  >
+    <ShoppingBag size={20} />
+    {cartCount > 0 && (
+      <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
+        {cartCount > 99 ? "99+" : cartCount}
+      </span>
+    )}
+  </Link>
+);
