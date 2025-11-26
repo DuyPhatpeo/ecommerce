@@ -1,74 +1,69 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
-import Button from "../ui/Button";
 
-const Banner: React.FC = () => {
-  const banners = [
-    {
-      title: "Nike New Collection!",
-      description:
-        "Discover the latest collection combining sporty style with modern design. Comfortable, lightweight, and stand out with your unique style.",
-      productImage: "/banner-1.png",
-    },
-    {
-      title: "Air Jordan Retro Series",
-      description:
-        "Return to a classic style with a modern touch. Limited edition, for true enthusiasts only.",
-      productImage: "/banner-2.png",
-    },
-    {
-      title: "Run Faster, Go Further!",
-      description:
-        "Explore the newest running shoes — lighter, softer, and more durable than ever. Feel the speed in every step.",
-      productImage: "/banner-3.png",
-    },
-  ];
+const Banner = () => {
+  const banners = useMemo(
+    () => [
+      {
+        title: "Nike New Collection!",
+        description:
+          "Discover the latest collection combining sporty style with modern design. Comfortable, lightweight, and stand out with your unique style.",
+        productImage: "/banner-1.png",
+      },
+      {
+        title: "Air Jordan Retro Series",
+        description:
+          "Return to a classic style with a modern touch. Limited edition, for true enthusiasts only.",
+        productImage: "/banner-2.png",
+      },
+      {
+        title: "Run Faster, Go Further!",
+        description:
+          "Explore the newest running shoes — lighter, softer, and more durable than ever. Feel the speed in every step.",
+        productImage: "/banner-3.png",
+      },
+    ],
+    []
+  );
 
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setDirection(1);
+      setIsAnimating(true);
       setCurrent((prev) => (prev + 1) % banners.length);
+      setTimeout(() => setIsAnimating(false), 400);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [banners.length]);
 
-  const nextSlide = () => {
-    setDirection(1);
-    setCurrent((prev) => (prev + 1) % banners.length);
-  };
+  const nextSlide = useCallback(() => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrent((prev) => (prev + 1) % banners.length);
+      setTimeout(() => setIsAnimating(false), 400);
+    }
+  }, [isAnimating, banners.length]);
 
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
-  };
+  const prevSlide = useCallback(() => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
+      setTimeout(() => setIsAnimating(false), 400);
+    }
+  }, [isAnimating, banners.length]);
 
-  const goToSlide = (index: number) => {
-    setDirection(index > current ? 1 : -1);
-    setCurrent(index);
-  };
-
-  const bgImage = "/banner-bg.jpg";
-
-  const variants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 100 : -100,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.6, ease: easeOut },
+  const goToSlide = useCallback(
+    (index) => {
+      if (!isAnimating && index !== current) {
+        setIsAnimating(true);
+        setCurrent(index);
+        setTimeout(() => setIsAnimating(false), 400);
+      }
     },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -100 : 100,
-      opacity: 0,
-      transition: { duration: 0.4, ease: easeIn },
-    }),
-  };
+    [isAnimating, current]
+  );
 
   return (
     <section
@@ -77,76 +72,50 @@ const Banner: React.FC = () => {
     >
       {/* Background */}
       <div
-        className="absolute inset-0 bg-center bg-no-repeat bg-cover transition-all duration-700 ease-in-out"
-        style={{ backgroundImage: `url(${bgImage})` }}
+        className="absolute inset-0 bg-center bg-no-repeat bg-cover"
+        style={{ backgroundImage: "url(/banner-bg.jpg)" }}
       />
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
-        <AnimatePresence custom={direction} mode="wait">
-          <motion.div
-            key={banners[current].title}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-10"
-          >
-            {/* LEFT CONTENT */}
-            <div className="max-w-xl text-left">
-              <motion.h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight"
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-              >
-                {banners[current].title}
-              </motion.h1>
+        <div
+          key={current}
+          className="flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-10 animate-fadeIn"
+        >
+          {/* LEFT CONTENT */}
+          <div className="max-w-xl text-left">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+              {banners[current].title}
+            </h1>
 
-              <motion.p
-                className="mt-4 sm:mt-6 text-gray-600 text-sm sm:text-base md:text-lg"
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
-                {banners[current].description}
-              </motion.p>
+            <p className="mt-4 sm:mt-6 text-gray-600 text-sm sm:text-base md:text-lg">
+              {banners[current].description}
+            </p>
 
-              <motion.div
-                className="mt-6 sm:mt-10 flex items-center justify-start"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+            <div className="mt-6 sm:mt-10 flex items-center justify-start">
+              <button
+                type="button"
+                className="bg-gradient-to-r from-orange-400 to-orange-500 px-5 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
               >
-                <Button
-                  type="button"
-                  icon={<Plus size={22} className="text-white" />}
-                  label="ADD TO BAG"
-                  className="bg-gradient-to-r from-orange-400 to-orange-500 px-5 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
-                />
-              </motion.div>
+                <Plus size={22} className="text-white" />
+                ADD TO BAG
+              </button>
             </div>
+          </div>
 
-            <motion.div
-              className="relative w-full md:w-1/2 flex justify-center items-center"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-            >
-              <motion.img
-                src={banners[current].productImage}
-                alt={banners[current].title}
-                className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full object-contain"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
-          </motion.div>
-        </AnimatePresence>
+          {/* RIGHT IMAGE */}
+          <div className="relative w-full md:w-1/2 flex justify-center items-center">
+            <img
+              src={banners[current].productImage}
+              alt={banners[current].title}
+              className="max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] w-full object-contain hover:scale-105 transition-transform duration-300"
+              loading="eager"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Progress Indicators - Dots */}
+      {/* Progress Indicators */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
         {banners.map((_, index) => (
           <button
@@ -156,14 +125,11 @@ const Banner: React.FC = () => {
             aria-label={`Go to slide ${index + 1}`}
           >
             <div
-              className={`
-                h-2 rounded-full transition-all duration-300
-                ${
-                  current === index
-                    ? "w-8 bg-orange-500 shadow-md"
-                    : "w-2 bg-gray-800/40 hover:bg-gray-800/60 backdrop-blur-sm"
-                }
-              `}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                current === index
+                  ? "w-8 bg-orange-500 shadow-md"
+                  : "w-2 bg-gray-800/40 hover:bg-gray-800/60"
+              }`}
             />
           </button>
         ))}
@@ -173,19 +139,38 @@ const Banner: React.FC = () => {
       <div className="absolute bottom-8 right-8 flex items-center gap-2 z-30">
         <button
           onClick={prevSlide}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white backdrop-blur-sm border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
+          disabled={isAnimating}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50"
           aria-label="Previous slide"
         >
           <ArrowLeft size={18} strokeWidth={2} />
         </button>
         <button
           onClick={nextSlide}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white backdrop-blur-sm border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
+          disabled={isAnimating}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50"
           aria-label="Next slide"
         >
           <ArrowRight size={18} strokeWidth={2} />
         </button>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      `}</style>
     </section>
   );
 };
