@@ -26,7 +26,7 @@ const features = [
 ];
 
 export default function Features() {
-  const [hoveredIndex, setHoveredIndex] = React.useState(null);
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -51,7 +51,7 @@ export default function Features() {
       scale: 1,
       transition: {
         duration: 0.5,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
       },
     },
   };
@@ -65,7 +65,7 @@ export default function Features() {
       scale: 1,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
         delay: 0.15,

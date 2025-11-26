@@ -30,13 +30,13 @@ export default function BrandStrip() {
     swiperRef.current?.autoplay?.start();
   };
 
-  // Animation variants
+  // Animation variants - Fixed easing types
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
+      transition: { duration: 0.8, ease: "easeOut" as const },
     },
   };
 
@@ -46,7 +46,10 @@ export default function BrandStrip() {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.6, ease: [0.25, 0.4, 0.25, 1] },
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.4, 0.25, 1] as [number, number, number, number],
+      },
     },
   };
 
@@ -64,7 +67,7 @@ export default function BrandStrip() {
       opacity: 1,
       scale: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.5, ease: "easeOut" as const },
     },
   };
 

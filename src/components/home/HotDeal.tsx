@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 
 const HotDeal = () => {
@@ -31,7 +31,7 @@ const HotDeal = () => {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const formatValue = (num) => num.toString().padStart(2, "0");
+  const formatValue = (num: number) => num.toString().padStart(2, "0");
 
   // =============== Products ===============
   const products = [
@@ -58,13 +58,13 @@ const HotDeal = () => {
     },
   ];
 
-  const formatVND = (num) =>
+  const formatVND = (num: number) =>
     num.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const intervalRef = useRef(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Auto slide every 5s
   const startAutoSlide = useCallback(() => {
@@ -100,7 +100,7 @@ const HotDeal = () => {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-  const handleDotClick = (idx) => {
+  const handleDotClick = (idx: number) => {
     if (isAnimating || idx === currentIndex) return;
     setIsAnimating(true);
     setDirection(idx > currentIndex ? 1 : -1);
