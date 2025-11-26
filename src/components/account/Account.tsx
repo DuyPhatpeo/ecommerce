@@ -125,7 +125,7 @@ const Account = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className={`flex gap-6 ${isMobile ? "flex-col" : "lg:flex-row"}`}>
           {(isMobile ? !activeTab : true) && (
-            <div className="w-full lg:w-80">
+            <div className="w-full lg:w-80 lg:sticky lg:top-24 self-start">
               <div className="bg-white/90 backdrop-blur-md shadow-md rounded-2xl border border-orange-100 overflow-hidden">
                 {sidebar}
               </div>
