@@ -1,5 +1,5 @@
 import React from "react";
-import { Package, Truck, CheckCircle, XCircle } from "lucide-react";
+import { FiPackage, FiTruck, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 interface Props {
   status: string;
@@ -8,10 +8,10 @@ interface Props {
 
 const OrderTimeline: React.FC<Props> = ({ status, orderId }) => {
   const steps = [
-    { id: "pending", label: "Ordered", icon: Package },
-    { id: "processing", label: "Confirmed", icon: Package },
-    { id: "shipping", label: "Shipping", icon: Truck },
-    { id: "completed", label: "Completed", icon: CheckCircle },
+    { id: "pending", label: "Ordered", icon: FiPackage },
+    { id: "processing", label: "Confirmed", icon: FiPackage },
+    { id: "shipping", label: "Shipping", icon: FiTruck },
+    { id: "completed", label: "Completed", icon: FiCheckCircle },
   ];
 
   const statusIndex = steps.findIndex((s) => s.id === status);
@@ -33,7 +33,7 @@ const OrderTimeline: React.FC<Props> = ({ status, orderId }) => {
       {/* Cancelled */}
       {isCancelled ? (
         <div className="bg-red-50 rounded-xl p-6 text-center border border-red-200">
-          <XCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
+          <FiXCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
           <p className="text-lg font-semibold text-red-600 mb-1">
             Order Cancelled
           </p>

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-  CreditCard,
-  MapPin,
-  Calendar,
-  ClipboardList,
-  User,
-  Phone,
-  Tag,
-  DollarSign,
-  Truck,
-} from "lucide-react";
+  FiCreditCard,
+  FiMapPin,
+  FiCalendar,
+  FiClipboard,
+  FiUser,
+  FiPhone,
+  FiTag,
+  FiDollarSign,
+  FiTruck,
+} from "react-icons/fi";
+
 import { useOrderStore } from "../../stores/orderStore";
 import OrderTimeline from "./OrderTimeline";
 import OrderProductList from "./OrderProductList";
@@ -61,31 +62,31 @@ const OrderDetail: React.FC = () => {
         {/* Customer Info */}
         <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
           <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <ClipboardList className="text-orange-600" /> Customer Information
+            <FiClipboard className="text-orange-600" /> Customer Information
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <InfoItem
-              icon={<User className="text-blue-500 w-5 h-5" />}
+              icon={<FiUser className="text-blue-500 w-5 h-5" />}
               label="Full Name"
               value={order.customer.recipientName ?? "N/A"}
             />
             <InfoItem
-              icon={<Phone className="text-green-500 w-5 h-5" />}
+              icon={<FiPhone className="text-green-500 w-5 h-5" />}
               label="Phone"
               value={order.customer.phone ?? "N/A"}
             />
             <InfoItem
-              icon={<MapPin className="text-red-500 w-5 h-5" />}
+              icon={<FiMapPin className="text-red-500 w-5 h-5" />}
               label="Address"
               value={order.customer.address ?? "N/A"}
             />
             <InfoItem
-              icon={<CreditCard className="text-purple-500 w-5 h-5" />}
+              icon={<FiCreditCard className="text-purple-500 w-5 h-5" />}
               label="Payment Method"
               value={getPaymentMethodName(order.customer.paymentMethod)}
             />
             <InfoItem
-              icon={<Calendar className="text-orange-500 w-5 h-5" />}
+              icon={<FiCalendar className="text-orange-500 w-5 h-5" />}
               label="Order Date"
               value={
                 order.createdAt
@@ -110,7 +111,7 @@ const OrderDetail: React.FC = () => {
           <div className="space-y-3">
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+                <FiTag className="w-4 h-4 text-orange-500" /> Subtotal
               </span>
               <span className="font-medium">
                 {formatVND(order.subtotal ?? 0)}
@@ -118,13 +119,13 @@ const OrderDetail: React.FC = () => {
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+                <FiDollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
               </span>
               <span className="font-medium">{formatVND(order.tax ?? 0)}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-blue-500" /> Shipping
+                <FiTruck className="w-4 h-4 text-blue-500" /> Shipping
               </span>
               <span className="font-medium text-green-600 font-semibold">
                 Free
