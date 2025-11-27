@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Home, User, Phone, ChevronDown } from "lucide-react";
+import {
+  FiMapPin,
+  FiHome,
+  FiUser,
+  FiPhone,
+  FiChevronDown,
+} from "react-icons/fi";
+
 import { useAddressStore } from "../../stores/addressStore";
 import SelectAddressModal from "./SelectAddressModal";
 import AddAddressModal from "./AddAddressModal";
@@ -82,7 +89,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-      <Header icon={<MapPin />} title="Shipping Information" />
+      <Header icon={<FiMapPin />} title="Shipping Information" />
 
       {/* Phần hiển thị địa chỉ đã chọn và nút mở modal */}
       <div className="p-6">
@@ -91,13 +98,13 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
             <div className="flex justify-between items-start gap-4">
               <div className="flex-1 space-y-1.5">
                 <InfoRow
-                  icon={<User />}
+                  icon={<FiUser />}
                   text={selectedAddress.recipientName}
                   bold
                 />
-                <InfoRow icon={<Phone />} text={selectedAddress.phone} />
+                <InfoRow icon={<FiPhone />} text={selectedAddress.phone} />
                 <InfoRow
-                  icon={<Home />}
+                  icon={<FiHome />}
                   text={selectedAddress.line ?? ""}
                   multiline
                 />
@@ -119,7 +126,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
             onClick={() => setShowSelectAddressModal(true)}
             className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
           >
-            <ChevronDown size={16} /> Select Address
+            <FiChevronDown size={16} /> Select Address
           </button>
         </div>
       </div>

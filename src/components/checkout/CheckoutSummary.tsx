@@ -1,12 +1,13 @@
 import React from "react";
 import {
-  CreditCard,
-  Tag,
-  Truck,
-  DollarSign,
-  ShieldCheck,
-  ShoppingCart,
-} from "lucide-react";
+  FiCreditCard,
+  FiTag,
+  FiTruck,
+  FiDollarSign,
+  FiShoppingCart,
+} from "react-icons/fi";
+import { LuShieldCheck } from "react-icons/lu";
+
 import CheckoutProductList from "./CheckoutProductList";
 import Button from "../ui/Button";
 
@@ -54,7 +55,7 @@ const CheckoutSummary: React.FC<Props> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">
-            <CreditCard className="text-orange-600 w-6 h-6" />
+            <FiCreditCard className="text-orange-600 w-6 h-6" />
             <h3 className="text-xl font-bold text-gray-900">Order Summary</h3>
           </div>
         </div>
@@ -66,19 +67,19 @@ const CheckoutSummary: React.FC<Props> = ({
         <div className="text-gray-700 space-y-2">
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+              <FiTag className="w-4 h-4 text-orange-500" /> Subtotal
             </span>
             <span className="font-semibold">{formatVND(subtotal)}</span>
           </div>
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+              <FiDollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
             </span>
             <span className="font-semibold">{formatVND(tax)}</span>
           </div>
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <Truck className="w-4 h-4 text-blue-500" /> Shipping
+              <FiTruck className="w-4 h-4 text-blue-500" /> Shipping
             </span>
             <span className="font-semibold">
               {shipping === 0 ? (
@@ -94,7 +95,7 @@ const CheckoutSummary: React.FC<Props> = ({
         {subtotal > 0 && subtotal < 25 && (
           <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
             <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
-              <ShoppingCart className="w-5 h-5 mt-0.5" />
+              <FiShoppingCart className="w-5 h-5 mt-0.5" />
               <span>
                 Add <strong>{formatVND(25 - subtotal)}</strong> more for{" "}
                 <strong>FREE SHIPPING</strong>!
@@ -125,7 +126,7 @@ const CheckoutSummary: React.FC<Props> = ({
           <Button
             onClick={onPlaceOrder}
             label="Confirm Order"
-            icon={<ShieldCheck className="w-6 h-6" />}
+            icon={<LuShieldCheck className="w-6 h-6" />}
             justify="center"
             className="w-full py-5 text-lg rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:from-orange-600 hover:to-amber-600"
             loading={loading}
@@ -134,7 +135,7 @@ const CheckoutSummary: React.FC<Props> = ({
 
         {/* Secure note */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500 border-t border-gray-100 pt-3">
-          <ShieldCheck className="text-green-500 w-5 h-5" />
+          <LuShieldCheck className="text-green-500 w-5 h-5" />
           <span>Secure & encrypted payment</span>
         </div>
       </div>
@@ -154,7 +155,7 @@ const CheckoutSummary: React.FC<Props> = ({
           <Button
             onClick={onPlaceOrder}
             label="Confirm Order"
-            icon={<CreditCard className="w-4 h-4" />}
+            icon={<FiCreditCard className="w-4 h-4" />}
             justify="center"
             className="w-full py-2.5 rounded-md text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
             loading={loading}

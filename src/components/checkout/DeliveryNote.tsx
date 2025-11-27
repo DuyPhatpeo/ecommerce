@@ -1,5 +1,5 @@
 import React from "react";
-import { StickyNote } from "lucide-react";
+import { FiFileText } from "react-icons/fi";
 
 interface DeliveryNoteProps {
   note: string;
@@ -30,7 +30,7 @@ const Section = ({
 export default function DeliveryNote({ note, setNote }: DeliveryNoteProps) {
   return (
     <Section
-      icon={<StickyNote className="w-5 h-5 text-orange-500" />}
+      icon={<FiFileText className="w-5 h-5 text-orange-500" />}
       title="Delivery Note"
       subtitle="(Optional)"
     >

@@ -1,5 +1,5 @@
 import React from "react";
-import { ShoppingBag } from "lucide-react";
+import { FiShoppingBag } from "react-icons/fi";
 import CheckoutProductItem from "./CheckoutProductItem";
 
 interface Product {
@@ -23,7 +23,7 @@ const CheckoutProductList: React.FC<ProductListProps> = ({
   return (
     <div className="border-b border-orange-100 pb-4">
       <div className="flex items-center gap-2 mb-3">
-        <ShoppingBag className="w-5 h-5 text-orange-600" />
+        <FiShoppingBag className="w-5 h-5 text-orange-600" />
         <h4 className="font-semibold text-gray-800">
           Products ({products.length})
         </h4>

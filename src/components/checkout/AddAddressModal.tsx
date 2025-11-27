@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, X } from "lucide-react";
+import { FiMapPin, FiX } from "react-icons/fi";
 import Button from "../ui/Button";
 
 interface AddAddressModalProps {
@@ -37,7 +37,7 @@ const Modal = ({
       >
         <Button
           onClick={onClose}
-          icon={<X className="w-5 h-5" />}
+          icon={<FiX className="w-5 h-5" />}
           className="absolute top-4 right-4 flex items-center justify-center w-9 h-9 
              rounded-xl text-gray-500 hover:text-gray-800 bg-gray-100/40
              hover:bg-gray-200/60 transition-all duration-300 hover:scale-105"
@@ -85,7 +85,7 @@ export default function AddAddressModal({
   return (
     <Modal onClose={onClose}>
       <div className="text-lg font-bold mb-5 text-gray-800 flex items-center gap-2 border-b border-orange-100 pb-3">
-        <MapPin className="text-orange-500" />{" "}
+        <FiMapPin className="text-orange-500" />{" "}
         {address ? "Edit Address" : "Add New Address"}
       </div>
       <div className="space-y-3">

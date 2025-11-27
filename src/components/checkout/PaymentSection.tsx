@@ -1,5 +1,7 @@
 import React from "react";
-import { CreditCard, Wallet, Banknote } from "lucide-react";
+import { FiCreditCard } from "react-icons/fi";
+import { BsCash } from "react-icons/bs";
+import { LuWallet } from "react-icons/lu";
 import Radio from "../ui/Radio";
 
 export interface PaymentMethod {
@@ -39,23 +41,23 @@ export default function PaymentSection({
     {
       value: "cod",
       label: "Cash on Delivery",
-      icon: <Banknote className="text-green-500" />,
+      icon: <BsCash className="text-green-500" />,
     },
     {
       value: "banking",
       label: "Bank Transfer",
-      icon: <CreditCard className="text-blue-500" />,
+      icon: <FiCreditCard className="text-blue-500" />,
     },
     {
       value: "momo",
       label: "E-Wallet",
-      icon: <Wallet className="text-pink-500" />,
+      icon: <LuWallet className="text-pink-500" />,
     },
   ];
 
   return (
     <Section
-      icon={<CreditCard className="w-5 h-5 text-orange-500" />}
+      icon={<FiCreditCard className="w-5 h-5 text-orange-500" />}
       title="Payment Method"
     >
       {paymentMethods.map((method) => (

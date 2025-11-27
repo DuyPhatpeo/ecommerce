@@ -1,5 +1,6 @@
 import React from "react";
-import { User, Phone, Home, Edit, Trash2 } from "lucide-react";
+import { FiUser, FiPhone, FiHome, FiEdit, FiTrash2 } from "react-icons/fi";
+
 import Radio from "../ui/Radio";
 
 interface AddressItemProps {
@@ -65,9 +66,9 @@ export default function AddressItem({
         label={
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1 space-y-1.5">
-              <InfoRow icon={<User />} text={address.recipientName} bold />
-              <InfoRow icon={<Phone />} text={address.phone} />
-              <InfoRow icon={<Home />} text={address.line} multiline />
+              <InfoRow icon={<FiUser />} text={address.recipientName} bold />
+              <InfoRow icon={<FiPhone />} text={address.phone} />
+              <InfoRow icon={<FiHome />} text={address.line} multiline />
             </div>
             {address.isDefault && (
               <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full">
@@ -82,13 +83,13 @@ export default function AddressItem({
           onClick={onEdit}
           className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 transition"
         >
-          <Edit size={14} /> Edit
+          <FiEdit size={14} /> Edit
         </button>
         <button
           onClick={onDelete}
           className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition"
         >
-          <Trash2 size={14} /> Delete
+          <FiTrash2 size={14} /> Delete
         </button>
       </div>
     </div>
