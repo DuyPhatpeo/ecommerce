@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, User, Menu, X, ShoppingBag } from "lucide-react";
+import { FiSearch, FiUser, FiMenu, FiX, FiShoppingBag } from "react-icons/fi";
 import { useState } from "react";
 import MiniCart from "../../shopingcart/MiniCart";
 
@@ -29,7 +29,7 @@ export default function RightActions({
       {/* SEARCH */}
       <IconButton
         onClick={() => setSearchOpen(!searchOpen)}
-        icon={<Search size={20} />}
+        icon={<FiSearch size={20} />}
         ariaLabel="Search"
       />
 
@@ -61,7 +61,7 @@ export default function RightActions({
           className="hidden lg:block p-1 hover:text-orange-500 transition-colors"
           aria-label="User account"
         >
-          <User size={20} />
+          <FiUser size={20} />
         </Link>
       ) : (
         <Link
@@ -75,7 +75,7 @@ export default function RightActions({
       {/* MOBILE MENU TOGGLE */}
       <IconButton
         onClick={() => setMobileOpen(!mobileOpen)}
-        icon={mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        icon={mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
         ariaLabel={mobileOpen ? "Close menu" : "Open menu"}
         className="xl:hidden"
       />
@@ -111,7 +111,7 @@ const CartIcon = ({ cartCount }: { cartCount: number }) => (
     className="relative p-1 block hover:text-orange-500 transition-colors"
     aria-label={`Shopping cart with ${cartCount} items`}
   >
-    <ShoppingBag size={20} />
+    <FiShoppingBag size={20} />
     {cartCount > 0 && (
       <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
         {cartCount > 99 ? "99+" : cartCount}

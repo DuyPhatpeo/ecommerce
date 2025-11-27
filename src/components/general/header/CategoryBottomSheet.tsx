@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { FiX } from "react-icons/fi";
 import { TbShoe } from "react-icons/tb"; // ICON GIÀY
 import type { MenuItem } from "../../../stores/headerStore";
 
@@ -57,12 +57,12 @@ const CategoryBottomSheet = ({
 
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-gray-800">Danh mục giày</h3>
+              <h3 className="text-lg font-bold text-gray-800">Shoe catalog</h3>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <X size={20} className="text-gray-600" />
+                <FiX size={20} className="text-gray-600" />
               </button>
             </div>
 

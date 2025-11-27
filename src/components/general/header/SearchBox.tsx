@@ -1,6 +1,6 @@
 // 📁 components/Header/SearchBox.tsx
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X } from "lucide-react";
+import { FiSearch, FiX } from "react-icons/fi";
 
 interface SearchBoxProps {
   searchOpen: boolean;
@@ -34,7 +34,7 @@ const SearchBox = ({
       >
         <div className="flex justify-center bg-orange-50 py-3 shadow-md rounded-b-lg">
           <div className="relative px-4 w-full max-w-[1200px]">
-            <Search
+            <FiSearch
               className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-400 pointer-events-none"
               size={20}
             />
@@ -54,7 +54,7 @@ const SearchBox = ({
               }}
               className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 p-1"
             >
-              <X size={18} />
+              <FiX size={18} />
             </button>
           </div>
         </div>

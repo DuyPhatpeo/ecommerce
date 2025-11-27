@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { FiChevronRight, FiChevronDown } from "react-icons/fi";
+
 import type { MenuItem } from "../../../stores/headerStore";
 
 interface MobileMenuProps {
@@ -78,7 +79,7 @@ const MobileMenuWithSub = ({
         className="w-full flex justify-between items-center px-5 py-3 text-sm font-semibold hover:bg-orange-50 hover:text-orange-500 transition-colors"
       >
         {item.label}
-        {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        {isOpen ? <FiChevronDown size={16} /> : <FiChevronRight size={16} />}
       </button>
       <AnimatePresence>
         {isOpen && (

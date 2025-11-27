@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ArrowUp } from "lucide-react";
+import { FiArrowUp } from "react-icons/fi";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -31,7 +31,7 @@ const ScrollToTop = () => {
           className="
             fixed bottom-45 right-5 lg:bottom-15 lg:right-10 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 flex items-center justify-center "
         >
-          <ArrowUp size={15} strokeWidth={2.5} />
+          <FiArrowUp size={15} strokeWidth={2.5} />
         </button>
       )}
     </>
