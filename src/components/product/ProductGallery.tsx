@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect, memo } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  X,
-  Maximize2,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
+  FiChevronLeft,
+  FiChevronRight,
+  FiX,
+  FiMaximize2,
+  FiZoomIn,
+  FiZoomOut,
+} from "react-icons/fi";
 
 interface ProductGalleryProps {
   images: string[];
@@ -292,7 +292,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
                 aria-label="Previous image"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-800" />
+                <FiChevronLeft className="w-5 h-5 text-gray-800" />
               </button>
               <button
                 onClick={(e) => {
@@ -302,7 +302,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
                 aria-label="Next image"
               >
-                <ChevronRight className="w-5 h-5 text-gray-800" />
+                <FiChevronRight className="w-5 h-5 text-gray-800" />
               </button>
             </>
           )}
@@ -316,7 +316,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
           {/* Zoom icon */}
           <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 z-10 pointer-events-none">
-            <Maximize2 className="w-5 h-5 text-gray-800" />
+            <FiMaximize2 className="w-5 h-5 text-gray-800" />
           </div>
         </div>
       </div>
@@ -336,7 +336,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               }`}
               aria-label="Previous thumbnails"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <FiChevronLeft className="w-4 h-4" />
             </button>
 
             {/* Thumbnails list */}
@@ -380,7 +380,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               }`}
               aria-label="Next thumbnails"
             >
-              <ChevronRight className="w-4 h-4" />
+              <FiChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -406,7 +406,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
             aria-label="Close"
           >
-            <X className="w-6 h-6" />
+            <FiX className="w-6 h-6" />
           </button>
 
           {/* Image counter */}
@@ -428,7 +428,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               }`}
               aria-label="Zoom out"
             >
-              <ZoomOut className="w-5 h-5" />
+              <FiZoomOut className="w-5 h-5" />
             </button>
             <span className="text-white text-sm font-medium min-w-[3rem] text-center">
               {Math.round(zoom * 100)}%
@@ -443,7 +443,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               }`}
               aria-label="Zoom in"
             >
-              <ZoomIn className="w-5 h-5" />
+              <FiZoomIn className="w-5 h-5" />
             </button>
           </div>
 
@@ -458,7 +458,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
                 aria-label="Previous image"
               >
-                <ChevronLeft className="w-6 h-6" />
+                <FiChevronLeft className="w-6 h-6" />
               </button>
               <button
                 onClick={(e) => {
@@ -468,7 +468,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
                 aria-label="Next image"
               >
-                <ChevronRight className="w-6 h-6" />
+                <FiChevronRight className="w-6 h-6" />
               </button>
             </>
           )}

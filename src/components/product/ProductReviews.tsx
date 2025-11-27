@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageSquare, Star } from "lucide-react";
+import { FiMessageSquare, FiStar } from "react-icons/fi";
 
 interface Review {
   id: string;
@@ -82,7 +82,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
   return (
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <MessageSquare className="w-6 h-6 text-orange-500" />
+        <FiMessageSquare className="w-6 h-6 text-orange-500" />
         Customer Reviews
       </h3>
 
@@ -93,7 +93,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
           {/* Star Rating */}
           <div className="flex items-center">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Star
+              <FiStar
                 key={star}
                 onClick={() => setRating(star)}
                 onMouseEnter={() => setHoverRating(star)}
@@ -149,7 +149,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
                 <strong>{review.name}</strong>
                 <span className="text-orange-400 flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
+                    <FiStar
                       key={star}
                       className={`w-4 h-4 ${
                         star <= review.rating

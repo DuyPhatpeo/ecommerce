@@ -1,11 +1,12 @@
 import { useState, useEffect, memo, useCallback } from "react";
 import {
-  ShoppingBag,
-  Heart,
-  Star,
-  AlertCircle,
-  CreditCard,
-} from "lucide-react";
+  FiShoppingBag,
+  FiHeart,
+  FiStar,
+  FiAlertCircle,
+  FiCreditCard,
+} from "react-icons/fi";
+
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -132,7 +133,7 @@ const ProductInfo = ({
       <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
       <div className="flex items-center gap-2 mb-6">
         {Array.from({ length: 5 }, (_, i) => (
-          <Star
+          <FiStar
             key={i}
             className={`w-5 h-5 ${
               i < rating ? "fill-current text-orange-400" : "text-gray-300"
@@ -198,7 +199,7 @@ const ProductInfo = ({
         <Button
           onClick={handleAdd}
           disabled={disableCart}
-          icon={<ShoppingBag className="w-5 h-5" />}
+          icon={<FiShoppingBag className="w-5 h-5" />}
           label={
             disableCart
               ? isOutOfStock
@@ -217,7 +218,7 @@ const ProductInfo = ({
         <Button
           onClick={handleBuy}
           disabled={disableBuy}
-          icon={<CreditCard className="w-5 h-5" />}
+          icon={<FiCreditCard className="w-5 h-5" />}
           label={
             disableBuy
               ? isOutOfStock
@@ -235,7 +236,7 @@ const ProductInfo = ({
           onClick={handleToggleWishlist}
           disabled={wishlistLoading}
           icon={
-            <Heart
+            <FiHeart
               className={`w-6 h-6 transition-colors ${
                 isWishlisted ? "fill-red-500 text-red-500" : ""
               }`}
@@ -285,7 +286,7 @@ const ProductInfo = ({
               <Button
                 onClick={handleAdd}
                 disabled={disableCart}
-                icon={<ShoppingBag className="w-4 h-4" />}
+                icon={<FiShoppingBag className="w-4 h-4" />}
                 label={
                   disableCart ? "No Price" : loading ? "Adding..." : "Cart"
                 }
@@ -298,7 +299,7 @@ const ProductInfo = ({
               <Button
                 onClick={handleBuy}
                 disabled={disableBuy}
-                icon={<CreditCard className="w-4 h-4" />}
+                icon={<FiCreditCard className="w-4 h-4" />}
                 label={disableBuy ? "No Price" : "Buy Now"}
                 className={`flex-1 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-1.5 ${
                   disableBuy
@@ -310,7 +311,7 @@ const ProductInfo = ({
                 onClick={handleToggleWishlist}
                 disabled={wishlistLoading}
                 icon={
-                  <Heart
+                  <FiHeart
                     className={`w-4 h-4 transition-colors ${
                       isWishlisted ? "fill-red-500 text-red-500" : ""
                     }`}
@@ -379,7 +380,7 @@ const Notice = ({
     <div
       className={`bg-${color}-50 border border-${color}-200 rounded-xl p-4 mb-6 flex items-start gap-3`}
     >
-      <AlertCircle className={`w-5 h-5 text-${color}-600 flex-shrink-0`} />
+      <FiAlertCircle className={`w-5 h-5 text-${color}-600 flex-shrink-0`} />
       <div>
         <p className={`text-${color}-700 font-semibold mb-1`}>{message}</p>
         <p className="text-sm text-gray-600">{subMessage}</p>

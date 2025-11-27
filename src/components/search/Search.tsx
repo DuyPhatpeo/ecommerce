@@ -5,7 +5,8 @@ import ProductCard from "../section/ProductCard";
 import Loader from "../general/Loader";
 import Select from "../ui/Select";
 import Button from "../ui/Button";
-import { Search as SearchIcon } from "lucide-react";
+import { FiSearch } from "react-icons/fi";
+
 import { useSortStore } from "../../stores/sortStore";
 
 export interface Product {
@@ -106,7 +107,7 @@ const Search: React.FC = () => {
           {/* Header + Sort */}
           <div className="flex flex-wrap justify-between items-center mb-5 gap-3">
             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-              <SearchIcon
+              <FiSearch
                 className="inline-block mr-1.5 text-orange-500"
                 size={16}
               />

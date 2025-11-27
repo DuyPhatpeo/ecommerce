@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Package, Star, MessageSquare } from "lucide-react";
+import { FiPackage, FiStar, FiMessageSquare } from "react-icons/fi";
+
 import ProductDescription from "./ProductDescription";
 import ProductSpecification from "./ProductSpecification";
 import ProductReviews from "./ProductReviews";
@@ -28,9 +29,9 @@ export default function ProductTabs({
   >("description");
 
   const tabs = [
-    { id: "description", label: "Description", icon: Package },
-    { id: "specification", label: "Specification", icon: Star },
-    { id: "reviews", label: "Reviews", icon: MessageSquare },
+    { id: "description", label: "Description", icon: FiPackage },
+    { id: "specification", label: "Specification", icon: FiStar },
+    { id: "reviews", label: "Reviews", icon: FiMessageSquare },
   ];
 
   return (

@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { FiStar } from "react-icons/fi";
 
 interface Props {
   specs?: Record<string, string>;
@@ -8,7 +8,7 @@ export default function ProductSpecification({ specs }: Props) {
   return (
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <Star className="w-6 h-6 text-orange-500" />
+        <FiStar className="w-6 h-6 text-orange-500" />
         Technical specifications
       </h3>
       {specs && Object.keys(specs).length > 0 ? (
@@ -34,7 +34,7 @@ export default function ProductSpecification({ specs }: Props) {
         </div>
       ) : (
         <div className="text-center py-12 bg-gray-50 rounded-xl">
-          <Star className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+          <FiStar className="w-16 h-16 mx-auto mb-3 text-gray-300" />
           <p className="text-gray-500 font-medium">
             No specifications available.
           </p>

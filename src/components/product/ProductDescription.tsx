@@ -1,4 +1,4 @@
-import { Package } from "lucide-react";
+import { FiPackage } from "react-icons/fi";
 
 interface Props {
   description?: string;
@@ -8,7 +8,7 @@ export default function ProductDescription({ description }: Props) {
   return (
     <div className="animate-fadeIn">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <Package className="w-6 h-6 text-orange-500" />
+        <FiPackage className="w-6 h-6 text-orange-500" />
         Product description
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -17,7 +17,7 @@ export default function ProductDescription({ description }: Props) {
         </div>
         <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-6 flex items-center justify-center">
           <div className="text-center text-gray-500">
-            <Package className="w-16 h-16 mx-auto mb-3 text-orange-400" />
+            <FiPackage className="w-16 h-16 mx-auto mb-3 text-orange-400" />
             <p className="font-medium">Hình ảnh minh họa</p>
           </div>
         </div>
