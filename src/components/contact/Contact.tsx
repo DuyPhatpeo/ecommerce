@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 
 const Contact: React.FC = () => {
   return (
@@ -10,19 +10,19 @@ const Contact: React.FC = () => {
             {/* Contact Info */}
             <div className="flex-1 space-y-6">
               <div className="flex items-center gap-3">
-                <MapPin className="w-6 h-6 text-orange-600" />
+                <FiMapPin className="w-6 h-6 text-orange-600" />
                 <p className="text-gray-700">
                   123 ABC Street, District 1, Ho Chi Minh City
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <Phone className="w-6 h-6 text-orange-600" />
+                <FiPhone className="w-6 h-6 text-orange-600" />
                 <p className="text-gray-700">(+84) 123 456 789</p>
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail className="w-6 h-6 text-orange-600" />
+                <FiMail className="w-6 h-6 text-orange-600" />
                 <p className="text-gray-700">support@shopdino.vn</p>
               </div>
 
