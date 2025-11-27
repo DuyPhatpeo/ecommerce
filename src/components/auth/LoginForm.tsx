@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Mail, LogIn } from "lucide-react";
+import { FiMail, FiLogIn } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../../stores/authStore";
@@ -54,7 +54,7 @@ export default function LoginForm() {
         value={loginForm.email}
         onChange={handleChange}
         placeholder="you@example.com"
-        icon={<Mail size={20} />}
+        icon={<FiMail size={20} />}
         error={loginErrors.email}
       />
 
@@ -94,7 +94,7 @@ export default function LoginForm() {
       <Button
         type="submit"
         disabled={loginLoading}
-        icon={<LogIn size={20} />}
+        icon={<FiLogIn size={20} />}
         label={loginLoading ? "Signing in..." : "Sign In"}
         justify="center"
         className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${

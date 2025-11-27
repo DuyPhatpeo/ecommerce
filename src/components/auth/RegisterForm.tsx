@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { User, Phone, Mail, MapPin, UserPlus } from "lucide-react";
+import { FiUser, FiPhone, FiMail, FiMapPin, FiUserPlus } from "react-icons/fi";
+
 import { useAuthStore } from "../../stores/authStore";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
@@ -41,7 +42,7 @@ export default function RegisterForm() {
           value={registerForm.fullName}
           onChange={handleChange}
           placeholder="John Doe"
-          icon={<User size={20} />}
+          icon={<FiUser size={20} />}
           error={registerErrors.fullName}
         />
         <InputField
@@ -51,7 +52,7 @@ export default function RegisterForm() {
           value={registerForm.phone}
           onChange={handleChange}
           placeholder="+84 123 456 789"
-          icon={<Phone size={20} />}
+          icon={<FiPhone size={20} />}
           error={registerErrors.phone}
         />
       </div>
@@ -66,7 +67,7 @@ export default function RegisterForm() {
             value={registerForm.email}
             onChange={handleChange}
             placeholder="you@example.com"
-            icon={<Mail size={20} />}
+            icon={<FiMail size={20} />}
             error={registerErrors.email}
           />
         </div>
@@ -78,7 +79,7 @@ export default function RegisterForm() {
             value={registerForm.address}
             onChange={handleChange}
             placeholder="Your address"
-            icon={<MapPin size={20} />}
+            icon={<FiMapPin size={20} />}
             error={registerErrors.address}
           />
           <p className="text-xs text-gray-500 ml-1 mt-1">
@@ -118,7 +119,7 @@ export default function RegisterForm() {
       <Button
         type="submit"
         disabled={registerLoading}
-        icon={<UserPlus size={20} />}
+        icon={<FiUserPlus size={20} />}
         label={registerLoading ? "Creating..." : "Create Account"}
         justify="center"
         className={`w-full py-3.5 rounded-xl font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all ${

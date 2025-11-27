@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LogIn, UserPlus } from "lucide-react";
+import { FiHome, FiLogIn, FiUserPlus } from "react-icons/fi";
+
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
@@ -28,7 +29,7 @@ export default function AuthLayout() {
                    bg-white/80 backdrop-blur-lg border border-orange-200 shadow-sm
                    hover:bg-white transition-all rounded-xl text-orange-600 font-semibold"
       >
-        <Home size={18} />
+        <FiHome size={18} />
         Home
       </button>
 
@@ -95,7 +96,7 @@ export default function AuthLayout() {
 
         <div className="relative z-10 text-white text-center px-12">
           <div className="w-28 h-28 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-6">
-            {isLogin ? <LogIn size={48} /> : <UserPlus size={48} />}
+            {isLogin ? <FiLogIn size={48} /> : <FiUserPlus size={48} />}
           </div>
 
           <h2 className="text-3xl font-bold mb-3">
