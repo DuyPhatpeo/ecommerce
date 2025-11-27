@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
+import { FiArrowLeft, FiArrowRight, FiChevronRight } from "react-icons/fi";
+import { BsStars } from "react-icons/bs";
 import { getProducts } from "../../api/productApi";
 import ProductCard from "../section/ProductCard";
 
@@ -264,7 +265,7 @@ const ProductView: React.FC<ProductViewProps> = ({
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <Sparkles className="absolute text-orange-500" size={24} />
+            <BsStars className="absolute text-orange-500" size={24} />
           </motion.div>
         </div>
         <motion.p
@@ -294,7 +295,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50"
         >
-          <Sparkles size={40} className="text-orange-400" />
+          <BsStars size={40} className="text-orange-400" />
         </motion.div>
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -360,7 +361,7 @@ const ProductView: React.FC<ProductViewProps> = ({
               <span className="text-xs sm:text-sm font-semibold text-orange-600 group-hover:text-white transition-colors whitespace-nowrap">
                 View All
               </span>
-              <ChevronRight
+              <FiChevronRight
                 size={18}
                 className="text-orange-600 group-hover:text-white group-hover:translate-x-1 transition-all"
                 strokeWidth={2.5}
@@ -480,7 +481,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                 `}
                 aria-label="Previous"
               >
-                <ArrowLeft
+                <FiArrowLeft
                   size={18}
                   className={`transition-colors ${
                     canLeft ? "text-gray-700 hover:text-white" : "text-gray-400"
@@ -505,7 +506,7 @@ const ProductView: React.FC<ProductViewProps> = ({
                 `}
                 aria-label="Next"
               >
-                <ArrowRight
+                <FiArrowRight
                   size={18}
                   className={`transition-colors ${
                     canRight

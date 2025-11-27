@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { FiShoppingBag, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const HotDeal = () => {
   // =============== Countdown ===============
@@ -197,7 +197,7 @@ const HotDeal = () => {
             </h3>
 
             <button className="flex items-center gap-2 text-white font-semibold text-sm sm:text-base bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95">
-              <ShoppingBag size={18} />
+              <FiShoppingBag size={18} />
               Add to Bag
             </button>
           </div>
@@ -209,7 +209,7 @@ const HotDeal = () => {
           disabled={isAnimating}
           className="absolute left-3 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
         >
-          <ChevronLeft size={28} className="sm:w-8 sm:h-8" />
+          <FiChevronLeft size={28} className="sm:w-8 sm:h-8" />
         </button>
 
         <button
@@ -217,7 +217,7 @@ const HotDeal = () => {
           disabled={isAnimating}
           className="absolute right-3 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
         >
-          <ChevronRight size={28} className="sm:w-8 sm:h-8" />
+          <FiChevronRight size={28} className="sm:w-8 sm:h-8" />
         </button>
 
         {/* Dots indicator */}

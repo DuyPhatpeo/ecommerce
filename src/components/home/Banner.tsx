@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Plus, ArrowLeft, ArrowRight } from "lucide-react";
+import { FiPlus, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 
 const Banner = () => {
   const banners = useMemo(
@@ -97,7 +97,7 @@ const Banner = () => {
                 type="button"
                 className="bg-gradient-to-r from-orange-400 to-orange-500 px-5 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg text-white font-semibold hover:scale-105 transition-transform duration-300 flex items-center gap-2"
               >
-                <Plus size={22} className="text-white" />
+                <FiPlus size={22} className="text-white" />
                 ADD TO BAG
               </button>
             </div>
@@ -143,7 +143,7 @@ const Banner = () => {
           className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50"
           aria-label="Previous slide"
         >
-          <ArrowLeft size={18} strokeWidth={2} />
+          <FiArrowLeft size={18} strokeWidth={2} />
         </button>
         <button
           onClick={nextSlide}
@@ -151,7 +151,7 @@ const Banner = () => {
           className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 hover:bg-white border border-white/20 text-gray-700 hover:text-orange-500 shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50"
           aria-label="Next slide"
         >
-          <ArrowRight size={18} strokeWidth={2} />
+          <FiArrowRight size={18} strokeWidth={2} />
         </button>
       </div>
 
