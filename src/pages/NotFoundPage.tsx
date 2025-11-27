@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Home } from "lucide-react";
+import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 export default function NotFoundPage() {
@@ -41,7 +41,7 @@ export default function NotFoundPage() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <Home className="w-6 h-6" />
+        <FiHome className="w-6 h-6" />
         Go back Home
       </motion.button>
     </div>

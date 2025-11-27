@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import Button from "./Button";
 
 interface PaginationProps {
@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         onClick={handlePrev}
         disabled={currentPage === 1}
-        icon={<ChevronLeft size={18} />}
+        icon={<FiChevronLeft size={18} />}
         className={`p-2 sm:p-2.5 rounded-lg border font-semibold transition ${
           currentPage === 1
             ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
@@ -56,7 +56,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        icon={<ChevronRight size={18} />}
+        icon={<FiChevronRight size={18} />}
         className={`p-2 sm:p-2.5 rounded-lg border font-semibold transition ${
           currentPage === totalPages
             ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"

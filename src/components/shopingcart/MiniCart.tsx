@@ -1,4 +1,4 @@
-import { ShoppingBag } from "lucide-react";
+import { FiShoppingBag } from "react-icons/fi";
 import { useCartStore } from "../../stores/cartStore";
 
 interface MiniCartProps {
@@ -33,7 +33,7 @@ const MiniCart = ({ cartCount }: MiniCartProps) => {
         ) : cartItems.length === 0 ? (
           <div className="flex flex-col justify-center items-center py-8 text-center px-4">
             <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-              <ShoppingBag className="w-8 h-8 text-orange-500" />
+              <FiShoppingBag className="w-8 h-8 text-orange-500" />
             </div>
             <p className="text-gray-800 text-base font-semibold mb-1">
               No products yet

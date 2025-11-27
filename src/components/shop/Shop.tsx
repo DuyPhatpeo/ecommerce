@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Sparkles, Filter, ShoppingBag } from "lucide-react";
+import { FiFilter, FiShoppingBag } from "react-icons/fi";
+import { BsStars } from "react-icons/bs";
+
 import { getProducts } from "../../api/productApi";
 import ProductFilters from "../section/ProductFilters";
 import Button from "../ui/Button";
@@ -125,9 +127,9 @@ const Shop: React.FC = () => {
         {/* ================= HEADER ================= */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
-            <Sparkles size={18} />
+            <BsStars size={18} />
             <span>All products</span>
-            <ShoppingBag size={18} />
+            <FiShoppingBag size={18} />
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
@@ -148,7 +150,7 @@ const Shop: React.FC = () => {
           <Button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
-            icon={<Filter size={18} />}
+            icon={<FiFilter size={18} />}
             label="Filter"
           />
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { FiChevronDown } from "react-icons/fi";
 
 export interface Option {
   label: string;
@@ -51,7 +51,7 @@ const Select: React.FC<SelectProps> = ({
         "
       >
         <span>{selectedLabel}</span>
-        <ChevronDown
+        <FiChevronDown
           size={18}
           className={`transition-transform ${
             open ? "rotate-180 text-orange-500" : "text-gray-500"

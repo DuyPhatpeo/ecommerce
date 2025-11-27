@@ -1,4 +1,4 @@
-import { ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
+import { FiShoppingBag, FiTrash2, FiAlertTriangle } from "react-icons/fi";
 import CartItem from "./CartItem";
 import Button from "../ui/Button";
 import { toast } from "react-toastify";
@@ -96,7 +96,7 @@ export default function CartList({
         {/* HEADER */}
         <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="text-orange-600 w-6 h-6" />
+            <FiShoppingBag className="text-orange-600 w-6 h-6" />
             <h3 className="text-xl font-bold text-gray-900">Your Cart</h3>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function CartList({
             <Button
               onClick={clearAll}
               disabled={clearing || formattedCartItems.length === 0}
-              icon={<Trash2 className="w-4 h-4" />}
+              icon={<FiTrash2 className="w-4 h-4" />}
               label={clearing ? "Clearing..." : "Clear all"}
               className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap ${
                 clearing
@@ -134,7 +134,7 @@ export default function CartList({
           ) : formattedCartItems.length === 0 ? (
             <div className="text-center py-16">
               <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <ShoppingBag className="w-14 h-14 text-orange-500" />
+                <FiShoppingBag className="w-14 h-14 text-orange-500" />
               </div>
               <p className="text-gray-800 text-xl font-semibold mb-2">
                 Your cart is empty
@@ -146,7 +146,7 @@ export default function CartList({
           ) : outOfStockItems.length === formattedCartItems.length ? (
             <div className="text-center py-16">
               <div className="w-20 h-20 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-10 h-10 text-yellow-500" />
+                <FiAlertTriangle className="w-10 h-10 text-yellow-500" />
               </div>
               <p className="text-gray-800 text-lg font-semibold mb-2">
                 All products are out of stock!

@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { FiEye, FiEyeOff, FiLock } from "react-icons/fi";
 
 interface PasswordFieldProps {
   label: string;
@@ -31,7 +31,7 @@ export default function PasswordField({
       {/* Input wrapper */}
       <div className="relative">
         {/* Icon khóa */}
-        <Lock
+        <FiLock
           className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
           size={20}
         />
@@ -56,7 +56,7 @@ export default function PasswordField({
           onClick={toggle}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition"
         >
-          {show ? <EyeOff size={20} /> : <Eye size={20} />}
+          {show ? <FiEyeOff size={20} /> : <FiEye size={20} />}
         </button>
 
         {/* ❗ Thông báo lỗi (không đẩy layout) */}

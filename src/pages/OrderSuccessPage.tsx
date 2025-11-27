@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle, ShoppingBag, Home } from "lucide-react";
+import { FiCheckCircle, FiShoppingBag, FiHome } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/general/Header";
 import Footer from "../components/general/Footer";
@@ -18,7 +18,7 @@ const OrderSuccess: React.FC = () => {
         <div className="bg-white shadow-2xl rounded-3xl border border-orange-100 p-10 max-w-2xl w-full text-center">
           {/* ✅ Icon */}
           <div className="flex justify-center mb-6">
-            <CheckCircle className="w-20 h-20 text-green-500 animate-bounce" />
+            <FiCheckCircle className="w-20 h-20 text-green-500 animate-bounce" />
           </div>
 
           {/* ✅ Title */}
@@ -59,13 +59,13 @@ const OrderSuccess: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button
               onClick={() => navigate("/")}
-              icon={<Home className="w-5 h-5" />}
+              icon={<FiHome className="w-5 h-5" />}
               label={"Back to Home"}
               className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition-all"
             />
             <Button
               onClick={() => navigate("/cart")}
-              icon={<ShoppingBag className="w-5 h-5" />}
+              icon={<FiShoppingBag className="w-5 h-5" />}
               label={"Continue Shopping"}
               className="border-2 border-orange-400 text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all"
             />
