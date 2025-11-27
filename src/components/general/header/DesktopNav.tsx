@@ -58,18 +58,19 @@ const DesktopNavItem = ({
       {item.path ? (
         <Link
           to={item.path}
-          className={`px-2 py-1 whitespace-nowrap transition-colors ${
+          className={`px-2 py-1 whitespace-nowrap transition-colors cursor-pointer ${
             isActive ? "text-orange-500" : "text-gray-800 hover:text-orange-500"
           }`}
         >
           {item.label}
         </Link>
       ) : (
-        <span className="px-2 py-1 whitespace-nowrap text-gray-800 cursor-default">
+        <span className="px-2 py-1 whitespace-nowrap text-gray-800 hover:text-orange-500 cursor-pointer">
           {item.label}
         </span>
       )}
 
+      {/* Submenu */}
       <AnimatePresence>
         {hasSubMenu && activeMenu === item.label && (
           <motion.div
@@ -90,7 +91,7 @@ const DesktopNavItem = ({
                 <Link
                   key={`${sub.label}-${j}`}
                   to={sub.path!}
-                  className="block px-3 py-1 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white rounded transition-colors"
+                  className="block px-3 py-1 text-[13px] text-gray-700 hover:bg-orange-500 hover:text-white rounded transition-colors cursor-pointer"
                 >
                   {sub.label}
                 </Link>
