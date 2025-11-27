@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Sparkles, Filter, ShoppingBag } from "lucide-react";
+import { FiFilter, FiShoppingBag } from "react-icons/fi";
+import { BsStars } from "react-icons/bs"; // thay thế BsStars
+
 import { getProducts } from "../../api/productApi";
 import ProductFilters from "../section/ProductFilters";
 import Button from "../ui/Button";
@@ -131,11 +133,11 @@ const CategoryProducts: React.FC = () => {
         {/* --- Header --- */}
         <div className="text-center mb-10 px-2 sm:px-0 overflow-visible">
           <div className="inline-flex flex-wrap items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow mb-4">
-            <Sparkles size={16} />
+            <BsStars size={16} />
             <span className="whitespace-normal">
               {capitalize(category) || "All products"}
             </span>
-            <ShoppingBag size={16} />
+            <FiShoppingBag size={16} />
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-snug break-words bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
@@ -156,7 +158,7 @@ const CategoryProducts: React.FC = () => {
           <Button
             onClick={toggleFilters}
             className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl shadow-sm font-semibold text-gray-700 text-sm"
-            icon={<Filter size={18} />}
+            icon={<FiFilter size={18} />}
             label="Filter"
           />
 
