@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-
+import { FiArrowLeft } from "react-icons/fi";
 import AccountSidebar from "./AccountSidebar";
 import ProfileTab from "./ProfileTab";
 import OrdersTab from "./OrdersTab";
@@ -137,7 +136,7 @@ const Account = () => {
                   onClick={handleBack}
                   className="flex items-center gap-2 mb-4 px-4 py-2.5 font-semibold text-white shadow-md bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl transition-all hover:from-orange-600 hover:to-orange-700 hover:-translate-y-0.5"
                 >
-                  <ArrowLeft size={18} />
+                  <FiArrowLeft size={18} />
                   My Account
                 </button>
               )}

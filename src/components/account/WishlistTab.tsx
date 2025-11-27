@@ -1,6 +1,7 @@
 // src/pages/account/WishlistTab.tsx
 import React, { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
+import { FiHeart } from "react-icons/fi";
+
 import ProductCard from "../section/ProductCard";
 import { useWishlistStore } from "../../stores/wishlistStore";
 
@@ -27,7 +28,7 @@ const WishlistTab: React.FC = () => {
         <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <Heart className="text-white fill-white" size={20} />
+              <FiHeart className="text-white fill-white" size={20} />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">My Wishlist</h2>
@@ -48,7 +49,7 @@ const WishlistTab: React.FC = () => {
           /* Empty State */
           <div className="py-16 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <Heart className="text-orange-600" size={32} />
+              <FiHeart className="text-orange-600" size={32} />
             </div>
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               Your Wishlist is Empty

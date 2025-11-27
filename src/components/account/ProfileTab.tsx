@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
+
 import {
-  User,
-  Phone,
-  Mail,
-  Lock,
-  X,
-  Edit3,
-  Check,
-  XCircle,
-  Key,
-  Save,
-} from "lucide-react";
+  FiUser,
+  FiPhone,
+  FiMail,
+  FiLock,
+  FiX,
+  FiEdit3,
+  FiCheck,
+  FiXCircle,
+  FiKey,
+  FiSave,
+} from "react-icons/fi";
 
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
@@ -89,7 +90,7 @@ const ProfileTab: React.FC = () => {
         <div className="flex flex-col gap-4 pb-6 mb-6 border-b border-gray-100 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <User className="text-white" size={18} />
+              <FiUser className="text-white" size={18} />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
@@ -105,7 +106,7 @@ const ProfileTab: React.FC = () => {
           {!isEditing ? (
             <Button
               label="Edit"
-              icon={<Edit3 size={16} />}
+              icon={<FiEdit3 size={16} />}
               onClick={handleEdit}
               disabled={loading.profile}
               className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
@@ -114,14 +115,14 @@ const ProfileTab: React.FC = () => {
             <div className="flex gap-2">
               <Button
                 label={loading.update ? "Saving..." : "Save"}
-                icon={<Check size={16} />}
+                icon={<FiCheck size={16} />}
                 onClick={() => handleSave(userId)}
                 disabled={loading.update}
                 className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <Button
                 label="Cancel"
-                icon={<XCircle size={16} />}
+                icon={<FiXCircle size={16} />}
                 onClick={handleCancel}
                 disabled={loading.update}
                 className="flex-1 px-5 py-2.5 font-semibold text-gray-700 transition-all duration-300 bg-gray-100 rounded-xl hover:bg-gray-200 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -143,7 +144,7 @@ const ProfileTab: React.FC = () => {
             {/* Account Details Section */}
             <div className="mb-6 space-y-4 sm:space-y-6">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                <Mail className="text-orange-500" size={16} />
+                <FiMail className="text-orange-500" size={16} />
                 <h3 className="text-sm font-bold text-gray-800 sm:text-base">
                   Account Details
                 </h3>
@@ -158,7 +159,7 @@ const ProfileTab: React.FC = () => {
                   value={profile.email}
                   onChange={() => {}}
                   placeholder="Enter your email"
-                  icon={<Mail size={18} />}
+                  icon={<FiMail size={18} />}
                   disabled
                 />
                 <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50 sm:px-3">
@@ -176,7 +177,7 @@ const ProfileTab: React.FC = () => {
                     handleChangeProfile("fullName", e.target.value)
                   }
                   placeholder="Enter your full name"
-                  icon={<User size={18} />}
+                  icon={<FiUser size={18} />}
                   disabled={!isEditing}
                 />
                 <InputField
@@ -186,7 +187,7 @@ const ProfileTab: React.FC = () => {
                   value={editedProfile.phone}
                   onChange={(e) => handleChangeProfile("phone", e.target.value)}
                   placeholder="Enter your phone number"
-                  icon={<Phone size={18} />}
+                  icon={<FiPhone size={18} />}
                   disabled={!isEditing}
                 />
               </div>
@@ -196,7 +197,7 @@ const ProfileTab: React.FC = () => {
             <div className="pt-6 border-t border-gray-100">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <Lock className="text-blue-500 flex-shrink-0" size={16} />
+                  <FiLock className="text-blue-500 flex-shrink-0" size={16} />
                   <div>
                     <h3 className="text-sm font-bold text-gray-800 sm:text-base">
                       Security Settings
@@ -209,7 +210,7 @@ const ProfileTab: React.FC = () => {
 
                 <Button
                   label="Change Password"
-                  icon={<Key size={16} />}
+                  icon={<FiKey size={16} />}
                   onClick={() => setShowModal(true)}
                   className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5 sm:w-auto whitespace-nowrap"
                 />
@@ -234,7 +235,7 @@ const ProfileTab: React.FC = () => {
                 <div className="relative flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-white sm:w-12 sm:h-12 rounded-xl shadow-lg">
-                      <Lock className="text-blue-600" size={20} />
+                      <FiLock className="text-blue-600" size={20} />
                     </div>
                     <div className="min-w-0">
                       <h3 className="text-lg font-bold text-white sm:text-xl">
@@ -250,7 +251,7 @@ const ProfileTab: React.FC = () => {
                       setShowModal(false);
                       resetPasswordForm();
                     }}
-                    icon={<X size={18} />}
+                    icon={<FiX size={18} />}
                     className="flex items-center justify-center flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10
              rounded-xl bg-white/15 text-white hover:bg-white/25 hover:scale-105
              transition-all duration-300"
@@ -314,7 +315,7 @@ const ProfileTab: React.FC = () => {
               <div className="flex items-center gap-3 p-4 border-t border-gray-100 bg-gray-50 sm:p-6">
                 <Button
                   label="Cancel"
-                  icon={<XCircle size={16} />}
+                  icon={<FiXCircle size={16} />}
                   onClick={() => {
                     setShowModal(false);
                     resetPasswordForm();
@@ -325,7 +326,7 @@ const ProfileTab: React.FC = () => {
 
                 <Button
                   label={loading.password ? "Updating..." : "Update"}
-                  icon={<Save size={16} />}
+                  icon={<FiSave size={16} />}
                   onClick={() => handlePasswordUpdate(userId)}
                   disabled={loading.password}
                   className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"

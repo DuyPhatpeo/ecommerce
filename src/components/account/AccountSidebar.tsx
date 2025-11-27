@@ -1,12 +1,14 @@
 import React, { memo, useEffect, useState } from "react";
+
 import {
-  User,
-  Package,
-  MapPin,
-  Heart,
-  LogOut,
-  ChevronRight,
-} from "lucide-react";
+  FiUser,
+  FiPackage,
+  FiMapPin,
+  FiHeart,
+  FiLogOut,
+  FiChevronRight,
+} from "react-icons/fi";
+
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { useUserStore } from "../../stores/userStore";
@@ -47,10 +49,10 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
     const isDesktop = useMediaQuery("(min-width: 1024px)");
 
     const tabs: Tab[] = [
-      { id: "profile", label: "Profile", icon: User },
-      { id: "order", label: "Order", icon: Package },
-      { id: "addresses", label: "Addresses", icon: MapPin },
-      { id: "wishlist", label: "Wishlist", icon: Heart },
+      { id: "profile", label: "Profile", icon: FiUser },
+      { id: "order", label: "Order", icon: FiPackage },
+      { id: "addresses", label: "Addresses", icon: FiMapPin },
+      { id: "wishlist", label: "Wishlist", icon: FiHeart },
     ];
 
     const handleTabClick = (tabId: string) => {
@@ -134,7 +136,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
                       <span>{tab.label}</span>
                     </div>
 
-                    <ChevronRight
+                    <FiChevronRight
                       size={20}
                       className={`relative transition-all duration-300 ${
                         isActive
@@ -156,12 +158,12 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
 
               <div className="relative flex items-center gap-3">
                 <div className="p-2 bg-red-100 rounded-lg transition-all duration-300 group-hover:bg-white/20">
-                  <LogOut size={20} className="group-hover:scale-110" />
+                  <FiLogOut size={20} className="group-hover:scale-110" />
                 </div>
                 <span>Logout</span>
               </div>
 
-              <ChevronRight
+              <FiChevronRight
                 size={20}
                 className="relative opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1"
               />
