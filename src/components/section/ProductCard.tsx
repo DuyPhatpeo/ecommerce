@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Heart, ShoppingBag } from "lucide-react";
+import { FiHeart, FiShoppingBag } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../../stores/cartStore";
 import { useWishlistStore } from "../../stores/wishlistStore";
@@ -166,7 +166,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             <Button
               onClick={handleAdd}
               disabled={isOutOfStock || loading}
-              icon={<ShoppingBag size={14} className="w-4 h-4" />}
+              icon={<FiShoppingBag size={14} className="w-4 h-4" />}
               label={loading ? "Adding..." : "Buy"}
               className={`flex-1 h-12 gap-2 px-4 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
                 ${
@@ -185,7 +185,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
               }}
               disabled={wishlistLoading}
               icon={
-                <Heart
+                <FiHeart
                   size={18}
                   strokeWidth={2.5}
                   className={

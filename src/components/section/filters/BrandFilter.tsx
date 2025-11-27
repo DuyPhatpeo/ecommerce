@@ -1,5 +1,5 @@
 import React from "react";
-import { Tags, ChevronDown } from "lucide-react";
+import { FiTag, FiChevronDown } from "react-icons/fi";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 
@@ -44,11 +44,11 @@ const BrandFilter: React.FC<Props> = ({
   "
         label={
           <span className="flex items-center gap-2 h-5">
-            <Tags size={15} className="text-orange-500" /> Brand
+            <FiTag size={15} className="text-orange-500" /> Brand
           </span>
         }
         icon={
-          <ChevronDown
+          <FiChevronDown
             size={16}
             className={`text-gray-600 transition-transform duration-200 ${
               open ? "rotate-180" : ""

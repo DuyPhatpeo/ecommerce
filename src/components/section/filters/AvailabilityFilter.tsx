@@ -1,5 +1,7 @@
 import React from "react";
-import { PackageSearch, ChevronDown } from "lucide-react";
+import { FiChevronDown } from "react-icons/fi";
+import { LuPackageSearch } from "react-icons/lu";
+
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 
@@ -38,12 +40,12 @@ const AvailabilityFilter: React.FC<Props> = ({
   "
         label={
           <span className="flex items-center gap-2 h-5">
-            <PackageSearch size={15} className="text-orange-500" />{" "}
+            <LuPackageSearch size={15} className="text-orange-500" />{" "}
             PackageSearch
           </span>
         }
         icon={
-          <ChevronDown
+          <FiChevronDown
             size={16}
             className={`text-gray-600 transition-transform duration-200 ${
               open ? "rotate-180" : ""

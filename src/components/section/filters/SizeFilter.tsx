@@ -1,5 +1,6 @@
 import React from "react";
-import { Ruler, ChevronDown } from "lucide-react";
+import { FiChevronDown } from "react-icons/fi";
+import { LuRuler } from "react-icons/lu";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 
@@ -30,11 +31,11 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
         className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-800 transition-all duration-200 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-orange-50 hover:shadow"
         label={
           <span className="flex items-center h-5 gap-2">
-            <Ruler size={15} className="text-orange-500" /> Size
+            <LuRuler size={15} className="text-orange-500" /> Size
           </span>
         }
         icon={
-          <ChevronDown
+          <FiChevronDown
             size={16}
             className={`text-gray-600 transition-transform duration-200 ${
               open ? "rotate-180" : ""

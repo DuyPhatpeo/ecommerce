@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Filter, X } from "lucide-react";
+import { FiFilter, FiX } from "react-icons/fi";
 import Button from "../ui/Button";
 import CategoryFilter from "./filters/CategoryFilter";
 import BrandFilter from "./filters/BrandFilter";
@@ -137,11 +137,11 @@ const ProductFilters: React.FC<Props> = ({
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
-          <Filter size={18} className="text-orange-500" /> Filters
+          <FiFilter size={18} className="text-orange-500" /> Filters
         </h3>
         <Button
           onClick={toggleFilters}
-          icon={<X size={18} />}
+          icon={<FiX size={18} />}
           className="lg:hidden text-gray-400 hover:text-gray-600 p-2 rounded-lg transition-colors"
         />
       </div>
@@ -169,7 +169,7 @@ const ProductFilters: React.FC<Props> = ({
                 {f.label}
                 <Button
                   onClick={() => handleRemoveFilter(f)}
-                  icon={<X size={12} />}
+                  icon={<FiX size={12} />}
                   className="hover:text-red-500 transition-colors"
                 />
               </span>

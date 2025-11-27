@@ -1,12 +1,12 @@
 import {
-  CreditCard,
-  Tag,
-  AlertCircle,
-  ShoppingCart,
-  Truck,
-  DollarSign,
-  ShieldCheck,
-} from "lucide-react";
+  FiCreditCard,
+  FiTag,
+  FiAlertCircle,
+  FiShoppingCart,
+  FiTruck,
+  FiDollarSign,
+} from "react-icons/fi";
+import { LuShieldCheck } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 
@@ -95,7 +95,7 @@ export default function CartSummary({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-orange-200 pb-3">
           <div className="flex items-center gap-2">
-            <CreditCard className="text-orange-600 w-6 h-6" />
+            <FiCreditCard className="text-orange-600 w-6 h-6" />
             <h3 className="text-xl font-bold text-gray-900">Order Summary</h3>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function CartSummary({
         {/* Invalid warning */}
         {invalidSelectedItems.length > 0 && (
           <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
-            <AlertCircle className="text-red-600 w-5 h-5 mt-0.5" />
+            <FiAlertCircle className="text-red-600 w-5 h-5 mt-0.5" />
             <p className="text-sm text-red-700">
               {invalidSelectedItems.length} item
               {invalidSelectedItems.length !== 1 ? "s" : ""} cannot be checked
@@ -116,19 +116,19 @@ export default function CartSummary({
         <div className="text-gray-700 space-y-2">
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+              <FiTag className="w-4 h-4 text-orange-500" /> Subtotal
             </span>
             <span className="font-semibold">{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+              <FiDollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
             </span>
             <span className="font-semibold">{formatPrice(tax)}</span>
           </div>
           <div className="flex justify-between">
             <span className="flex items-center gap-2">
-              <Truck className="w-4 h-4 text-blue-500" /> Shipping
+              <FiTruck className="w-4 h-4 text-blue-500" /> Shipping
             </span>
             <span className="font-semibold">
               {shipping === 0 ? (
@@ -144,7 +144,7 @@ export default function CartSummary({
         {subtotal > 0 && subtotal < 25 && (
           <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
             <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
-              <ShoppingCart className="w-5 h-5 mt-0.5" />
+              <FiShoppingCart className="w-5 h-5 mt-0.5" />
               <span>
                 Add <strong>{formatPrice(25 - subtotal)}</strong> more for{" "}
                 <strong>FREE SHIPPING</strong>!
@@ -176,7 +176,7 @@ export default function CartSummary({
             onClick={handleCheckout}
             disabled={!validSelectedItems.length}
             label="Proceed to Checkout"
-            icon={<ShieldCheck className="w-6 h-6" />}
+            icon={<LuShieldCheck className="w-6 h-6" />}
             className={`w-full py-5 font-semibold text-lg rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
               validSelectedItems.length
                 ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
@@ -187,7 +187,7 @@ export default function CartSummary({
 
         {/* Secure note */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500 border-t border-gray-100 pt-3">
-          <ShieldCheck className="text-green-500 w-5 h-5" />
+          <LuShieldCheck className="text-green-500 w-5 h-5" />
           <span>Secure & encrypted payment</span>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function CartSummary({
             onClick={handleCheckout}
             disabled={!validSelectedItems.length}
             label="Proceed to Checkout"
-            icon={<ShieldCheck className="w-4 h-4" />}
+            icon={<LuShieldCheck className="w-4 h-4" />}
             className={`w-full py-2.5 rounded-md font-semibold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all duration-200 ${
               validSelectedItems.length
                 ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"

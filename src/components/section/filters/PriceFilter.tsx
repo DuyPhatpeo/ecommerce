@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Wallet } from "lucide-react";
+import { LuWallet } from "react-icons/lu";
 
 interface PriceFilterProps {
   priceRange: { min: number; max: number };
@@ -60,7 +60,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
   return (
     <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
       <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
-        <Wallet size={16} className="text-orange-600" />
+        <LuWallet size={16} className="text-orange-600" />
         Price Range (VND)
       </h4>
 

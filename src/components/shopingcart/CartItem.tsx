@@ -1,4 +1,11 @@
-import { Plus, Minus, Trash2, AlertTriangle, Package } from "lucide-react";
+import {
+  FiPlus,
+  FiMinus,
+  FiTrash2,
+  FiAlertTriangle,
+  FiPackage,
+} from "react-icons/fi";
+
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -97,7 +104,7 @@ export default function CartItem({
       <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
         {isOutOfStock && (
           <div className="bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded shadow-md flex items-center gap-1">
-            <AlertTriangle className="w-3 h-3" />
+            <FiAlertTriangle className="w-3 h-3" />
             <span className="hidden sm:inline">OUT OF STOCK</span>
             <span className="sm:hidden">OOS</span>
           </div>
@@ -106,7 +113,7 @@ export default function CartItem({
         {!isOutOfStock && (
           <Button
             onClick={handleRemove}
-            icon={<Trash2 className="w-4 h-4" />}
+            icon={<FiTrash2 className="w-4 h-4" />}
             className="p-2 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm text-gray-500 hover:text-red-600 hover:bg-red-50 hover:shadow-md"
           />
         )}
@@ -171,7 +178,7 @@ export default function CartItem({
             <div className="space-y-1">
               {isOutOfStock ? (
                 <div className="flex items-center gap-1.5 text-red-600 font-semibold text-sm">
-                  <AlertTriangle className="w-4 h-4" />
+                  <FiAlertTriangle className="w-4 h-4" />
                   <span>Out of stock</span>
                 </div>
               ) : (
@@ -192,7 +199,7 @@ export default function CartItem({
 
                   {maxStock <= 5 && maxStock > 0 && (
                     <div className="flex items-center gap-1 text-xs text-amber-600">
-                      <Package className="w-3 h-3" />
+                      <FiPackage className="w-3 h-3" />
                       <span className="font-medium">Only {maxStock} left</span>
                     </div>
                   )}
@@ -210,7 +217,7 @@ export default function CartItem({
                     ? "bg-gray-100 opacity-40 cursor-not-allowed"
                     : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
                 }`}
-                icon={<Minus className="w-4 h-4 text-gray-700" />}
+                icon={<FiMinus className="w-4 h-4 text-gray-700" />}
               />
 
               <span className="px-3 py-1.5 sm:px-4 sm:py-2 font-bold text-gray-900 bg-white text-sm sm:text-base text-center select-none">
@@ -225,7 +232,7 @@ export default function CartItem({
                     ? "bg-gray-100 opacity-40 cursor-not-allowed"
                     : "hover:bg-orange-50 active:bg-orange-100 active:scale-95"
                 }`}
-                icon={<Plus className="w-4 h-4 text-gray-700" />}
+                icon={<FiPlus className="w-4 h-4 text-gray-700" />}
               />
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Palette, ChevronDown } from "lucide-react";
+import { FiChevronDown } from "react-icons/fi";
+import { LuPalette } from "react-icons/lu";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 
@@ -54,11 +55,11 @@ const ColorFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
   "
         label={
           <span className="flex items-center gap-2 h-5">
-            <Palette size={15} className="text-orange-500" /> Color
+            <LuPalette size={15} className="text-orange-500" /> Color
           </span>
         }
         icon={
-          <ChevronDown
+          <FiChevronDown
             size={16}
             className={`text-gray-600 transition-transform duration-200 ${
               open ? "rotate-180" : ""

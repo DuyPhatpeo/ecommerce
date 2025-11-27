@@ -1,5 +1,6 @@
 import React from "react";
-import { Boxes, ChevronDown } from "lucide-react";
+import { FiChevronDown } from "react-icons/fi";
+import { LuBoxes } from "react-icons/lu";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 
@@ -43,11 +44,11 @@ const CategoryFilter: React.FC<Props> = ({
         "
         label={
           <span className="flex items-center gap-2 h-5 capitalize">
-            <Boxes size={15} className="text-orange-500" /> Category
+            <LuBoxes size={15} className="text-orange-500" /> Category
           </span>
         }
         icon={
-          <ChevronDown
+          <FiChevronDown
             size={16}
             className={`text-gray-600 transition-transform duration-200 ${
               open ? "rotate-180" : ""

@@ -1,5 +1,6 @@
 import React, { memo } from "react";
-import { PackageSearch, X } from "lucide-react";
+import { FiX } from "react-icons/fi";
+import { LuPackageSearch } from "react-icons/lu";
 import ProductCard from "./ProductCard";
 import Button from "../ui/Button";
 
@@ -34,7 +35,7 @@ const ShopList: React.FC<ShopListProps> = ({
         {noProducts ? (
           <div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow border border-dashed border-gray-300">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <PackageSearch size={32} className="text-gray-400" />
+              <LuPackageSearch size={32} className="text-gray-400" />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">
               No products found
@@ -44,7 +45,7 @@ const ShopList: React.FC<ShopListProps> = ({
             </p>
             <Button
               onClick={clearFilters}
-              icon={<X size={16} />}
+              icon={<FiX size={16} />}
               label={"Clear All"}
               className="bg-gradient-to-r from-orange-500 to-orange-400 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow hover:scale-105 transition"
             />
