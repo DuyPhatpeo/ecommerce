@@ -1,14 +1,6 @@
 import { useState } from "react";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Send,
-  Heart,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { FiSend, FiHeart, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -45,7 +37,7 @@ export default function Footer() {
 
             <div className="flex gap-3 pt-2">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-300 flex items-center justify-center flex-shrink-0">
-                <Heart size={18} className="text-white" fill="white" />
+                <FiHeart size={18} className="text-white" fill="white" />
               </div>
               <div>
                 <p className="text-white font-semibold text-sm">
@@ -60,18 +52,18 @@ export default function Footer() {
                 href="tel:+1234567890"
                 className="flex items-center gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer"
               >
-                <Phone size={16} className="flex-shrink-0" />
+                <FiPhone size={16} className="flex-shrink-0" />
                 <span>+1 234 567 890</span>
               </a>
               <a
                 href="mailto:info@company.com"
                 className="flex items-center gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer"
               >
-                <Mail size={16} className="flex-shrink-0" />
+                <FiMail size={16} className="flex-shrink-0" />
                 <span>info@company.com</span>
               </a>
               <div className="flex items-start gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer">
-                <MapPin size={16} className="mt-0.5 flex-shrink-0" />
+                <FiMapPin size={16} className="mt-0.5 flex-shrink-0" />
                 <span>123 Business St, City, Country</span>
               </div>
             </div>
@@ -104,7 +96,7 @@ export default function Footer() {
                 onClick={handleSubscribe}
                 className="px-5 py-3 text-white bg-gradient-to-r from-orange-400 to-orange-300 hover:from-orange-500 hover:to-orange-400 transition-all duration-300 flex items-center justify-center"
               >
-                <Send size={16} />
+                <FiSend size={16} />
               </button>
             </div>
 
@@ -153,15 +145,15 @@ export default function Footer() {
 
               <div className="flex flex-wrap gap-3">
                 <button className="w-11 h-11 rounded-2xl text-white bg-blue-600 transition-all duration-300 hover:scale-110 hover:bg-blue-700 shadow-md hover:shadow-blue-500/40 flex items-center justify-center">
-                  <Facebook size={18} />
+                  <FaFacebook size={18} />
                 </button>
 
                 <button className="w-11 h-11 rounded-2xl text-white bg-sky-500 transition-all duration-300 hover:scale-110 shadow-md hover:bg-sky-600 hover:shadow-sky-400/40 flex items-center justify-center">
-                  <Twitter size={18} />
+                  <FaTwitter size={18} />
                 </button>
 
                 <button className="w-11 h-11 rounded-2xl text-white bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf] transition-all duration-300 hover:scale-110 shadow-md hover:shadow-pink-500/40 flex items-center justify-center">
-                  <Instagram size={18} />
+                  <FaInstagram size={18} />
                 </button>
               </div>
             </div>
@@ -214,7 +206,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5">
               © 2025 Made with
-              <Heart
+              <FiHeart
                 size={14}
                 fill="rgb(251 146 60)"
                 className="text-orange-400 animate-pulse"
