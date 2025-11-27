@@ -2,17 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { useCheckoutStore } from "../../stores/checkoutStore";
 import { useEffect, useState } from "react";
 import {
-  CreditCard,
-  MapPin,
-  Truck,
-  Tag,
-  DollarSign,
-  ArrowLeft,
-  Check,
-  User,
-  Phone,
-  FileText,
-} from "lucide-react";
+  FiCreditCard,
+  FiMapPin,
+  FiTruck,
+  FiTag,
+  FiDollarSign,
+  FiArrowLeft,
+  FiCheck,
+  FiUser,
+  FiPhone,
+  FiFileText,
+} from "react-icons/fi";
 
 import ConfirmPaymentProductList from "./ConfirmPaymentProductList";
 import Button from "../ui/Button";
@@ -72,33 +72,33 @@ const ConfirmPayment = () => {
         {/* Delivery Info - Đồng bộ với OrderDetail */}
         <div className="bg-orange-50 rounded-lg p-6 border border-orange-200 mb-6">
           <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <MapPin size={20} className="text-orange-600" /> Delivery
+            <FiMapPin size={20} className="text-orange-600" /> Delivery
             Information
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <InfoItem
-              icon={<User className="text-blue-500 w-5 h-5" />}
+              icon={<FiUser className="text-blue-500 w-5 h-5" />}
               label="Full Name"
               value={customerInfo.recipientName}
             />
             <InfoItem
-              icon={<Phone className="text-green-500 w-5 h-5" />}
+              icon={<FiPhone className="text-green-500 w-5 h-5" />}
               label="Phone Number"
               value={customerInfo.phone}
             />
             <InfoItem
-              icon={<MapPin className="text-red-500 w-5 h-5" />}
+              icon={<FiMapPin className="text-red-500 w-5 h-5" />}
               label="Address"
               value={customerInfo.address}
             />
             <InfoItem
-              icon={<CreditCard className="text-purple-500 w-5 h-5" />}
+              icon={<FiCreditCard className="text-purple-500 w-5 h-5" />}
               label="Payment Method"
               value={getPaymentMethodName(customerInfo.paymentMethod)}
             />
             {customerInfo.note && (
               <InfoItem
-                icon={<FileText className="text-orange-500 w-5 h-5" />}
+                icon={<FiFileText className="text-orange-500 w-5 h-5" />}
                 label="Note"
                 value={customerInfo.note}
               />
@@ -114,19 +114,19 @@ const ConfirmPayment = () => {
           <div className="space-y-3">
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-orange-500" /> Subtotal
+                <FiTag className="w-4 h-4 text-orange-500" /> Subtotal
               </span>
               <span className="font-medium">{formatVND(subtotal)}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
+                <FiDollarSign className="w-4 h-4 text-green-500" /> Tax (10%)
               </span>
               <span className="font-medium">{formatVND(tax)}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-blue-500" /> Shipping
+                <FiTruck className="w-4 h-4 text-blue-500" /> Shipping
               </span>
               <span className="font-medium">
                 {shipping === 0 ? (
@@ -150,7 +150,7 @@ const ConfirmPayment = () => {
           <Button
             onClick={handleBack}
             label="Back to Edit"
-            icon={<ArrowLeft size={16} />}
+            icon={<FiArrowLeft size={16} />}
             iconPosition="left"
             className="flex-1 py-3 text-base border-2 border-orange-500 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition"
             justify="center"
@@ -158,7 +158,7 @@ const ConfirmPayment = () => {
           <Button
             onClick={() => handlePlaceOrder(navigate)}
             label="Confirm Order"
-            icon={<Check size={16} />}
+            icon={<FiCheck size={16} />}
             iconPosition="right"
             className="flex-1 py-3 text-base bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition shadow hover:shadow-lg"
             justify="center"
@@ -179,7 +179,7 @@ const ConfirmPayment = () => {
             <Button
               onClick={handleBack}
               label="Back to Edit"
-              icon={<ArrowLeft size={16} />}
+              icon={<FiArrowLeft size={16} />}
               iconPosition="left"
               className="flex-1 py-2.5 text-sm border-2 border-orange-500 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition"
               justify="center"
@@ -187,7 +187,7 @@ const ConfirmPayment = () => {
             <Button
               onClick={() => handlePlaceOrder(navigate)}
               label="Confirm Order"
-              icon={<Check size={16} />}
+              icon={<FiCheck size={16} />}
               iconPosition="right"
               className="flex-1 py-2.5 text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition shadow hover:shadow-lg"
               justify="center"
