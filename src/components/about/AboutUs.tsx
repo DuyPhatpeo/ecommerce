@@ -124,7 +124,7 @@ export default function AboutUs() {
         </div>
 
         {/* Our Story */}
-        <div className="mt-20 max-w-4xl mx-auto">
+        <div className="mt-20 max-w-4xl mx-auto mb-5">
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
             Our Story
           </h2>
