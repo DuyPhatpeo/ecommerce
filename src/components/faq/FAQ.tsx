@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState<string | null>(null);
 
   const faqs = [
     {
@@ -83,7 +83,7 @@ export default function FAQ() {
     },
   ];
 
-  const toggle = (index) => {
+  const toggle = (index: string) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
