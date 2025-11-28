@@ -11,7 +11,12 @@ export default function Footer() {
       setEmail("");
     }
   };
-
+  const footerLinks = [
+    { label: "About Us", link: "/about-us" },
+    { label: "FAQ", link: "/faq" },
+    { label: "Our Services", link: "/services" },
+    { label: "Blog", link: "/blog" },
+  ];
   return (
     <footer
       className="relative text-gray-300 bg-cover bg-center bg-no-repeat"
@@ -106,13 +111,13 @@ export default function Footer() {
               </h4>
 
               <ul className="grid grid-cols-2 gap-3">
-                {["About Us", "FAQ", "Our Services", "Blog"].map((item) => (
-                  <li key={item}>
+                {footerLinks.map(({ label, link }) => (
+                  <li key={label}>
                     <a
-                      href="#"
+                      href={link}
                       className="text-gray-400 text-sm hover:text-orange-400 hover:pl-2 transition-all duration-300 block"
                     >
-                      {item}
+                      {label}
                     </a>
                   </li>
                 ))}
