@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
-import { TbShoe } from "react-icons/tb"; // ICON GIÀY
+import { TbShoe } from "react-icons/tb";
 import type { MenuItem } from "../../../stores/headerStore";
 
 interface CategoryBottomSheetProps {
