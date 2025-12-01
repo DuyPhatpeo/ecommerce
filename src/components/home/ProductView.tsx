@@ -463,54 +463,58 @@ const ProductView: React.FC<ProductViewProps> = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-2 z-10"
+              className="absolute left-1/2 -translate-x-1/2 bottom-4 flex justify-center gap-3 z-10"
             >
+              {/* Previous Button */}
               <motion.button
-                whileHover={{ scale: canLeft ? 1.1 : 1 }}
-                whileTap={{ scale: canLeft ? 0.9 : 1 }}
+                whileHover={{ scale: canLeft ? 1.15 : 1 }}
+                whileTap={{ scale: canLeft ? 0.95 : 1 }}
                 onClick={() => handleSlide("left")}
                 disabled={!canLeft}
                 className={`
-                  flex items-center justify-center w-10 h-10 rounded-full
-                  backdrop-blur-md border transition-all duration-200
-                  ${
-                    canLeft
-                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md"
-                      : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
-                  }
-                `}
+        group flex items-center justify-center w-12 h-12 rounded-2xl
+        backdrop-blur-md border border-gray-200 transition-all duration-300
+        ${
+          canLeft
+            ? "bg-white/80 hover:bg-orange-500 shadow-md hover:shadow-lg"
+            : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
+        }
+      `}
                 aria-label="Previous"
               >
                 <FiArrowLeft
-                  size={18}
-                  className={`transition-colors ${
-                    canLeft ? "text-gray-700 hover:text-white" : "text-gray-400"
+                  size={20}
+                  className={`transition-colors duration-300 ${
+                    canLeft
+                      ? "text-gray-700 group-hover:text-white"
+                      : "text-gray-400"
                   }`}
                   strokeWidth={2}
                 />
               </motion.button>
 
+              {/* Next Button */}
               <motion.button
-                whileHover={{ scale: canRight ? 1.1 : 1 }}
-                whileTap={{ scale: canRight ? 0.9 : 1 }}
+                whileHover={{ scale: canRight ? 1.15 : 1 }}
+                whileTap={{ scale: canRight ? 0.95 : 1 }}
                 onClick={() => handleSlide("right")}
                 disabled={!canRight}
                 className={`
-                  flex items-center justify-center w-10 h-10 rounded-full
-                  backdrop-blur-md border transition-all duration-200
-                  ${
-                    canRight
-                      ? "bg-white/90 border-gray-200 hover:bg-orange-500 hover:border-orange-500 shadow-sm hover:shadow-md"
-                      : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
-                  }
-                `}
+        group flex items-center justify-center w-12 h-12 rounded-2xl
+        backdrop-blur-md border border-gray-200 transition-all duration-300
+        ${
+          canRight
+            ? "bg-white/80 hover:bg-orange-500 shadow-md hover:shadow-lg"
+            : "bg-gray-100/50 border-gray-200/50 cursor-not-allowed opacity-50"
+        }
+      `}
                 aria-label="Next"
               >
                 <FiArrowRight
-                  size={18}
-                  className={`transition-colors ${
+                  size={20}
+                  className={`transition-colors duration-300 ${
                     canRight
-                      ? "text-gray-700 hover:text-white"
+                      ? "text-gray-700 group-hover:text-white"
                       : "text-gray-400"
                   }`}
                   strokeWidth={2}
