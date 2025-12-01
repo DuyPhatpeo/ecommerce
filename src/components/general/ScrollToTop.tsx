@@ -6,12 +6,12 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(false);
 
-  // 🔸 Scroll lên đầu trang khi đổi route
+  // Scroll lên đầu trang khi đổi route
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname]);
 
-  // 🔸 Hiện nút khi scroll xuống > 200px
+  // Hiện nút khi scroll xuống > 200px
   useEffect(() => {
     const handleScroll = () => setVisible(window.scrollY > 200);
     window.addEventListener("scroll", handleScroll);
