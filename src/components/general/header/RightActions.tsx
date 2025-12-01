@@ -44,7 +44,7 @@ export default function RightActions({
         {/* MiniCart Dropdown */}
         {!isCartPage && hoverCart && (
           <div className="absolute right-0 top-full pt-2">
-            <MiniCart cartCount={cartCount} />
+            <MiniCart />
           </div>
         )}
       </div>
