@@ -10,10 +10,6 @@ import {
 import { db } from "../lib/firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 
-/* ==========================
-   INTERFACES
-========================== */
-
 export interface Address {
   id: string;
   recipientName: string;
@@ -37,18 +33,15 @@ export interface User {
   createdAt?: string;
   addresses?: Address[];
 }
+// FIREBASE API FUNCTIONS
 
-/* ==========================
-   FIREBASE API FUNCTIONS
-========================== */
-
-// 🔹 Lấy toàn bộ user
+//  Lấy toàn bộ user
 export const getUsers = async (): Promise<User[]> => {
   const snapshot = await getDocs(collection(db, "users"));
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as User));
 };
 
-// 🔹 Lấy user theo email
+//  Lấy user theo email
 export const getUserByEmail = async (email: string): Promise<User | null> => {
   const q = query(collection(db, "users"), where("email", "==", email));
   const snapshot = await getDocs(q);
@@ -56,7 +49,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as User;
 };
 
-// 🔹 Đăng ký user mới
+//  Đăng ký user mới
 export const registerUser = async (data: User): Promise<User> => {
   const userId = uuidv4();
   const newUser: User = {
@@ -69,7 +62,7 @@ export const registerUser = async (data: User): Promise<User> => {
   return newUser;
 };
 
-// 🔹 Lấy thông tin user theo field id
+//  Lấy thông tin user theo field id
 export const getUserProfile = async (userId: string): Promise<User> => {
   const q = query(collection(db, "users"), where("id", "==", userId));
   const snapshot = await getDocs(q);
@@ -79,7 +72,7 @@ export const getUserProfile = async (userId: string): Promise<User> => {
   return { id: docData.id, ...docData.data() } as User;
 };
 
-// 🔹 Cập nhật profile
+//  Cập nhật profile
 export const updateUserProfile = async (
   userId: string,
   data: Partial<User>
@@ -92,7 +85,7 @@ export const updateUserProfile = async (
   await updateDoc(userRef, data);
 };
 
-// 🔹 Đổi mật khẩu
+//  Đổi mật khẩu
 export const changeUserPassword = async (
   userId: string,
   oldPassword: string,

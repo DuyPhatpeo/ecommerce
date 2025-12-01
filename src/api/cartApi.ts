@@ -13,9 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../lib/firebaseConfig";
 
-/* ============================
-   🛒 Kiểu dữ liệu item trong giỏ hàng
-============================ */
+// Kiểu dữ liệu item trong giỏ hàng
 export interface CartItem {
   id: string;
   userId: string;
@@ -24,9 +22,7 @@ export interface CartItem {
   createdAt: any; // Firestore Timestamp
 }
 
-/* ============================
-   🛒 Lấy toàn bộ giỏ hàng của user
-============================ */
+// Lấy toàn bộ giỏ hàng của user
 export const getCart = async (userId: string): Promise<CartItem[]> => {
   if (!userId) return [];
 
@@ -38,9 +34,7 @@ export const getCart = async (userId: string): Promise<CartItem[]> => {
   );
 };
 
-/* ============================
-   🛒 Lấy 1 item trong giỏ hàng theo id
-============================ */
+// Lấy 1 item trong giỏ hàng theo id
 export const getCartItem = async (
   userId: string,
   id: string
@@ -55,9 +49,7 @@ export const getCartItem = async (
   return { ...data, id: docSnap.id };
 };
 
-/* ============================
-   ➕ Thêm sản phẩm vào giỏ hàng
-============================ */
+// Thêm sản phẩm vào giỏ hàng
 export const addToCart = async (
   userId: string,
   productId: string,
@@ -78,7 +70,7 @@ export const addToCart = async (
       userId,
       productId,
       quantity,
-      createdAt: serverTimestamp(), // 👈 thêm ngày tạo
+      createdAt: serverTimestamp(),
     });
 
     await updateDoc(docRef, { id: docRef.id });
@@ -93,9 +85,7 @@ export const addToCart = async (
   }
 };
 
-/* ============================
-   🔄 Cập nhật số lượng item
-============================ */
+// Cập nhật số lượng item
 export const updateCartItem = async (
   userId: string,
   id: string,
@@ -110,9 +100,7 @@ export const updateCartItem = async (
   return { ...item, quantity };
 };
 
-/* ============================
-   ❌ Xóa 1 item
-============================ */
+// Xóa 1 item
 export const deleteCartItem = async (userId: string, id: string) => {
   const item = await getCartItem(userId, id);
   if (!item) throw new Error("Item not found or unauthorized");
@@ -122,9 +110,7 @@ export const deleteCartItem = async (userId: string, id: string) => {
   return true;
 };
 
-/* ============================
-   🧹 Xóa toàn bộ giỏ hàng
-============================ */
+// Xóa toàn bộ giỏ hàng
 export const clearCart = async (userId: string) => {
   const cart = await getCart(userId);
   const deletePromises = cart.map((item) =>

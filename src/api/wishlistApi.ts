@@ -14,13 +14,11 @@ import { v4 as uuidv4 } from "uuid";
 
 const WISHLIST_COLLECTION = "wishlist";
 
-/* ==========================
-   ADD TO WISHLIST
-========================== */
+// ADD TO WISHLIST
 export const addToWishlist = async (userId: string, productId: string) => {
   if (!userId) throw new Error("User not logged in");
 
-  const wishlistId = uuidv4(); // ✅ Tạo ID riêng
+  const wishlistId = uuidv4();
 
   const ref = doc(db, WISHLIST_COLLECTION, wishlistId);
 
@@ -34,9 +32,7 @@ export const addToWishlist = async (userId: string, productId: string) => {
   return true;
 };
 
-/* ==========================
-   REMOVE FROM WISHLIST
-========================== */
+// REMOVE FROM WISHLIST
 export const removeFromWishlist = async (userId: string, productId: string) => {
   if (!userId) throw new Error("User not logged in");
 
@@ -55,9 +51,7 @@ export const removeFromWishlist = async (userId: string, productId: string) => {
   return true;
 };
 
-/* ==========================
-   GET USER WISHLIST
-========================== */
+//  GET USER WISHLIST
 export const getWishlist = async (userId: string) => {
   if (!userId) return [];
 
@@ -79,9 +73,7 @@ export const getWishlist = async (userId: string) => {
   });
 };
 
-/* ==========================
-   CHECK ITEM IN WISHLIST
-========================== */
+//  CHECK ITEM IN WISHLIST
 export const isInWishlist = async (userId: string, productId: string) => {
   if (!userId) return false;
 

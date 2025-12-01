@@ -21,10 +21,8 @@ export interface Address {
   isDefault?: boolean;
   createdAt?: string;
 }
+// Helper: find user by field "id"
 
-/* ==========================
-   Helper: find user by field "id"
-========================== */
 const getUserDocById = async (userId: string) => {
   const q = query(collection(db, "users"), where("id", "==", userId));
   const snapshot = await getDocs(q);
@@ -32,19 +30,15 @@ const getUserDocById = async (userId: string) => {
   return snapshot.docs[0];
 };
 
-/* ==========================
-   1️⃣ Get user's address list
-========================== */
+// Get user's address list
 export const getUserAddresses = async (userId: string) => {
   const userDoc = await getUserDocById(userId);
   const userData = userDoc.data();
   const addresses = userData.addresses || [];
   return { data: addresses };
 };
+// Add new address
 
-/* ==========================
-   2️⃣ Add new address
-========================== */
 export const addUserAddress = async (userId: string, data: Address) => {
   const userDoc = await getUserDocById(userId);
   const userData = userDoc.data();
@@ -63,9 +57,8 @@ export const addUserAddress = async (userId: string, data: Address) => {
   return { data: newAddress };
 };
 
-/* ==========================
-   3️⃣ Update address
-========================== */
+// Update address
+
 export const updateUserAddress = async (
   userId: string,
   addressId: string,
@@ -83,9 +76,7 @@ export const updateUserAddress = async (
   return { data };
 };
 
-/* ==========================
-   4️⃣ Delete address
-========================== */
+// Delete address
 export const deleteUserAddress = async (userId: string, addressId: string) => {
   const userDoc = await getUserDocById(userId);
   const userData = userDoc.data();
@@ -99,9 +90,7 @@ export const deleteUserAddress = async (userId: string, addressId: string) => {
   return { data: addressId };
 };
 
-/* ==========================
-   5️⃣ Set default address
-========================== */
+// Set default address
 export const setDefaultUserAddress = async (
   userId: string,
   addressId: string
