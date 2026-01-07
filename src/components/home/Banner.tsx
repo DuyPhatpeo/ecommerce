@@ -51,7 +51,7 @@ const Banner = () => {
     return () => clearInterval(timer);
   }, [handleNext]);
 
-  const goToSlide = (index) => {
+  const goToSlide = (index: number) => {
     if (index === current || isAnimating) return;
     setIsAnimating(true);
     setCurrent(index);
