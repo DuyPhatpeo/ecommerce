@@ -3,6 +3,11 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./safelist.txt"],
   darkMode: "class",
   theme: {
+    fontFamily: {
+      sans: ["Inter", "system-ui", "sans-serif"],
+      mono: ["ui-monospace", "monospace"],
+    },
+
     screens: {
       xs: "576px",
       sm: "640px",
