@@ -39,45 +39,20 @@
     --warning-subtle: #fbbf241a;
   }
 }
-
-/* Scrollbar cho toàn bộ trang */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #f5a052 #ffffff;
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-*::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-*::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #ffffff;
 }
 
-*::-webkit-scrollbar-thumb {
-  background: #f5a052;
-  border-radius: 12px;
+::-webkit-scrollbar-thumb {
+  background: #ffa94d; /* primary-mild */
+  transition: background 0.25s ease;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  background: #ff8c3a;
-}
-
-/* Class cho scrollbar tùy chỉnh (giữ lại để dùng cho các component cụ thể) */
-.custom-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.custom-scroll::-webkit-scrollbar-track {
-  background: #ffffff;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: #f5a052;
-  border-radius: 12px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: #ff8c3a;
+::-webkit-scrollbar-thumb:hover {
+  background: #ff7a00; /* primary */
 }
