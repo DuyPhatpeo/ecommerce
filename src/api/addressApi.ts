@@ -4,6 +4,7 @@ import {
   query,
   where,
   getDocs,
+  runTransaction,
 } from "firebase/firestore";
 import { db } from "../lib/firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
@@ -62,18 +63,54 @@ export const addUserAddress = async (userId: string, data: Address) => {
 export const updateUserAddress = async (
   userId: string,
   addressId: string,
-  data: Partial<Address>
+  data: Partial<Address>,
 ) => {
   const userDoc = await getUserDocById(userId);
-  const userData = userDoc.data();
 
-  const updatedAddresses = (userData.addresses || []).map((addr: Address) =>
-    addr.id === addressId ? { ...addr, ...data } : addr
-  );
+  // Define allowed fields to avoid malicious data injection
+  const allowedFields = [
+    "recipientName",
+    "phone",
+    "street",
+    "ward",
+    "district",
+    "city",
+    "country",
+    "postalCode",
+    "isDefault",
+  ];
 
-  await updateDoc(userDoc.ref, { addresses: updatedAddresses });
+  const safeData: Partial<Address> = {};
+  for (const key of allowedFields) {
+    if (key in data) {
+      (safeData as any)[key] = (data as any)[key];
+    }
+  }
 
-  return { data };
+  const updatedData = await runTransaction(db, async (transaction) => {
+    const userSnapshot = await transaction.get(userDoc.ref);
+    if (!userSnapshot.exists()) {
+      throw new Error("User not found");
+    }
+
+    const userData = userSnapshot.data();
+    const addresses: Address[] = userData.addresses || [];
+
+    const addressIndex = addresses.findIndex(
+      (addr: Address) => addr.id === addressId,
+    );
+    if (addressIndex === -1) {
+      throw new Error("Address not found");
+    }
+
+    // Update specific address
+    addresses[addressIndex] = { ...addresses[addressIndex], ...safeData };
+
+    transaction.update(userDoc.ref, { addresses });
+    return safeData;
+  });
+
+  return { data: updatedData };
 };
 
 // Delete address
@@ -82,7 +119,7 @@ export const deleteUserAddress = async (userId: string, addressId: string) => {
   const userData = userDoc.data();
 
   const updatedAddresses = (userData.addresses || []).filter(
-    (addr: Address) => addr.id !== addressId
+    (addr: Address) => addr.id !== addressId,
   );
 
   await updateDoc(userDoc.ref, { addresses: updatedAddresses });
@@ -93,7 +130,7 @@ export const deleteUserAddress = async (userId: string, addressId: string) => {
 // Set default address
 export const setDefaultUserAddress = async (
   userId: string,
-  addressId: string
+  addressId: string,
 ) => {
   const userDoc = await getUserDocById(userId);
   const userData = userDoc.data();
