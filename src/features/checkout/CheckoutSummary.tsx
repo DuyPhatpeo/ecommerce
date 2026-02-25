@@ -93,7 +93,7 @@ const CheckoutSummary: React.FC<Props> = ({
 
         {/* Free shipping progress */}
         {subtotal > 0 && subtotal < 25 && (
-          <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
             <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
               <FiShoppingCart className="w-5 h-5 mt-0.5" />
               <span>
@@ -101,9 +101,9 @@ const CheckoutSummary: React.FC<Props> = ({
                 <strong>FREE SHIPPING</strong>!
               </span>
             </div>
-            <div className="w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
+                className="bg-orange-500 h-full transition-all duration-500"
                 style={{ width: `${(subtotal / 25) * 100}%` }}
               />
             </div>
@@ -128,7 +128,7 @@ const CheckoutSummary: React.FC<Props> = ({
             label="Confirm Order"
             icon={<LuShieldCheck className="w-6 h-6" />}
             justify="center"
-            className="w-full py-5 text-lg rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:from-orange-600 hover:to-amber-600"
+            className="w-full py-5 text-lg rounded-xl bg-gray-900 text-white hover:shadow-orange-500/30 hover:bg-orange-500 transition-all duration-300"
             loading={loading}
           />
         </div>
@@ -157,7 +157,7 @@ const CheckoutSummary: React.FC<Props> = ({
             label="Confirm Order"
             icon={<FiCreditCard className="w-4 h-4" />}
             justify="center"
-            className="w-full py-2.5 rounded-md text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
+            className="w-full py-2.5 rounded-xl text-sm bg-gray-900 text-white hover:shadow-orange-500/30 hover:bg-orange-500 transition-all duration-300"
             loading={loading}
           />
         </div>

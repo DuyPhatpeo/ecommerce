@@ -16,7 +16,7 @@ export default function ProductSpecification({ specs }: Props) {
           {Object.entries(specs).map(([key, value], idx) => (
             <div
               key={key}
-              className="bg-gradient-to-r from-gray-50 to-white p-5 rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all duration-300"
+              className="bg-gray-50 p-5 rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all duration-300"
             >
               <div className="flex items-start gap-3">
                 <div className="bg-orange-100 text-orange-600 font-bold rounded-lg w-8 h-8 flex items-center justify-center text-sm flex-shrink-0">

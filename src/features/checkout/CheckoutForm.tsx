@@ -110,7 +110,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
                 />
               </div>
               {selectedAddress.isDefault && (
-                <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-white bg-gray-900 px-2.5 py-1 rounded-md">
                   Default
                 </span>
               )}
@@ -124,7 +124,7 @@ export default function CheckoutForm({ onChange }: CheckoutFormProps) {
         <div className="pt-2 flex justify-end">
           <button
             onClick={() => setShowSelectAddressModal(true)}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
+            className="bg-gray-900 hover:bg-orange-500 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-orange-500/30"
           >
             <FiChevronDown size={16} /> Select Address
           </button>
@@ -208,7 +208,7 @@ const InfoRow = ({
             icon as React.ReactElement<{ className?: string }>,
             {
               className: "w-4 h-4 text-orange-500",
-            }
+            },
           )
         : icon}
     </div>

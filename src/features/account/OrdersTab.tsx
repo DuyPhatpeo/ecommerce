@@ -38,7 +38,7 @@ const OrdersTab: React.FC = () => {
   }, [userId, fetchUserOrders]); // Có thể giữ fetchUserOrders vì nó stable
 
   const sortedOrders = [...orders].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
   const visibleOrders = sortedOrders.slice(0, visibleCount);
@@ -105,13 +105,13 @@ const OrdersTab: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+      <div className="absolute inset-0 bg-[#f8f6f3] opacity-50" />
 
       <div className="relative p-6 sm:p-8">
         {/* Header */}
         <div className="flex items-center gap-3 pb-6 mb-6 border-b border-gray-100">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-            <FiPackage className="text-white" size={20} />
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 shadow-md shadow-orange-100">
+            <FiPackage className="text-orange-500" size={20} />
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">My Orders</h2>
@@ -124,8 +124,8 @@ const OrdersTab: React.FC = () => {
         {/* Nếu chưa đăng nhập */}
         {!isLoggedIn ? (
           <div className="py-16 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <FiLogIn className="text-orange-600" size={32} />
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-xl bg-gray-100">
+              <FiLogIn className="text-orange-500" size={32} />
             </div>
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               Please log in to view your orders
@@ -135,7 +135,7 @@ const OrdersTab: React.FC = () => {
             </p>
             <button
               onClick={handleLogin}
-              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30"
             >
               Log In
             </button>
@@ -149,8 +149,8 @@ const OrdersTab: React.FC = () => {
           </div>
         ) : visibleOrders.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <FiShoppingBag className="text-orange-600" size={32} />
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-xl bg-gray-100">
+              <FiShoppingBag className="text-orange-500" size={32} />
             </div>
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               No Orders Yet
@@ -173,8 +173,8 @@ const OrdersTab: React.FC = () => {
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex-shrink-0">
-                        <FiPackage className="text-orange-600" size={18} />
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0">
+                        <FiPackage className="text-gray-500" size={18} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 lg:block">
@@ -184,7 +184,7 @@ const OrdersTab: React.FC = () => {
                           {/* Status (mobile) */}
                           <span
                             className={`lg:hidden px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
-                              order.status
+                              order.status,
                             )}`}
                           >
                             {order.status.charAt(0).toUpperCase() +
@@ -203,7 +203,7 @@ const OrdersTab: React.FC = () => {
                     {/* Status (desktop) */}
                     <span
                       className={`hidden lg:inline-flex px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap ${getStatusColor(
-                        order.status
+                        order.status,
                       )}`}
                     >
                       {order.status.charAt(0).toUpperCase() +
@@ -234,7 +234,7 @@ const OrdersTab: React.FC = () => {
 
                     <button
                       onClick={() => handleViewDetails(order.id)}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 group-hover:gap-3 w-full sm:w-auto"
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 align-middle hover:shadow-orange-500/30 group-hover:gap-3 w-full sm:w-auto"
                     >
                       <span>View Details</span>
                       <FiChevronRight

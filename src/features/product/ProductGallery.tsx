@@ -62,7 +62,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
         }
       }, 150);
     },
-    [safeImages.length, thumbIndex, visibleThumbs]
+    [safeImages.length, thumbIndex, visibleThumbs],
   );
 
   const nextImage = useCallback(() => {
@@ -71,7 +71,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const prevImage = useCallback(() => {
     changeImage(
-      selectedImage === 0 ? safeImages.length - 1 : selectedImage - 1
+      selectedImage === 0 ? safeImages.length - 1 : selectedImage - 1,
     );
   }, [selectedImage, safeImages.length, changeImage]);
 
@@ -254,7 +254,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
   const visibleImages = safeImages.slice(
     thumbIndex,
-    thumbIndex + visibleThumbs
+    thumbIndex + visibleThumbs,
   );
 
   /** Render */
@@ -263,7 +263,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
       {/* Main image */}
       <div className="relative group">
         <div
-          className="relative aspect-[3/4] sm:aspect-[4/5] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-zoom-in"
+          className="relative aspect-[3/4] sm:aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-zoom-in"
           onClick={() => setIsZoomed(true)}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -289,7 +289,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   e.stopPropagation();
                   prevImage();
                 }}
-                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
+                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
                 aria-label="Previous image"
               >
                 <FiChevronLeft className="w-5 h-5 text-gray-800" />
@@ -299,7 +299,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   e.stopPropagation();
                   nextImage();
                 }}
-                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
+                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white backdrop-blur-sm p-3 rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
                 aria-label="Next image"
               >
                 <FiChevronRight className="w-5 h-5 text-gray-800" />
@@ -309,13 +309,13 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
           {/* Counter */}
           {safeImages.length > 1 && (
-            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-medium">
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-md text-xs font-medium">
               {selectedImage + 1} / {safeImages.length}
             </div>
           )}
 
           {/* Zoom icon */}
-          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 z-10 pointer-events-none">
+          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg transition-all hover:scale-110 active:scale-95 z-10 pointer-events-none">
             <FiMaximize2 className="w-5 h-5 text-gray-800" />
           </div>
         </div>

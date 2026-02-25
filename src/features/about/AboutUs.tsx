@@ -74,7 +74,7 @@ export default function AboutUs() {
         </div>
 
         {/* Stats Section */}
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-12 mb-20">
+        <div className="bg-[#f8f6f3] rounded-2xl p-12 mb-20">
           <div className="grid md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
@@ -154,7 +154,7 @@ export default function AboutUs() {
             Explore our collection and step into comfort and style
           </p>
           <a href="/contact">
-            <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-orange-600 transition-colors shadow-lg">
+            <button className="bg-gray-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-500 transition-all duration-300 shadow-md hover:shadow-orange-500/30">
               Contact Us
             </button>
           </a>

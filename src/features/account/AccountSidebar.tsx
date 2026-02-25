@@ -16,7 +16,7 @@ import { useUserStore } from "../../stores/userStore";
 /* -------------------- Hook xác định Desktop -------------------- */
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.matchMedia(query).matches : false
+    typeof window !== "undefined" ? window.matchMedia(query).matches : false,
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
           <div className="pb-6 mb-6 border-b border-gray-100">
             <div className="flex flex-col items-center gap-3 text-center">
               <div className="relative">
-                <div className="flex items-center justify-center w-24 h-24 text-3xl font-bold text-white rounded-full shadow-xl bg-gradient-to-br from-orange-400 to-orange-600">
+                <div className="flex items-center justify-center w-24 h-24 text-3xl font-bold text-gray-900 rounded-full shadow-lg bg-orange-100">
                   {getInitials(profile.fullName)}
                 </div>
                 <div className="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1" />
@@ -172,7 +172,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default AccountSidebar;

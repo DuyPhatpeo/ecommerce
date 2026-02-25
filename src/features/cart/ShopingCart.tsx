@@ -29,7 +29,7 @@ export default function ShoppingCart() {
   if (loading && cartItems.length === 0) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50 py-8 relative">
+    <div className="min-h-screen bg-[#f8f6f3] py-8 relative">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
           <div className="w-full lg:col-span-2">

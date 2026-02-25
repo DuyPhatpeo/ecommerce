@@ -39,7 +39,7 @@ export default function AddressList({
       <div className="pt-2 flex justify-end">
         <button
           onClick={onAdd}
-          className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
+          className="bg-gray-900 hover:bg-orange-500 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm hover:shadow-orange-500/30"
         >
           <FiPlus size={16} /> Add New Address
         </button>

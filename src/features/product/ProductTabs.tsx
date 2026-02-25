@@ -36,7 +36,7 @@ export default function ProductTabs({
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      <div className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+      <div className="border-b border-gray-200 bg-gray-50">
         <div className="flex gap-1 p-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -46,7 +46,7 @@ export default function ProductTabs({
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 font-semibold rounded-xl transition-all duration-300 ${
                   activeTab === tab.id
-                    ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg transform scale-105"
+                    ? "bg-gray-900 text-white shadow-lg transform scale-105"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >

@@ -51,13 +51,13 @@ export default function CartSummary({
     (item) =>
       selectedItems.includes(item.id) &&
       item.product.stock > 0 &&
-      item.quantity <= item.product.stock
+      item.quantity <= item.product.stock,
   );
 
   const invalidSelectedItems = formattedCartItems.filter(
     (item) =>
       selectedItems.includes(item.id) &&
-      (item.product.stock === 0 || item.quantity > item.product.stock)
+      (item.product.stock === 0 || item.quantity > item.product.stock),
   );
 
   // ===== Calculate totals =====
@@ -142,7 +142,7 @@ export default function CartSummary({
 
         {/* Free shipping progress */}
         {subtotal > 0 && subtotal < 25 && (
-          <div className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
             <div className="flex items-start gap-2 mb-2 text-orange-700 text-sm">
               <FiShoppingCart className="w-5 h-5 mt-0.5" />
               <span>
@@ -150,9 +150,9 @@ export default function CartSummary({
                 <strong>FREE SHIPPING</strong>!
               </span>
             </div>
-            <div className="w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
+                className="bg-orange-500 h-full transition-all duration-500"
                 style={{ width: `${(subtotal / 25) * 100}%` }}
               />
             </div>
@@ -179,7 +179,7 @@ export default function CartSummary({
             icon={<LuShieldCheck className="w-6 h-6" />}
             className={`w-full py-5 font-semibold text-lg rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
               validSelectedItems.length
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:from-orange-600 hover:to-amber-600 text-white"
+                ? "bg-gray-900 hover:shadow-orange-500/30 hover:bg-orange-500 text-white"
                 : "bg-gray-100 text-gray-500 cursor-not-allowed"
             }`}
           />
@@ -211,7 +211,7 @@ export default function CartSummary({
             icon={<LuShieldCheck className="w-4 h-4" />}
             className={`w-full py-2.5 rounded-md font-semibold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all duration-200 ${
               validSelectedItems.length
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-md hover:from-orange-600 hover:to-amber-600"
+                ? "bg-gray-900 text-white hover:shadow-orange-500/30 hover:bg-orange-500"
                 : "bg-gray-100 text-gray-500 cursor-not-allowed"
             }`}
           />

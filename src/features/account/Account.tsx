@@ -21,7 +21,7 @@ const Account = () => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [activeTab, setActiveTab] = useState<string | null>(
-    tab || (!isMobile ? "profile" : null)
+    tab || (!isMobile ? "profile" : null),
   );
 
   // --- Handle window resize ---
@@ -63,7 +63,7 @@ const Account = () => {
         onTabChange={handleTabChange}
       />
     ),
-    [activeTab]
+    [activeTab],
   );
 
   const currentTab = useMemo(() => {
@@ -120,7 +120,7 @@ const Account = () => {
   }
 
   return (
-    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-[#f8f6f3]">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         <div className={`flex gap-6 ${isMobile ? "flex-col" : "lg:flex-row"}`}>
           {(isMobile ? !activeTab : true) && (

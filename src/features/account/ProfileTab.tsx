@@ -83,7 +83,7 @@ const ProfileTab: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+      <div className="absolute inset-0 bg-[#f8f6f3] opacity-50" />
 
       <div className="relative p-4 sm:p-6 lg:p-8">
         {/* Header */}
@@ -109,7 +109,7 @@ const ProfileTab: React.FC = () => {
               icon={<FiEdit3 size={16} />}
               onClick={handleEdit}
               disabled={loading.profile}
-              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             />
           ) : (
             <div className="flex gap-2">
@@ -118,7 +118,7 @@ const ProfileTab: React.FC = () => {
                 icon={<FiCheck size={16} />}
                 onClick={() => handleSave(userId)}
                 disabled={loading.update}
-                className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-md bg-green-600 rounded-xl hover:bg-green-700 hover:shadow-green-500/30 sm:flex-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <Button
                 label="Cancel"
@@ -212,7 +212,7 @@ const ProfileTab: React.FC = () => {
                   label="Change Password"
                   icon={<FiKey size={16} />}
                   onClick={() => setShowModal(true)}
-                  className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-blue-200 hover:-translate-y-0.5 sm:w-auto whitespace-nowrap"
+                  className="w-full px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-md bg-blue-600 rounded-xl hover:bg-blue-700 hover:shadow-blue-500/30 sm:w-auto whitespace-nowrap"
                 />
               </div>
             </div>
@@ -230,8 +230,8 @@ const ProfileTab: React.FC = () => {
           <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
             <div className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl sm:rounded-3xl max-h-[90vh] flex flex-col">
               {/* Header with gradient */}
-              <div className="relative flex-shrink-0 p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-600">
-                <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
+              <div className="relative flex-shrink-0 p-4 sm:p-6 bg-blue-600">
+                <div className="absolute inset-0 opacity-10 bg-white" />
                 <div className="relative flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-white sm:w-12 sm:h-12 rounded-xl shadow-lg">
@@ -286,10 +286,10 @@ const ProfileTab: React.FC = () => {
                     passwords.new && passwords.new.length < 6
                       ? "Password must be at least 6 characters"
                       : passwords.new &&
-                        passwords.current &&
-                        passwords.current === passwords.new
-                      ? "Must be different from current password"
-                      : undefined
+                          passwords.current &&
+                          passwords.current === passwords.new
+                        ? "Must be different from current password"
+                        : undefined
                   }
                 />
 

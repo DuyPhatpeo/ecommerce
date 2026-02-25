@@ -51,7 +51,7 @@ const ProductInfo = ({
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const checkWishlistStatus = useWishlistStore(
-    (state) => state.checkWishlistStatus
+    (state) => state.checkWishlistStatus,
   );
   const wishlistLoading = useWishlistStore((state) => state.loading[id]);
 
@@ -160,9 +160,9 @@ const ProductInfo = ({
       )}
 
       {/* Price */}
-      <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 mb-6 relative overflow-hidden">
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6 relative overflow-hidden">
         {hasDiscount && (
-          <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+          <div className="absolute top-3 right-3 bg-gray-900 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md">
             -{discountPercentage}%
           </div>
         )}
@@ -206,13 +206,13 @@ const ProductInfo = ({
                 ? "Out of Stock"
                 : "No Price"
               : loading
-              ? "Adding..."
-              : "Add to Cart"
+                ? "Adding..."
+                : "Add to Cart"
           }
           className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
             disableCart
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-orange-600 text-white hover:bg-orange-700"
+              : "bg-gray-900 text-white hover:bg-orange-500 hover:shadow-orange-500/30"
           }`}
         />
         <Button
@@ -440,6 +440,6 @@ const QuantitySelector = memo(
         />
       </div>
     );
-  }
+  },
 );
 QuantitySelector.displayName = "QuantitySelector";

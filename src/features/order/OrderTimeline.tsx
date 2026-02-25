@@ -85,14 +85,14 @@ const OrderTimeline: React.FC<Props> = ({ status, orderId }) => {
                   {/* Icon */}
                   <div
                     className={`
-                      w-12 h-12 rounded-full flex items-center justify-center
+                      w-12 h-12 rounded-xl flex items-center justify-center
                       transition-all z-10
                       ${
                         isDone
                           ? "bg-green-500 shadow-lg"
                           : isActive
-                          ? "bg-blue-500 shadow-lg scale-110"
-                          : "bg-gray-200"
+                            ? "bg-orange-500 shadow-lg scale-110"
+                            : "bg-gray-200"
                       }
                     `}
                   >

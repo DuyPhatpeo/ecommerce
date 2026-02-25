@@ -21,14 +21,14 @@ const WishlistTab: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-white border border-orange-100 shadow-xl rounded-3xl">
       {/* Background gradient cùng style Orders */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+      <div className="absolute inset-0 bg-[#f8f6f3] opacity-50" />
 
       <div className="relative p-6 sm:p-8">
         {/* Header */}
         <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <FiHeart className="text-white fill-white" size={20} />
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 shadow-md shadow-orange-100">
+              <FiHeart className="text-orange-500 fill-orange-500" size={20} />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">My Wishlist</h2>
@@ -48,8 +48,8 @@ const WishlistTab: React.FC = () => {
         ) : wishlistItems.length === 0 ? (
           /* Empty State */
           <div className="py-16 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <FiHeart className="text-orange-600" size={32} />
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-xl bg-gray-100">
+              <FiHeart className="text-gray-400" size={32} />
             </div>
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               Your Wishlist is Empty

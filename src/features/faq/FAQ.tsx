@@ -138,7 +138,7 @@ export default function FAQ() {
         </h2>
         <p className="text-gray-600 mb-6">Our support team is here to help</p>
         <a href="/contact">
-          <button className="bg-orange-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-orange-600 transition-colors shadow-lg">
+          <button className="bg-gray-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-500 transition-all duration-300 shadow-md hover:shadow-orange-500/30">
             Contact Support
           </button>
         </a>

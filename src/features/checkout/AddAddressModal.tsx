@@ -120,7 +120,7 @@ export default function AddAddressModal({
         </button>
         <button
           onClick={handleSubmit}
-          className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold hover:from-orange-500 hover:to-amber-500 transition shadow-md"
+          className="px-5 py-2 rounded-xl bg-gray-900 text-white font-semibold hover:bg-orange-500 transition-all duration-300 shadow-md hover:shadow-orange-500/30"
         >
           Save
         </button>

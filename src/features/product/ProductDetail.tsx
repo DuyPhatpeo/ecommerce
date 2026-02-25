@@ -62,8 +62,8 @@ export default function ProductDetail({ onLoadTitle }: ProductDetailProps) {
           images: Array.isArray(data.images)
             ? data.images
             : data.images
-            ? [data.images]
-            : ["/placeholder.jpg"],
+              ? [data.images]
+              : ["/placeholder.jpg"],
           category: data.category || "Uncategorized",
           brand: data.brand || "No Brand",
           description: data.description,
@@ -89,7 +89,7 @@ export default function ProductDetail({ onLoadTitle }: ProductDetailProps) {
   if (!product) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50 py-12">
+    <div className="min-h-screen bg-[#f8f6f3] py-12">
       <div className="max-w-7xl mx-auto px-4 lg:px-16">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-300 hover:shadow-2xl">
           <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">

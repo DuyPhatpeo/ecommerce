@@ -53,7 +53,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
   ];
 
   const [allReviews, setAllReviews] = useState<Review[]>(
-    reviews.length ? reviews : sampleReviews
+    reviews.length ? reviews : sampleReviews,
   );
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
@@ -87,7 +87,7 @@ export default function ProductReviews({ reviews = [] }: Props) {
       </h3>
 
       {/* --- Review Form --- */}
-      <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 border-2 border-dashed border-gray-300 mb-6">
+      <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 mb-6">
         <h4 className="font-bold text-gray-800 mb-3">Write Your Review</h4>
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Star Rating */}

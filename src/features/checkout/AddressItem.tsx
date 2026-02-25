@@ -35,7 +35,7 @@ const InfoRow = ({
             icon as React.ReactElement<{ className?: string }>,
             {
               className: "w-4 h-4 text-orange-500",
-            }
+            },
           )
         : icon}
     </div>
@@ -71,7 +71,7 @@ export default function AddressItem({
               <InfoRow icon={<FiHome />} text={address.line} multiline />
             </div>
             {address.isDefault && (
-              <span className="text-xs text-white bg-green-500 px-2 py-0.5 rounded-full">
+              <span className="text-xs text-white bg-gray-900 px-2.5 py-1 rounded-md">
                 Default
               </span>
             )}
