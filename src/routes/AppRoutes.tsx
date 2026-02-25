@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Loader from "../components/general/Loader";
+import Loader from "../components/layout/Loader";
+import MainLayout from "../components/layout/MainLayout";
 
 // ✅ Lazy load pages
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -36,31 +37,33 @@ const AppRoutes = () => {
     <Suspense key={location.pathname} fallback={<Loader />}>
       <ScrollToTop />
       <Routes location={location}>
-        {/* Main pages */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/shop/:category" element={<CategoryPage />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-        <Route path="/cart" element={<ShoppingCartPage />} />
-        <Route path="/checkout" element={<CheckOutPage />} />
-        <Route path="/order-success" element={<OrderSuccessPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/confirm-payment" element={<ConfirmPaymentPage />} />
-        <Route path="/about-us" element={<AboutUsPage />} />
-        <Route path="/faq" element={<FAQPage />} />
+        {/* Pages with Header + Footer layout */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/:category" element={<CategoryPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/cart" element={<ShoppingCartPage />} />
+          <Route path="/checkout" element={<CheckOutPage />} />
+          <Route path="/order-success" element={<OrderSuccessPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/confirm-payment" element={<ConfirmPaymentPage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
 
-        {/* Auth */}
+          {/* Account */}
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/account/:tab" element={<AccountPage />} />
+          <Route path="/account/order/:id" element={<OrderDetailPage />} />
+
+          {/* 404 - Not Found */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+
+        {/* Auth pages — no Header/Footer */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
-
-        {/* Account */}
-        <Route path="/account" element={<AccountPage />} />
-        <Route path="/account/:tab" element={<AccountPage />} />
-        <Route path="/account/order/:id" element={<OrderDetailPage />} />
-
-        {/* 404 - Not Found */}
-        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );

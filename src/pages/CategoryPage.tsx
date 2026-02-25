@@ -1,15 +1,11 @@
-import CategoryProducts from "../components/category/CategoryProducts";
-import Footer from "../components/general/Footer";
-import Header from "../components/general/Header";
-import SectionBanner from "../components/section/SectionBanner";
+import CategoryProducts from "../features/category/CategoryProducts";
+import SectionBanner from "../components/shared/SectionBanner";
 
 const CategoryPage = () => {
   return (
     <>
-      <Header />
       <SectionBanner bgImage="/banner-bg.jpg" title="Category" />
       <CategoryProducts />
-      <Footer />
     </>
   );
 };

@@ -1,16 +1,11 @@
-import Header from "../components/general/Header";
-import Footer from "../components/general/Footer";
-import SectionBanner from "../components/section/SectionBanner";
-import CheckOut from "../components/checkout/CheckOut";
+import SectionBanner from "../components/shared/SectionBanner";
+import CheckOut from "../features/checkout/CheckOut";
 
 const CheckOutPage = () => {
   return (
     <>
-      <Header />
-
-      <SectionBanner bgImage="/banner-bg.jpg" title="Check Out" />
+      <SectionBanner bgImage="/banner-bg.jpg" title="Checkout" />
       <CheckOut />
-      <Footer />
     </>
   );
 };

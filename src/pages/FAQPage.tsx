@@ -1,18 +1,14 @@
-import FAQ from "../components/faq/FAQ";
-import Footer from "../components/general/Footer";
-import Header from "../components/general/Header";
-import SectionBanner from "../components/section/SectionBanner";
+import FAQ from "../features/faq/FAQ";
+import SectionBanner from "../components/shared/SectionBanner";
 
 const FAQPage = () => {
   return (
     <>
-      <Header />
       <SectionBanner
         bgImage="/banner-bg.jpg"
         title="Frequently Asked Questions"
       />
       <FAQ />
-      <Footer />
     </>
   );
 };

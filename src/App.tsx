@@ -5,12 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "./GlobalStyle.css";
 import AppRoutes from "./routes/AppRoutes";
-import ScrollToTop from "./components/general/ScrollToTop";
 
 const App: React.FC = () => {
   return (
     <Router>
-      <ScrollToTop />
       <AppRoutes />
       <ToastContainer
         position="top-right"

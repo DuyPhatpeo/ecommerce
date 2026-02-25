@@ -1,4 +1,4 @@
-import AuthLayout from "../components/auth/AuthLayout";
+import AuthLayout from "../features/auth/AuthLayout";
 
 const AuthPage = () => {
   return (

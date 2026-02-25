@@ -1,0 +1,43 @@
+/* ========================
+   Animation Keyframes
+   ======================== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================
+   Reduced Motion Support
+   ======================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-slideIn {
+    animation: none;
+  }
+
+  .animate-bounce {
+    animation: none;
+  }
+
+  .animate-pulse {
+    animation: none;
+  }
+}

@@ -1,15 +1,11 @@
-import Footer from "../components/general/Footer";
-import Header from "../components/general/Header";
-import OrderDetail from "../components/order/OrderDetail";
-import SectionBanner from "../components/section/SectionBanner";
+import OrderDetail from "../features/order/OrderDetail";
+import SectionBanner from "../components/shared/SectionBanner";
 
 const OrderDetailPage = () => {
   return (
     <>
-      <Header />
       <SectionBanner bgImage="/banner-bg.jpg" title="Order Details" />
       <OrderDetail />
-      <Footer />
     </>
   );
 };

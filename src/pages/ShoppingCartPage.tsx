@@ -1,17 +1,13 @@
-import Header from "../components/general/Header";
-import Footer from "../components/general/Footer";
-import SectionBanner from "../components/section/SectionBanner";
-import ShoppingCart from "../components/shopingcart/ShopingCart";
+import SectionBanner from "../components/shared/SectionBanner";
+import ShoppingCart from "../features/cart/ShopingCart";
 
-const ShopingCartPage = () => {
+const ShoppingCartPage = () => {
   return (
     <>
-      <Header />
       <SectionBanner bgImage="/banner-bg.jpg" title="Shopping Cart" />
       <ShoppingCart />
-      <Footer />
     </>
   );
 };
 
-export default ShopingCartPage;
+export default ShoppingCartPage;

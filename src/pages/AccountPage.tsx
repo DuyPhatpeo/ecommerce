@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
-import SectionBanner from "../components/section/SectionBanner";
-import Account from "../components/account/Account";
-import Footer from "../components/general/Footer";
-import Header from "../components/general/Header";
+import SectionBanner from "../components/shared/SectionBanner";
+import Account from "../features/account/Account";
 
 const AccountPage = () => {
   const { tab } = useParams<{ tab?: string }>();
@@ -36,10 +34,8 @@ const AccountPage = () => {
 
   return (
     <>
-      <Header />
       <SectionBanner bgImage="/banner-bg.jpg" title={bannerInfo.title} />
       <Account />
-      <Footer />
     </>
   );
 };
