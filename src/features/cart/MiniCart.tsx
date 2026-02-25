@@ -1,8 +1,10 @@
+import { Link, useNavigate } from "react-router-dom";
 import { FiShoppingBag } from "react-icons/fi";
 import { useCartStore } from "../../stores/cartStore";
 
 const MiniCart = () => {
   const { cartItems, loading } = useCartStore();
+  const navigate = useNavigate();
 
   const formatPrice = (n: number) =>
     `${new Intl.NumberFormat("vi-VN").format(n)} đ`;
@@ -50,9 +52,9 @@ const MiniCart = () => {
               const hasDiscount = salePrice < regularPrice;
 
               return (
-                <a
+                <Link
                   key={item.id}
-                  href={`/product/${product?.id}`}
+                  to={`/product/${product?.id}`}
                   className="p-4 flex items-start gap-3 hover:bg-orange-50 transition-colors"
                 >
                   {/* Image */}
@@ -85,7 +87,7 @@ const MiniCart = () => {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -105,7 +107,7 @@ const MiniCart = () => {
             )}
 
             <button
-              onClick={() => (window.location.href = "/cart")}
+              onClick={() => navigate("/cart")}
               className="bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap"
             >
               View All

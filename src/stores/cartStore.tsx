@@ -95,7 +95,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       }
 
       const products = await Promise.allSettled(
-        cart.map((item) => getProductById(item.productId))
+        cart.map((item) => getProductById(item.productId)),
       );
 
       let merged = cart.map((item, i) => ({
@@ -109,7 +109,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       // 🆕 Sort theo createdAt: mới nhất lên đầu
       merged = merged.sort(
-        (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+        (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0),
       );
 
       set({ cartItems: merged, selectedItems: [] });
@@ -140,7 +140,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     // Optimistic update
     set({
       cartItems: cartItems.map((i) =>
-        i.id === id ? { ...i, quantity: newQty } : i
+        i.id === id ? { ...i, quantity: newQty } : i,
       ),
     });
 
@@ -152,7 +152,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       // Rollback
       set({
         cartItems: cartItems.map((i) =>
-          i.id === id ? { ...i, quantity: item.quantity } : i
+          i.id === id ? { ...i, quantity: item.quantity } : i,
         ),
       });
       get().updateCartCount();
@@ -309,7 +309,7 @@ export const useCartStore = create<CartState>((set, get) => ({
           pauseOnHover: true,
           draggable: true,
           hideProgressBar: true,
-        }
+        },
       );
 
       await get().fetchCart();
