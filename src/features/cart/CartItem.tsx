@@ -55,7 +55,7 @@ export default function CartItem({
 
   const displayPrice = hasDiscount
     ? product.salePrice!
-    : product?.regularPrice ?? 0;
+    : (product?.regularPrice ?? 0);
 
   const isOutOfStock =
     product?.status?.toLowerCase() === "outofstock" || product?.stock === 0;
@@ -166,7 +166,7 @@ export default function CartItem({
             </Link>
 
             {product?.category && (
-              <span className="inline-block text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
+              <span className="inline-block text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
                 {product.category}
               </span>
             )}

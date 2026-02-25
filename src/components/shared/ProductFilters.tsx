@@ -106,7 +106,7 @@ const ProductFilters: React.FC<Props> = ({
       priceRange,
       MIN,
       MAX,
-    ]
+    ],
   );
 
   const handleRemoveFilter = (f: { label: string; type: string }) => {
@@ -135,7 +135,7 @@ const ProductFilters: React.FC<Props> = ({
       `}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-gradient-to-r from-orange-50 to-orange-100/60">
+      <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-[#f8f6f3]">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
           <FiFilter size={18} className="text-orange-500" /> Filters
         </h3>
@@ -164,7 +164,7 @@ const ProductFilters: React.FC<Props> = ({
             {activeFilters.map((f, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-full border border-orange-200"
+                className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-md border border-orange-200"
               >
                 {f.label}
                 <Button

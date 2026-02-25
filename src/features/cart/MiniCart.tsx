@@ -30,7 +30,7 @@ const MiniCart = () => {
           </div>
         ) : cartItems.length === 0 ? (
           <div className="flex flex-col justify-center items-center py-8 text-center px-4">
-            <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mb-3">
+            <div className="bg-gray-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-3">
               <FiShoppingBag className="w-8 h-8 text-orange-500" />
             </div>
             <p className="text-gray-800 text-base font-semibold mb-1">

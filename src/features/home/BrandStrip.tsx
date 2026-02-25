@@ -92,7 +92,7 @@ export default function BrandStrip() {
             whileInView={{ width: "120px" }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-            className="absolute left-1/2 -translate-x-1/2 -bottom-3 h-0.5 bg-orange-500 rounded-full"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-3 h-0.5 bg-orange-500 rounded-xl"
           />
         </motion.h2>
 

@@ -19,8 +19,8 @@ const ConfirmPaymentProductList: React.FC<Props> = ({ products }) => {
       {/* Content */}
       {products.length === 0 ? (
         <div className="text-center py-16">
-          <div className="bg-orange-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <FiPackage className="w-14 h-14 text-orange-500" />
+          <div className="bg-gray-100 w-28 h-28 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <FiPackage className="w-14 h-14 text-gray-400" />
           </div>
           <p className="text-gray-800 text-xl font-semibold mb-2">
             No products selected

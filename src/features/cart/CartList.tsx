@@ -133,7 +133,7 @@ export default function CartList({
             <Loader />
           ) : formattedCartItems.length === 0 ? (
             <div className="text-center py-16">
-              <div className="bg-gray-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <div className="bg-gray-100 w-28 h-28 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <FiShoppingBag className="w-14 h-14 text-orange-500" />
               </div>
               <p className="text-gray-800 text-xl font-semibold mb-2">
@@ -145,7 +145,7 @@ export default function CartList({
             </div>
           ) : outOfStockItems.length === formattedCartItems.length ? (
             <div className="text-center py-16">
-              <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
                 <FiAlertTriangle className="w-10 h-10 text-yellow-500" />
               </div>
               <p className="text-gray-800 text-lg font-semibold mb-2">

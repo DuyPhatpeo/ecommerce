@@ -259,7 +259,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 border-4 border-orange-200 rounded-full border-t-orange-500"
+            className="w-16 h-16 border-4 border-gray-200 rounded-xl border-t-orange-500"
           />
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
@@ -293,7 +293,7 @@ const ProductView: React.FC<ProductViewProps> = ({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-50"
+          className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-2xl bg-orange-50"
         >
           <BsStars size={40} className="text-orange-400" />
         </motion.div>
@@ -337,7 +337,7 @@ const ProductView: React.FC<ProductViewProps> = ({
               initial={{ width: 0 }}
               animate={{ width: 48 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="mt-3 h-0.5 rounded-full bg-orange-500"
+              className="mt-3 h-0.5 rounded-xl bg-orange-500"
             />
           </div>
 

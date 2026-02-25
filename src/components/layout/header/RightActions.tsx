@@ -113,7 +113,7 @@ const CartIcon = ({ cartCount }: { cartCount: number }) => (
   >
     <FiShoppingBag size={20} />
     {cartCount > 0 && (
-      <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
+      <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-4 h-4 rounded-md flex items-center justify-center font-medium">
         {cartCount > 99 ? "99+" : cartCount}
       </span>
     )}

@@ -70,7 +70,7 @@ const MobileBottomBar = ({
               <div className="relative">
                 <Icon size={22} />
                 {item.badge && item.badge > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-md flex items-center justify-center font-medium">
                     {item.badge > 99 ? "99+" : item.badge}
                   </span>
                 )}

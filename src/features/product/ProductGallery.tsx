@@ -329,7 +329,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             <button
               onClick={handlePrevThumbs}
               disabled={thumbIndex === 0}
-              className={`absolute left-0 z-10 p-2 rounded-full border shadow-md transition-all ${
+              className={`absolute left-0 z-10 p-2 rounded-xl border shadow-md transition-all ${
                 thumbIndex === 0
                   ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-50"
                   : "bg-white hover:bg-gray-50 border-gray-200 active:scale-95"
@@ -373,7 +373,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             <button
               onClick={handleNextThumbs}
               disabled={thumbIndex === maxThumbIndex}
-              className={`absolute right-0 z-10 p-2 rounded-full border shadow-md transition-all ${
+              className={`absolute right-0 z-10 p-2 rounded-xl border shadow-md transition-all ${
                 thumbIndex === maxThumbIndex
                   ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-50"
                   : "bg-white hover:bg-gray-50 border-gray-200 active:scale-95"
@@ -403,7 +403,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
               setIsZoomed(false);
               handleResetZoom();
             }}
-            className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
+            className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-xl text-white transition-all hover:scale-110 active:scale-95 z-10"
             aria-label="Close"
           >
             <FiX className="w-6 h-6" />
@@ -411,17 +411,17 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
 
           {/* Image counter */}
           {safeImages.length > 1 && (
-            <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium z-10">
+            <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-sm font-medium z-10">
               {selectedImage + 1} / {safeImages.length}
             </div>
           )}
 
           {/* Zoom controls */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-3 z-10">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-3 z-10">
             <button
               onClick={handleZoomOut}
               disabled={zoom <= 1}
-              className={`p-2 rounded-full transition-all ${
+              className={`p-2 rounded-xl transition-all ${
                 zoom <= 1
                   ? "text-white/40 cursor-not-allowed"
                   : "text-white hover:bg-white/20 active:scale-95"
@@ -436,7 +436,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
             <button
               onClick={handleZoomIn}
               disabled={zoom >= 4}
-              className={`p-2 rounded-full transition-all ${
+              className={`p-2 rounded-xl transition-all ${
                 zoom >= 4
                   ? "text-white/40 cursor-not-allowed"
                   : "text-white hover:bg-white/20 active:scale-95"
@@ -455,7 +455,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   e.stopPropagation();
                   prevImage();
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-xl text-white transition-all hover:scale-110 active:scale-95 z-10"
                 aria-label="Previous image"
               >
                 <FiChevronLeft className="w-6 h-6" />
@@ -465,7 +465,7 @@ function ProductGallery({ images, title }: ProductGalleryProps) {
                   e.stopPropagation();
                   nextImage();
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full text-white transition-all hover:scale-110 active:scale-95 z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-xl text-white transition-all hover:scale-110 active:scale-95 z-10"
                 aria-label="Next image"
               >
                 <FiChevronRight className="w-6 h-6" />

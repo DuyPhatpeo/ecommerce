@@ -31,7 +31,7 @@ export default function Footer() {
           <div className="space-y-5">
             <h3 className="text-white font-bold text-xl relative inline-block pb-3">
               About
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
+              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
             </h3>
 
             <p className="text-gray-400 text-sm leading-relaxed hover:text-gray-200 transition-colors duration-300">
@@ -41,7 +41,7 @@ export default function Footer() {
             </p>
 
             <div className="flex gap-3 pt-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-300 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center flex-shrink-0">
                 <FiHeart size={18} className="text-white" fill="white" />
               </div>
               <div>
@@ -78,7 +78,7 @@ export default function Footer() {
           <div className="space-y-5">
             <h3 className="text-white font-bold text-xl relative inline-block pb-3">
               Newsletter
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
+              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
             </h3>
 
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -104,7 +104,7 @@ export default function Footer() {
               <button
                 onClick={handleSubscribe}
                 aria-label="Subscribe to newsletter"
-                className="cursor-pointer px-5 py-3 text-white bg-gradient-to-r from-orange-400 to-orange-300 hover:from-orange-500 hover:to-orange-400 transition-all duration-300 flex items-center justify-center"
+                className="cursor-pointer px-5 py-3 text-white bg-orange-500 hover:bg-orange-600 transition-all duration-300 flex items-center justify-center"
               >
                 <FiSend size={16} />
               </button>
@@ -134,7 +134,7 @@ export default function Footer() {
           <div className="space-y-5">
             <h3 className="text-white font-bold text-xl relative inline-block pb-3">
               Follow Us
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-orange-400 to-orange-300" />
+              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
             </h3>
 
             {/* FB Plugin */}

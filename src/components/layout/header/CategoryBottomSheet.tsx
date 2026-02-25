@@ -52,7 +52,7 @@ const CategoryBottomSheet = ({
           >
             {/* Handle */}
             <div className="flex justify-center pt-3 pb-2">
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+              <div className="w-12 h-1.5 bg-gray-300 rounded-xl" />
             </div>
 
             {/* Header */}
@@ -60,7 +60,7 @@ const CategoryBottomSheet = ({
               <h3 className="text-lg font-bold text-gray-800">Shoe catalog</h3>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
               >
                 <FiX size={20} className="text-gray-600" />
               </button>
@@ -78,9 +78,9 @@ const CategoryBottomSheet = ({
                         onClose();
                       }
                     }}
-                    className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm"
+                    className="flex flex-col items-center justify-center p-4 bg-orange-50 hover:bg-orange-100 rounded-2xl transition-all active:scale-95 shadow-sm"
                   >
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
+                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-2 shadow-md">
                       <TbShoe size={24} className="text-orange-600" />
                     </div>
 

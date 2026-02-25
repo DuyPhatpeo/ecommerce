@@ -112,7 +112,7 @@ const Banner = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`cursor-pointer h-1 rounded-full transition-all duration-300 ${
+            className={`cursor-pointer h-1 rounded-xl transition-all duration-300 ${
               current === index
                 ? "w-12 bg-orange-400"
                 : "w-6 bg-white/40 hover:bg-white/60"
@@ -127,7 +127,7 @@ const Banner = () => {
         <button
           onClick={handlePrev}
           disabled={isAnimating}
-          className="cursor-pointer w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 border-white/40 flex items-center justify-center hover:border-white hover:bg-white/10 disabled:opacity-50 backdrop-blur-sm transition-all active:scale-90"
+          className="cursor-pointer w-10 h-10 lg:w-12 lg:h-12 rounded-xl border-2 border-white/40 flex items-center justify-center hover:border-white hover:bg-white/10 disabled:opacity-50 backdrop-blur-sm transition-all active:scale-90"
           aria-label="Previous slide"
         >
           <FiArrowLeft size={20} />
@@ -135,7 +135,7 @@ const Banner = () => {
         <button
           onClick={handleNext}
           disabled={isAnimating}
-          className="cursor-pointer w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 border-white/40 flex items-center justify-center hover:border-white hover:bg-white/10 disabled:opacity-50 backdrop-blur-sm transition-all active:scale-90"
+          className="cursor-pointer w-10 h-10 lg:w-12 lg:h-12 rounded-xl border-2 border-white/40 flex items-center justify-center hover:border-white hover:bg-white/10 disabled:opacity-50 backdrop-blur-sm transition-all active:scale-90"
           aria-label="Next slide"
         >
           <FiArrowRight size={20} />

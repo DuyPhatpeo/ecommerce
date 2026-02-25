@@ -114,7 +114,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           }}
           disabled={wishlistLoading}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className={`absolute top-4 right-4 z-5 w-9 h-9 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200
+          className={`absolute top-4 right-4 z-5 w-9 h-9 flex items-center justify-center rounded-xl cursor-pointer transition-all duration-200
             ${isWishlisted ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-red-50"}
             ${wishlistLoading ? "opacity-50 cursor-wait" : ""}
             shadow-sm`}

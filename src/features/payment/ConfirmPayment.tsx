@@ -160,7 +160,7 @@ const ConfirmPayment = () => {
             label="Confirm Order"
             icon={<FiCheck size={16} />}
             iconPosition="right"
-            className="flex-1 py-3 text-base bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition shadow hover:shadow-lg"
+            className="flex-1 py-3 text-base bg-gray-900 text-white font-semibold rounded-lg hover:bg-orange-500 transition-all duration-300 shadow hover:shadow-orange-500/30"
             justify="center"
           />
         </div>
@@ -189,7 +189,7 @@ const ConfirmPayment = () => {
               label="Confirm Order"
               icon={<FiCheck size={16} />}
               iconPosition="right"
-              className="flex-1 py-2.5 text-sm bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-amber-600 transition shadow hover:shadow-lg"
+              className="flex-1 py-2.5 text-sm bg-gray-900 text-white font-semibold rounded-lg hover:bg-orange-500 transition-all duration-300 shadow hover:shadow-orange-500/30"
               justify="center"
             />
           </div>

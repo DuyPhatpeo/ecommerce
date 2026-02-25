@@ -163,7 +163,7 @@ const HotDeal = () => {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center text-center p-6 sm:p-10 md:p-12 relative overflow-hidden h-[40vh] md:h-full">
+      <div className="bg-[#f8f6f3] flex flex-col items-center justify-center text-center p-6 sm:p-10 md:p-12 relative overflow-hidden h-[40vh] md:h-full">
         {/* Decorative background */}
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-orange-400 rounded-full blur-3xl opacity-5" />
 
@@ -207,7 +207,7 @@ const HotDeal = () => {
         <button
           onClick={handlePrev}
           disabled={isAnimating}
-          className="absolute left-3 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
+          className="absolute left-3 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
         >
           <FiChevronLeft size={28} className="sm:w-8 sm:h-8" />
         </button>
@@ -215,7 +215,7 @@ const HotDeal = () => {
         <button
           onClick={handleNext}
           disabled={isAnimating}
-          className="absolute right-3 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-full transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
+          className="absolute right-3 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 p-2 sm:p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-90 disabled:opacity-50"
         >
           <FiChevronRight size={28} className="sm:w-8 sm:h-8" />
         </button>
@@ -227,7 +227,7 @@ const HotDeal = () => {
               key={idx}
               onClick={() => handleDotClick(idx)}
               disabled={isAnimating}
-              className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 hover:scale-110 disabled:opacity-50 ${
+              className={`h-2 sm:h-2.5 rounded-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 ${
                 idx === currentIndex
                   ? "bg-orange-500 w-8 sm:w-10"
                   : "bg-gray-300 hover:bg-gray-400 w-2 sm:w-2.5"

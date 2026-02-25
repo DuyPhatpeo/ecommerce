@@ -99,30 +99,30 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
 
       {/* Thanh kéo */}
       <div className="relative mb-2">
-        <div className="absolute w-full h-2 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-full top-1/2 -translate-y-1/2 shadow-inner" />
+        <div className="absolute w-full h-2 bg-gray-200 rounded-full top-1/2 -translate-y-1/2 shadow-inner" />
         <div
-          className="absolute h-2 bg-gradient-to-r from-orange-400 via-amber-500 to-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
+          className="absolute h-2 bg-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
           style={{
             left: `${Math.max(
               0,
               Math.min(
                 100,
-                ((priceRange.min - min) / Math.max(max - min, 1)) * 100
-              )
+                ((priceRange.min - min) / Math.max(max - min, 1)) * 100,
+              ),
             )}%`,
             right: `${Math.max(
               0,
               Math.min(
                 100,
-                100 - ((priceRange.max - min) / Math.max(max - min, 1)) * 100
-              )
+                100 - ((priceRange.max - min) / Math.max(max - min, 1)) * 100,
+              ),
             )}%`,
             boxShadow: isDragging
               ? "0 0 20px rgba(251, 146, 60, 0.5)"
               : "0 2px 8px rgba(251, 146, 60, 0.3)",
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full animate-pulse" />
+          <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse" />
         </div>
         <input
           type="range"
