@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
-import { getCartItem } from "../api/cartApi";
+import { getCartItem, deleteCartItem } from "../api/cartApi";
 import { getProductById } from "../api/productApi";
 import { createOrder } from "../api/orderApi";
+import { useCartStore } from "./cartStore";
 
 export interface Product {
   id: string;
@@ -17,6 +18,7 @@ export interface Product {
   description?: string;
   img?: string;
   images?: string[];
+  cartItemId?: string;
 }
 
 export interface CustomerInfo {
@@ -53,7 +55,7 @@ interface CheckoutState {
 
   goToConfirmPayment: (navigate: (path: string, options?: any) => void) => void;
   handlePlaceOrder: (
-    navigate: (path: string, options?: any) => void
+    navigate: (path: string, options?: any) => void,
   ) => Promise<void>;
   reset: () => void;
 }
@@ -86,7 +88,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         tax: current.tax,
         shipping: current.shipping,
         total: current.total,
-      })
+      }),
     );
   },
 
@@ -102,7 +104,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
         tax: current.tax,
         shipping: current.shipping,
         total: current.total,
-      })
+      }),
     );
   },
 
@@ -140,10 +142,11 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
             if (!productRes) return null;
             return {
               ...productRes,
+              cartItemId: cartRes.id,
               price: productRes.salePrice || productRes.regularPrice || 0,
               quantity: item.quantity,
             };
-          })
+          }),
         );
         items = results.filter(Boolean) as any;
       } else if (productId && quantity) {
@@ -188,7 +191,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
           tax: providedTax,
           shipping: providedShipping,
           total: calculatedTotal,
-        })
+        }),
       );
     } catch (err) {
       console.error(err);
@@ -236,7 +239,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
             regularPrice: current.regularPrice,
             salePrice: current.salePrice,
           };
-        })
+        }),
       );
 
       const statusMap = { cod: "pending", banking: "banking", momo: "paid" };
@@ -263,6 +266,15 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
       };
 
       const res = await createOrder(orderData);
+
+      // Xoá các sản phẩm đã mua khỏi giỏ hàng
+      await Promise.all(
+        products
+          .filter((p) => p.cartItemId)
+          .map((p) => deleteCartItem(userId!, p.cartItemId!)),
+      ).catch((err) => console.error("Failed to delete cart items", err));
+
+      useCartStore.getState().fetchCart();
 
       toast.update(toastId, {
         render: "Order placed successfully!",
