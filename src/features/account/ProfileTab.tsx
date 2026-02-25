@@ -89,8 +89,8 @@ const ProfileTab: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col gap-4 pb-6 mb-6 border-b border-gray-100 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <FiUser className="text-white" size={18} />
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-100 shadow-md shadow-orange-100">
+              <FiUser className="text-orange-500" size={18} />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
@@ -134,7 +134,7 @@ const ProfileTab: React.FC = () => {
         {/* Loading State */}
         {loading.profile ? (
           <div className="py-16 text-center">
-            <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+            <div className="inline-block w-12 h-12 border-4 border-gray-200 rounded-xl animate-spin border-t-orange-500" />
             <p className="mt-4 text-sm font-medium text-gray-600">
               Loading your profile...
             </p>
@@ -162,7 +162,7 @@ const ProfileTab: React.FC = () => {
                   icon={<FiMail size={18} />}
                   disabled
                 />
-                <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-orange-600 rounded-full bg-orange-50 sm:px-3">
+                <div className="absolute top-0 right-0 px-2.5 py-1 text-xs font-semibold text-gray-700 rounded-md bg-gray-100 sm:px-3">
                   Verified
                 </div>
               </div>
@@ -329,7 +329,7 @@ const ProfileTab: React.FC = () => {
                   icon={<FiSave size={16} />}
                   onClick={() => handlePasswordUpdate(userId)}
                   disabled={loading.password}
-                  className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:from-green-600 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>

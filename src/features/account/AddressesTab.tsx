@@ -34,8 +34,8 @@ const AddressCard: React.FC<AddressCardProps> = ({
   <div
     className={`relative overflow-hidden rounded-3xl border backdrop-blur-sm transition-all duration-300 ${
       address.isDefault
-        ? "bg-gradient-to-br from-green-50 via-white to-green-100 border-green-300 shadow-lg shadow-green-100/50"
-        : "bg-gradient-to-br from-white to-orange-50 border-gray-200 hover:border-orange-200 hover:shadow-md"
+        ? "bg-gray-50 border-gray-900 shadow-md"
+        : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-md"
     }`}
   >
     <div className="p-6 relative">
@@ -43,8 +43,8 @@ const AddressCard: React.FC<AddressCardProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4 relative">
         {/* Info */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-tr from-orange-100 to-orange-200 shadow-sm">
-            <FiUser className="text-orange-600" size={20} />
+          <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gray-100 shadow-sm">
+            <FiUser className="text-gray-500" size={20} />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-800">
@@ -81,13 +81,13 @@ const AddressCard: React.FC<AddressCardProps> = ({
           onClick={() => onEdit(address)}
           icon={<FiEdit2 size={14} />}
           label="Edit"
-          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-blue-600 hover:bg-blue-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
         />
         <Button
           onClick={() => onDelete(address.id!)}
           icon={<FiTrash2 size={14} />}
           label="Delete"
-          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+          className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-red-600 hover:bg-red-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
         />
       </div>
     </div>
@@ -111,7 +111,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onSave,
 }) => {
   const [form, setForm] = useState<Partial<Address> & { line?: string }>(
-    address || {}
+    address || {},
   );
 
   useEffect(() => {
@@ -150,12 +150,12 @@ const AddressModal: React.FC<AddressModalProps> = ({
       <div className="fixed inset-0 z-90 flex items-center justify-center p-4">
         <div className="relative w-full max-w-lg overflow-hidden bg-white shadow-2xl rounded-3xl max-h-[90vh] flex flex-col">
           {/* Header */}
-          <div className="relative flex-shrink-0 p-6 bg-gradient-to-r from-orange-500 to-orange-600">
-            <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-white to-transparent" />
+          <div className="relative flex-shrink-0 p-6 bg-gray-900">
+            <div className="absolute inset-0 opacity-10 bg-white" />
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-lg">
-                  <FiMapPin className="text-orange-600" size={24} />
+                <div className="flex items-center justify-center w-12 h-12 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+                  <FiMapPin className="text-white" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white">
@@ -229,7 +229,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
             <Button
               onClick={handleSave}
               label="Save Address"
-              className="flex-1 gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+              className="flex-1 gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30 hover:-translate-y-0.5"
             />
             <Button
               onClick={onClose}
@@ -256,7 +256,7 @@ const AddressesTab: React.FC = () => {
   } = useAddressStore();
 
   const [currentAddress, setCurrentAddress] = useState<Partial<Address> | null>(
-    null
+    null,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -277,14 +277,14 @@ const AddressesTab: React.FC = () => {
 
   return (
     <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl rounded-3xl">
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-orange-50 opacity-50" />
+      <div className="absolute inset-0 bg-[#f8f6f3] opacity-50" />
 
       <div className="relative p-6 sm:p-8">
         {/* Header */}
         <div className="flex items-center justify-between pb-6 mb-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-200">
-              <FiMapPin className="text-white" size={20} />
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 shadow-md shadow-orange-100">
+              <FiMapPin className="text-orange-500" size={20} />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">My Addresses</h2>
@@ -298,15 +298,15 @@ const AddressesTab: React.FC = () => {
             onClick={() => openModal()}
             icon={<FiPlus size={18} />}
             label="Add New"
-            className="flex items-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-5 py-2.5 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30 hover:-translate-y-0.5"
           />
         </div>
 
         {/* Address List */}
         {addressesFormatted.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-orange-200">
-              <FiMapPin className="text-orange-600" size={32} />
+            <div className="inline-flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-100">
+              <FiMapPin className="text-gray-400" size={32} />
             </div>
             <h3 className="mb-2 text-lg font-bold text-gray-800">
               No Addresses Yet
@@ -320,7 +320,7 @@ const AddressesTab: React.FC = () => {
               onClick={() => openModal()}
               icon={<FiPlus size={18} />}
               label="Add Your First Address"
-              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-200 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-300 shadow-md bg-gray-900 rounded-xl hover:bg-orange-500 hover:shadow-orange-500/30 hover:-translate-y-0.5"
             />
           </div>
         ) : (

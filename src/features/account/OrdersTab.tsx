@@ -142,7 +142,7 @@ const OrdersTab: React.FC = () => {
           </div>
         ) : loading ? (
           <div className="py-16 text-center">
-            <div className="inline-block w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500" />
+            <div className="inline-block w-12 h-12 border-4 border-gray-200 rounded-xl animate-spin border-t-orange-500" />
             <p className="mt-4 text-sm font-medium text-gray-600">
               Loading your orders...
             </p>

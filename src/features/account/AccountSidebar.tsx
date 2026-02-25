@@ -72,18 +72,18 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
     };
 
     return (
-      <div className="relative overflow-hidden bg-white border border-orange-100 shadow-xl backdrop-blur-md rounded-3xl h-[90vh]">
-        <div className="absolute inset-0 opacity-50 bg-gradient-to-br from-orange-50 via-white to-orange-50" />
+      <div className="relative overflow-hidden bg-white border border-gray-100 shadow-xl backdrop-blur-md rounded-3xl h-[90vh]">
+        <div className="absolute inset-0 opacity-50 bg-[#f8f6f3]" />
 
         <div className="relative p-6 flex flex-col h-full overflow-y-auto">
           {/* Profile */}
           <div className="pb-6 mb-6 border-b border-gray-100">
             <div className="flex flex-col items-center gap-3 text-center">
               <div className="relative">
-                <div className="flex items-center justify-center w-24 h-24 text-3xl font-bold text-gray-900 rounded-full shadow-lg bg-orange-100">
+                <div className="flex items-center justify-center w-24 h-24 text-3xl font-bold text-gray-900 rounded-2xl shadow-md bg-gray-100">
                   {getInitials(profile.fullName)}
                 </div>
-                <div className="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1" />
+                <div className="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-md -bottom-1 -right-1" />
               </div>
 
               <h3 className="text-xl font-bold text-gray-800">
@@ -106,12 +106,12 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
                     onClick={() => handleTabClick(tab.id)}
                     className={`group relative w-full flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold transition-all duration-300 ease-out overflow-hidden ${
                       isActive
-                        ? "text-white shadow-lg shadow-orange-200"
-                        : "text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent hover:text-orange-600"
+                        ? "text-white shadow-md shadow-orange-500/30"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-orange-500"
                     }`}
                   >
                     <div
-                      className={`absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300 ${
+                      className={`absolute inset-0 bg-gray-900 transition-all duration-300 ${
                         isActive
                           ? "opacity-100 scale-100"
                           : "opacity-0 scale-95"
@@ -122,8 +122,8 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
                       <div
                         className={`p-2 rounded-lg transition-all duration-300 ${
                           isActive
-                            ? "bg-white/20"
-                            : "bg-gray-100 group-hover:bg-orange-100"
+                            ? "bg-white/20 text-white"
+                            : "bg-gray-100 group-hover:bg-orange-100 group-hover:text-orange-500 text-gray-500"
                         }`}
                       >
                         <Icon
@@ -152,12 +152,12 @@ const AccountSidebar: React.FC<AccountSidebarProps> = memo(
             {/* Logout */}
             <button
               onClick={handleLogout}
-              className="relative flex items-center justify-between w-full px-5 py-3.5 font-semibold text-red-600 transition-all duration-300 group rounded-xl hover:text-white mt-auto"
+              className="relative flex items-center justify-between w-full px-5 py-3.5 font-semibold text-gray-700 transition-all duration-300 group rounded-xl hover:text-white mt-auto overflow-hidden"
             >
-              <div className="absolute inset-0 transition-all duration-300 origin-left scale-x-0 bg-gradient-to-r from-red-500 to-red-600 group-hover:scale-x-100" />
+              <div className="absolute inset-0 transition-all duration-300 origin-left scale-x-0 bg-gray-900 group-hover:scale-x-100" />
 
               <div className="relative flex items-center gap-3">
-                <div className="p-2 bg-red-100 rounded-lg transition-all duration-300 group-hover:bg-white/20">
+                <div className="p-2 bg-gray-100 text-gray-500 rounded-lg transition-all duration-300 group-hover:bg-white/20 group-hover:text-white">
                   <FiLogOut size={20} className="group-hover:scale-110" />
                 </div>
                 <span>Logout</span>

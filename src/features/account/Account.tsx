@@ -74,9 +74,9 @@ const Account = () => {
 
   if (!userId) {
     return (
-      <div className="min-h-screen flex items-start justify-center bg-gradient-to-br from-orange-50 via-white to-blue-50 px-6 pt-24 pb-24">
+      <div className="min-h-screen flex items-start justify-center bg-[#f8f6f3] px-6 pt-24 pb-24">
         <div className="bg-white shadow-2xl rounded-3xl max-w-md w-full p-10 flex flex-col items-center text-center">
-          <div className="w-24 h-24 flex items-center justify-center rounded-full bg-orange-100 mb-6">
+          <div className="w-24 h-24 flex items-center justify-center rounded-2xl bg-gray-100 mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-12 w-12 text-orange-500"
@@ -101,7 +101,7 @@ const Account = () => {
           </p>
           <button
             onClick={() => navigate("/login")}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:-translate-y-0.5"
+            className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold shadow-md hover:bg-orange-500 hover:shadow-orange-500/30 transition-all duration-300 transform hover:-translate-y-0.5"
           >
             Log in now
           </button>
@@ -134,7 +134,7 @@ const Account = () => {
               {isMobile && (
                 <button
                   onClick={handleBack}
-                  className="flex items-center gap-2 mb-4 px-4 py-2.5 font-semibold text-white shadow-md bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl transition-all hover:from-orange-600 hover:to-orange-700 hover:-translate-y-0.5"
+                  className="flex items-center gap-2 mb-4 px-4 py-2.5 font-semibold text-white shadow-md bg-gray-900 rounded-xl transition-all duration-300 hover:bg-orange-500 hover:-translate-y-0.5"
                 >
                   <FiArrowLeft size={18} />
                   My Account
