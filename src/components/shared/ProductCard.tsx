@@ -21,18 +21,11 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
 
   const { id, title, img, images, salePrice, regularPrice, stock = 0 } = data;
 
-  /* ===========================
-      🚀 ZUSTAND CART STORE
-  =========================== */
   const addItemToCart = useCartStore((state) => state.addItemToCart);
-
-  /* ===========================
-      ❤️ ZUSTAND WISHLIST
-  =========================== */
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const checkWishlistStatus = useWishlistStore(
-    (state) => state.checkWishlistStatus
+    (state) => state.checkWishlistStatus,
   );
   const wishlistLoading = useWishlistStore((state) => state.loading[id]);
 
@@ -40,11 +33,8 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
     checkWishlistStatus(id);
   }, [id, checkWishlistStatus]);
 
-  /* ===========================
-      💰 Price & Discount
-  =========================== */
   const hasDiscount = !!salePrice && !!regularPrice && salePrice < regularPrice;
-  const price = hasDiscount ? salePrice! : regularPrice ?? 0;
+  const price = hasDiscount ? salePrice! : (regularPrice ?? 0);
   const oldPrice = hasDiscount ? regularPrice : undefined;
   const discountPercent = hasDiscount
     ? Math.round(((oldPrice! - price) / oldPrice!) * 100)
@@ -59,12 +49,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         currency: "VND",
         maximumFractionDigits: 0,
       }),
-    []
+    [],
   );
 
-  /* ===========================
-      🛒 ADD TO CART (Zustand)
-  =========================== */
   const handleAdd = useCallback(
     async (e?: React.MouseEvent) => {
       e?.preventDefault();
@@ -82,7 +69,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         quantity: 1,
         price,
         images: [firstImage],
-        navigate, // store cần navigate để mở cart
+        navigate,
       });
 
       setLoading(false);
@@ -98,12 +85,9 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       loading,
       isOutOfStock,
       navigate,
-    ]
+    ],
   );
 
-  /* ===========================
-      🧡 Toggle Wishlist
-  =========================== */
   const handleToggleWishlist = useCallback(() => {
     toggleWishlist(id);
   }, [id, toggleWishlist]);
@@ -113,91 +97,85 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
       className="group relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[280px] mx-auto cursor-pointer"
       onClick={() => navigate(`/product/${id}`)}
     >
-      <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-[24px] p-3 sm:p-4 shadow-lg border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+      <div className="relative bg-white rounded-2xl p-3 sm:p-3.5 border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gray-200">
         {/* Discount Badge */}
         {hasDiscount && discountPercent > 0 && (
-          <div className="absolute top-4 left-4 z-5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
+          <div className="absolute top-4 left-4 z-5 bg-orange-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
             -{discountPercent}%
           </div>
         )}
 
+        {/* Wishlist Button — top-right */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggleWishlist();
+          }}
+          disabled={wishlistLoading}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className={`absolute top-4 right-4 z-5 w-9 h-9 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200
+            ${isWishlisted ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-red-50"}
+            ${wishlistLoading ? "opacity-50 cursor-wait" : ""}
+            shadow-sm`}
+        >
+          <FiHeart
+            size={16}
+            strokeWidth={2.5}
+            className={isWishlisted ? "fill-red-500" : ""}
+          />
+        </button>
+
         {/* Product Image */}
-        <div className="relative w-full aspect-[3/4] mb-3 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="relative w-full aspect-[3/4] mb-3 rounded-xl overflow-hidden bg-gray-50">
           <img
             src={img}
             alt={title}
-            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
               isOutOfStock ? "grayscale opacity-60" : ""
             }`}
           />
 
           {isOutOfStock && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="px-4 py-1 bg-red-50/90 text-red-600 font-bold text-sm rounded-full border border-red-200 shadow-md uppercase tracking-wider">
-                Out of Stock
+              <span className="px-4 py-1.5 bg-gray-900/80 text-white font-semibold text-xs rounded-lg uppercase tracking-wider">
+                Sold Out
               </span>
             </div>
           )}
         </div>
 
         {/* Title & Price */}
-        <div className="space-y-2">
-          <h3 className="text-sm md:text-base font-bold text-gray-800 leading-tight truncate">
+        <div className="space-y-1.5 px-0.5">
+          <h3 className="text-sm font-semibold text-gray-900 leading-tight truncate">
             {title}
           </h3>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-lg md:text-xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
+          <div className="flex items-baseline gap-2">
+            <span className="text-base font-bold text-orange-500">
               {formatVND(price)}
             </span>
 
-            <span
-              className={`text-xs text-gray-400 line-through ${
-                oldPrice ? "opacity-100" : "opacity-0"
+            {oldPrice && (
+              <span className="text-xs text-gray-400 line-through">
+                {formatVND(oldPrice)}
+              </span>
+            )}
+          </div>
+
+          {/* Add To Cart Button */}
+          <Button
+            onClick={handleAdd}
+            disabled={isOutOfStock || loading}
+            icon={<FiShoppingBag size={14} />}
+            label={loading ? "Adding..." : "Add to Cart"}
+            className={`w-full h-11 gap-2 rounded-xl font-semibold text-sm transition-all duration-200 cursor-pointer
+              ${
+                isOutOfStock || loading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-900 text-white hover:bg-orange-500 active:scale-[0.98]"
               }`}
-            >
-              {oldPrice ? formatVND(oldPrice) : "placeholder"}
-            </span>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-stretch gap-1 pt-2">
-            {/* Add To Cart */}
-            <Button
-              onClick={handleAdd}
-              disabled={isOutOfStock || loading}
-              icon={<FiShoppingBag size={14} className="w-4 h-4" />}
-              label={loading ? "Adding..." : "Buy"}
-              className={`flex-1 h-12 gap-2 px-4 rounded-xl font-semibold text-sm shadow-lg transition-all duration-300
-                ${
-                  isOutOfStock || loading
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95"
-                }`}
-            />
-
-            {/* Wishlist */}
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleToggleWishlist();
-              }}
-              disabled={wishlistLoading}
-              icon={
-                <FiHeart
-                  size={18}
-                  strokeWidth={2.5}
-                  className={
-                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-700"
-                  }
-                />
-              }
-              className={`w-12 h-12 p-0 flex items-center justify-center rounded-xl shadow-md transition-all duration-300 active:scale-95
-                ${isWishlisted ? "bg-red-100" : "bg-gray-200 hover:bg-gray-300"}
-                ${wishlistLoading ? "opacity-50 cursor-wait" : ""}`}
-            />
-          </div>
+          />
         </div>
       </div>
     </div>

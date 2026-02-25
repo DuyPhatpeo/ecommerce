@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiFilter, FiShoppingBag } from "react-icons/fi";
-import { BsStars } from "react-icons/bs"; // thay thế BsStars
 
 import { getProducts } from "../../api/productApi";
 import ProductFilters from "../../components/shared/ProductFilters";
@@ -90,8 +89,8 @@ const CategoryProducts: React.FC = () => {
           images: Array.isArray(p.images)
             ? p.images
             : p.image
-            ? [p.image]
-            : ["/placeholder.jpg"],
+              ? [p.image]
+              : ["/placeholder.jpg"],
           category: p.category,
           brand: p.brand,
           color: p.color,
@@ -128,19 +127,18 @@ const CategoryProducts: React.FC = () => {
     text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
   return (
-    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-[#f8f6f3]">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* --- Header --- */}
         <div className="text-center mb-10 px-2 sm:px-0 overflow-visible">
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow mb-4">
-            <BsStars size={16} />
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm mb-4">
+            <FiShoppingBag size={16} />
             <span className="whitespace-normal">
               {capitalize(category) || "All products"}
             </span>
-            <FiShoppingBag size={16} />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-snug break-words bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
             {category ? `${capitalize(category)} Collection` : "Our Collection"}
           </h2>
         </div>

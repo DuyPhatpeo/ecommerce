@@ -144,7 +144,7 @@ const HotDeal = () => {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums bg-gradient-to-br from-orange-600 to-orange-500 bg-clip-text text-transparent">
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums text-orange-500">
                     {item.value}
                   </p>
                 </div>
@@ -156,7 +156,7 @@ const HotDeal = () => {
           </div>
 
           {/* SHOP NOW */}
-          <button className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm sm:text-base py-3 sm:py-4 px-8 sm:px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 animate-fade-in-delay-2">
+          <button className="cursor-pointer w-full sm:w-auto bg-gray-900 hover:bg-orange-500 text-white font-semibold text-sm sm:text-base py-3 sm:py-4 px-8 sm:px-10 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 animate-fade-in-delay-2">
             SHOP NOW
           </button>
         </div>
@@ -188,7 +188,7 @@ const HotDeal = () => {
               {formatVND(products[currentIndex].regularPrice)}
             </p>
 
-            <p className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-orange-500">
               {formatVND(products[currentIndex].salePrice)}
             </p>
 
@@ -196,7 +196,7 @@ const HotDeal = () => {
               {products[currentIndex].name}
             </h3>
 
-            <button className="flex items-center gap-2 text-white font-semibold text-sm sm:text-base bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95">
+            <button className="cursor-pointer flex items-center gap-2 text-white font-semibold text-sm sm:text-base bg-gray-900 hover:bg-orange-500 px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95">
               <FiShoppingBag size={18} />
               Add to Bag
             </button>

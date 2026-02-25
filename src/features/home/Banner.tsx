@@ -97,7 +97,7 @@ const Banner = () => {
             </p>
 
             <div className="mt-8 lg:mt-10">
-              <button className="cursor-pointer bg-gradient-to-r from-orange-400 to-red-500 px-6 lg:px-8 py-3 lg:py-4 rounded-full shadow-2xl font-semibold hover:scale-105 hover:shadow-orange-500/50 active:scale-95 transition-all flex items-center gap-2 text-sm lg:text-base">
+              <button className="cursor-pointer bg-gray-900 hover:bg-orange-500 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl shadow-2xl font-semibold hover:shadow-orange-500/30 active:scale-95 transition-all duration-300 flex items-center gap-2 text-sm lg:text-base">
                 <FiPlus size={20} />
                 ADD TO BAG
               </button>

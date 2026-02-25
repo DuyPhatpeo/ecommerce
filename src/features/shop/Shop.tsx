@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FiFilter, FiShoppingBag } from "react-icons/fi";
-import { BsStars } from "react-icons/bs";
 
 import { getProducts } from "../../api/productApi";
 import ProductFilters from "../../components/shared/ProductFilters";
@@ -122,17 +121,16 @@ const Shop: React.FC = () => {
     );
 
   return (
-    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-gradient-to-br from-gray-50 via-white to-orange-50/40">
+    <section className="w-full min-h-screen py-8 px-3 sm:px-6 md:px-10 lg:px-0 bg-[#f8f6f3]">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 md:px-16">
         {/* ================= HEADER ================= */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg mb-4">
-            <BsStars size={18} />
+          <div className="inline-flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm mb-4">
+            <FiShoppingBag size={16} />
             <span>All products</span>
-            <FiShoppingBag size={18} />
           </div>
 
-          <h2 className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
             Our Collection
           </h2>
         </div>

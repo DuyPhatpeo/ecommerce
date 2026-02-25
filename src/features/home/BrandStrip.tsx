@@ -83,7 +83,7 @@ export default function BrandStrip() {
         {/* Animated Title */}
         <motion.h2
           variants={titleVariants}
-          className="text-center text-2xl md:text-3xl font-extrabold leading-snug mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-red-500 relative"
+          className="text-center text-2xl md:text-3xl font-bold leading-snug mb-10 text-gray-900 relative inline-block left-1/2 -translate-x-1/2"
         >
           Trusted by Leading Brands
           {/* Animated underline */}
@@ -92,7 +92,7 @@ export default function BrandStrip() {
             whileInView={{ width: "120px" }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-            className="absolute left-1/2 -translate-x-1/2 bottom-[-6px] h-1 bg-gradient-to-r from-orange-400 to-red-500 rounded-full"
+            className="absolute left-1/2 -translate-x-1/2 -bottom-3 h-0.5 bg-orange-500 rounded-full"
           />
         </motion.h2>
 
@@ -146,22 +146,6 @@ export default function BrandStrip() {
             ))}
           </Swiper>
         </motion.div>
-
-        {/* Decorative animated elements */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 0.1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8, duration: 1 }}
-          className="absolute top-4 left-4 w-32 h-32 bg-orange-400 rounded-full blur-3xl"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 0.1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-4 right-4 w-32 h-32 bg-red-400 rounded-full blur-3xl"
-        />
       </div>
     </motion.section>
   );

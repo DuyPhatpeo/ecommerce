@@ -109,10 +109,10 @@ const ProductView: React.FC<ProductViewProps> = ({
         const filtered = data
           .filter((p) => (p.stock ?? 0) > 0)
           .filter((p) =>
-            status ? [status].flat().includes(p.status || "") : true
+            status ? [status].flat().includes(p.status || "") : true,
           )
           .filter((p) =>
-            category ? [category].flat().includes(p.category || "") : true
+            category ? [category].flat().includes(p.category || "") : true,
           )
           .slice(0, maxProducts || data.length);
 
@@ -147,7 +147,7 @@ const ProductView: React.FC<ProductViewProps> = ({
         });
       }
     },
-    [currentIndex, maxIndex]
+    [currentIndex, maxIndex],
   );
 
   // Mouse drag handlers
@@ -161,7 +161,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       sliderRef.current.style.cursor = "grabbing";
       e.preventDefault();
     },
-    [mode]
+    [mode],
   );
 
   const handleMouseMove = useCallback(
@@ -173,7 +173,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       setDragDistance(Math.abs(walk));
       sliderRef.current.scrollLeft = scrollLeft - walk;
     },
-    [isDragging, startX, scrollLeft]
+    [isDragging, startX, scrollLeft],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -226,7 +226,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       setScrollLeft(sliderRef.current.scrollLeft);
       setDragDistance(0);
     },
-    [mode]
+    [mode],
   );
 
   const handleTouchMove = useCallback(
@@ -237,7 +237,7 @@ const ProductView: React.FC<ProductViewProps> = ({
       setDragDistance(Math.abs(walk));
       sliderRef.current.scrollLeft = scrollLeft - walk;
     },
-    [isDragging, startX, scrollLeft]
+    [isDragging, startX, scrollLeft],
   );
 
   const handleTouchEnd = useCallback(() => {
@@ -318,13 +318,7 @@ const ProductView: React.FC<ProductViewProps> = ({
   }
 
   return (
-    <section
-      className={`relative w-full py-12 md:py-20 overflow-hidden border-t border-gray-200/50 ${
-        mode === "slider"
-          ? "bg-transparent"
-          : "bg-gradient-to-br from-orange-50/30 via-white to-orange-50/20"
-      }`}
-    >
+    <section className="relative w-full py-16 overflow-hidden bg-white">
       {/* Header Section */}
       <motion.div
         variants={headerVariants}
@@ -334,16 +328,16 @@ const ProductView: React.FC<ProductViewProps> = ({
         className="px-4 mx-auto max-w-7xl md:px-16"
       >
         <div className="flex items-center justify-between gap-4">
-          {/* Title with gradient animation */}
+          {/* Title */}
           <div className="relative inline-block">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 bg-clip-text text-transparent leading-tight pb-3">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
               {title}
             </h2>
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: 96 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute left-0 -bottom-1 h-1 rounded-full bg-gradient-to-r from-orange-500 via-orange-600 to-transparent"
+              animate={{ width: 48 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="mt-3 h-0.5 rounded-full bg-orange-500"
             />
           </div>
 
@@ -356,14 +350,12 @@ const ProductView: React.FC<ProductViewProps> = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               href={`/shop/${Array.isArray(category) ? category[0] : category}`}
-              className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-orange-500 border-2 border-orange-500 rounded-full transition-all duration-300 shadow-md hover:shadow-xl flex-shrink-0"
+              className="group flex flex-shrink-0 items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gray-900 border-2 border-transparent text-white font-semibold text-sm hover:bg-orange-500 hover:shadow-orange-500/30 transition-all duration-300 shadow-md hover:shadow-xl"
             >
-              <span className="text-xs sm:text-sm font-semibold text-orange-600 group-hover:text-white transition-colors whitespace-nowrap">
-                View All
-              </span>
+              <span>View All</span>
               <FiChevronRight
                 size={18}
-                className="text-orange-600 group-hover:text-white group-hover:translate-x-1 transition-all"
+                className="transition-transform group-hover:translate-x-1"
                 strokeWidth={2.5}
               />
             </motion.a>

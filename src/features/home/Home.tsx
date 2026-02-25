@@ -90,7 +90,7 @@ const Home: React.FC = () => {
             : props;
 
         return (
-          <section key={key} className="mb-12">
+          <section key={key}>
             <Component {...finalProps} />
           </section>
         );

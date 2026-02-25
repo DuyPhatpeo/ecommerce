@@ -1,10 +1,19 @@
 @layer theme {
   :root {
     --neutral: #ffffff;
-    --primary: #ff7a00;
-    --primary-deep: #e56700;
-    --primary-mild: #ffa94d;
-    --primary-subtle: #ff7a001a;
+    --primary: #f97316;
+    --primary-deep: #ea580c;
+    --primary-mild: #fb923c;
+    --primary-subtle: #f973161a;
+
+    --bg-section: #f8f6f3;
+    --bg-section-alt: #f1ede8;
+    --dark-accent: #1a1a2e;
+    --text-heading: #111827;
+    --text-body: #4b5563;
+
+    --radius-card: 16px;
+    --radius-button: 12px;
 
     --error: #ff4d4d;
     --error-subtle: #ff4d4d1a;
