@@ -1,15 +1,119 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { FiSearch, FiMapPin, FiUser, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
+import { usePathname, useSearchParams } from "next/navigation";
+import { FiSearch, FiMapPin, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
 import { useCartStore } from "@/stores/cartStore";
 
+interface NavItem {
+  label: string;
+  href: string;
+  isSpecial?: boolean;
+  match: (pathname: string, category: string | null) => boolean;
+}
+
+const navItems: NavItem[] = [
+  {
+    label: "HÀNG MỚI",
+    href: "/hang-moi",
+    isSpecial: true,
+    match: (pathname) => pathname === "/hang-moi",
+  },
+  {
+    label: "GIÀY NAM",
+    href: "/shop?category=men",
+    match: (pathname, category) => pathname === "/shop" && category?.toLowerCase() === "men",
+  },
+  {
+    label: "GIÀY NỮ",
+    href: "/shop?category=women",
+    match: (pathname, category) => pathname === "/shop" && category?.toLowerCase() === "women",
+  },
+  {
+    label: "GIỚI THIỆU",
+    href: "/about-us",
+    match: (pathname) => pathname === "/about-us",
+  },
+  {
+    label: "TIN TỨC",
+    href: "/news",
+    match: (pathname) => pathname.startsWith("/news"),
+  },
+  {
+    label: "LIÊN HỆ",
+    href: "/contact",
+    match: (pathname) => pathname === "/contact",
+  },
+];
+
+function DesktopNavLinks() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+
+  return (
+    <nav className="hidden lg:flex items-center space-x-7 xl:space-x-9 text-[13px] xl:text-[14px] tracking-wider">
+      {navItems.map((item) => {
+        const isActive = item.match(pathname, category);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`relative py-2 transition-all duration-200 ${
+              isActive
+                ? "text-[#78e000] font-black after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#78e000] after:shadow-[0_0_8px_#78e000]"
+                : item.isSpecial
+                ? "text-[#38bdf8] hover:text-[#78e000] font-extrabold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#78e000] after:transition-all after:duration-200"
+                : "text-white hover:text-[#78e000] font-extrabold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#78e000] after:transition-all after:duration-200"
+            }`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+
+  return (
+    <div className="space-y-2">
+      {navItems.map((item) => {
+        const isActive = item.match(pathname, category);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={`block text-base px-3 py-2.5 rounded-none transition-all ${
+              isActive
+                ? "text-[#78e000] bg-[#78e000]/10 border-l-4 border-[#78e000] font-black"
+                : item.isSpecial
+                ? "text-[#38bdf8] hover:text-[#78e000] hover:bg-white/5 border-l-4 border-transparent font-extrabold"
+                : "text-white hover:text-[#78e000] hover:bg-white/5 border-l-4 border-transparent font-bold"
+            }`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Header() {
+  const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const cartCount = useCartStore((state) => state.cartCount) || 0;
+
+  const isCartActive = pathname === "/cart";
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,33 +136,28 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-7 xl:space-x-9 text-[13px] xl:text-[14px] font-extrabold tracking-wider">
-          <Link href="/hang-moi" className="text-[#38bdf8] hover:text-[#78e000] transition-colors py-2">
-            HÀNG MỚI
-          </Link>
-          <Link href="/shop?category=men" className="text-white hover:text-[#78e000] transition-colors py-2">
-            GIÀY NAM
-          </Link>
-          <Link href="/shop?category=women" className="text-white hover:text-[#78e000] transition-colors py-2">
-            GIÀY NỮ
-          </Link>
-          <Link href="/about-us" className="text-white hover:text-[#78e000] transition-colors py-2">
-            GIỚI THIỆU
-          </Link>
-          <Link href="/news" className="text-white hover:text-[#78e000] transition-colors py-2">
-            TIN TỨC
-          </Link>
-          <Link href="/contact" className="text-white hover:text-[#78e000] transition-colors py-2">
-            LIÊN HỆ
-          </Link>
-        </nav>
+        <Suspense
+          fallback={
+            <nav className="hidden lg:flex items-center space-x-7 xl:space-x-9 text-[13px] xl:text-[14px] font-extrabold tracking-wider text-white">
+              {navItems.map((item) => (
+                <span key={item.href} className="py-2">
+                  {item.label}
+                </span>
+              ))}
+            </nav>
+          }
+        >
+          <DesktopNavLinks />
+        </Suspense>
 
         {/* Right Actions: Search, MapPin, Cart, Vietnam Flag */}
         <div className="flex items-center gap-4 sm:gap-6 text-gray-200">
           {/* Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="hover:text-[#78e000] transition-colors p-1.5"
+            className={`transition-colors p-1.5 ${
+              isSearchOpen ? "text-[#78e000]" : "hover:text-[#78e000]"
+            }`}
             title="Tìm kiếm"
           >
             <FiSearch className="w-5 h-5" />
@@ -76,7 +175,9 @@ export default function Header() {
           {/* Shopping Cart */}
           <Link
             href="/cart"
-            className="hover:text-[#78e000] transition-colors p-1.5 relative"
+            className={`transition-colors p-1.5 relative ${
+              isCartActive ? "text-[#78e000]" : "hover:text-[#78e000]"
+            }`}
             title="Giỏ hàng"
           >
             <FiShoppingBag className="w-5 h-5" />
@@ -134,49 +235,20 @@ export default function Header() {
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#060b11] border-b border-gray-800 px-6 py-6 space-y-4">
-          <Link
-            href="/hang-moi"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
+        <div className="lg:hidden bg-[#060b11] border-b border-gray-800 px-6 py-6">
+          <Suspense
+            fallback={
+              <div className="space-y-2">
+                {navItems.map((item) => (
+                  <span key={item.href} className="block text-base py-2 text-white">
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+            }
           >
-            HÀNG MỚI
-          </Link>
-          <Link
-            href="/shop?category=men"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
-          >
-            GIÀY NAM
-          </Link>
-          <Link
-            href="/shop?category=women"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
-          >
-            GIÀY NỮ
-          </Link>
-          <Link
-            href="/about-us"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
-          >
-            GIỚI THIỆU
-          </Link>
-          <Link
-            href="/news"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
-          >
-            TIN TỨC
-          </Link>
-          <Link
-            href="/contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-bold text-white hover:text-[#78e000]"
-          >
-            LIÊN HỆ
-          </Link>
+            <MobileNavLinks onNavigate={() => setMobileMenuOpen(false)} />
+          </Suspense>
         </div>
       )}
     </header>
