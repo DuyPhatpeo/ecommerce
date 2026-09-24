@@ -1,262 +1,211 @@
-import { useState } from "react";
-import { FiSend, FiHeart, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { FiMapPin } from "react-icons/fi";
+
+const showrooms = [
+  "120 Đường Thể Thao Mẫu, Phường An Phú, TP. Thủ Đức, TP. Hồ Chí Minh",
+  "450 Đại Lộ Tân Phong Mẫu, Phường Tân Phú, Quận 7, TP. Hồ Chí Minh",
+  "88 Phố Tràng Thi Mẫu, Phường Hàng Trống, Quận Hoàn Kiếm, Hà Nội",
+];
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = () => {
-    if (email.trim() !== "") {
-      alert(`Thanks for subscribing with: ${email}`);
-      setEmail("");
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
     }
   };
-  const footerLinks = [
-    { label: "About Us", link: "/about-us" },
-    { label: "FAQ", link: "/faq" },
-    { label: "Our Services", link: "/services" },
-    { label: "Blog", link: "/blog" },
-  ];
+
   return (
-    <footer
-      className="relative text-gray-300 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/footer-bg.jpg')" }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/70 to-black/80"></div>
+    <footer className="relative w-full overflow-hidden text-gray-300 bg-[#06101e]">
+      {/* 1. Upper Footer: Newsletter & Showrooms */}
+      <div className="border-b border-[#0f1d2e] py-12 lg:py-14">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left: Newsletter */}
+            <div className="lg:col-span-6">
+              <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-wider mb-2.5">
+                VÀ ĐÃ KHÁC BIỆT!
+              </h3>
+              <p className="text-gray-300 text-xs sm:text-[13px] leading-relaxed mb-5 max-w-xl">
+                Cảm ơn bạn đã đồng hành cùng <strong className="text-white">DINOSPORTS</strong> trên hành trình tập luyện. Đón nhận tin tức mới nhất về các sản phẩm và sự kiện thể thao từ chúng tôi.
+              </p>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-16 py-35 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
-          {/* ---------------- ABOUT ---------------- */}
-          <div className="space-y-5">
-            <h3 className="text-white font-bold text-xl relative inline-block pb-3">
-              About
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
-            </h3>
-
-            <p className="text-gray-400 text-sm leading-relaxed hover:text-gray-200 transition-colors duration-300">
-              We are passionate about delivering the best products and services
-              to our customers. Join our community and stay connected with the
-              latest trends and updates.
-            </p>
-
-            <div className="flex gap-3 pt-2">
-              <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center flex-shrink-0">
-                <FiHeart size={18} className="text-white" fill="white" />
-              </div>
-              <div>
-                <p className="text-white font-semibold text-sm">
-                  Quality First
-                </p>
-                <p className="text-gray-500 text-xs">Since 2020</p>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-3">
-              <a
-                href="tel:+1234567890"
-                className="flex items-center gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer"
-              >
-                <FiPhone size={16} className="flex-shrink-0" />
-                <span>+1 234 567 890</span>
-              </a>
-              <a
-                href="mailto:info@company.com"
-                className="flex items-center gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer"
-              >
-                <FiMail size={16} className="flex-shrink-0" />
-                <span>info@company.com</span>
-              </a>
-              <div className="flex items-start gap-3 text-gray-400 text-sm hover:text-orange-400 transition-colors duration-300 cursor-pointer">
-                <FiMapPin size={16} className="mt-0.5 flex-shrink-0" />
-                <span>123 Business St, City, Country</span>
-              </div>
-            </div>
-          </div>
-
-          {/* ---------------- NEWSLETTER ---------------- */}
-          <div className="space-y-5">
-            <h3 className="text-white font-bold text-xl relative inline-block pb-3">
-              Newsletter
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
-            </h3>
-
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Stay updated with our latest news and exclusive offers delivered
-              to your inbox.
-            </p>
-
-            {/* Modern Input */}
-            <div className="flex max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-800/40 backdrop-blur-sm shadow-lg hover:border-orange-400 transition-all duration-300">
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="newsletter-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 text-white bg-transparent text-sm placeholder-gray-500 outline-none"
-              />
-
-              <button
-                onClick={handleSubscribe}
-                aria-label="Subscribe to newsletter"
-                className="cursor-pointer px-5 py-3 text-white bg-orange-500 hover:bg-orange-600 transition-all duration-300 flex items-center justify-center"
-              >
-                <FiSend size={16} />
-              </button>
-            </div>
-
-            <div className="pt-4">
-              <h4 className="text-white font-semibold text-sm mb-4">
-                Quick Links
-              </h4>
-
-              <ul className="grid grid-cols-2 gap-3">
-                {footerLinks.map(({ label, link }) => (
-                  <li key={label}>
-                    <a
-                      href={link}
-                      className="text-gray-400 text-sm hover:text-orange-400 hover:pl-2 transition-all duration-300 block"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* ---------------- FOLLOW US ---------------- */}
-          <div className="space-y-5">
-            <h3 className="text-white font-bold text-xl relative inline-block pb-3">
-              Follow Us
-              <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-orange-500" />
-            </h3>
-
-            {/* FB Plugin */}
-            <div className="w-full max-w-[280px] bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden border border-gray-700 hover:border-orange-400 transition-colors duration-300">
-              <iframe
-                title="Facebook page plugin"
-                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fnike&tabs=timeline&width=280&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
-                width="280"
-                height="130"
-                style={{ border: "none", overflow: "hidden" }}
-                scrolling="no"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              ></iframe>
-            </div>
-
-            <div className="pt-2">
-              <p className="text-gray-400 text-sm mb-4">Connect with us:</p>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  aria-label="Follow us on Facebook"
-                  className="cursor-pointer w-11 h-11 rounded-2xl text-white bg-blue-600 transition-all duration-300 hover:scale-110 hover:bg-blue-700 shadow-md hover:shadow-blue-500/40 flex items-center justify-center"
-                >
-                  <FaFacebook size={18} />
-                </button>
-
-                <button
-                  aria-label="Follow us on Twitter"
-                  className="cursor-pointer w-11 h-11 rounded-2xl text-white bg-sky-500 transition-all duration-300 hover:scale-110 shadow-md hover:bg-sky-600 hover:shadow-sky-400/40 flex items-center justify-center"
-                >
-                  <FaTwitter size={18} />
-                </button>
-
-                <button
-                  aria-label="Follow us on Instagram"
-                  className="cursor-pointer w-11 h-11 rounded-2xl text-white bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf] transition-all duration-300 hover:scale-110 shadow-md hover:shadow-pink-500/40 flex items-center justify-center"
-                >
-                  <FaInstagram size={18} />
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <p className="text-gray-400 text-sm mb-4">We Accept:</p>
-
-              <div className="flex flex-wrap gap-3">
-                {[
-                  {
-                    src: "https://logos-world.net/wp-content/uploads/2020/05/Visa-Logo-700x394.png",
-                    alt: "VISA",
-                    bg: "bg-blue-50",
-                    gradient: "from-blue-100 to-blue-50",
-                    border: "border-blue-200",
-                  },
-                  {
-                    src: "https://logos-world.net/wp-content/uploads/2020/09/Mastercard-Logo-700x394.png",
-                    alt: "Mastercard",
-                    bg: "bg-red-50",
-                    gradient: "from-red-100 to-yellow-50",
-                    border: "border-red-200",
-                  },
-                  {
-                    src: "https://logos-world.net/wp-content/uploads/2020/08/PayPal-Symbol-500x281.png",
-                    alt: "PayPal",
-                    bg: "bg-blue-50",
-                    gradient: "from-blue-50 to-blue-100",
-                    border: "border-blue-200",
-                  },
-                ].map((card) => (
-                  <div
-                    key={card.alt}
-                    className={`relative ${card.bg} bg-gradient-to-br ${card.gradient} border ${card.border} w-16 h-10 rounded-xl flex items-center justify-center shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden p-2`}
+              {subscribed ? (
+                <div className="bg-[#78e000]/15 border border-[#78e000] text-[#78e000] px-4 py-3 rounded-none text-xs font-bold inline-block">
+                  ✓ Cảm ơn bạn đã đăng ký nhận tin của DINOSPORTS!
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="flex gap-2.5 max-w-lg">
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Nhập địa chỉ email của bạn"
+                    className="flex-1 bg-[#0e1c2c] border border-gray-700/80 rounded-none px-4 py-2.5 text-white placeholder-gray-400 text-xs sm:text-sm focus:outline-none focus:border-[#78e000]"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-none shadow transition-transform active:scale-95 whitespace-nowrap"
                   >
-                    <img
-                      src={card.src}
-                      alt={`Pay with ${card.alt}`}
-                      className="w-full h-full object-contain hover:scale-110 transition-transform duration-300"
-                    />
+                    Đăng ký
+                  </button>
+                </form>
+              )}
+
+              <p className="text-[11px] text-gray-400 mt-3">
+                Bằng cách nhấn nút Đăng ký, bạn đồng ý với chính sách bảo mật và điều khoản của chúng tôi.
+              </p>
+            </div>
+
+            {/* Right: Showrooms */}
+            <div className="lg:col-span-6 flex flex-col sm:flex-row gap-5 items-start sm:items-center lg:justify-end">
+              {/* Showroom Image Thumbnail */}
+              <div className="relative w-44 sm:w-52 h-28 sm:h-32 rounded-none overflow-hidden border border-gray-700/80 flex-shrink-0 shadow-md">
+                <Image
+                  src="/images/showroom_store.jpg"
+                  alt="DINOSPORTS Showroom"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Showroom Address List */}
+              <div className="space-y-2.5 max-w-sm">
+                <h4 className="text-xs font-black text-white tracking-wider uppercase mb-2">
+                  HỆ THỐNG SHOWROOM TRÊN TOÀN QUỐC
+                </h4>
+                {showrooms.map((address, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <FiMapPin className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-[11px] text-gray-300 leading-snug">
+                      {address}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* ---------------- BOTTOM ---------------- */}
-        <div className="mt-16 pt-8 border-t border-gray-800 text-center md:text-left">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5">
-              © 2025 Made with
-              <FiHeart
-                size={14}
-                fill="rgb(251 146 60)"
-                className="text-orange-400 animate-pulse"
-              />
-              by
-              <a
-                href="https://github.com/DuyPhatpeo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-orange-400 font-semibold hover:text-orange-300 underline underline-offset-2 transition-colors duration-300"
-              >
-                DuyPhat
-              </a>
+      {/* 2. Middle Footer: Background Image footer-flex.png + 3 Columns of Links */}
+      <div className="relative w-full min-h-[460px] md:min-h-[500px] flex items-center">
+        {/* Full-width Background Image: footer-flex.png */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/banners/footer-flex.png"
+            alt="Footer Background"
+            fill
+            priority
+            className="object-cover object-right lg:object-center"
+          />
+        </div>
+
+        {/* Content Container on top of background */}
+        <div className="relative z-10 max-w-[1440px] mx-auto w-full px-6 sm:px-8 lg:px-12 py-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:w-[60%] gap-8 sm:gap-12">
+            {/* Column 1: SHOP */}
+            <div>
+              <h4 className="text-white font-black text-sm tracking-wider uppercase mb-4 drop-shadow-sm">
+                SHOP
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-[13px] text-gray-200 font-medium drop-shadow-sm">
+                {["Nike", "Adidas", "Under Armour", "New Balance", "MLB", "Puma", "Fila", "Converse"].map((item) => (
+                  <li key={item}>
+                    <Link href={`/shop?brand=${encodeURIComponent(item)}`} className="hover:text-[#78e000] transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-6 text-xs sm:text-sm">
-              {[
-                { label: "Privacy Policy", href: "#" },
-                { label: "Terms of Service", href: "#" },
-                { label: "Contact Us", href: "/contact" },
-              ].map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-gray-400 hover:text-orange-400 transition-colors duration-300"
-                >
-                  {item.label}
-                </a>
-              ))}
+            {/* Column 2: DINOSPORTS */}
+            <div>
+              <h4 className="text-white font-black text-sm tracking-wider uppercase mb-4 drop-shadow-sm">
+                DINOSPORTS
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-[13px] text-gray-200 font-medium drop-shadow-sm">
+                {[
+                  { name: "Giới thiệu", href: "/about-us" },
+                  { name: "Tin tức thời trang", href: "/news" },
+                  { name: "Tuyển dụng", href: "/about-us#careers" },
+                  { name: "Liên hệ với chúng tôi", href: "/contact" },
+                  { name: "Cửa hàng của chúng tôi", href: "#showroom-section" },
+                  { name: "Câu hỏi thường gặp", href: "/faq" },
+                  { name: "Khách hàng thân thiết", href: "/account" },
+                ].map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.href} className="hover:text-[#78e000] transition-colors">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            {/* Column 3: TRUNG TÂM TRỢ GIÚP */}
+            <div>
+              <h4 className="text-white font-black text-sm tracking-wider uppercase mb-4 drop-shadow-sm">
+                TRUNG TÂM TRỢ GIÚP
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-[13px] text-gray-200 font-medium drop-shadow-sm">
+                {[
+                  { name: "Theo dõi đơn hàng", href: "/account" },
+                  { name: "Chính sách đổi hàng", href: "/faq" },
+                  { name: "Chính sách bảo mật", href: "/about-us#privacy" },
+                  { name: "Facebook", href: "https://facebook.com" },
+                  { name: "Instagram", href: "https://instagram.com" },
+                  { name: "Youtube", href: "https://youtube.com" },
+                  { name: "Tiktok", href: "https://tiktok.com" },
+                ].map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      target={link.href.startsWith("http") ? "_blank" : "_self"}
+                      rel="noreferrer"
+                      className="hover:text-[#78e000] transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Sub-Footer Copyright Bar */}
+      <div className="bg-[#040a12] border-t border-[#0d1825] py-4 text-xs text-gray-400">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Vietnam Flag Badge */}
+          <div className="flex items-center gap-2 select-none">
+            <div className="w-5 h-3.5 bg-[#da251d] rounded-none relative flex items-center justify-center shadow overflow-hidden">
+              <span className="text-yellow-400 text-[10px] leading-none">★</span>
+            </div>
+            <span className="font-bold text-white text-xs">Việt Nam</span>
+          </div>
+
+          {/* Links & Copyright */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-gray-400">
+            <Link href="/about-us#privacy" className="hover:text-[#78e000] transition-colors">
+              Chính sách bảo mật
+            </Link>
+            <Link href="/about-us#terms" className="hover:text-[#78e000] transition-colors">
+              Điều khoản sử dụng
+            </Link>
+            <span className="text-white font-semibold">
+              Copyright © 2026 WiPIX Templates | All Rights Reserved
+            </span>
           </div>
         </div>
       </div>
