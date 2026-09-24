@@ -1,64 +1,46 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { FiChevronRight } from "react-icons/fi";
 
 interface SectionBannerProps {
   title: string;
-  bgImage?: string;
-  bgColor?: string;
-  height?: string;
+  subtitle?: string;
+  category?: string;
 }
 
-const SectionBanner: React.FC<SectionBannerProps> = ({
+export default function SectionBanner({
   title,
-  bgImage,
-  bgColor = "bg-gray-900",
-  height = "h-[150px]",
-}) => {
+  subtitle,
+  category = "DINOSPORTS",
+}: SectionBannerProps) {
   return (
-    <div
-      className={`relative w-full flex items-center justify-center overflow-hidden 
-  ${height} sm:h-[180px] md:h-[280px] lg:h-[300px] pt-20`}
-      style={{
-        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* Darker overlay for depth */}
-      <div
-        className={`absolute inset-0 ${bgImage ? "bg-black/50" : bgColor}`}
-      ></div>
+    <div className="relative w-full bg-[#060b11] border-b border-gray-800 py-12 md:py-16 overflow-hidden">
+      {/* Background Subtle Neon Glow */}
+      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#78e000]/15 rounded-none blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 px-4 mx-auto text-center text-white max-w-7xl sm:px-6 md:px-16">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 text-center">
         {/* Breadcrumb */}
-        <nav
-          className="flex items-center justify-center gap-1.5 text-sm text-white/60 mb-3"
-          aria-label="Breadcrumb"
-        >
-          <Link
-            to="/"
-            className="hover:text-white transition-colors cursor-pointer"
-          >
-            Home
+        <nav className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+          <Link href="/" className="hover:text-[#78e000] transition-colors">
+            Trang Chủ
           </Link>
-          <FiChevronRight size={14} />
-          <span className="text-white font-medium">{title}</span>
+          <FiChevronRight className="w-3.5 h-3.5 text-gray-600" />
+          <span className="text-[#78e000]">{category}</span>
+          <FiChevronRight className="w-3.5 h-3.5 text-gray-600" />
+          <span className="text-white">{title}</span>
         </nav>
 
         {/* Title */}
-        <h1
-          className="
-            text-2xl font-bold leading-snug sm:text-3xl md:text-5xl lg:text-6xl 
-            tracking-tight uppercase
-          "
-        >
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
           {title}
         </h1>
+
+        {subtitle && (
+          <p className="mt-3 text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
+            {subtitle}
+          </p>
+        )}
       </div>
     </div>
   );
-};
-
-export default SectionBanner;
+}

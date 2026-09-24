@@ -24,23 +24,23 @@ const AvailabilityFilter: React.FC<Props> = ({
   ];
 
   return (
-    <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
+    <div className="bg-gray-50/60 rounded-none border border-gray-200 overflow-hidden">
       <Button
         onClick={toggle}
         justify="between" // 👈 để label trái, icon phải
         aria-label="Toggle size"
         className="
     w-full flex items-center
-    px-3 py-2 rounded-lg
+    px-3 py-2 rounded-none
     border border-gray-200
-    bg-white hover:bg-orange-50
+    bg-white hover:bg-gray-100
     text-sm font-medium text-gray-800
     transition-all duration-200
     shadow-sm hover:shadow
   "
         label={
           <span className="flex items-center gap-2 h-5">
-            <LuPackageSearch size={15} className="text-orange-500" />{" "}
+            <LuPackageSearch size={15} className="text-black" />{" "}
             PackageSearch
           </span>
         }
@@ -66,17 +66,17 @@ const AvailabilityFilter: React.FC<Props> = ({
                 checked={stockFilter === opt.value}
                 onChange={() =>
                   setStockFilter(
-                    stockFilter === opt.value
+                     stockFilter === opt.value
                       ? "all"
                       : (opt.value as "in" | "out")
                   )
                 }
                 label={
-                  <span className="text-sm text-gray-700 group-hover:text-orange-600 font-medium">
+                  <span className="text-sm text-gray-700 group-hover:text-black font-medium">
                     {opt.label}
                   </span>
                 }
-                className="form-checkbox text-orange-500 border-orange-300 rounded focus:ring-orange-300"
+                className="form-checkbox text-black border-gray-300 rounded-none focus:ring-black accent-[#78e000]"
               />
             </label>
           ))}

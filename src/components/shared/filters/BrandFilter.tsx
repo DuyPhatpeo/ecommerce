@@ -27,16 +27,16 @@ const BrandFilter: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-orange-50/60 rounded-lg border border-orange-200 overflow-hidden">
+    <div className="bg-gray-50/60 rounded-none border border-gray-200 overflow-hidden">
       <Button
         onClick={toggle}
         justify="between"
         aria-label="Toggle size"
         className="
     w-full flex items-center
-    px-3 py-2 rounded-lg
+    px-3 py-2 rounded-none
     border border-gray-200
-    bg-white hover:bg-orange-50
+    bg-white hover:bg-gray-100
     text-sm font-medium text-gray-800
     transition-all duration-200
     shadow-sm hover:shadow
@@ -44,7 +44,7 @@ const BrandFilter: React.FC<Props> = ({
   "
         label={
           <span className="flex items-center gap-2 h-5">
-            <FiTag size={15} className="text-orange-500" /> Brand
+            <FiTag size={15} className="text-black" /> Brand
           </span>
         }
         icon={
@@ -63,7 +63,7 @@ const BrandFilter: React.FC<Props> = ({
           {options.map((brand) => (
             <label
               key={brand}
-              className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-orange-600 transition-colors group"
+              className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-black transition-colors group"
             >
               <Checkbox
                 checked={selected.includes(brand)}
@@ -73,7 +73,7 @@ const BrandFilter: React.FC<Props> = ({
                     {brand}
                   </span>
                 }
-                className="w-4 h-4 rounded border-orange-300 text-orange-500 focus:ring-orange-200 cursor-pointer accent-orange-500"
+                className="w-4 h-4 rounded-none border-gray-300 text-black focus:ring-black cursor-pointer accent-[#78e000]"
               />
             </label>
           ))}

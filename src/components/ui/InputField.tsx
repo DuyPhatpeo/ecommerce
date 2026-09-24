@@ -43,18 +43,18 @@ export default function InputField({
           onChange={onChange}
           placeholder={placeholder}
           disabled={disabled}
-          className={`w-full pl-12 pr-4 py-3.5 border rounded-xl outline-none transition 
+          className={`w-full pl-12 pr-4 py-3.5 border rounded-none outline-none transition 
             ${
               error
-                ? "border-red-400 bg-red-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
-                : "border-gray-200 bg-gray-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
+                ? "border-red-400 bg-red-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
+                : "border-gray-200 bg-gray-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
             }
             ${disabled ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""}
           `}
         />
 
         {error && (
-          <p className="absolute -bottom-5 left-1 text-xs text-red-500 bg-white px-1 rounded">
+          <p className="absolute -bottom-5 left-1 text-xs text-red-500 bg-white px-1 rounded-none">
             {error}
           </p>
         )}

@@ -33,8 +33,8 @@ const ShopList: React.FC<ShopListProps> = ({
       <div>
         {/* Empty state */}
         {noProducts ? (
-          <div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow border border-dashed border-gray-300">
-            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+          <div className="text-center py-12 sm:py-16 bg-white rounded-none shadow border border-dashed border-gray-300">
+            <div className="w-16 h-16 bg-gray-100 rounded-none flex items-center justify-center mx-auto mb-3">
               <LuPackageSearch size={32} className="text-gray-400" />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">
@@ -47,7 +47,7 @@ const ShopList: React.FC<ShopListProps> = ({
               onClick={clearFilters}
               icon={<FiX size={16} />}
               label={"Clear All"}
-              className="bg-gray-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow hover:bg-orange-500 hover:shadow-orange-500/30 transition-all duration-300"
+              className="bg-gray-900 text-white px-5 py-2.5 rounded-none font-semibold text-sm shadow hover:bg-[#78e000] hover:text-black transition-all duration-300"
             />
           </div>
         ) : (
@@ -76,7 +76,7 @@ const ShopList: React.FC<ShopListProps> = ({
           <Button
             onClick={onSeeMore}
             label={"See More"}
-            className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium shadow-sm transition"
+            className="px-5 py-2 bg-[#78e000] hover:bg-[#6ecb00] text-black rounded-none font-semibold shadow-sm transition"
           />
         </div>
       )}

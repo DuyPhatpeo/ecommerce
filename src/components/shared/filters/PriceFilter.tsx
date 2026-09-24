@@ -58,18 +58,18 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
   };
 
   return (
-    <div className="bg-orange-50/60 rounded-lg border border-orange-200 p-3">
+    <div className="bg-gray-50/60 rounded-none border border-gray-200 p-3">
       <h4 className="flex items-center gap-2 font-semibold text-sm text-gray-800 mb-2">
-        <LuWallet size={16} className="text-orange-600" />
+        <LuWallet size={16} className="text-black" />
         Price Range (VND)
       </h4>
 
       <div className="flex justify-between text-xs font-medium mb-3 gap-2">
         <div
-          className={`bg-white rounded-lg px-2.5 py-1.5 border-2 transition-all duration-200 ${
+          className={`bg-white rounded-none px-2.5 py-1.5 border-2 transition-all duration-200 ${
             isDragging === "min"
-              ? "border-orange-400 shadow-md"
-              : "border-orange-200/50"
+              ? "border-[#78e000] shadow-md"
+              : "border-gray-200"
           }`}
         >
           <div className="text-gray-500 text-[10px] mb-0.5">Min</div>
@@ -77,14 +77,14 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
             type="text"
             value={priceRange.min.toLocaleString()}
             onChange={handleMinInputChange}
-            className="text-orange-600 font-bold w-full bg-transparent border-none outline-none text-xs"
+            className="text-black font-bold w-full bg-transparent border-none outline-none text-xs"
           />
         </div>
         <div
-          className={`bg-white rounded-lg px-2.5 py-1.5 border-2 transition-all duration-200 ${
+          className={`bg-white rounded-none px-2.5 py-1.5 border-2 transition-all duration-200 ${
             isDragging === "max"
-              ? "border-orange-400 shadow-md"
-              : "border-orange-200/50"
+              ? "border-[#78e000] shadow-md"
+              : "border-gray-200"
           }`}
         >
           <div className="text-gray-500 text-[10px] mb-0.5">Max</div>
@@ -92,16 +92,16 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
             type="text"
             value={priceRange.max.toLocaleString()}
             onChange={handleMaxInputChange}
-            className="text-orange-600 font-bold w-full bg-transparent border-none outline-none text-xs"
+            className="text-black font-bold w-full bg-transparent border-none outline-none text-xs"
           />
         </div>
       </div>
 
       {/* Thanh kéo */}
       <div className="relative mb-2">
-        <div className="absolute w-full h-2 bg-gray-200 rounded-full top-1/2 -translate-y-1/2 shadow-inner" />
+        <div className="absolute w-full h-2 bg-gray-200 rounded-none top-1/2 -translate-y-1/2 shadow-inner" />
         <div
-          className="absolute h-2 bg-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
+          className="absolute h-2 bg-[#78e000] rounded-none top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
           style={{
             left: `${Math.max(
               0,
@@ -118,11 +118,11 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
               ),
             )}%`,
             boxShadow: isDragging
-              ? "0 0 20px rgba(251, 146, 60, 0.5)"
-              : "0 2px 8px rgba(251, 146, 60, 0.3)",
+              ? "0 0 10px rgba(120, 224, 0, 0.5)"
+              : "0 2px 4px rgba(120, 224, 0, 0.3)",
           }}
         >
-          <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse" />
+          <div className="absolute inset-0 bg-white/20 rounded-none animate-pulse" />
         </div>
         <input
           type="range"
@@ -137,11 +137,11 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
           onTouchEnd={() => setIsDragging(null)}
           className={`range-thumb absolute w-full bg-transparent appearance-none pointer-events-none ${
             isDragging === "min" ? "cursor-grabbing" : "cursor-grab"
-          } [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-3 [&::-webkit-slider-thumb]:border-orange-500 [&::-webkit-slider-thumb]:shadow-lg ${
+          } [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:shadow-lg ${
             isDragging === "min"
               ? "[&::-webkit-slider-thumb]:cursor-grabbing"
               : "[&::-webkit-slider-thumb]:cursor-grab"
-          } [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-3 [&::-moz-range-thumb]:border-orange-500 [&::-moz-range-thumb]:shadow-lg ${
+          } [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-none [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:shadow-lg ${
             isDragging === "min"
               ? "[&::-moz-range-thumb]:cursor-grabbing"
               : "[&::-moz-range-thumb]:cursor-grab"
@@ -166,11 +166,11 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
           onTouchEnd={() => setIsDragging(null)}
           className={`range-thumb absolute w-full bg-transparent appearance-none pointer-events-none ${
             isDragging === "max" ? "cursor-grabbing" : "cursor-grab"
-          } [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-3 [&::-webkit-slider-thumb]:border-orange-500 [&::-webkit-slider-thumb]:shadow-lg ${
+          } [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:shadow-lg ${
             isDragging === "max"
               ? "[&::-webkit-slider-thumb]:cursor-grabbing"
               : "[&::-webkit-slider-thumb]:cursor-grab"
-          } [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-3 [&::-moz-range-thumb]:border-orange-500 [&::-moz-range-thumb]:shadow-lg ${
+          } [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-none [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:shadow-lg ${
             isDragging === "max"
               ? "[&::-moz-range-thumb]:cursor-grabbing"
               : "[&::-moz-range-thumb]:cursor-grab"

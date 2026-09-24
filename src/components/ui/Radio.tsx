@@ -11,26 +11,26 @@ interface RadioProps {
 const Radio = ({ label, value, checked, onChange, className }: RadioProps) => {
   return (
     <label
-      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all
+      className={`flex items-center gap-3 p-3 rounded-none cursor-pointer transition-all
         border ${
           checked
-            ? "border-orange-400 bg-orange-50 shadow-sm"
-            : "border-gray-300 hover:border-orange-300 hover:bg-orange-50/30"
+            ? "border-[#78e000] bg-[#78e000]/10 shadow-sm"
+            : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
         }
         ${className || ""}
       `}
     >
       {/* Custom radio */}
       <span
-        className={`w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center
+        className={`w-5 h-5 flex-shrink-0 rounded-none border-2 flex items-center justify-center
           ${
             checked
-              ? "border-orange-400 bg-orange-400"
+              ? "border-[#78e000] bg-[#78e000]"
               : "border-gray-300 bg-white"
           }
         `}
       >
-        {checked && <span className="w-2.5 h-2.5 bg-white rounded-full"></span>}
+        {checked && <span className="w-2.5 h-2.5 bg-black rounded-none"></span>}
       </span>
 
       <span className="flex-1 text-gray-900 font-medium">{label}</span>

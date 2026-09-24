@@ -45,16 +45,16 @@ const Select: React.FC<SelectProps> = ({
         onClick={() => setOpen(!open)}
         className="
           w-48 bg-white border-2 border-gray-200
-          rounded-xl px-4 py-2 flex items-center justify-between
+          rounded-none px-4 py-2 flex items-center justify-between
           shadow-sm font-medium text-gray-700 text-sm
-          hover:border-orange-400 transition-all
+          hover:border-[#78e000] transition-all
         "
       >
         <span>{selectedLabel}</span>
         <FiChevronDown
           size={18}
           className={`transition-transform ${
-            open ? "rotate-180 text-orange-500" : "text-gray-500"
+            open ? "rotate-180 text-[#78e000]" : "text-gray-500"
           }`}
         />
       </button>
@@ -63,7 +63,7 @@ const Select: React.FC<SelectProps> = ({
       {open && (
         <div
           className="
-            absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg
+            absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-none shadow-lg
             animate-fadeIn
           "
         >
@@ -75,10 +75,10 @@ const Select: React.FC<SelectProps> = ({
                 setOpen(false);
               }}
               className={`
-                w-full text-left px-4 py-2 text-sm rounded-lg transition-all
+                w-full text-left px-4 py-2 text-sm rounded-none transition-all
                 ${
                   value === opt.value
-                    ? "bg-orange-500 text-white"
+                    ? "bg-[#78e000] text-black font-bold"
                     : "text-gray-700 hover:bg-gray-100"
                 }
               `}

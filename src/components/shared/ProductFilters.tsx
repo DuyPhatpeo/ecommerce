@@ -128,27 +128,27 @@ const ProductFilters: React.FC<Props> = ({
         fixed lg:static inset-y-0 right-0 w-full lg:w-64 bg-white z-50 lg:z-0
         transform ${showFilters ? "translate-x-0" : "translate-x-full"}
         lg:translate-x-0 transition-transform duration-300 ease-out
-        shadow-xl lg:shadow-md rounded-none lg:rounded-xl
-        border border-orange-100 flex flex-col
+        shadow-xl lg:shadow-md rounded-none
+        border border-gray-200 flex flex-col
         h-[90vh]
  overflow-y-auto custom-scroll
       `}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-orange-100 bg-[#f8f6f3]">
+      <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-[#f8f6f3]">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
-          <FiFilter size={18} className="text-orange-500" /> Filters
+          <FiFilter size={18} className="text-[#78e000]" /> Filters
         </h3>
         <Button
           onClick={toggleFilters}
           icon={<FiX size={18} />}
-          className="lg:hidden text-gray-400 hover:text-gray-600 p-2 rounded-lg transition-colors"
+          className="lg:hidden text-gray-400 hover:text-gray-600 p-2 rounded-none transition-colors"
         />
       </div>
 
       {/* Active Filters */}
       {hasActiveFilters && (
-        <div className="p-3 border-b border-orange-100 bg-orange-50/50">
+        <div className="p-3 border-b border-gray-100 bg-gray-50">
           <div className="flex justify-between items-center mb-2">
             <p className="text-sm font-semibold text-gray-700">
               Active Filters
@@ -156,7 +156,7 @@ const ProductFilters: React.FC<Props> = ({
             <Button
               onClick={clearFilters}
               label="Clear All"
-              className="text-xs text-orange-600 hover:underline font-medium"
+              className="text-xs text-[#78e000] hover:underline font-medium"
             />
           </div>
 
@@ -164,7 +164,7 @@ const ProductFilters: React.FC<Props> = ({
             {activeFilters.map((f, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-md border border-orange-200"
+                className="flex items-center gap-1 bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-none border border-gray-200"
               >
                 {f.label}
                 <Button

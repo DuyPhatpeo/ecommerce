@@ -23,15 +23,15 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
   };
 
   return (
-    <div className="overflow-hidden border border-orange-200 rounded-lg bg-orange-50/60">
+    <div className="overflow-hidden border border-gray-200 rounded-none bg-gray-50/60">
       <Button
         onClick={toggle}
         justify="between"
         aria-label="Toggle size"
-        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-800 transition-all duration-200 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-orange-50 hover:shadow"
+        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-800 transition-all duration-200 bg-white border border-gray-200 rounded-none shadow-sm hover:bg-gray-100 hover:shadow"
         label={
           <span className="flex items-center h-5 gap-2">
-            <LuRuler size={15} className="text-orange-500" /> Size
+            <LuRuler size={15} className="text-black" /> Size
           </span>
         }
         icon={
@@ -50,11 +50,11 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
           {sizes.map((size) => (
             <label
               key={size}
-              className={`cursor-pointer px-3 py-1.5 border rounded-md text-sm font-medium transition-all 
+              className={`cursor-pointer px-3 py-1.5 border rounded-none text-sm font-medium transition-all 
                 ${
                   selected.includes(size.toString())
-                    ? "bg-orange-500 text-white border-orange-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-orange-100"
+                    ? "bg-[#78e000] text-black border-[#78e000] font-bold"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                 }`}
             >
               <Checkbox

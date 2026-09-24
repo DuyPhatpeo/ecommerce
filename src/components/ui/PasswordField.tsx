@@ -42,11 +42,11 @@ export default function PasswordField({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`w-full pl-12 pr-12 py-3.5 border rounded-xl outline-none transition 
+          className={`w-full pl-12 pr-12 py-3.5 border rounded-none outline-none transition 
             ${
               error
-                ? "border-red-400 bg-red-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
-                : "border-gray-200 bg-gray-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 focus:bg-white"
+                ? "border-red-400 bg-red-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
+                : "border-gray-200 bg-gray-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
             }`}
         />
 
@@ -54,14 +54,14 @@ export default function PasswordField({
         <button
           type="button"
           onClick={toggle}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 transition"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#78e000] transition"
         >
           {show ? <FiEyeOff size={20} /> : <FiEye size={20} />}
         </button>
 
         {/* ❗ Thông báo lỗi (không đẩy layout) */}
         {error && (
-          <p className="absolute -bottom-5 left-1 text-xs text-red-500 bg-white px-1 rounded">
+          <p className="absolute -bottom-5 left-1 text-xs text-red-500 bg-white px-1 rounded-none">
             {error}
           </p>
         )}
