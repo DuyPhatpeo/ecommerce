@@ -250,7 +250,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   // ===== LOGOUT =====
-  userId: localStorage.getItem("userId"),
+  userId: typeof window !== "undefined" ? localStorage.getItem("userId") : null,
   setUserId: (id) => set({ userId: id }),
   logout: (navigate) => {
     localStorage.removeItem("userId");

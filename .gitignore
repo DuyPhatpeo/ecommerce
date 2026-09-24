@@ -22,4 +22,7 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+# Next.js
+.next/
+out/
+next-env.d.ts

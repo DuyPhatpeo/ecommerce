@@ -1,15 +1,26 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  mode: "jit",
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./safelist.txt"],
+  content: [
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   darkMode: "class",
   theme: {
-    fontFamily: {
-      sans: ["Inter", "system-ui", "sans-serif"],
-      mono: ["ui-monospace", "monospace"],
+    borderRadius: {
+      none: "0px",
+      sm: "0px",
+      DEFAULT: "0px",
+      md: "0px",
+      lg: "0px",
+      xl: "0px",
+      "2xl": "0px",
+      "3xl": "0px",
+      full: "0px",
     },
-
     screens: {
-      xs: "576px",
+      xs: "480px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
@@ -18,33 +29,57 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: "var(--primary)",
-        "primary-deep": "var(--primary-deep)",
-        "primary-mild": "var(--primary-mild)",
-        "primary-subtle": "var(--primary-subtle)",
-        error: "var(--error)",
-        "error-subtle": "var(--error-subtle)",
-        success: "var(--success)",
-        "success-subtle": "var(--success-subtle)",
-        info: "var(--info)",
-        "info-subtle": "var(--info-subtle)",
-        warning: "var(--warning)",
-        "warning-subtle": "var(--warning-subtle)",
-        neutral: "var(--neutral)",
+        // DINOSPORTS Primary Brand Identity
+        primary: {
+          DEFAULT: "#78e000", // Official Electric Lime
+          50: "#f7fee7",
+          100: "#ecfccb",
+          200: "#d9f99d",
+          300: "#bef264",
+          400: "#a3e635",
+          500: "#78e000",
+          600: "#65a30d",
+          700: "#4d7c0f",
+          800: "#3f6212",
+          900: "#365314",
+          neon: "#78e000",
+          hover: "#84cc16",
+          dark: "#65a30d",
+        },
+        // Athletic Deep Dark Themes
+        dark: {
+          DEFAULT: "#06101e",
+          bg: "#06101e",
+          card: "#091522",
+          surface: "#08131d",
+          deep: "#03070d",
+          800: "#0b141f",
+          900: "#06101e",
+        },
+        // Accent Colors
+        accent: {
+          orange: "#f97316",
+          red: "#ef4444",
+          blue: "#0284c7",
+        },
       },
-      typography: (theme) => ({
-        DEFAULT: {
-          css: {
-            color: theme("colors.gray.500"),
-            maxWidth: "65ch",
-          },
-        },
-        invert: {
-          css: {
-            color: theme("colors.gray.400"),
-          },
-        },
-      }),
+      fontFamily: {
+        sans: [
+          "Inter",
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'Segoe UI'",
+          "Roboto",
+          "sans-serif",
+        ],
+      },
+      boxShadow: {
+        neon: "0 0 20px rgba(120, 224, 0, 0.45)",
+        "neon-strong": "0 0 35px rgba(120, 224, 0, 0.75)",
+        card: "0 4px 20px rgba(0, 0, 0, 0.06)",
+      },
     },
   },
+  plugins: [],
 };
