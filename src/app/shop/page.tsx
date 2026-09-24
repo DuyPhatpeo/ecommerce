@@ -450,7 +450,7 @@ function ShopContent() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       {/* 1. HERO TOP BANNER (Sneaker Shelves with Dark Overlay matching design) */}
-      <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#06101e] overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#001a2c] overflow-hidden flex items-center justify-center">
         <Image
           src="/images/contact_hero_shelves.jpg"
           alt="Giày Thể Thao Chính Hãng"

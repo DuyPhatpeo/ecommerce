@@ -144,7 +144,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. HERO BANNER */}
-      <section className="relative w-full h-[220px] sm:h-[260px] bg-[#06101e] flex flex-col items-center justify-center text-center overflow-hidden">
+      <section className="relative w-full h-[220px] sm:h-[260px] bg-[#001a2c] flex flex-col items-center justify-center text-center overflow-hidden">
         <Image
           src="/images/contact_hero_shelves.jpg"
           alt="Sneaker Showcase Wall"
@@ -152,7 +152,7 @@ export default function ContactPage() {
           priority
           className="object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#06101e]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#001a2c]" />
 
         <div className="relative z-10 px-4 space-y-2">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-widest uppercase">
@@ -189,7 +189,7 @@ export default function ContactPage() {
             </div>
 
             {/* Dark Information Box */}
-            <div className="bg-[#08131d] rounded-none p-6 sm:p-7 text-white shadow-xl space-y-5 border border-gray-800">
+            <div className="bg-[#00223a] rounded-none p-6 sm:p-7 text-white shadow-xl space-y-5 border border-[#002b47]">
               {/* Address */}
               <div className="flex items-start gap-3.5">
                 <div className="w-9 h-9 rounded-none bg-[#78e000]/15 text-[#78e000] flex items-center justify-center flex-shrink-0 mt-0.5">

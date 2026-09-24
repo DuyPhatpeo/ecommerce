@@ -55,12 +55,12 @@ function AccountContent() {
           <div className="lg:col-span-4 bg-white rounded-none p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
             {/* User Profile Card */}
             <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
-              <div className="w-16 h-16 rounded-none bg-[#060b11] border-2 border-[#78e000] flex items-center justify-center text-[#78e000] font-black text-xl shadow">
+              <div className="w-16 h-16 rounded-none bg-[#001a2c] border-2 border-[#78e000] flex items-center justify-center text-[#78e000] font-black text-xl shadow">
                 DN
               </div>
               <div>
                 <h3 className="font-black text-base text-gray-900">{profile.name}</h3>
-                <span className="text-[11px] font-extrabold uppercase text-[#78e000] bg-black px-2.5 py-0.5 rounded-none inline-block mt-1">
+                <span className="text-[11px] font-extrabold uppercase text-[#78e000] bg-[#001a2c] px-2.5 py-0.5 rounded-none inline-block mt-1">
                   VIP RUNNER
                 </span>
               </div>
@@ -137,7 +137,7 @@ function AccountContent() {
                     <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
                       Hạng thành viên
                     </label>
-                    <p className="text-sm font-black text-[#78e000] bg-black p-3.5 rounded-none">
+                    <p className="text-sm font-black text-[#78e000] bg-[#001a2c] p-3.5 rounded-none">
                       {profile.memberTier}
                     </p>
                   </div>
@@ -156,7 +156,7 @@ function AccountContent() {
                 <div className="pt-4">
                   <button
                     onClick={() => alert("Chức năng cập nhật thông tin đã sẵn sàng!")}
-                    className="bg-black hover:bg-gray-800 text-white font-bold text-xs px-6 py-3 rounded-none transition-colors"
+                    className="bg-[#001a2c] hover:bg-[#00253f] text-white font-bold text-xs px-6 py-3 rounded-none transition-colors"
                   >
                     Chỉnh Sửa Thông Tin
                   </button>

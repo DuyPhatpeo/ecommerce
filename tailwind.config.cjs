@@ -46,15 +46,15 @@ module.exports = {
           hover: "#84cc16",
           dark: "#65a30d",
         },
-        // Athletic Deep Dark Themes
+        // Athletic Deep Dark Themes (#001a2c palette)
         dark: {
-          DEFAULT: "#06101e",
-          bg: "#06101e",
-          card: "#091522",
-          surface: "#08131d",
-          deep: "#03070d",
-          800: "#0b141f",
-          900: "#06101e",
+          DEFAULT: "#001a2c",
+          bg: "#001a2c",
+          card: "#00223a",
+          surface: "#001d31",
+          deep: "#001422",
+          800: "#00253f",
+          900: "#001a2c",
         },
         // Accent Colors
         accent: {

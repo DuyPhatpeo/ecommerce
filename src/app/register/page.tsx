@@ -22,11 +22,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060b11] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#001a2c] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Neon Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[#78e000]/10 rounded-none blur-[100px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-md w-full bg-[#0b141f] border border-gray-800 p-8 sm:p-10 shadow-2xl">
+      <div className="relative z-10 max-w-md w-full bg-[#00223a] border border-[#002b47] p-8 sm:p-10 shadow-2xl">
         {/* Brand Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 group mb-4">
@@ -59,7 +59,7 @@ export default function RegisterPage() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Nguyễn Văn A"
-                className="w-full bg-[#111a24] text-white border border-gray-700 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
+                className="w-full bg-[#001a2c] text-white border border-[#003554] pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
               />
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function RegisterPage() {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="0900 123 456"
-                className="w-full bg-[#111a24] text-white border border-gray-700 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
+                className="w-full bg-[#001a2c] text-white border border-[#003554] pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="runner@gmail.com"
-                className="w-full bg-[#111a24] text-white border border-gray-700 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
+                className="w-full bg-[#001a2c] text-white border border-[#003554] pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function RegisterPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••"
-                className="w-full bg-[#111a24] text-white border border-gray-700 pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
+                className="w-full bg-[#001a2c] text-white border border-[#003554] pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-[#78e000]"
               />
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <div className="text-center mt-6 pt-6 border-t border-gray-800 text-xs text-gray-400">
+        <div className="text-center mt-6 pt-6 border-t border-[#002b47] text-xs text-gray-400">
           Đã có tài khoản?{" "}
           <Link href="/login" className="text-[#78e000] font-bold hover:underline">
             Đăng nhập ngay

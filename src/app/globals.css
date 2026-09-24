@@ -15,9 +15,9 @@
   --color-primary-neon: #78e000;
   --color-primary-hover: #84cc16;
   --color-primary-dark: #65a30d;
-  --color-dark-bg: #06101e;
-  --color-dark-card: #091522;
-  --color-dark-surface: #08131d;
+  --color-dark-bg: #001a2c;
+  --color-dark-card: #00223a;
+  --color-dark-surface: #001d31;
   --color-text-primary: #0f172a;
   --color-text-muted: #64748b;
 }
@@ -27,9 +27,9 @@
   --primary-neon: #78e000;
   --primary-hover: #84cc16;
   --primary-glow: #22c55e;
-  --dark-bg: #06101e;
-  --dark-card: #091522;
-  --dark-surface: #08131d;
+  --dark-bg: #001a2c;
+  --dark-card: #00223a;
+  --dark-surface: #001d31;
   --text-primary: #0f172a;
   --text-muted: #64748b;
   --accent-red: #ef4444;

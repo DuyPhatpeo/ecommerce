@@ -154,7 +154,7 @@ export default function NewsPage() {
           <div className="mt-8 mb-12">
             <Link
               href={`/news/${featured.id}`}
-              className="group block bg-[#06101e] rounded-none overflow-hidden shadow-xl border border-gray-800"
+              className="group block bg-[#001a2c] rounded-none overflow-hidden shadow-xl border border-[#002b47]"
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
                 <div className="lg:col-span-7 relative min-h-[300px] sm:min-h-[420px]">
@@ -186,7 +186,7 @@ export default function NewsPage() {
                     </p>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-800 flex items-center justify-between text-xs font-bold text-gray-300">
+                  <div className="pt-6 border-t border-[#002b47] flex items-center justify-between text-xs font-bold text-gray-300">
                     <span className="flex items-center gap-1.5">
                       <FiClock className="w-3.5 h-3.5 text-[#78e000]" />
                       {featured.readTime}
@@ -210,7 +210,7 @@ export default function NewsPage() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2.5 rounded-none text-xs font-bold transition-all whitespace-nowrap ${
                 selectedCategory === cat
-                  ? "bg-[#06101e] text-[#78e000] shadow-md"
+                  ? "bg-[#001a2c] text-[#78e000] shadow-md"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >

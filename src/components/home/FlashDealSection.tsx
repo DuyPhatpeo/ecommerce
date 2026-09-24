@@ -35,7 +35,7 @@ export default function FlashDealSection() {
 
   return (
     <section className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      <div className="bg-[#0b141f] rounded-none p-8 sm:p-12 lg:p-14 text-white relative overflow-hidden shadow-2xl border border-gray-800">
+      <div className="bg-[#001a2c] rounded-none p-8 sm:p-12 lg:p-14 text-white relative overflow-hidden shadow-2xl border border-[#002b47]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text & Countdown (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-6">
@@ -115,7 +115,7 @@ export default function FlashDealSection() {
           {/* Right Runner Image + 3 Thumbnails (7 cols on lg) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-4 items-stretch">
             {/* Main Runner Image (8 cols on sm) */}
-            <div className="sm:col-span-8 relative rounded-none overflow-hidden min-h-[360px] sm:min-h-[460px] bg-[#162231] shadow-inner group">
+            <div className="sm:col-span-8 relative rounded-none overflow-hidden min-h-[360px] sm:min-h-[460px] bg-[#00223a] shadow-inner group">
               <Image
                 src="https://images.unsplash.com/photo-1486218119243-13883505764c?w=1000&auto=format&fit=crop&q=80"
                 alt="Li-Ning Athlete Runner"

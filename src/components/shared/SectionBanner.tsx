@@ -14,7 +14,7 @@ export default function SectionBanner({
   category = "DINOSPORTS",
 }: SectionBannerProps) {
   return (
-    <div className="relative w-full bg-[#060b11] border-b border-gray-800 py-12 md:py-16 overflow-hidden">
+    <div className="relative w-full bg-[#001a2c] border-b border-[#002b47] py-12 md:py-16 overflow-hidden">
       {/* Background Subtle Neon Glow */}
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#78e000]/15 rounded-none blur-3xl pointer-events-none" />
 

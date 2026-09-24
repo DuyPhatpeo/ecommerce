@@ -32,7 +32,7 @@ export default function StoreNewsletterSection() {
 
   return (
     <section id="showroom-section" className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      <div className="bg-[#0b141f] rounded-none p-8 sm:p-12 lg:p-14 text-white border border-gray-800 shadow-2xl">
+      <div className="bg-[#001a2c] rounded-none p-8 sm:p-12 lg:p-14 text-white border border-[#002b47] shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Form: Ưu Đãi Đặc Biệt (6 cols on lg) */}
           <div className="lg:col-span-6 space-y-5">
@@ -55,7 +55,7 @@ export default function StoreNewsletterSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Nhập địa chỉ email của bạn"
-                  className="flex-1 bg-[#162231] text-white text-xs sm:text-sm px-5 py-3.5 rounded-none border border-gray-700 focus:outline-none focus:border-[#78e000]"
+                  className="flex-1 bg-[#00223a] text-white text-xs sm:text-sm px-5 py-3.5 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000]"
                 />
                 <button
                   type="submit"

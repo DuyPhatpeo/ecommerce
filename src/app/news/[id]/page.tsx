@@ -37,7 +37,7 @@ function NewsDetailContent() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-[#06101e] text-[#78e000] text-xs font-black uppercase px-3.5 py-1 tracking-wider">
+              <span className="bg-[#001a2c] text-[#78e000] text-xs font-black uppercase px-3.5 py-1 tracking-wider">
                 {article.category}
               </span>
               <span className="text-xs text-gray-400 flex items-center gap-1.5">

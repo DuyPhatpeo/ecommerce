@@ -180,7 +180,7 @@ function SearchContent() {
                     <p className="text-base font-black text-gray-900">{formatPrice(p.price)}</p>
                     <button
                       onClick={(e) => handleQuickAdd(p, e)}
-                      className="w-10 h-10 rounded-none bg-[#060b11] hover:bg-[#78e000] text-white hover:text-black flex items-center justify-center shadow transition-all duration-300 hover:scale-105"
+                      className="w-10 h-10 rounded-none bg-[#001a2c] hover:bg-[#78e000] text-white hover:text-black flex items-center justify-center shadow transition-all duration-300 hover:scale-105"
                       title="Thêm vào giỏ"
                     >
                       <FiShoppingBag className="w-4 h-4" />

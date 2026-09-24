@@ -208,7 +208,7 @@ export default function HangMoiPage() {
       {/* ========================================================
           1. HERO SLIDER BANNER: CITY WALKERS
       ======================================================== */}
-      <section className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-black overflow-hidden flex items-center justify-center">
+      <section className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-[#001a2c] overflow-hidden flex items-center justify-center">
         {/* Background Slide Image */}
         <Image
           src={currentSlide.image}

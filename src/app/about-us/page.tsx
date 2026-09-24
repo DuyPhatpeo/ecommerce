@@ -25,7 +25,7 @@ export default function AboutUsPage() {
       {/* ========================================================
           1. HERO SHOWROOM BANNER WITH BRAND BADGE
       ======================================================== */}
-      <section className="relative w-full h-[420px] sm:h-[500px] md:h-[580px] bg-black overflow-hidden flex items-end">
+      <section className="relative w-full h-[420px] sm:h-[500px] md:h-[580px] bg-[#001a2c] overflow-hidden flex items-end">
         {/* Background Showroom Image */}
         <Image
           src="/images/showroom_store.jpg"
@@ -50,9 +50,9 @@ export default function AboutUsPage() {
       </section>
 
       {/* ========================================================
-          2. MISSION & VISION STATEMENT (BLACK ACCENT SECTION)
+          2. MISSION & VISION STATEMENT (DEEP NAVY ACCENT SECTION)
       ======================================================== */}
-      <section className="bg-black text-white py-16 sm:py-20">
+      <section className="bg-[#001a2c] text-white py-16 sm:py-20">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10">
           {/* Main Statement Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight max-w-5xl tracking-tight">
@@ -138,7 +138,7 @@ export default function AboutUsPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
             {/* Green Stat Badge */}
-            <div className="relative z-10 bg-black/80 backdrop-blur-sm border border-[#78e000]/40 p-6 sm:p-7 max-w-xs text-white">
+            <div className="relative z-10 bg-[#001a2c]/85 backdrop-blur-sm border border-[#78e000]/40 p-6 sm:p-7 max-w-xs text-white">
               <span className="text-3xl sm:text-4xl font-black text-[#78e000] tracking-tight block mb-1">
                 *300+
               </span>

@@ -116,7 +116,7 @@ export default function FAQPage() {
         </div>
 
         {/* Still Need Help Box */}
-        <div className="max-w-4xl mx-auto mt-14 bg-[#060b11] p-8 text-center text-white border border-gray-800 shadow-xl">
+        <div className="max-w-4xl mx-auto mt-14 bg-[#001a2c] p-8 text-center text-white border border-[#002b47] shadow-xl">
           <FiHelpCircle className="w-10 h-10 text-[#78e000] mx-auto mb-3" />
           <h3 className="text-xl font-black uppercase mb-2">Vẫn Còn Câu Hỏi Khác?</h3>
           <p className="text-xs sm:text-sm text-gray-300 max-w-md mx-auto mb-6">
