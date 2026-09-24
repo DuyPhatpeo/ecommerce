@@ -23,9 +23,9 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full overflow-hidden text-gray-300 bg-[#06101e]">
+    <footer className="relative w-full overflow-hidden text-gray-300 bg-[#001a2c]">
       {/* 1. Upper Footer: Newsletter & Showrooms */}
-      <div className="border-b border-[#0f1d2e] py-12 lg:py-14">
+      <div className="border-b border-[#002b47] py-12 lg:py-14">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Newsletter */}
@@ -49,7 +49,7 @@ export default function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Nhập địa chỉ email của bạn"
-                    className="flex-1 bg-[#0e1c2c] border border-gray-700/80 rounded-none px-4 py-2.5 text-white placeholder-gray-400 text-xs sm:text-sm focus:outline-none focus:border-[#78e000]"
+                    className="flex-1 bg-[#00223a] border border-[#003554] rounded-none px-4 py-2.5 text-white placeholder-gray-400 text-xs sm:text-sm focus:outline-none focus:border-[#78e000]"
                   />
                   <button
                     type="submit"
@@ -185,7 +185,7 @@ export default function Footer() {
       </div>
 
       {/* 3. Sub-Footer Copyright Bar */}
-      <div className="bg-[#040a12] border-t border-[#0d1825] py-4 text-xs text-gray-400">
+      <div className="bg-[#001422] border-t border-[#002b47] py-4 text-xs text-gray-400">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Vietnam Flag Badge */}
           <div className="flex items-center gap-2 select-none">

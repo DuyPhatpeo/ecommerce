@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FiSearch, FiMapPin, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
 import { useCartStore } from "@/stores/cartStore";
 
@@ -108,6 +108,7 @@ function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,15 +123,45 @@ export default function Header() {
     }
   };
 
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      // Scroll smoothly to top of homepage
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // If there are search queries or hash, reset cleanly to "/"
+      if (typeof window !== "undefined" && (window.location.search || window.location.hash)) {
+        router.push("/");
+      } else if (typeof window !== "undefined" && window.scrollY <= 10) {
+        // If already at top, refresh data
+        router.refresh();
+      }
+
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+      if (isSearchOpen) setIsSearchOpen(false);
+    } else {
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+      if (isSearchOpen) setIsSearchOpen(false);
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 bg-[#06101e] border-b border-[#0f1d2e] text-white">
+    <header className="sticky top-0 z-40 bg-[#001a2c] border-b border-[#002b47] text-white">
       <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 h-20 md:h-[88px] flex items-center justify-between transition-all">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#78e000] flex items-center justify-center shadow-lg shadow-[#78e000]/25 transition-transform group-hover:scale-105">
+        <Link
+          href="/"
+          onClick={handleLogoClick}
+          className="flex items-center gap-3 group cursor-pointer select-none"
+          title="Về đầu trang chủ DINOSPORTS"
+        >
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#78e000] flex items-center justify-center shadow-lg shadow-[#78e000]/25 transition-transform group-hover:scale-105 active:scale-95">
             <span className="text-black font-black italic text-xl sm:text-2xl leading-none">D</span>
           </div>
-          <span className="text-xl sm:text-2xl font-black tracking-wider text-white">
+          <span className="text-xl sm:text-2xl font-black tracking-wider text-white group-hover:text-[#78e000] transition-colors">
             DINOSPORTS
           </span>
         </Link>
@@ -210,7 +241,7 @@ export default function Header() {
 
       {/* Search Bar Dropdown */}
       {isSearchOpen && (
-        <div className="bg-[#0b141f] border-b border-gray-800 py-4 px-4 transition-all">
+        <div className="bg-[#00223a] border-b border-[#002b47] py-4 px-4 transition-all">
           <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex items-center gap-3">
             <div className="relative flex-1">
               <FiSearch className="absolute left-4 top-3.5 text-gray-400 w-5 h-5" />
@@ -219,7 +250,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm giày thể thao, thương hiệu, mã sản phẩm..."
-                className="w-full bg-[#111a24] text-white pl-12 pr-4 py-3 rounded-none border border-gray-700 focus:outline-none focus:border-[#78e000] text-sm"
+                className="w-full bg-[#001a2c] text-white pl-12 pr-4 py-3 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000] text-sm"
                 autoFocus
               />
             </div>
@@ -235,7 +266,7 @@ export default function Header() {
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#060b11] border-b border-gray-800 px-6 py-6">
+        <div className="lg:hidden bg-[#001a2c] border-b border-[#002b47] px-6 py-6">
           <Suspense
             fallback={
               <div className="space-y-2">
