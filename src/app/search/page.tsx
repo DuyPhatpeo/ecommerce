@@ -9,8 +9,21 @@ import SectionBanner from "@/components/shared/SectionBanner";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "react-toastify";
 import Loader from "@/components/layout/Loader";
+import ProductCard from "@/components/shared/ProductCard";
 
-const sampleProducts = [
+interface Product {
+  id: string;
+  title: string;
+  brand: string;
+  price: number;
+  img: string;
+  category: string;
+  gender: string;
+  colors: string[];
+  stock?: number;
+}
+
+const sampleProducts: Product[] = [
   {
     id: "prod-ultraboost-solar",
     title: "Adidas Ultraboost Solar Yellow",
@@ -160,54 +173,20 @@ function SearchContent() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filtered.map((p) => (
-              <div
-                key={p.id}
-                className="flex flex-col group cursor-pointer"
-              >
-                {/* Product Image Stage */}
-                <Link
-                  href={`/product/${p.id}`}
-                  className="relative w-full aspect-[4/3] sm:aspect-square bg-[#f6f6f6] mb-3 overflow-hidden flex items-center justify-center"
-                >
-                  <Image
-                    src={p.img}
-                    alt={p.title}
-                    fill
-                    className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
-                  />
-                </Link>
-
-                {/* Color Swatch Dots */}
-                <div className="flex items-center gap-1.5 mb-2">
-                  {(p.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"]).slice(0,4).map((color, cIdx) => (
-                    <span
-                      key={cIdx}
-                      className="w-4 h-4 rounded-sm inline-block border border-gray-200"
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-
-                {/* Title */}
-                <Link href={`/product/${p.id}`} className="block">
-                  <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors truncate">
-                    {p.title}
-                  </h3>
-                </Link>
-
-                {/* Subtitle */}
-                <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">
-                  {p.gender === "men" ? "Giày Nam" : p.gender === "women" ? "Giày Nữ" : p.category}
-                </p>
-
-                {/* Price Row */}
-                <div className="flex items-center gap-2">
-                  <p className="text-base font-bold text-black">{formatPrice(p.price)}</p>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {filtered.map((p) => {
+              const productData = {
+                id: p.id,
+                title: p.title,
+                img: p.img,
+                images: [p.img],
+                salePrice: p.price,
+                stock: p.stock || 10,
+                category: p.gender === "men" ? "Giày Nam" : p.gender === "women" ? "Giày Nữ" : p.category,
+                colors: p.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"],
+              };
+              return <ProductCard key={p.id} data={productData} />;
+            })}
           </div>
         )}
       </div>

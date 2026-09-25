@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import BrandShowcase from "@/components/home/BrandShowcase";
 import FavoriteSportsSection from "@/components/home/FavoriteSportsSection";
 import ServicesBanner from "@/components/home/ServicesBanner";
+import ProductCard from "@/components/shared/ProductCard";
 
 interface FeaturedCollection {
   id: string;
@@ -75,7 +76,18 @@ const otherCollections = [
   },
 ];
 
-const newShoes2026 = [
+interface NewShoe {
+  id: string;
+  title: string;
+  sub: string;
+  brand: string;
+  price: number;
+  colors: string[];
+  img: string;
+  stock?: number;
+}
+
+const newShoes2026: NewShoe[] = [
   {
     id: "prod-lebron-tr1",
     title: "Calibar TR1",
@@ -184,16 +196,9 @@ export default function HangMoiPage() {
   };
 
   const handleQuickAdd = async (product: (typeof newShoes2026)[0], e: React.MouseEvent) => {
+    // This function is no longer used since we use ProductCard now, but kept for context if needed elsewhere.
     e.preventDefault();
     e.stopPropagation();
-    await addItemToCart({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: 1,
-      stock: 10,
-      images: [product.img],
-    });
   };
 
   const formatPrice = (p: number) => {
@@ -387,52 +392,20 @@ export default function HangMoiPage() {
         </div>
 
         {/* 4 Columns x 2 Rows Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {newShoes2026.map((shoe) => (
-            <div
-              key={shoe.id}
-              className="flex flex-col group cursor-pointer"
-            >
-              {/* Product Image Stage */}
-              <Link
-                href={`/product/${shoe.id}`}
-                className="relative w-full aspect-[4/3] sm:aspect-square bg-[#f6f6f6] mb-3 overflow-hidden flex items-center justify-center"
-              >
-                <Image
-                  src={shoe.img}
-                  alt={shoe.title}
-                  fill
-                  className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
-                />
-              </Link>
-
-              {/* Color Swatch Dots */}
-              <div className="flex items-center gap-1.5 mb-2">
-                {(shoe.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"]).slice(0,4).map((color, cIdx) => (
-                  <span
-                    key={cIdx}
-                    className="w-4 h-4 rounded-sm inline-block border border-gray-200"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-
-              {/* Title */}
-              <Link href={`/product/${shoe.id}`} className="block">
-                <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors truncate">
-                  {shoe.title}
-                </h3>
-              </Link>
-
-              {/* Subtitle */}
-              <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">{shoe.sub}</p>
-
-              {/* Price Row */}
-              <div className="flex items-center gap-2">
-                <p className="text-base font-bold text-black">{formatPrice(shoe.price)}</p>
-              </div>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {newShoes2026.map((shoe) => {
+            const productData = {
+              id: shoe.id,
+              title: shoe.title,
+              img: shoe.img,
+              images: [shoe.img],
+              salePrice: shoe.price,
+              stock: shoe.stock || 10,
+              category: shoe.sub,
+              colors: shoe.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"],
+            };
+            return <ProductCard key={shoe.id} data={productData} />;
+          })}
         </div>
       </section>
 

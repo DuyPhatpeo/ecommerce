@@ -14,6 +14,7 @@ const saleProducts = [
     salePrice: 3829000,
     regularPrice: 4200000,
     stock: 10,
+    colors: ["#0f172a", "#ffffff", "#84cc16"],
   },
   {
     id: "prod-nike-flex-train",
@@ -22,6 +23,7 @@ const saleProducts = [
     salePrice: 2059000,
     regularPrice: 2500000,
     stock: 15,
+    colors: ["#dc2626", "#000000"],
   },
   {
     id: "prod-nike-metcon-10",
@@ -30,6 +32,7 @@ const saleProducts = [
     salePrice: 1959000,
     regularPrice: 2400000,
     stock: 20,
+    colors: ["#2563eb", "#ffffff"],
   },
   {
     id: "prod-nike-free-metcon-6",
@@ -38,6 +41,7 @@ const saleProducts = [
     salePrice: 2279000,
     regularPrice: 2800000,
     stock: 5,
+    colors: ["#000000", "#475569"],
   },
   {
     id: "prod-nike-af1-retro",
@@ -46,6 +50,7 @@ const saleProducts = [
     salePrice: 5279000,
     regularPrice: 5279000,
     stock: 8,
+    colors: ["#ffffff", "#eab308"],
   },
   {
     id: "prod-nike-air-max-dn8",
@@ -54,6 +59,7 @@ const saleProducts = [
     salePrice: 6179000,
     regularPrice: 7000000,
     stock: 12,
+    colors: ["#16a34a", "#000000", "#ffffff"],
   },
 ];
 
