@@ -16,18 +16,69 @@ interface BrandItem {
 }
 
 const brands: BrandItem[] = [
-  { name: "Adidas", icon: <SiAdidas className="w-8 h-8" /> },
-  { name: "Under Armour", icon: <SiUnderarmour className="w-8 h-8" /> },
-  { name: "HOKA", icon: <span className="font-black text-xl tracking-tighter">HOKA</span> },
-  { name: "asics", icon: <span className="font-black text-xl italic">asics</span> },
-  { name: "Columbia", icon: <span className="font-extrabold text-lg">Columbia</span> },
-  { name: "speedo", icon: <span className="font-bold text-lg tracking-wide">speedo</span> },
-  { name: "Nike", icon: <SiNike className="w-9 h-9" /> },
-  { name: "PUMA", icon: <SiPuma className="w-8 h-8" /> },
-  { name: "Teva", icon: <span className="font-black text-xl">Teva</span> },
-  { name: "On", icon: <span className="font-black text-xl">On</span> },
-  { name: "crocs", icon: <span className="font-extrabold text-lg">crocs</span> },
-  { name: "+30 thương hiệu", isSpecial: true },
+  { 
+    name: "Adidas", 
+    icon: <SiAdidas className="w-12 h-12" />
+  },
+  { 
+    name: "Under Armour", 
+    icon: <SiUnderarmour className="w-12 h-12" />
+  },
+  { 
+    name: "HOKA", 
+    icon: <span className="font-black text-2xl tracking-tighter">HOKA</span> 
+  },
+  { 
+    name: "asics", 
+    icon: <span className="font-black text-3xl italic tracking-tighter text-[#001E62]">asics</span> 
+  },
+  { 
+    name: "Columbia", 
+    icon: (
+      <div className="flex items-center gap-1.5">
+        <div className="grid grid-cols-2 gap-[2px]">
+          <div className="w-1.5 h-1 bg-black rounded-sm"></div>
+          <div className="w-1.5 h-1 bg-black rounded-sm"></div>
+          <div className="w-1.5 h-1 bg-black rounded-sm"></div>
+          <div className="w-1.5 h-1 bg-black rounded-sm"></div>
+        </div>
+        <span className="font-black text-lg uppercase tracking-tight">Columbia</span>
+      </div>
+    ) 
+  },
+  { 
+    name: "speedo", 
+    icon: (
+      <div className="flex items-center gap-1">
+        <span className="font-black text-2xl tracking-tighter lowercase">speedo</span>
+        <div className="w-3 h-3 bg-red-600 rounded-tr-full rounded-bl-full rotate-45"></div>
+      </div>
+    ) 
+  },
+  { 
+    name: "Nike", 
+    icon: <SiNike className="w-12 h-12" />
+  },
+  { 
+    name: "PUMA", 
+    icon: <SiPuma className="w-12 h-12" />
+  },
+  { 
+    name: "Teva", 
+    icon: <span className="font-black text-2xl uppercase tracking-widest">Teva</span> 
+  },
+  { 
+    name: "On", 
+    icon: <span className="font-black text-3xl">On</span> 
+  },
+  { 
+    name: "crocs", 
+    icon: <span className="font-black text-2xl lowercase">crocs™</span> 
+  },
+  { 
+    name: "+30 thương hiệu", 
+    isSpecial: true 
+  },
 ];
 
 export default function BrandShowcase() {
