@@ -43,10 +43,10 @@ export default function CategoryDiscovery() {
     <section className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16">
       {/* Title Header */}
       <div className="text-center mb-10">
-        <span className="text-xs sm:text-sm font-extrabold uppercase text-gray-400 tracking-widest block mb-1">
+        <span className="text-base sm:text-lg font-extrabold uppercase text-gray-400 tracking-widest block mb-1">
           Ngay lúc này
         </span>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tight">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">
           BẠN TÌM GÌ <span className="text-[#78e000]">HÔM NAY?</span>
         </h2>
       </div>
@@ -64,31 +64,31 @@ export default function CategoryDiscovery() {
           <Link
             key={s.id}
             href="/shop"
-            className="relative bg-[#f8f9fa] hover:bg-white rounded-none p-6 flex flex-col justify-between border border-gray-100 hover:border-gray-300 hover:shadow-2xl transition-all duration-300 group overflow-hidden min-h-[420px]"
+            className="relative bg-[#f1f2f4] rounded-md p-6 flex flex-col justify-between transition-all duration-300 group overflow-hidden h-[420px]"
           >
             {/* Giant Vertical Watermark NIKE */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.06] group-hover:opacity-[0.12] transition-opacity">
-              <span className="text-9xl font-black rotate-90 tracking-widest text-black">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+              <span className="text-[130px] font-black rotate-90 tracking-widest text-black/[0.04]">
                 NIKE
               </span>
             </div>
 
             {/* Sneaker Image */}
-            <div className="relative w-full h-64 flex items-center justify-center z-10">
+            <div className="relative w-full h-60 mt-4 flex items-center justify-center z-10">
               <Image
                 src={s.image}
                 alt={s.name}
                 fill
-                className="object-contain p-2 drop-shadow-md"
+                className="object-contain drop-shadow-2xl group-hover:-translate-y-2 group-hover:scale-105 transition-all duration-500"
               />
             </div>
 
             {/* Bottom Info */}
-            <div className="relative z-10 pt-4 border-t border-gray-200/60">
-              <h4 className="font-extrabold text-sm sm:text-base text-gray-900 group-hover:text-[#78e000] transition-colors line-clamp-1">
+            <div className="relative z-10 mt-auto pb-2">
+              <h4 className="font-bold text-lg text-black line-clamp-1">
                 {s.name}
               </h4>
-              <p className="text-sm font-black text-gray-900 mt-1">
+              <p className="text-[15px] font-medium text-gray-500 mt-1">
                 {s.price}
               </p>
             </div>

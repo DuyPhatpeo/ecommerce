@@ -796,80 +796,63 @@ function ShopContent() {
                   return (
                     <div
                       key={p.id}
-                      className="bg-white border border-gray-200 hover:border-gray-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative p-4"
+                      className="flex flex-col group cursor-pointer"
                     >
-                      {/* Brand & Discount Badges */}
-                      <div className="flex items-center justify-between absolute top-4 left-4 right-4 z-10 pointer-events-none">
-                        <span className="bg-black text-white text-[10px] font-black uppercase px-2 py-0.5 tracking-wider">
-                          {p.brand}
-                        </span>
-                        {hasDiscount && (
-                          <span className="bg-[#e11d48] text-white text-[10px] font-black px-2 py-0.5 shadow">
-                            -{discountPercent}%
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Product Image Stage (Clean, large presentation) */}
+                      {/* Product Image Stage */}
                       <Link
                         href={`/product/${p.id}`}
-                        className="block relative w-full h-64 bg-[#f8f9fa] mt-3 mb-3 p-4 flex items-center justify-center overflow-hidden"
+                        className="relative w-full aspect-[4/3] sm:aspect-square bg-[#f6f6f6] mb-3 overflow-hidden flex items-center justify-center"
                       >
                         <Image
                           src={p.img}
                           alt={p.title}
                           fill
-                          className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                          className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
                         />
+                        {/* Brand & Discount Badges (Optional, keeping them minimal if needed) */}
+                        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
+                          {hasDiscount && (
+                            <span className="bg-white text-black text-[10px] font-bold px-2 py-0.5 shadow-sm">
+                              -{discountPercent}%
+                            </span>
+                          )}
+                        </div>
                       </Link>
 
-                      {/* Product Metadata */}
-                      <div className="pt-2">
-                        {/* Color Swatch Dots */}
-                        <div className="flex items-center gap-1.5 mb-2">
-                          {(p.colors || ["#000000", "#ffffff", "#2563eb"]).map((color, cIdx) => (
-                            <span
-                              key={cIdx}
-                              className="w-3 h-3 border border-gray-300 inline-block shadow-sm"
-                              style={{ backgroundColor: color }}
-                              title="Tùy chọn màu sắc"
-                            />
-                          ))}
-                        </div>
+                      {/* Color Swatch Dots */}
+                      <div className="flex items-center gap-1.5 mb-2">
+                        {(p.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"]).slice(0,4).map((color, cIdx) => (
+                          <span
+                            key={cIdx}
+                            className="w-4 h-4 rounded-sm inline-block border border-gray-200"
+                            style={{ backgroundColor: color }}
+                            title="Tùy chọn màu sắc"
+                          />
+                        ))}
+                      </div>
 
-                        {/* Title */}
-                        <Link href={`/product/${p.id}`} className="block">
-                          <h3 className="font-black text-sm text-gray-900 group-hover:text-[#78e000] transition-colors truncate">
-                            {p.title}
-                          </h3>
-                        </Link>
+                      {/* Title */}
+                      <Link href={`/product/${p.id}`} className="block">
+                        <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors truncate">
+                          {p.title}
+                        </h3>
+                      </Link>
 
-                        {/* Subtitle / Category */}
-                        <p className="text-[11px] text-gray-400 font-medium mt-0.5">
-                          {p.gender === "men" ? "Giày Nam" : p.gender === "women" ? "Giày Nữ" : p.category}
+                      {/* Subtitle / Category */}
+                      <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">
+                        {p.gender === "men" ? "Giày Nam" : p.gender === "women" ? "Giày Nữ" : p.category}
+                      </p>
+
+                      {/* Price Row */}
+                      <div className="flex items-center gap-2">
+                        <p className="text-base font-bold text-black">
+                          {formatPrice(p.price)}
                         </p>
-
-                        {/* Price Row & Add Button */}
-                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                          <div>
-                            <p className="text-sm font-black text-gray-900">
-                              {formatPrice(p.price)}
-                            </p>
-                            {hasDiscount && (
-                              <p className="text-[11px] text-gray-400 line-through">
-                                {formatPrice(p.regularPrice!)}
-                              </p>
-                            )}
-                          </div>
-
-                          <button
-                            onClick={(e) => handleQuickAdd(p, e)}
-                            className="w-9 h-9 bg-black hover:bg-[#78e000] text-white hover:text-black flex items-center justify-center shadow transition-all active:scale-95"
-                            title="Thêm vào giỏ"
-                          >
-                            <FiShoppingBag className="w-4 h-4" />
-                          </button>
-                        </div>
+                        {hasDiscount && (
+                          <p className="text-[13px] text-gray-400 line-through font-medium">
+                            {formatPrice(p.regularPrice!)}
+                          </p>
+                        )}
                       </div>
                     </div>
                   );

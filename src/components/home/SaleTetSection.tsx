@@ -135,42 +135,42 @@ export default function SaleTetSection() {
         {/* Right 6 Product Cards Grid (8 cols on lg) */}
         <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {saleProducts.map((p) => (
-            <Link
-              key={p.id}
-              href="/shop"
-              className="bg-[#f8f9fa] hover:bg-white rounded-none p-4 flex flex-col justify-between border border-gray-100 hover:border-gray-300 hover:shadow-xl transition-all duration-300 group"
-            >
-              {/* Product Image */}
-              <div className="relative w-full h-48 mb-3 bg-white rounded-none overflow-hidden flex items-center justify-center p-2">
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  fill
-                  className="object-contain p-2"
-                />
-              </div>
+              <Link
+                key={p.id}
+                href="/shop"
+                className="flex flex-col group cursor-pointer"
+              >
+                {/* Product Image */}
+                <div className="relative w-full aspect-[4/3] sm:aspect-square mb-3 bg-[#f6f6f6] overflow-hidden flex items-center justify-center p-2">
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
-              {/* Product Info */}
-              <div className="space-y-1">
-                {/* Color swatches if any */}
-                {p.colors && (
-                  <div className="flex items-center gap-1.5 mb-2">
-                    {p.colors.map((c, i) => (
-                      <span
-                        key={i}
-                        className="w-3.5 h-3.5 rounded-none border border-gray-300 inline-block"
-                        style={{ backgroundColor: c }}
-                      />
-                    ))}
-                  </div>
-                )}
-                <h3 className="font-extrabold text-sm text-gray-900 group-hover:text-[#78e000] transition-colors line-clamp-1">
-                  {p.name}
-                </h3>
-                <p className="text-xs text-gray-400 font-medium">{p.sub}</p>
-                <p className="text-sm font-black text-gray-900 pt-1">{p.price}</p>
-              </div>
-            </Link>
+                {/* Product Info */}
+                <div className="space-y-1">
+                  {/* Color swatches if any */}
+                  {p.colors && (
+                    <div className="flex items-center gap-1.5 mb-2">
+                      {p.colors.map((c, i) => (
+                        <span
+                          key={i}
+                          className="w-4 h-4 rounded-sm border border-gray-200 inline-block"
+                          style={{ backgroundColor: c }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors line-clamp-1">
+                    {p.name}
+                  </h3>
+                  <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">{p.sub}</p>
+                  <p className="text-base font-bold text-black pt-1">{p.price}</p>
+                </div>
+              </Link>
           ))}
         </div>
       </div>

@@ -116,7 +116,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             handleToggleWishlist();
           }}
           disabled={wishlistLoading}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-label={isWishlisted ? "Xóa khỏi danh sách yêu thích" : "Thêm vào danh sách yêu thích"}
           className={`absolute top-4 right-4 z-5 w-9 h-9 flex items-center justify-center rounded-none cursor-pointer transition-all duration-200
             ${isWishlisted ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-red-50"}
             ${wishlistLoading ? "opacity-50 cursor-wait" : ""}
@@ -142,7 +142,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
           {isOutOfStock && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="px-4 py-1.5 bg-gray-900/80 text-white font-semibold text-xs rounded-none uppercase tracking-wider">
-                Sold Out
+                Hết hàng
               </span>
             </div>
           )}
@@ -171,7 +171,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
             onClick={handleAdd}
             disabled={isOutOfStock || loading}
             icon={<FiShoppingBag size={14} />}
-            label={loading ? "Adding..." : "Add to Cart"}
+            label={loading ? "Đang thêm..." : "Thêm vào giỏ"}
             className={`w-full h-11 gap-2 rounded-none font-semibold text-sm transition-all duration-200 cursor-pointer
               ${
                 isOutOfStock || loading

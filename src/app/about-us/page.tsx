@@ -25,26 +25,22 @@ export default function AboutUsPage() {
       {/* ========================================================
           1. HERO SHOWROOM BANNER WITH BRAND BADGE
       ======================================================== */}
-      <section className="relative w-full h-[420px] sm:h-[500px] md:h-[580px] bg-[#001a2c] overflow-hidden flex items-end">
-        {/* Background Showroom Image */}
-        <Image
-          src="/images/showroom_store.jpg"
-          alt="Không gian Showroom DINOSPORTS"
-          fill
-          priority
-          className="object-cover object-center brightness-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16">
+        <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm">
+          {/* Background Showroom Image */}
+          <Image
+            src="/images/showroom_store.jpg"
+            alt="Không gian Showroom DINOSPORTS"
+            fill
+            priority
+            className="object-cover object-center"
+          />
 
-        {/* Brand Card Overlay on Bottom Left */}
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 w-full pb-10 sm:pb-12">
-          <div className="bg-white p-6 sm:p-8 max-w-sm border border-gray-100 shadow-2xl">
-            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-wider uppercase mb-1">
-              DINO<span className="text-[#78e000]">SPORTS</span>
+          {/* Brand Card Overlay on Bottom Left */}
+          <div className="absolute bottom-0 left-0 bg-white pt-6 pr-12 pb-6 pl-6 sm:pt-8 sm:pr-16 sm:pb-8 sm:pl-10 rounded-tr-[40px] md:rounded-tr-[60px] z-10 flex items-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#001a2c] tracking-tight mb-0">
+              DINO<span className="font-black">SPORTS</span>
             </h2>
-            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-              HỆ THỐNG PHÂN PHỐI THỂ THAO CHÍNH HÃNG
-            </p>
           </div>
         </div>
       </section>

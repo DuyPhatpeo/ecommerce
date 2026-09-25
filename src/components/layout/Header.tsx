@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FiSearch, FiMapPin, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
 import { useCartStore } from "@/stores/cartStore";
 
 interface NavItem {
@@ -149,7 +149,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#001a2c] border-b border-[#002b47] text-white">
+    <header className="sticky top-0 z-[60] bg-[#001a2c] border-b border-[#002b47] text-white">
       <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 h-20 md:h-[88px] flex items-center justify-between transition-all">
         {/* Brand Logo */}
         <Link
@@ -194,14 +194,6 @@ export default function Header() {
             <FiSearch className="w-5 h-5" />
           </button>
 
-          {/* Showroom Map Pin */}
-          <Link
-            href="#showroom-section"
-            className="hover:text-[#78e000] transition-colors p-1.5 hidden sm:block"
-            title="Cửa hàng"
-          >
-            <FiMapPin className="w-5 h-5" />
-          </Link>
 
           {/* Shopping Cart */}
           <Link
@@ -239,28 +231,37 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Search Bar Dropdown */}
+      {/* Search Bar Overlay (Covers TopBar & Header) */}
       {isSearchOpen && (
-        <div className="bg-[#00223a] border-b border-[#002b47] py-4 px-4 transition-all">
-          <form onSubmit={handleSearch} className="max-w-3xl mx-auto flex items-center gap-3">
-            <div className="relative flex-1">
-              <FiSearch className="absolute left-4 top-3.5 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm giày thể thao, thương hiệu, mã sản phẩm..."
-                className="w-full bg-[#001a2c] text-white pl-12 pr-4 py-3 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000] text-sm"
-                autoFocus
-              />
-            </div>
+        <div className="fixed top-0 left-0 w-full h-[116px] md:h-[124px] bg-[#001a2c] z-[100] shadow-2xl flex items-center transition-all animate-in slide-in-from-top-2">
+          <div className="max-w-[1440px] w-full mx-auto px-6 sm:px-8 lg:px-12 relative flex items-center justify-between gap-4">
+            <form onSubmit={handleSearch} className="flex-1 max-w-4xl mx-auto flex items-center gap-3">
+              <div className="relative flex-1">
+                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Bạn đang tìm giày gì hôm nay?"
+                  className="w-full bg-[#00223a] text-white pl-12 pr-4 py-3 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000] text-base"
+                  autoFocus
+                />
+              </div>
+              <button
+                type="submit"
+                className="hidden sm:block bg-[#78e000] hover:bg-[#84cc16] text-black font-black px-8 py-3 rounded-none text-base uppercase tracking-wider transition-colors"
+              >
+                Tìm kiếm
+              </button>
+            </form>
             <button
-              type="submit"
-              className="bg-[#78e000] hover:bg-[#84cc16] text-black font-bold px-6 py-3 rounded-none text-sm transition-colors"
+              onClick={() => setIsSearchOpen(false)}
+              className="text-gray-300 hover:text-[#78e000] transition-colors p-2"
+              title="Đóng tìm kiếm"
             >
-              Tìm kiếm
+              <FiX className="w-8 h-8" />
             </button>
-          </form>
+          </div>
         </div>
       )}
 

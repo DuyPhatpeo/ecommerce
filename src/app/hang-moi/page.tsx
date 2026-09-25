@@ -392,56 +392,45 @@ export default function HangMoiPage() {
           {newShoes2026.map((shoe) => (
             <div
               key={shoe.id}
-              className="bg-white border border-gray-200 hover:border-gray-400 hover:shadow-xl transition-all duration-300 p-4 flex flex-col justify-between group relative"
+              className="flex flex-col group cursor-pointer"
             >
               {/* Product Image Stage */}
               <Link
                 href={`/product/${shoe.id}`}
-                className="block relative w-full h-56 bg-[#f8f9fa] mt-2 mb-3 p-3 flex items-center justify-center overflow-hidden"
+                className="relative w-full aspect-[4/3] sm:aspect-square bg-[#f6f6f6] mb-3 overflow-hidden flex items-center justify-center"
               >
                 <Image
                   src={shoe.img}
                   alt={shoe.title}
                   fill
-                  className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                  className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
                 />
               </Link>
 
-              {/* Product Metadata */}
-              <div className="pt-2">
-                {/* Color Swatch Dots */}
-                <div className="flex items-center gap-1.5 mb-2">
-                  {shoe.colors.map((color, cIdx) => (
-                    <span
-                      key={cIdx}
-                      className="w-3 h-3 border border-gray-300 inline-block shadow-sm"
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
+              {/* Color Swatch Dots */}
+              <div className="flex items-center gap-1.5 mb-2">
+                {(shoe.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"]).slice(0,4).map((color, cIdx) => (
+                  <span
+                    key={cIdx}
+                    className="w-4 h-4 rounded-sm inline-block border border-gray-200"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
 
-                {/* Title */}
-                <Link href={`/product/${shoe.id}`} className="block">
-                  <h3 className="font-black text-sm text-gray-900 group-hover:text-[#78e000] transition-colors truncate">
-                    {shoe.title}
-                  </h3>
-                </Link>
+              {/* Title */}
+              <Link href={`/product/${shoe.id}`} className="block">
+                <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors truncate">
+                  {shoe.title}
+                </h3>
+              </Link>
 
-                {/* Subtitle */}
-                <p className="text-[11px] text-gray-400 font-medium mt-0.5">{shoe.sub}</p>
+              {/* Subtitle */}
+              <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">{shoe.sub}</p>
 
-                {/* Price and Cart Button */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-sm font-black text-gray-900">{formatPrice(shoe.price)}</p>
-
-                  <button
-                    onClick={(e) => handleQuickAdd(shoe, e)}
-                    className="w-9 h-9 bg-black hover:bg-[#78e000] text-white hover:text-black flex items-center justify-center shadow transition-all active:scale-95"
-                    title="Thêm vào giỏ"
-                  >
-                    <FiShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
+              {/* Price Row */}
+              <div className="flex items-center gap-2">
+                <p className="text-base font-bold text-black">{formatPrice(shoe.price)}</p>
               </div>
             </div>
           ))}

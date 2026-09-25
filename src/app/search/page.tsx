@@ -18,6 +18,8 @@ const sampleProducts = [
     price: 2400000,
     img: "/images/hero_ultraboost.png",
     category: "Chạy Bộ",
+    gender: "men",
+    colors: ["#000000", "#eab308", "#ffffff"],
   },
   {
     id: "prod-lebron-tr1",
@@ -26,6 +28,8 @@ const sampleProducts = [
     price: 3829000,
     img: "/images/hero_ultraboost.png",
     category: "Bóng Rổ",
+    gender: "men",
+    colors: ["#000000", "#1e3a8a", "#94a3b8"],
   },
   {
     id: "prod-nike-flex-train",
@@ -34,6 +38,8 @@ const sampleProducts = [
     price: 2059000,
     img: "/images/hero_ultraboost.png",
     category: "Luyện Tập",
+    gender: "men",
+    colors: ["#000000", "#ef4444", "#ffffff"],
   },
   {
     id: "prod-nike-metcon-10",
@@ -42,6 +48,8 @@ const sampleProducts = [
     price: 1959000,
     img: "/images/hero_ultraboost.png",
     category: "Luyện Tập",
+    gender: "men",
+    colors: ["#000000", "#2563eb", "#d1d5db"],
   },
   {
     id: "prod-nike-af1-retro",
@@ -50,6 +58,8 @@ const sampleProducts = [
     price: 5279000,
     img: "/images/hero_ultraboost.png",
     category: "Thời Trang",
+    gender: "women",
+    colors: ["#ffffff", "#fca5a5", "#000000"],
   },
   {
     id: "prod-nike-air-max-dn8",
@@ -58,6 +68,8 @@ const sampleProducts = [
     price: 6179000,
     img: "/images/hero_ultraboost.png",
     category: "Thời Trang",
+    gender: "men",
+    colors: ["#1e293b", "#000000", "#64748b"],
   },
 ];
 
@@ -153,39 +165,47 @@ function SearchContent() {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="bg-white rounded-none p-4 flex flex-col justify-between border border-gray-100 hover:border-gray-300 hover:shadow-xl transition-all duration-300 group relative"
+                className="flex flex-col group cursor-pointer"
               >
-                <Link href={`/product/${p.id}`} className="block relative w-full h-56 mb-2 bg-[#f8f9fa] rounded-none overflow-hidden p-3 flex items-center justify-center">
+                {/* Product Image Stage */}
+                <Link
+                  href={`/product/${p.id}`}
+                  className="relative w-full aspect-[4/3] sm:aspect-square bg-[#f6f6f6] mb-3 overflow-hidden flex items-center justify-center"
+                >
                   <Image
                     src={p.img}
                     alt={p.title}
                     fill
-                    className="object-contain p-3"
+                    className="object-contain p-4 sm:p-6 group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="absolute top-3 left-3 bg-black text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-none">
-                    {p.brand}
-                  </span>
                 </Link>
 
-                <div className="pt-2">
-                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
-                    {p.category}
-                  </span>
-                  <Link href={`/product/${p.id}`} className="block">
-                    <h3 className="font-black text-sm text-gray-900 group-hover:text-[#78e000] transition-colors line-clamp-1">
-                      {p.title}
-                    </h3>
-                  </Link>
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                    <p className="text-base font-black text-gray-900">{formatPrice(p.price)}</p>
-                    <button
-                      onClick={(e) => handleQuickAdd(p, e)}
-                      className="w-10 h-10 rounded-none bg-[#001a2c] hover:bg-[#78e000] text-white hover:text-black flex items-center justify-center shadow transition-all duration-300 hover:scale-105"
-                      title="Thêm vào giỏ"
-                    >
-                      <FiShoppingBag className="w-4 h-4" />
-                    </button>
-                  </div>
+                {/* Color Swatch Dots */}
+                <div className="flex items-center gap-1.5 mb-2">
+                  {(p.colors || ["#000000", "#ffffff", "#2563eb", "#94a3b8"]).slice(0,4).map((color, cIdx) => (
+                    <span
+                      key={cIdx}
+                      className="w-4 h-4 rounded-sm inline-block border border-gray-200"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+
+                {/* Title */}
+                <Link href={`/product/${p.id}`} className="block">
+                  <h3 className="font-bold text-base sm:text-lg text-black group-hover:text-gray-600 transition-colors truncate">
+                    {p.title}
+                  </h3>
+                </Link>
+
+                {/* Subtitle */}
+                <p className="text-[15px] text-gray-500 font-normal mt-0.5 mb-2">
+                  {p.gender === "men" ? "Giày Nam" : p.gender === "women" ? "Giày Nữ" : p.category}
+                </p>
+
+                {/* Price Row */}
+                <div className="flex items-center gap-2">
+                  <p className="text-base font-bold text-black">{formatPrice(p.price)}</p>
                 </div>
               </div>
             ))}
