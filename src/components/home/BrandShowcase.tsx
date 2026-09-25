@@ -95,7 +95,7 @@ export default function BrandShowcase() {
             href={`/shop?brand=${encodeURIComponent(b.name)}`}
             className={`h-24 rounded-none flex items-center justify-center p-4 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md ${
               b.isSpecial
-                ? "bg-[#78e000] text-black font-black text-sm"
+                ? "bg-primary text-black font-black text-sm"
                 : "bg-[#f1f3f5] hover:bg-[#e9ecef] text-gray-800"
             }`}
           >

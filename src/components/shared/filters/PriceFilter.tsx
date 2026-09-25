@@ -68,7 +68,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
         <div
           className={`bg-white rounded-none px-2.5 py-1.5 border-2 transition-all duration-200 ${
             isDragging === "min"
-              ? "border-[#78e000] shadow-md"
+              ? "border-primary shadow-md"
               : "border-gray-200"
           }`}
         >
@@ -83,7 +83,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
         <div
           className={`bg-white rounded-none px-2.5 py-1.5 border-2 transition-all duration-200 ${
             isDragging === "max"
-              ? "border-[#78e000] shadow-md"
+              ? "border-primary shadow-md"
               : "border-gray-200"
           }`}
         >
@@ -101,7 +101,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
       <div className="relative mb-2">
         <div className="absolute w-full h-2 bg-gray-200 rounded-none top-1/2 -translate-y-1/2 shadow-inner" />
         <div
-          className="absolute h-2 bg-[#78e000] rounded-none top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
+          className="absolute h-2 bg-primary rounded-none top-1/2 -translate-y-1/2 shadow-lg transition-all duration-200"
           style={{
             left: `${Math.max(
               0,

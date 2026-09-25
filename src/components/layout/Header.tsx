@@ -63,10 +63,10 @@ function DesktopNavLinks() {
             href={item.href}
             className={`relative py-2 transition-all duration-200 ${
               isActive
-                ? "text-[#78e000] font-black"
+                ? "text-primary font-black"
                 : item.isSpecial
-                ? "text-[#38bdf8] hover:text-[#78e000] font-extrabold"
-                : "text-white hover:text-[#78e000] font-extrabold"
+                ? "text-[#38bdf8] hover:text-primary font-extrabold"
+                : "text-white hover:text-primary font-extrabold"
             }`}
           >
             {item.label}
@@ -93,10 +93,10 @@ function MobileNavLinks({ onNavigate }: { onNavigate: () => void }) {
             onClick={onNavigate}
             className={`block text-base px-3 py-2.5 rounded-none transition-all ${
               isActive
-                ? "text-[#78e000] bg-[#78e000]/10 border-l-4 border-[#78e000] font-black"
+                ? "text-primary bg-primary/10 border-l-4 border-primary font-black"
                 : item.isSpecial
-                ? "text-[#38bdf8] hover:text-[#78e000] hover:bg-white/5 border-l-4 border-transparent font-extrabold"
-                : "text-white hover:text-[#78e000] hover:bg-white/5 border-l-4 border-transparent font-bold"
+                ? "text-[#38bdf8] hover:text-primary hover:bg-white/5 border-l-4 border-transparent font-extrabold"
+                : "text-white hover:text-primary hover:bg-white/5 border-l-4 border-transparent font-bold"
             }`}
           >
             {item.label}
@@ -151,7 +151,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-[60] bg-[#001a2c] border-b border-[#002b47] text-white">
+    <header className="sticky top-0 z-[60] bg-dark border-b border-dark-border text-white">
       <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 h-20 md:h-[88px] flex items-center justify-between transition-all">
         {/* Brand Logo */}
         <Link
@@ -160,10 +160,10 @@ export default function Header() {
           className="flex items-center gap-3 group cursor-pointer select-none"
           title="Về đầu trang chủ DINOSPORTS"
         >
-          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#78e000] flex items-center justify-center shadow-lg shadow-[#78e000]/25 transition-transform group-hover:scale-105 active:scale-95">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-primary flex items-center justify-center shadow-lg shadow-primary/25 transition-transform group-hover:scale-105 active:scale-95">
             <span className="text-black font-black italic text-xl sm:text-2xl leading-none">D</span>
           </div>
-          <span className="text-xl sm:text-2xl font-black tracking-wider text-white group-hover:text-[#78e000] transition-colors">
+          <span className="text-xl sm:text-2xl font-black tracking-wider text-white group-hover:text-primary transition-colors">
             DINOSPORTS
           </span>
         </Link>
@@ -189,7 +189,7 @@ export default function Header() {
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className={`transition-colors p-1.5 ${
-              isSearchOpen ? "text-[#78e000]" : "hover:text-[#78e000]"
+              isSearchOpen ? "text-primary" : "hover:text-primary"
             }`}
             title="Tìm kiếm"
           >
@@ -201,13 +201,13 @@ export default function Header() {
           <Link
             href="/cart"
             className={`transition-colors p-1.5 relative ${
-              isCartActive ? "text-[#78e000]" : "hover:text-[#78e000]"
+              isCartActive ? "text-primary" : "hover:text-primary"
             }`}
             title="Giỏ hàng"
           >
             <FiShoppingBag className="w-5 h-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 bg-[#78e000] text-black text-[10px] font-black w-4 h-4 flex items-center justify-center shadow">
+              <span className="absolute -top-1 -right-1.5 bg-primary text-black text-[10px] font-black w-4 h-4 flex items-center justify-center shadow">
                 {cartCount}
               </span>
             )}
@@ -216,7 +216,7 @@ export default function Header() {
           {/* User Account */}
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="transition-colors p-1.5 hover:text-[#78e000]"
+            className="transition-colors p-1.5 hover:text-primary"
             title="Đăng nhập / Đăng ký"
           >
             <FiUser className="w-5 h-5" />
@@ -234,7 +234,7 @@ export default function Header() {
 
       {/* Search Bar Overlay (Covers TopBar & Header) */}
       {isSearchOpen && (
-        <div className="fixed top-0 left-0 w-full h-[116px] md:h-[124px] bg-[#001a2c] z-[100] shadow-2xl flex items-center transition-all animate-in slide-in-from-top-2">
+        <div className="fixed top-0 left-0 w-full h-[116px] md:h-[124px] bg-dark z-[100] shadow-2xl flex items-center transition-all animate-in slide-in-from-top-2">
           <div className="max-w-[1440px] w-full mx-auto px-6 sm:px-8 lg:px-12 relative flex items-center justify-between gap-4">
             <form onSubmit={handleSearch} className="flex-1 max-w-4xl mx-auto flex items-center gap-3">
               <div className="relative flex-1">
@@ -244,20 +244,20 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Bạn đang tìm giày gì hôm nay?"
-                  className="w-full bg-[#00223a] text-white pl-12 pr-4 py-3 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000] text-base"
+                  className="w-full bg-dark-card text-white pl-12 pr-4 py-3 rounded-none border border-dark-borderHover focus:outline-none focus:border-primary text-base"
                   autoFocus
                 />
               </div>
               <button
                 type="submit"
-                className="hidden sm:block bg-[#78e000] hover:bg-[#84cc16] text-black font-black px-8 py-3 rounded-none text-base uppercase tracking-wider transition-colors"
+                className="hidden sm:block bg-primary hover:bg-primary-hover text-black font-black px-8 py-3 rounded-none text-base uppercase tracking-wider transition-colors"
               >
                 Tìm kiếm
               </button>
             </form>
             <button
               onClick={() => setIsSearchOpen(false)}
-              className="text-gray-300 hover:text-[#78e000] transition-colors p-2"
+              className="text-gray-300 hover:text-primary transition-colors p-2"
               title="Đóng tìm kiếm"
             >
               <FiX className="w-8 h-8" />
@@ -268,7 +268,7 @@ export default function Header() {
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#001a2c] border-b border-[#002b47] px-6 py-6">
+        <div className="lg:hidden bg-dark border-b border-dark-border px-6 py-6">
           <Suspense
             fallback={
               <div className="space-y-2">

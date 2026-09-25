@@ -450,7 +450,7 @@ function ShopContent() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       {/* 1. HERO TOP BANNER (Sneaker Shelves with Dark Overlay matching design) */}
-      <div className="relative w-full h-48 sm:h-56 md:h-64 bg-[#001a2c] overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-48 sm:h-56 md:h-64 bg-dark overflow-hidden flex items-center justify-center">
         <Image
           src="/images/contact_hero_shelves.jpg"
           alt="Giày Thể Thao Chính Hãng"
@@ -471,7 +471,7 @@ function ShopContent() {
               Giày Thể Thao
             </Link>
             <span>&gt;</span>
-            <span className="text-[#78e000] font-bold">{breadcrumbLabel}</span>
+            <span className="text-primary font-bold">{breadcrumbLabel}</span>
           </div>
 
           {/* Big Title */}
@@ -501,7 +501,7 @@ function ShopContent() {
                   selectedSize !== null) && (
                   <button
                     onClick={resetFilters}
-                    className="text-[11px] font-bold text-[#78e000] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1"
                   >
                     <FiX className="w-3 h-3" />
                     <span>Đặt lại</span>
@@ -529,7 +529,7 @@ function ShopContent() {
                         <div
                           className={`w-4 h-4 border transition-colors flex items-center justify-center ${
                             isChecked
-                              ? "bg-black border-black text-[#78e000]"
+                              ? "bg-black border-black text-primary"
                               : "border-gray-300 bg-white"
                           }`}
                         >
@@ -560,11 +560,11 @@ function ShopContent() {
                       <div
                         className={`w-4 h-4 border transition-colors flex items-center justify-center ${
                           selectedPriceRangeIndex === idx
-                            ? "bg-black border-black text-[#78e000]"
+                            ? "bg-black border-black text-primary"
                             : "border-gray-300 bg-white"
                         }`}
                       >
-                        {selectedPriceRangeIndex === idx && <div className="w-1.5 h-1.5 bg-[#78e000]" />}
+                        {selectedPriceRangeIndex === idx && <div className="w-1.5 h-1.5 bg-primary" />}
                       </div>
                       <span>{range.label}</span>
                     </label>
@@ -621,7 +621,7 @@ function ShopContent() {
                         onClick={() => setSelectedSize(isSelected ? null : sz)}
                         className={`h-9 border text-xs font-extrabold transition-all flex items-center justify-center ${
                           isSelected
-                            ? "bg-black text-[#78e000] border-black"
+                            ? "bg-black text-primary border-black"
                             : "bg-white text-gray-800 border-gray-200 hover:border-black"
                         }`}
                       >
@@ -692,7 +692,7 @@ function ShopContent() {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-extrabold text-gray-900 group-hover:text-[#78e000] transition-colors truncate">
+                      <h4 className="text-xs font-extrabold text-gray-900 group-hover:text-primary transition-colors truncate">
                         {item.name}
                       </h4>
                       <p className="text-[10px] text-gray-400 font-medium">{item.sub}</p>
@@ -725,7 +725,7 @@ function ShopContent() {
                       onClick={() => setSubTab(tab)}
                       className={`whitespace-nowrap pb-1.5 border-b-2 transition-all font-extrabold uppercase tracking-wide ${
                         isActive
-                          ? "border-[#78e000] text-black"
+                          ? "border-primary text-black"
                           : "border-transparent text-gray-400 hover:text-black"
                       }`}
                     >
@@ -780,7 +780,7 @@ function ShopContent() {
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="px-6 py-2.5 bg-[#78e000] text-black font-extrabold text-xs uppercase tracking-wider shadow hover:brightness-105"
+                  className="px-6 py-2.5 bg-primary text-black font-extrabold text-xs uppercase tracking-wider shadow hover:brightness-105"
                 >
                   Đặt lại tất cả bộ lọc
                 </button>

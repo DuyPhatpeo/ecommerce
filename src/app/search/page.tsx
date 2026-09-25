@@ -122,7 +122,7 @@ function SearchContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Nhập tên giày, thương hiệu (Nike, Adidas, Ultraboost...)"
-              className="w-full bg-white text-gray-900 pl-14 pr-6 py-4 rounded-none border border-gray-200 text-sm focus:outline-none focus:border-[#78e000] focus:ring-2 focus:ring-[#78e000]/20 shadow-md"
+              className="w-full bg-white text-gray-900 pl-14 pr-6 py-4 rounded-none border border-gray-200 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-md"
             />
           </div>
 
@@ -155,7 +155,7 @@ function SearchContent() {
             </p>
             <button
               onClick={() => setQuery("")}
-              className="px-6 py-2.5 bg-[#78e000] text-black font-extrabold text-xs rounded-none shadow hover:scale-105 transition-transform"
+              className="px-6 py-2.5 bg-primary text-black font-extrabold text-xs rounded-none shadow hover:scale-105 transition-transform"
             >
               Xem tất cả sản phẩm
             </button>

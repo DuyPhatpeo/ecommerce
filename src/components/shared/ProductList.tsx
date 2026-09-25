@@ -47,7 +47,7 @@ const ShopList: React.FC<ShopListProps> = ({
               onClick={clearFilters}
               icon={<FiX size={16} />}
               label={"Clear All"}
-              className="bg-gray-900 text-white px-5 py-2.5 rounded-none font-semibold text-sm shadow hover:bg-[#78e000] hover:text-black transition-all duration-300"
+              className="bg-gray-900 text-white px-5 py-2.5 rounded-none font-semibold text-sm shadow hover:bg-primary hover:text-black transition-all duration-300"
             />
           </div>
         ) : (
@@ -76,7 +76,7 @@ const ShopList: React.FC<ShopListProps> = ({
           <Button
             onClick={onSeeMore}
             label={"See More"}
-            className="px-5 py-2 bg-[#78e000] hover:bg-[#6ecb00] text-black rounded-none font-semibold shadow-sm transition"
+            className="px-5 py-2 bg-primary hover:bg-[#6ecb00] text-black rounded-none font-semibold shadow-sm transition"
           />
         </div>
       )}

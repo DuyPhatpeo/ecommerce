@@ -80,7 +80,7 @@ function CartContent() {
             </button>
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center gap-2 bg-[#78e000] hover:bg-[#84cc16] text-black font-bold text-xs px-6 py-2.5 rounded-none shadow-sm transition-all"
+              className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-black font-bold text-xs px-6 py-2.5 rounded-none shadow-sm transition-all"
             >
               <span>Mua sắm ngay</span>
               <FiArrowRight className="w-3.5 h-3.5" />
@@ -262,7 +262,7 @@ function CartContent() {
             <div className="space-y-2.5 pt-2">
               <Link
                 href="/checkout"
-                className="w-full py-3 bg-[#78e000] hover:bg-[#84cc16] text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all flex items-center justify-center active:scale-[0.99]"
+                className="w-full py-3 bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all flex items-center justify-center active:scale-[0.99]"
               >
                 Thanh toán
               </Link>

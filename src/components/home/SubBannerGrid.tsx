@@ -11,7 +11,7 @@ export default function SubBannerGrid() {
         {/* ========================================================
             1. LEFT LARGE BANNER: NIKE ZOOM FLY 6 (TENNIS)
         ======================================================== */}
-        <div className="lg:col-span-6 relative rounded-none overflow-hidden flex flex-col justify-end p-6 sm:p-8 lg:p-10 shadow-md min-h-[480px] sm:min-h-[560px] lg:min-h-0 lg:h-full bg-[#001a2c] group">
+        <div className="lg:col-span-6 relative rounded-none overflow-hidden flex flex-col justify-end p-6 sm:p-8 lg:p-10 shadow-md min-h-[480px] sm:min-h-[560px] lg:min-h-0 lg:h-full bg-dark group">
           <Image
             src="/images/banners/nike-tennis-zoomfly.png"
             alt="BST Giày Nam Tennies Nike Zoom Fly 6"
@@ -34,7 +34,7 @@ export default function SubBannerGrid() {
             </p>
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-xs sm:text-sm px-7 py-3 rounded-none shadow-lg transition-colors active:scale-95"
+              className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-black font-extrabold text-xs sm:text-sm px-7 py-3 rounded-none shadow-lg transition-colors active:scale-95"
             >
               Khám phá bộ sưu tập
             </Link>
@@ -67,7 +67,7 @@ export default function SubBannerGrid() {
                 </p>
                 <Link
                   href="/shop?category=men"
-                  className="inline-block text-xs sm:text-[13px] font-bold text-white border-b-2 border-white pb-0.5 hover:text-[#78e000] hover:border-[#78e000] transition-colors"
+                  className="inline-block text-xs sm:text-[13px] font-bold text-white border-b-2 border-white pb-0.5 hover:text-primary hover:border-primary transition-colors"
                 >
                   Mua sắm ngay
                 </Link>
@@ -94,7 +94,7 @@ export default function SubBannerGrid() {
                 </p>
                 <Link
                   href="/shop?category=women"
-                  className="inline-block text-xs sm:text-[13px] font-bold text-white border-b-2 border-white pb-0.5 hover:text-[#78e000] hover:border-[#78e000] transition-colors"
+                  className="inline-block text-xs sm:text-[13px] font-bold text-white border-b-2 border-white pb-0.5 hover:text-primary hover:border-primary transition-colors"
                 >
                   Mua sắm ngay
                 </Link>
@@ -117,7 +117,7 @@ export default function SubBannerGrid() {
               </p>
               <Link
                 href="/shop"
-                className="inline-block text-xs sm:text-sm font-extrabold text-black border-b-2 border-black pb-0.5 hover:text-[#78e000] hover:border-[#78e000] transition-colors"
+                className="inline-block text-xs sm:text-sm font-extrabold text-black border-b-2 border-black pb-0.5 hover:text-primary hover:border-primary transition-colors"
               >
                 Mua sắm ngay
               </Link>

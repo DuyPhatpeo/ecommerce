@@ -32,7 +32,7 @@ export default function StoreNewsletterSection() {
 
   return (
     <section id="showroom-section" className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      <div className="bg-[#001a2c] rounded-none p-8 sm:p-12 lg:p-14 text-white border border-[#002b47] shadow-2xl">
+      <div className="bg-dark rounded-none p-8 sm:p-12 lg:p-14 text-white border border-dark-border shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Form: Ưu Đãi Đặc Biệt (6 cols on lg) */}
           <div className="lg:col-span-6 space-y-5">
@@ -44,7 +44,7 @@ export default function StoreNewsletterSection() {
             </p>
 
             {subscribed ? (
-              <div className="bg-[#78e000]/20 border border-[#78e000] text-[#78e000] p-4 rounded-none text-sm font-bold">
+              <div className="bg-primary/20 border border-primary text-primary p-4 rounded-none text-sm font-bold">
                 ✓ Cảm ơn bạn đã đăng ký nhận bản tin của DINOSPORTS!
               </div>
             ) : (
@@ -55,11 +55,11 @@ export default function StoreNewsletterSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Nhập địa chỉ email của bạn"
-                  className="flex-1 bg-[#00223a] text-white text-xs sm:text-sm px-5 py-3.5 rounded-none border border-[#003554] focus:outline-none focus:border-[#78e000]"
+                  className="flex-1 bg-dark-card text-white text-xs sm:text-sm px-5 py-3.5 rounded-none border border-dark-borderHover focus:outline-none focus:border-primary"
                 />
                 <button
                   type="submit"
-                  className="bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-none shadow transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+                  className="bg-primary hover:bg-primary-hover text-black font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-none shadow transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
                 >
                   Đăng ký
                 </button>
@@ -96,7 +96,7 @@ export default function StoreNewsletterSection() {
             <div className="space-y-4 pt-2 border-t border-gray-800/80">
               {showrooms.map((s, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <FiMapPin className="w-4 h-4 text-[#78e000] mt-1 flex-shrink-0" />
+                  <FiMapPin className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
                   <div className="text-xs">
                     <p className="text-gray-200 font-bold">{s.address}</p>
                     <p className="text-gray-400 flex items-center gap-1.5 mt-0.5">

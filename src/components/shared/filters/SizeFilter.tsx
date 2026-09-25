@@ -53,7 +53,7 @@ const SizeFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
               className={`cursor-pointer px-3 py-1.5 border rounded-none text-sm font-medium transition-all 
                 ${
                   selected.includes(size.toString())
-                    ? "bg-[#78e000] text-black border-[#78e000] font-bold"
+                    ? "bg-primary text-black border-primary font-bold"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                 }`}
             >

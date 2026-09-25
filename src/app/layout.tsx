@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased selection:bg-[#78e000] selection:text-black">
+      <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased selection:bg-primary selection:text-black">
         <ClientProviders>
           <TopBar />
           <Header />

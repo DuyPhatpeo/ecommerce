@@ -51,10 +51,10 @@ export default function FavoriteSportsSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
             <div className="relative z-10 flex items-center justify-between w-full">
-              <span className="text-white font-black text-lg tracking-wider uppercase group-hover:text-[#78e000] transition-colors">
+              <span className="text-white font-black text-lg tracking-wider uppercase group-hover:text-primary transition-colors">
                 {s.name}
               </span>
-              <div className="w-8 h-8 rounded-none bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:bg-[#78e000] group-hover:text-black transition-all">
+              <div className="w-8 h-8 rounded-none bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:bg-primary group-hover:text-black transition-all">
                 <FiChevronRight className="w-5 h-5" />
               </div>
             </div>

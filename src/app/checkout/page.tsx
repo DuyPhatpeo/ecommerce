@@ -160,7 +160,7 @@ function CheckoutContent() {
                     value={form.fullName}
                     onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                     placeholder="Họ tên"
-                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   />
                   <input
                     type="tel"
@@ -168,7 +168,7 @@ function CheckoutContent() {
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder="Số điện thoại"
-                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -179,7 +179,7 @@ function CheckoutContent() {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="Email"
-                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ function CheckoutContent() {
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Địa chỉ"
-                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -207,7 +207,7 @@ function CheckoutContent() {
                         ward: "",
                       })
                     }
-                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="">Chọn Tỉnh/Thành phố</option>
                     {provinces.map((p) => (
@@ -223,7 +223,7 @@ function CheckoutContent() {
                     onChange={(e) =>
                       setForm({ ...form, district: e.target.value, ward: "" })
                     }
-                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 disabled:bg-gray-50 disabled:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 disabled:bg-gray-50 disabled:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="">Chọn Quận/Huyện</option>
                     {districtOptions.map((d) => (
@@ -237,7 +237,7 @@ function CheckoutContent() {
                     value={form.ward}
                     disabled={!form.district}
                     onChange={(e) => setForm({ ...form, ward: e.target.value })}
-                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 disabled:bg-gray-50 disabled:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3 py-2.5 text-xs sm:text-sm text-gray-700 disabled:bg-gray-50 disabled:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="">Chọn Phường/Xã</option>
                     {wardOptions.map((w) => (
@@ -255,7 +255,7 @@ function CheckoutContent() {
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                     placeholder="Ghi chú"
-                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
               </div>
@@ -269,8 +269,8 @@ function CheckoutContent() {
                 <div className="pt-1">
                   <label className="flex items-center gap-3 cursor-pointer select-none">
                     {/* Styled radio button */}
-                    <div className="w-5 h-5 rounded-none border-2 border-[#78e000] flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 rounded-none bg-[#78e000]" />
+                    <div className="w-5 h-5 rounded-none border-2 border-primary flex items-center justify-center">
+                      <div className="w-2.5 h-2.5 rounded-none bg-primary" />
                     </div>
 
                     {/* Banknote Cash Icon */}
@@ -359,7 +359,7 @@ function CheckoutContent() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 bg-[#78e000] hover:bg-[#84cc16] disabled:opacity-60 text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all flex items-center justify-center active:scale-[0.99]"
+                  className="w-full py-3 bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all flex items-center justify-center active:scale-[0.99]"
                 >
                   {isSubmitting ? "Đang xử lý đơn hàng..." : "Hoàn tất đơn hàng"}
                 </button>

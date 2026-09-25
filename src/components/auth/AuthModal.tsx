@@ -47,7 +47,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <button
               className={`flex-1 py-4 text-sm font-black tracking-wider uppercase transition-colors ${
                 activeTab === "login"
-                ? "text-[#001a2c] border-b-2 border-[#78e000] bg-gray-50/50"
+                ? "text-dark border-b-2 border-primary bg-gray-50/50"
                 : "text-gray-400 hover:text-gray-900 hover:bg-gray-50"
             }`}
             onClick={() => setActiveTab("login")}
@@ -57,7 +57,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <button
             className={`relative flex-1 py-4 text-sm font-black tracking-wider uppercase transition-colors ${
               activeTab === "register"
-                ? "text-[#001a2c] border-b-2 border-[#78e000] bg-gray-50/50"
+                ? "text-dark border-b-2 border-primary bg-gray-50/50"
                 : "text-gray-400 hover:text-gray-900 hover:bg-gray-50"
             }`}
             onClick={() => setActiveTab("register")}
@@ -68,7 +68,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Content */}
         <div className="p-6 sm:p-8">
-          <h2 className="text-xl font-black text-center mb-6 text-[#001a2c]">
+          <h2 className="text-xl font-black text-center mb-6 text-dark">
             {activeTab === "login" ? "CHÀO MỪNG TRỞ LẠI!" : "TẠO TÀI KHOẢN MỚI"}
           </h2>
 
@@ -81,7 +81,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <input
                   type="text"
                   required
-                  className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-[#001a2c] focus:ring-1 focus:ring-[#001a2c] transition-all rounded-none"
+                  className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-dark focus:ring-1 focus:ring-dark transition-all rounded-none"
                   placeholder="Nhập họ và tên"
                 />
               </div>
@@ -94,7 +94,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <input
                 type="email"
                 required
-                className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-[#001a2c] focus:ring-1 focus:ring-[#001a2c] transition-all rounded-none"
+                className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-dark focus:ring-1 focus:ring-dark transition-all rounded-none"
                 placeholder="Nhập email của bạn"
               />
             </div>
@@ -106,7 +106,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <input
                 type="password"
                 required
-                className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-[#001a2c] focus:ring-1 focus:ring-[#001a2c] transition-all rounded-none"
+                className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-dark focus:ring-1 focus:ring-dark transition-all rounded-none"
                 placeholder="Nhập mật khẩu"
               />
             </div>
@@ -121,7 +121,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
             <button
               type="submit"
-              className="w-full bg-[#78e000] hover:bg-[#84cc16] text-black font-black uppercase tracking-widest text-sm py-3.5 mt-2 transition-transform active:scale-[0.98]"
+              className="w-full bg-primary hover:bg-primary-hover text-black font-black uppercase tracking-widest text-sm py-3.5 mt-2 transition-transform active:scale-[0.98]"
             >
               {activeTab === "login" ? "ĐĂNG NHẬP" : "ĐĂNG KÝ"}
             </button>

@@ -236,7 +236,7 @@ function OrderSuccessContent() {
           <div className="pt-2">
             <Link
               href="/shop"
-              className="inline-block px-8 py-2.5 bg-[#78e000] hover:bg-[#84cc16] text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all active:scale-[0.99]"
+              className="inline-block px-8 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm rounded-none shadow-sm transition-all active:scale-[0.99]"
             >
               Tiếp tục mua sắm
             </Link>

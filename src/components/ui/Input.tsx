@@ -7,7 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const baseInputStyle =
-  "border-2 rounded-none px-3 py-2 text-sm focus:border-[#78e000] focus:outline-none transition";
+  "border-2 rounded-none px-3 py-2 text-sm focus:border-primary focus:outline-none transition";
 
 const Input: React.FC<InputProps> = ({
   label,

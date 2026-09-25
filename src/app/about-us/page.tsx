@@ -38,7 +38,7 @@ export default function AboutUsPage() {
 
           {/* Brand Card Overlay on Bottom Left */}
           <div className="absolute bottom-0 left-0 bg-white pt-6 pr-12 pb-6 pl-6 sm:pt-8 sm:pr-16 sm:pb-8 sm:pl-10 rounded-tr-[40px] md:rounded-tr-[60px] z-10 flex items-center">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#001a2c] tracking-tight mb-0">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl text-dark tracking-tight mb-0">
               DINO<span className="font-black">SPORTS</span>
             </h2>
           </div>
@@ -48,12 +48,12 @@ export default function AboutUsPage() {
       {/* ========================================================
           2. MISSION & VISION STATEMENT (DEEP NAVY ACCENT SECTION)
       ======================================================== */}
-      <section className="bg-[#001a2c] text-white py-16 sm:py-20">
+      <section className="bg-dark text-white py-16 sm:py-20">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10">
           {/* Main Statement Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight max-w-5xl tracking-tight">
             DINOSPORTS nơi khách hàng tìm thấy những{" "}
-            <span className="text-[#78e000] underline underline-offset-8 decoration-2 decoration-[#78e000]">
+            <span className="text-primary underline underline-offset-8 decoration-2 decoration-primary">
               sản phẩm chất lượng – hợp xu hướng – đúng cá tính
             </span>
             , đồng hành cùng phong cách sống năng động
@@ -134,8 +134,8 @@ export default function AboutUsPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
             {/* Green Stat Badge */}
-            <div className="relative z-10 bg-[#001a2c]/85 backdrop-blur-sm border border-[#78e000]/40 p-6 sm:p-7 max-w-xs text-white">
-              <span className="text-3xl sm:text-4xl font-black text-[#78e000] tracking-tight block mb-1">
+            <div className="relative z-10 bg-dark/85 backdrop-blur-sm border border-primary/40 p-6 sm:p-7 max-w-xs text-white">
+              <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight block mb-1">
                 *300+
               </span>
               <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wide">
@@ -173,11 +173,11 @@ export default function AboutUsPage() {
               </p>
               <ul className="space-y-1.5 text-xs text-gray-600 font-medium">
                 <li className="flex items-center gap-2">
-                  <FiCheck className="text-[#78e000] stroke-[3]" />
+                  <FiCheck className="text-primary stroke-[3]" />
                   <span>Top 100 Thương hiệu thể thao tin cậy 2026</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <FiCheck className="text-[#78e000] stroke-[3]" />
+                  <FiCheck className="text-primary stroke-[3]" />
                   <span>Hệ thống showroom tiện nghi tại Hà Nội và TP.HCM</span>
                 </li>
               </ul>
@@ -234,7 +234,7 @@ export default function AboutUsPage() {
 
           {/* Right: Review Details & Quotation (6 cols on lg) */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-[#78e000]/20 text-black px-3.5 py-1 text-xs font-black uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 bg-primary/20 text-black px-3.5 py-1 text-xs font-black uppercase tracking-wider">
               <FiCheck className="stroke-[3]" />
               <span>Được chứng thực từ hơn 10.000+ khách hàng</span>
             </div>
@@ -250,7 +250,7 @@ export default function AboutUsPage() {
             </p>
 
             {/* Review Quote Card */}
-            <div className="bg-[#f8f9fa] border-l-4 border-[#78e000] p-6 sm:p-8 space-y-4 shadow-sm">
+            <div className="bg-[#f8f9fa] border-l-4 border-primary p-6 sm:p-8 space-y-4 shadow-sm">
               <div className="flex items-center gap-1 text-yellow-400">
                 {[...Array(5)].map((_, i) => (
                   <FiStar key={i} className="fill-current w-4 h-4" />

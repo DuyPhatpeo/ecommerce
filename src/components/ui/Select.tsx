@@ -47,14 +47,14 @@ const Select: React.FC<SelectProps> = ({
           w-48 bg-white border-2 border-gray-200
           rounded-none px-4 py-2 flex items-center justify-between
           shadow-sm font-medium text-gray-700 text-sm
-          hover:border-[#78e000] transition-all
+          hover:border-primary transition-all
         "
       >
         <span>{selectedLabel}</span>
         <FiChevronDown
           size={18}
           className={`transition-transform ${
-            open ? "rotate-180 text-[#78e000]" : "text-gray-500"
+            open ? "rotate-180 text-primary" : "text-gray-500"
           }`}
         />
       </button>
@@ -78,7 +78,7 @@ const Select: React.FC<SelectProps> = ({
                 w-full text-left px-4 py-2 text-sm rounded-none transition-all
                 ${
                   value === opt.value
-                    ? "bg-[#78e000] text-black font-bold"
+                    ? "bg-primary text-black font-bold"
                     : "text-gray-700 hover:bg-gray-100"
                 }
               `}

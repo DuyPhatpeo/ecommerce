@@ -28,7 +28,7 @@ function NewsDetailContent() {
             Tin tức
           </Link>
           <span>&gt;</span>
-          <span className="text-[#78e000] font-semibold line-clamp-1">{article.title}</span>
+          <span className="text-primary font-semibold line-clamp-1">{article.title}</span>
         </div>
       </div>
 
@@ -37,7 +37,7 @@ function NewsDetailContent() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-[#001a2c] text-[#78e000] text-xs font-black uppercase px-3.5 py-1 tracking-wider">
+              <span className="bg-dark text-primary text-xs font-black uppercase px-3.5 py-1 tracking-wider">
                 {article.category}
               </span>
               <span className="text-xs text-gray-400 flex items-center gap-1.5">
@@ -54,7 +54,7 @@ function NewsDetailContent() {
               {article.title}
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-600 font-medium leading-relaxed border-l-4 border-[#78e000] pl-4">
+            <p className="text-base sm:text-lg text-gray-600 font-medium leading-relaxed border-l-4 border-primary pl-4">
               {article.excerpt}
             </p>
           </div>
@@ -84,7 +84,7 @@ function NewsDetailContent() {
               Các thương hiệu thể thao hàng đầu như Nike, Adidas và ASICS liên tục nghiên cứu và ứng dụng những giải pháp giảm chấn tiên tiến nhất. Từ lớp bọt siêu nhẹ phản hồi năng lượng cao cho đến cấu trúc đĩa đệm carbon hỗ trợ bật nảy, mỗi đôi giày sinh ra đều là kết tinh của hàng ngàn giờ thử nghiệm trong phòng lab và trên thực tế đường chạy.
             </p>
 
-            <blockquote className="bg-gray-50 border-l-4 border-[#78e000] p-6 my-6 text-gray-800 font-bold italic">
+            <blockquote className="bg-gray-50 border-l-4 border-primary p-6 my-6 text-gray-800 font-bold italic">
               “Một đôi giày thể thao tuyệt vời không chỉ giúp bạn chạy nhanh hơn mà còn bảo vệ từng khớp chân và duy trì cảm hứng vận động bất tận mỗi ngày.”
             </blockquote>
 
@@ -107,7 +107,7 @@ function NewsDetailContent() {
           <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
             <Link
               href="/news"
-              className="inline-flex items-center gap-2 text-sm font-black text-gray-900 hover:text-[#78e000] transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-black text-gray-900 hover:text-primary transition-colors"
             >
               <FiArrowLeft className="w-4 h-4" />
               <span>Quay lại danh sách tin tức</span>
@@ -137,10 +137,10 @@ function NewsDetailContent() {
                     />
                   </div>
                   <div className="p-5">
-                    <span className="text-[10px] font-bold text-[#78e000] uppercase tracking-wider block mb-2">
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-wider block mb-2">
                       {item.category}
                     </span>
-                    <h4 className="font-extrabold text-sm text-gray-900 line-clamp-2 group-hover:text-[#78e000] transition-colors">
+                    <h4 className="font-extrabold text-sm text-gray-900 line-clamp-2 group-hover:text-primary transition-colors">
                       {item.title}
                     </h4>
                   </div>

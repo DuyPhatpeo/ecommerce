@@ -23,9 +23,9 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full overflow-hidden text-gray-300 bg-[#001a2c]">
+    <footer className="relative w-full overflow-hidden text-gray-300 bg-dark">
       {/* 1. Upper Footer: Newsletter & Showrooms */}
-      <div className="border-b border-[#002b47] py-12 lg:py-14">
+      <div className="border-b border-dark-border py-12 lg:py-14">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Newsletter */}
@@ -38,7 +38,7 @@ export default function Footer() {
               </p>
 
               {subscribed ? (
-                <div className="bg-[#78e000]/15 border border-[#78e000] text-[#78e000] px-4 py-3 rounded-none text-xs font-bold inline-block">
+                <div className="bg-primary/15 border border-primary text-primary px-4 py-3 rounded-none text-xs font-bold inline-block">
                   ✓ Cảm ơn bạn đã đăng ký nhận tin của DINOSPORTS!
                 </div>
               ) : (
@@ -49,11 +49,11 @@ export default function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Nhập địa chỉ email của bạn"
-                    className="flex-1 bg-[#00223a] border border-[#003554] rounded-none px-4 py-2.5 text-white placeholder-gray-400 text-xs sm:text-sm focus:outline-none focus:border-[#78e000]"
+                    className="flex-1 bg-dark-card border border-dark-borderHover rounded-none px-4 py-2.5 text-white placeholder-gray-400 text-xs sm:text-sm focus:outline-none focus:border-primary"
                   />
                   <button
                     type="submit"
-                    className="bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-none shadow transition-transform active:scale-95 whitespace-nowrap"
+                    className="bg-primary hover:bg-primary-hover text-black font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-none shadow transition-transform active:scale-95 whitespace-nowrap"
                   >
                     Đăng ký
                   </button>
@@ -120,7 +120,7 @@ export default function Footer() {
               <ul className="space-y-2.5 text-xs sm:text-[13px] text-gray-200 font-medium drop-shadow-sm">
                 {["Nike", "Adidas", "Under Armour", "New Balance", "MLB", "Puma", "Fila", "Converse"].map((item) => (
                   <li key={item}>
-                    <Link href={`/shop?brand=${encodeURIComponent(item)}`} className="hover:text-[#78e000] transition-colors">
+                    <Link href={`/shop?brand=${encodeURIComponent(item)}`} className="hover:text-primary transition-colors">
                       {item}
                     </Link>
                   </li>
@@ -144,7 +144,7 @@ export default function Footer() {
                   { name: "Khách hàng thân thiết", href: "/account" },
                 ].map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="hover:text-[#78e000] transition-colors">
+                    <Link href={link.href} className="hover:text-primary transition-colors">
                       {link.name}
                     </Link>
                   </li>
@@ -172,7 +172,7 @@ export default function Footer() {
                       href={link.href}
                       target={link.href.startsWith("http") ? "_blank" : "_self"}
                       rel="noreferrer"
-                      className="hover:text-[#78e000] transition-colors"
+                      className="hover:text-primary transition-colors"
                     >
                       {link.name}
                     </a>
@@ -185,7 +185,7 @@ export default function Footer() {
       </div>
 
       {/* 3. Sub-Footer Copyright Bar */}
-      <div className="bg-[#001422] border-t border-[#002b47] py-4 text-xs text-gray-400">
+      <div className="bg-dark-deep border-t border-dark-border py-4 text-xs text-gray-400">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Vietnam Flag Badge */}
           <div className="flex items-center gap-2 select-none">
@@ -197,10 +197,10 @@ export default function Footer() {
 
           {/* Links & Copyright */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-gray-400">
-            <Link href="/about-us#privacy" className="hover:text-[#78e000] transition-colors">
+            <Link href="/about-us#privacy" className="hover:text-primary transition-colors">
               Chính sách bảo mật
             </Link>
-            <Link href="/about-us#terms" className="hover:text-[#78e000] transition-colors">
+            <Link href="/about-us#terms" className="hover:text-primary transition-colors">
               Điều khoản sử dụng
             </Link>
             <span className="text-white font-semibold">

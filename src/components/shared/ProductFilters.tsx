@@ -137,7 +137,7 @@ const ProductFilters: React.FC<Props> = ({
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-[#f8f6f3]">
         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
-          <FiFilter size={18} className="text-[#78e000]" /> Filters
+          <FiFilter size={18} className="text-primary" /> Filters
         </h3>
         <Button
           onClick={toggleFilters}
@@ -156,7 +156,7 @@ const ProductFilters: React.FC<Props> = ({
             <Button
               onClick={clearFilters}
               label="Clear All"
-              className="text-xs text-[#78e000] hover:underline font-medium"
+              className="text-xs text-primary hover:underline font-medium"
             />
           </div>
 

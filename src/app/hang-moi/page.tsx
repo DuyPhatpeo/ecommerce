@@ -208,7 +208,7 @@ export default function HangMoiPage() {
       {/* ========================================================
           1. HERO SLIDER BANNER: CITY WALKERS
       ======================================================== */}
-      <section className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-[#001a2c] overflow-hidden flex items-center justify-center">
+      <section className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-dark overflow-hidden flex items-center justify-center">
         {/* Background Slide Image */}
         <Image
           src={currentSlide.image}
@@ -234,7 +234,7 @@ export default function HangMoiPage() {
           <div className="pt-2">
             <Link
               href={currentSlide.link}
-              className="inline-block bg-white hover:bg-[#78e000] text-black font-black text-xs sm:text-sm px-10 py-3.5 rounded-none uppercase tracking-widest transition-all duration-300 shadow-xl hover:scale-105 active:scale-95"
+              className="inline-block bg-white hover:bg-primary text-black font-black text-xs sm:text-sm px-10 py-3.5 rounded-none uppercase tracking-widest transition-all duration-300 shadow-xl hover:scale-105 active:scale-95"
             >
               {currentSlide.cta}
             </Link>
@@ -265,7 +265,7 @@ export default function HangMoiPage() {
               key={idx}
               onClick={() => setActiveSlide(idx)}
               className={`h-1.5 transition-all ${
-                activeSlide === idx ? "w-10 bg-[#78e000]" : "w-4 bg-white/40"
+                activeSlide === idx ? "w-10 bg-primary" : "w-4 bg-white/40"
               }`}
             />
           ))}
@@ -309,14 +309,14 @@ export default function HangMoiPage() {
                   {col.tag}
                 </span>
 
-                <h3 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight group-hover:text-[#78e000] transition-colors">
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight group-hover:text-primary transition-colors">
                   {col.title}
                 </h3>
 
                 <div className="pt-2">
                   <Link
                     href={col.link}
-                    className="inline-block bg-[#78e000] hover:bg-[#84cc16] text-black font-black text-xs px-6 py-2.5 rounded-none uppercase tracking-wider shadow-sm transition-transform hover:scale-105 active:scale-95"
+                    className="inline-block bg-primary hover:bg-primary-hover text-black font-black text-xs px-6 py-2.5 rounded-none uppercase tracking-wider shadow-sm transition-transform hover:scale-105 active:scale-95"
                   >
                     Khám phá bộ sưu tập
                   </Link>
@@ -349,7 +349,7 @@ export default function HangMoiPage() {
               className="bg-white hover:bg-gray-50 border border-gray-200 p-4 sm:p-5 flex items-center justify-between group transition-all shadow-sm hover:shadow"
             >
               <div className="flex items-center gap-4 sm:gap-6">
-                <span className="w-10 h-10 bg-gray-100 group-hover:bg-[#78e000] text-gray-700 group-hover:text-black font-black text-xs sm:text-sm flex items-center justify-center transition-colors">
+                <span className="w-10 h-10 bg-gray-100 group-hover:bg-primary text-gray-700 group-hover:text-black font-black text-xs sm:text-sm flex items-center justify-center transition-colors">
                   {item.number}
                 </span>
                 <span className="text-sm sm:text-base font-extrabold text-gray-900 group-hover:text-black transition-colors">
@@ -381,7 +381,7 @@ export default function HangMoiPage() {
           </h2>
           <Link
             href="/shop"
-            className="bg-[#78e000] hover:bg-[#84cc16] text-black font-black text-xs px-6 py-2.5 rounded-none uppercase tracking-wider shadow transition-transform hover:scale-105 active:scale-95"
+            className="bg-primary hover:bg-primary-hover text-black font-black text-xs px-6 py-2.5 rounded-none uppercase tracking-wider shadow transition-transform hover:scale-105 active:scale-95"
           >
             Xem tất cả sản phẩm
           </Link>

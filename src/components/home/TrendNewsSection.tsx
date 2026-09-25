@@ -56,7 +56,7 @@ export default function TrendNewsSection() {
             <span className="inline-block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
               Tin tức nổi bật
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-gray-900 leading-snug group-hover:text-[#78e000] transition-colors">
+            <h3 className="text-2xl sm:text-3xl font-black text-gray-900 leading-snug group-hover:text-primary transition-colors">
               Phong cách athleisure lên ngôi trong giới trẻ
             </h3>
           </div>
@@ -64,7 +64,7 @@ export default function TrendNewsSection() {
           <div className="pt-6">
             <Link
               href="/about-us"
-              className="inline-block text-xs font-black text-gray-900 uppercase tracking-widest border-b-2 border-black hover:border-[#78e000] hover:text-[#78e000] transition-all pb-1"
+              className="inline-block text-xs font-black text-gray-900 uppercase tracking-widest border-b-2 border-black hover:border-primary hover:text-primary transition-all pb-1"
             >
               XEM THÊM
             </Link>
@@ -93,7 +93,7 @@ export default function TrendNewsSection() {
                 <span className="inline-block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
                   {item.tag}
                 </span>
-                <h4 className="font-black text-base text-gray-900 line-clamp-2 leading-snug group-hover:text-[#78e000] transition-colors">
+                <h4 className="font-black text-base text-gray-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                   {item.title}
                 </h4>
               </div>
@@ -101,7 +101,7 @@ export default function TrendNewsSection() {
               <div className="pt-4 mt-2">
                 <Link
                   href="/about-us"
-                  className="inline-block text-xs font-black text-gray-900 uppercase tracking-widest border-b border-black hover:border-[#78e000] hover:text-[#78e000] transition-all pb-0.5"
+                  className="inline-block text-xs font-black text-gray-900 uppercase tracking-widest border-b border-black hover:border-primary hover:text-primary transition-all pb-0.5"
                 >
                   XEM THÊM
                 </Link>

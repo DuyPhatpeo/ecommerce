@@ -76,7 +76,7 @@ const AvailabilityFilter: React.FC<Props> = ({
                     {opt.label}
                   </span>
                 }
-                className="form-checkbox text-black border-gray-300 rounded-none focus:ring-black accent-[#78e000]"
+                className="form-checkbox text-black border-gray-300 rounded-none focus:ring-black accent-primary"
               />
             </label>
           ))}

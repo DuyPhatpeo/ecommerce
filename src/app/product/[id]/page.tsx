@@ -171,7 +171,7 @@ function ProductDetailContent() {
             {product.category || "Giày Nam"}
           </Link>
           <span>&gt;</span>
-          <span className="text-[#78e000] font-semibold">{product.title}</span>
+          <span className="text-primary font-semibold">{product.title}</span>
         </div>
       </div>
 
@@ -233,7 +233,7 @@ function ProductDetailContent() {
 
             {/* Price */}
             <div>
-              <div className="text-2xl sm:text-3xl font-black text-[#78e000]">
+              <div className="text-2xl sm:text-3xl font-black text-primary">
                 {formatPrice(product.price)}
               </div>
             </div>
@@ -253,7 +253,7 @@ function ProductDetailContent() {
                     onClick={() => setSelectedColor(idx)}
                     className={`w-6 h-6 rounded-none border-2 transition-all ${
                       selectedColor === idx
-                        ? "border-[#78e000] scale-110 shadow-sm"
+                        ? "border-primary scale-110 shadow-sm"
                         : "border-gray-300"
                     }`}
                     style={{ backgroundColor: color }}
@@ -289,14 +289,14 @@ function ProductDetailContent() {
             <div className="flex flex-col sm:flex-row gap-3 pt-3">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 inline-flex items-center justify-center gap-2 border border-[#78e000] text-[#78e000] hover:bg-[#78e000]/10 font-bold text-xs sm:text-sm py-3 px-5 rounded-none transition-colors whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center gap-2 border border-primary text-primary hover:bg-primary/10 font-bold text-xs sm:text-sm py-3 px-5 rounded-none transition-colors whitespace-nowrap"
               >
                 <FiShoppingBag className="w-4 h-4" />
                 <span>Thêm vào giỏ hàng</span>
               </button>
               <button
                 onClick={handleBuyNow}
-                className="flex-1 inline-flex items-center justify-center bg-[#78e000] hover:bg-[#84cc16] text-white font-extrabold text-xs sm:text-sm py-3 px-6 rounded-none shadow-sm transition-colors whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white font-extrabold text-xs sm:text-sm py-3 px-6 rounded-none shadow-sm transition-colors whitespace-nowrap"
               >
                 Mua ngay
               </button>

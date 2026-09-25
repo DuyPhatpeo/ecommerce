@@ -55,12 +55,12 @@ function AccountContent() {
           <div className="lg:col-span-4 bg-white rounded-none p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
             {/* User Profile Card */}
             <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
-              <div className="w-16 h-16 rounded-none bg-[#001a2c] border-2 border-[#78e000] flex items-center justify-center text-[#78e000] font-black text-xl shadow">
+              <div className="w-16 h-16 rounded-none bg-dark border-2 border-primary flex items-center justify-center text-primary font-black text-xl shadow">
                 DN
               </div>
               <div>
                 <h3 className="font-black text-base text-gray-900">{profile.name}</h3>
-                <span className="text-[11px] font-extrabold uppercase text-[#78e000] bg-[#001a2c] px-2.5 py-0.5 rounded-none inline-block mt-1">
+                <span className="text-[11px] font-extrabold uppercase text-primary bg-dark px-2.5 py-0.5 rounded-none inline-block mt-1">
                   VIP RUNNER
                 </span>
               </div>
@@ -78,7 +78,7 @@ function AccountContent() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-none text-xs sm:text-sm font-bold transition-all text-left ${
                     activeTab === tab.id
-                      ? "bg-[#78e000] text-black shadow-sm font-black"
+                      ? "bg-primary text-black shadow-sm font-black"
                       : "text-gray-700 hover:bg-gray-50"
                   }`}
                 >
@@ -137,7 +137,7 @@ function AccountContent() {
                     <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
                       Hạng thành viên
                     </label>
-                    <p className="text-sm font-black text-[#78e000] bg-[#001a2c] p-3.5 rounded-none">
+                    <p className="text-sm font-black text-primary bg-dark p-3.5 rounded-none">
                       {profile.memberTier}
                     </p>
                   </div>
@@ -156,7 +156,7 @@ function AccountContent() {
                 <div className="pt-4">
                   <button
                     onClick={() => alert("Chức năng cập nhật thông tin đã sẵn sàng!")}
-                    className="bg-[#001a2c] hover:bg-[#00253f] text-white font-bold text-xs px-6 py-3 rounded-none transition-colors"
+                    className="bg-dark hover:bg-dark-800 text-white font-bold text-xs px-6 py-3 rounded-none transition-colors"
                   >
                     Chỉnh Sửa Thông Tin
                   </button>
@@ -213,7 +213,7 @@ function AccountContent() {
                   </p>
                   <Link
                     href="/shop"
-                    className="inline-block bg-[#78e000] text-black font-extrabold text-xs px-6 py-2.5 rounded-none shadow hover:scale-105 transition-transform"
+                    className="inline-block bg-primary text-black font-extrabold text-xs px-6 py-2.5 rounded-none shadow hover:scale-105 transition-transform"
                   >
                     Khám phá sản phẩm ngay
                   </Link>

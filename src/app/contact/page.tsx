@@ -144,7 +144,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. HERO BANNER */}
-      <section className="relative w-full h-[220px] sm:h-[260px] bg-[#001a2c] flex flex-col items-center justify-center text-center overflow-hidden">
+      <section className="relative w-full h-[220px] sm:h-[260px] bg-dark flex flex-col items-center justify-center text-center overflow-hidden">
         <Image
           src="/images/contact_hero_shelves.jpg"
           alt="Sneaker Showcase Wall"
@@ -152,18 +152,18 @@ export default function ContactPage() {
           priority
           className="object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#001a2c]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-dark" />
 
         <div className="relative z-10 px-4 space-y-2">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-widest uppercase">
             LIÊN HỆ
           </h1>
           <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-300 font-medium">
-            <Link href="/" className="hover:text-[#78e000] transition-colors">
+            <Link href="/" className="hover:text-primary transition-colors">
               Trang chủ
             </Link>
             <span className="text-gray-500">&gt;</span>
-            <span className="text-[#78e000] font-bold">Liên hệ</span>
+            <span className="text-primary font-bold">Liên hệ</span>
           </div>
         </div>
       </section>
@@ -189,10 +189,10 @@ export default function ContactPage() {
             </div>
 
             {/* Dark Information Box */}
-            <div className="bg-[#00223a] rounded-none p-6 sm:p-7 text-white shadow-xl space-y-5 border border-[#002b47]">
+            <div className="bg-dark-card rounded-none p-6 sm:p-7 text-white shadow-xl space-y-5 border border-dark-border">
               {/* Address */}
               <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-none bg-[#78e000]/15 text-[#78e000] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-none bg-primary/15 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
                   <FiMapPin className="w-5 h-5" />
                 </div>
                 <div>
@@ -209,7 +209,7 @@ export default function ContactPage() {
 
               {/* Hotline */}
               <div className="flex items-start gap-3.5 pt-3 border-t border-gray-800">
-                <div className="w-9 h-9 rounded-none bg-[#78e000]/15 text-[#78e000] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-none bg-primary/15 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
                   <FiPhone className="w-5 h-5" />
                 </div>
                 <div>
@@ -218,7 +218,7 @@ export default function ContactPage() {
                   </span>
                   <a
                     href="tel:19006868"
-                    className="text-base sm:text-lg font-black text-white hover:text-[#78e000] transition-colors block mt-0.5"
+                    className="text-base sm:text-lg font-black text-white hover:text-primary transition-colors block mt-0.5"
                   >
                     1900 6868
                   </a>
@@ -227,7 +227,7 @@ export default function ContactPage() {
 
               {/* Email */}
               <div className="flex items-start gap-3.5 pt-3 border-t border-gray-800">
-                <div className="w-9 h-9 rounded-none bg-[#78e000]/15 text-[#78e000] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-none bg-primary/15 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
                   <FiMail className="w-5 h-5" />
                 </div>
                 <div>
@@ -236,7 +236,7 @@ export default function ContactPage() {
                   </span>
                   <a
                     href="mailto:contact@dinosports.vn"
-                    className="text-xs sm:text-sm font-bold text-gray-100 hover:text-[#78e000] transition-colors block mt-0.5"
+                    className="text-xs sm:text-sm font-bold text-gray-100 hover:text-primary transition-colors block mt-0.5"
                   >
                     contact@dinosports.vn
                   </a>
@@ -249,7 +249,7 @@ export default function ContactPage() {
           <div className="lg:col-span-7 bg-white rounded-none p-6 sm:p-8 lg:p-10 border border-gray-200 shadow-sm">
             {submitted ? (
               <div className="py-12 text-center space-y-4">
-                <div className="w-16 h-16 rounded-none bg-lime-100 text-[#78e000] flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 rounded-none bg-lime-100 text-primary flex items-center justify-center mx-auto">
                   <FiCheckCircle className="w-10 h-10" />
                 </div>
                 <h3 className="text-xl font-black text-gray-900">
@@ -294,7 +294,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Nhập họ và tên"
-                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                     />
                   </div>
                   <div>
@@ -307,7 +307,7 @@ export default function ContactPage() {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="Nhập số điện thoại"
-                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                     />
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="Nhập email"
-                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                     />
                   </div>
                   <div>
@@ -337,7 +337,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, subject: e.target.value })
                       }
                       placeholder="Vấn đề thắc mắc"
-                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                      className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                     />
                   </div>
                 </div>
@@ -354,7 +354,7 @@ export default function ContactPage() {
                       setFormData({ ...formData, address: e.target.value })
                     }
                     placeholder="Nhập địa chỉ"
-                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   />
                 </div>
 
@@ -368,7 +368,7 @@ export default function ContactPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, showroom: e.target.value })
                     }
-                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-700 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors"
+                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   >
                     <option value="">Chọn showroom gần nhất...</option>
                     <option value="estella">
@@ -399,7 +399,7 @@ export default function ContactPage() {
                       setFormData({ ...formData, message: e.target.value })
                     }
                     placeholder="Nội dung chi tiết lời nhắn..."
-                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] transition-colors resize-none"
+                    className="w-full bg-white border border-gray-300 rounded-none px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
                   />
                 </div>
 
@@ -413,7 +413,7 @@ export default function ContactPage() {
                       <div
                         className={`w-6 h-6 rounded-none border flex items-center justify-center transition-colors ${
                           captchaChecked
-                            ? "bg-[#78e000] border-[#78e000] text-black"
+                            ? "bg-primary border-primary text-black"
                             : "bg-white border-gray-400"
                         }`}
                       >
@@ -439,7 +439,7 @@ export default function ContactPage() {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-sm sm:text-base py-3.5 rounded-none shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2"
+                    className="w-full bg-primary hover:bg-primary-hover text-black font-extrabold text-sm sm:text-base py-3.5 rounded-none shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2"
                   >
                     <FiSend className="w-4 h-4" />
                     <span>Gửi tin nhắn</span>
@@ -586,7 +586,7 @@ export default function ContactPage() {
       <section className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20">
         <div className="space-y-4 mb-10">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-[#78e000] bg-black px-2.5 py-0.5 rounded-none tracking-wider uppercase">
+            <span className="text-[11px] font-bold text-primary bg-black px-2.5 py-0.5 rounded-none tracking-wider uppercase">
               FAQ
             </span>
             <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">
@@ -617,7 +617,7 @@ export default function ContactPage() {
                 Hỗ trợ ngay 24/7 qua hotline:{" "}
                 <a
                   href="tel:02838767888"
-                  className="font-bold text-black hover:text-[#78e000]"
+                  className="font-bold text-black hover:text-primary"
                 >
                   (028) 3876 7888
                 </a>

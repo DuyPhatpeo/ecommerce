@@ -77,7 +77,7 @@ export default function SaleTetSection() {
         </div>
         <Link
           href="/shop"
-          className="self-start md:self-auto inline-flex items-center justify-center bg-[#78e000] hover:bg-[#84cc16] text-black font-extrabold text-xs sm:text-sm px-6 py-3 rounded-none shadow transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+          className="self-start md:self-auto inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-black font-extrabold text-xs sm:text-sm px-6 py-3 rounded-none shadow transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
         >
           Xem tất cả sản phẩm
         </Link>
@@ -93,7 +93,7 @@ export default function SaleTetSection() {
 
           {/* Top text block */}
           <div className="relative z-10">
-            <span className="inline-block bg-[#78e000] text-black font-extrabold text-xs px-3.5 py-1.5 rounded-none uppercase tracking-wider shadow">
+            <span className="inline-block bg-primary text-black font-extrabold text-xs px-3.5 py-1.5 rounded-none uppercase tracking-wider shadow">
               DEAL HOT HÔM NAY
             </span>
             <h3 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mt-4 leading-tight drop-shadow-md">

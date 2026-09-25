@@ -35,11 +35,11 @@ export default function FlashDealSection() {
 
   return (
     <section className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      <div className="bg-[#001a2c] rounded-none p-8 sm:p-12 lg:p-14 text-white relative overflow-hidden shadow-2xl border border-[#002b47]">
+      <div className="bg-dark rounded-none p-8 sm:p-12 lg:p-14 text-white relative overflow-hidden shadow-2xl border border-dark-border">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text & Countdown (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-6">
-            <span className="inline-block bg-[#78e000] text-black font-extrabold text-xs px-3.5 py-1.5 rounded-none uppercase tracking-wider">
+            <span className="inline-block bg-primary text-black font-extrabold text-xs px-3.5 py-1.5 rounded-none uppercase tracking-wider">
               SẢN PHẨM KHUYẾN MÃI HÔM NAY
             </span>
 
@@ -101,10 +101,10 @@ export default function FlashDealSection() {
 
                 {/* Seconds */}
                 <div className="text-center">
-                  <div className="text-3xl sm:text-4xl font-black text-[#78e000] tracking-wider">
+                  <div className="text-3xl sm:text-4xl font-black text-primary tracking-wider">
                     {formatNum(timeLeft.seconds)}
                   </div>
-                  <div className="text-[11px] text-[#78e000] font-bold uppercase mt-1">
+                  <div className="text-[11px] text-primary font-bold uppercase mt-1">
                     Giây
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export default function FlashDealSection() {
           {/* Right Runner Image + 3 Thumbnails (7 cols on lg) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-4 items-stretch">
             {/* Main Runner Image (8 cols on sm) */}
-            <div className="sm:col-span-8 relative rounded-none overflow-hidden min-h-[360px] sm:min-h-[460px] bg-[#00223a] shadow-inner group">
+            <div className="sm:col-span-8 relative rounded-none overflow-hidden min-h-[360px] sm:min-h-[460px] bg-dark-card shadow-inner group">
               <Image
                 src="https://images.unsplash.com/photo-1486218119243-13883505764c?w=1000&auto=format&fit=crop&q=80"
                 alt="Li-Ning Athlete Runner"

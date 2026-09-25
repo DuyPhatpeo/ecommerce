@@ -55,6 +55,8 @@ module.exports = {
           deep: "#001422",
           800: "#00253f",
           900: "#001a2c",
+          border: "#002b47",
+          borderHover: "#003554",
         },
         // Accent Colors
         accent: {

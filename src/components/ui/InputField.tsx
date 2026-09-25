@@ -46,8 +46,8 @@ export default function InputField({
           className={`w-full pl-12 pr-4 py-3.5 border rounded-none outline-none transition 
             ${
               error
-                ? "border-red-400 bg-red-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
-                : "border-gray-200 bg-gray-50 focus:border-[#78e000] focus:ring-1 focus:ring-[#78e000] focus:bg-white"
+                ? "border-red-400 bg-red-50 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white"
+                : "border-gray-200 bg-gray-50 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white"
             }
             ${disabled ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""}
           `}

@@ -71,7 +71,7 @@ export default function FAQPage() {
               onClick={() => setSelectedCat(c)}
               className={`px-5 py-2.5 text-xs font-bold whitespace-nowrap transition-all ${
                 selectedCat === c
-                  ? "bg-[#78e000] text-black shadow"
+                  ? "bg-primary text-black shadow"
                   : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
               }`}
             >
@@ -98,7 +98,7 @@ export default function FAQPage() {
                   </span>
                   <div
                     className={`w-7 h-7 bg-gray-100 flex items-center justify-center text-gray-700 flex-shrink-0 transition-transform ${
-                      isOpen ? "rotate-180 bg-[#78e000] text-black" : ""
+                      isOpen ? "rotate-180 bg-primary text-black" : ""
                     }`}
                   >
                     <FiChevronDown className="w-4 h-4" />
@@ -116,8 +116,8 @@ export default function FAQPage() {
         </div>
 
         {/* Still Need Help Box */}
-        <div className="max-w-4xl mx-auto mt-14 bg-[#001a2c] p-8 text-center text-white border border-[#002b47] shadow-xl">
-          <FiHelpCircle className="w-10 h-10 text-[#78e000] mx-auto mb-3" />
+        <div className="max-w-4xl mx-auto mt-14 bg-dark p-8 text-center text-white border border-dark-border shadow-xl">
+          <FiHelpCircle className="w-10 h-10 text-primary mx-auto mb-3" />
           <h3 className="text-xl font-black uppercase mb-2">Vẫn Còn Câu Hỏi Khác?</h3>
           <p className="text-xs sm:text-sm text-gray-300 max-w-md mx-auto mb-6">
             Đừng ngần ngại liên hệ trực tiếp với chúng tôi để nhận được sự hỗ trợ nhiệt tình từ các chuyên gia thể thao.
@@ -125,7 +125,7 @@ export default function FAQPage() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href="tel:19006868"
-              className="inline-flex items-center gap-2 bg-[#78e000] text-black font-extrabold text-xs sm:text-sm px-6 py-3 shadow hover:scale-105 transition-transform"
+              className="inline-flex items-center gap-2 bg-primary text-black font-extrabold text-xs sm:text-sm px-6 py-3 shadow hover:scale-105 transition-transform"
             >
               <FiPhone className="w-4 h-4" />
               <span>Gọi Hotline 1900 6868</span>

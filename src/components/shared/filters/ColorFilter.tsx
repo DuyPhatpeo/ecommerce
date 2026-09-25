@@ -88,7 +88,7 @@ const ColorFilter: React.FC<Props> = ({ open, toggle, selected, onChange }) => {
                     {color}
                   </span>
                 }
-                className="w-4 h-4 rounded-none border-gray-300 text-black focus:ring-black cursor-pointer accent-[#78e000]"
+                className="w-4 h-4 rounded-none border-gray-300 text-black focus:ring-black cursor-pointer accent-primary"
               />
             </label>
           ))}

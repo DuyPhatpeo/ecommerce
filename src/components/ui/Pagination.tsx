@@ -47,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
           label={page}
           className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-none border font-semibold transition ${
             page === currentPage
-              ? "bg-[#78e000] text-black font-black border-[#78e000]"
+              ? "bg-primary text-black font-black border-primary"
               : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
           }`}
         />

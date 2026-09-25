@@ -37,7 +37,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-[calc(100svh-116px)] md:h-[calc(100vh-124px)] min-h-[580px] max-h-[1000px] bg-[#001a2c] overflow-hidden flex flex-col justify-between">
+    <section className="relative w-full h-[calc(100svh-116px)] md:h-[calc(100vh-124px)] min-h-[580px] max-h-[1000px] bg-dark overflow-hidden flex flex-col justify-between">
       {/* Background Electric Lightning Banner */}
       <div className="absolute inset-0 z-0 opacity-85 pointer-events-none">
         <Image
@@ -47,7 +47,7 @@ export default function HeroSection() {
           priority
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#001a2c]/90 via-transparent to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-transparent to-black/30" />
       </div>
 
       {/* Main Container */}
@@ -77,7 +77,7 @@ export default function HeroSection() {
               className="object-contain"
             />
             {/* Subtle neon shadow floor */}
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-[#78e000]/25 rounded-none blur-xl pointer-events-none" />
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-primary/25 rounded-none blur-xl pointer-events-none" />
           </div>
         </div>
 

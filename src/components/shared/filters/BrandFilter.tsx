@@ -73,7 +73,7 @@ const BrandFilter: React.FC<Props> = ({
                     {brand}
                   </span>
                 }
-                className="w-4 h-4 rounded-none border-gray-300 text-black focus:ring-black cursor-pointer accent-[#78e000]"
+                className="w-4 h-4 rounded-none border-gray-300 text-black focus:ring-black cursor-pointer accent-primary"
               />
             </label>
           ))}
