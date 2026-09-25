@@ -189,9 +189,10 @@ export default function Footer() {
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Vietnam Flag Badge */}
           <div className="flex items-center gap-2 select-none">
-            <div className="w-5 h-3.5 bg-[#da251d] rounded-none relative flex items-center justify-center shadow overflow-hidden">
-              <span className="text-yellow-400 text-[10px] leading-none">★</span>
-            </div>
+            <svg className="w-6 h-4 shadow-sm rounded-sm" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="900" height="600" fill="#da251d"/>
+              <polygon fill="#ff0" points="450,120 528,360 323,211 577,211 372,360"/>
+            </svg>
             <span className="font-bold text-white text-xs">Việt Nam</span>
           </div>
 
@@ -204,7 +205,7 @@ export default function Footer() {
               Điều khoản sử dụng
             </Link>
             <span className="text-white font-semibold">
-              Copyright © 2026 WiPIX Templates | All Rights Reserved
+              Copyright © 2026 Dino Péo | All Rights Reserved
             </span>
           </div>
         </div>

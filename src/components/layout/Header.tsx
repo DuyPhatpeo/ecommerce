@@ -115,6 +115,7 @@ export default function Header() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const cartCount = useCartStore((state) => state.cartCount) || 0;
+  const cartItems = useCartStore((state) => state.cartItems) || [];
 
   const isCartActive = pathname === "/cart";
 
@@ -198,20 +199,76 @@ export default function Header() {
 
 
           {/* Shopping Cart */}
-          <Link
-            href="/cart"
-            className={`transition-colors p-1.5 relative ${
-              isCartActive ? "text-primary" : "hover:text-primary"
-            }`}
-            title="Giỏ hàng"
-          >
-            <FiShoppingBag className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 bg-primary text-black text-[10px] font-black w-4 h-4 flex items-center justify-center shadow">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+          <div className="relative group">
+            <Link
+              href="/cart"
+              className={`transition-colors p-1.5 relative flex items-center ${
+                isCartActive ? "text-primary" : "hover:text-primary"
+              }`}
+              title="Giỏ hàng"
+            >
+              <FiShoppingBag className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1.5 bg-primary text-black text-[10px] font-black w-4 h-4 flex items-center justify-center shadow">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Mini Cart Dropdown */}
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100 flex flex-col cursor-default">
+              <div className="p-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                <span className="text-gray-500 text-xs font-medium">Đã thêm {cartCount} sản phẩm</span>
+              </div>
+              
+              <div className="max-h-[320px] overflow-y-auto p-4 flex flex-col gap-4">
+                {cartItems.length > 0 ? (
+                  cartItems.slice(0, 3).map((item) => (
+                    <div key={item.id} className="flex gap-3">
+                      <div className="w-16 h-16 bg-gray-100 flex-shrink-0 flex items-center justify-center p-1 border border-gray-200">
+                        <img 
+                          src={item.images?.[0] || "/images/default_sneaker.png"} 
+                          alt={item.title} 
+                          className="w-full h-full object-contain"
+                          onError={(e) => { e.currentTarget.src = "/images/default_sneaker.png"; }}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 className="text-gray-900 font-bold text-sm truncate">{item.title}</h4>
+                        <div className="flex justify-between items-center mt-1">
+                          <span className="text-gray-900 font-bold text-[13px]">
+                            {(item.price || 0).toLocaleString("vi-VN")}₫
+                          </span>
+                          <span className="text-gray-500 text-xs font-medium">SL: {item.quantity}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-gray-500 text-sm font-medium">
+                    Giỏ hàng của bạn đang trống
+                  </div>
+                )}
+                
+                {cartItems.length > 3 && (
+                  <div className="text-center text-xs text-gray-500 font-medium pt-2 border-t border-gray-50">
+                    Và {cartItems.length - 3} sản phẩm khác...
+                  </div>
+                )}
+              </div>
+
+              {cartItems.length > 0 && (
+                <div className="p-4 border-t border-gray-100 bg-white">
+                  <Link 
+                    href="/cart" 
+                    className="block w-full text-center bg-primary hover:bg-black text-black hover:text-white font-bold py-2.5 text-xs uppercase tracking-wider transition-colors"
+                  >
+                    Đến giỏ hàng
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* User Account */}
           <button

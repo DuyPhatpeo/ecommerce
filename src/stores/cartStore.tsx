@@ -200,6 +200,37 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ cartItems: newItems });
     get().updateCartCount();
 
+    // Show Custom Toast
+    toast(
+      <div className="flex items-start gap-4 w-full">
+        <div className="w-24 h-24 bg-gray-50 flex-shrink-0 border border-gray-100 p-2">
+          <img 
+            src={images[0] || "/images/default_sneaker.png"} 
+            alt={title} 
+            className="w-full h-full object-contain mix-blend-multiply"
+            onError={(e) => { e.currentTarget.src = "/images/default_sneaker.png"; }}
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-bold text-gray-900 truncate">{title}</h4>
+          <div className="text-xs text-gray-500 mt-0.5 font-medium">
+            {price.toLocaleString("vi-VN")}₫ x {quantity}
+          </div>
+          <a href="/cart" className="inline-block mt-2.5 bg-primary text-black font-bold text-[11px] px-3 py-1.5 uppercase rounded-none hover:bg-gray-900 hover:text-white transition-colors w-full text-center">
+            Xem giỏ hàng
+          </a>
+        </div>
+      </div>,
+      {
+        theme: "light",
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        style: { borderRadius: 0, padding: "16px", minWidth: "300px" },
+        closeButton: true,
+      }
+    );
+
     if (userId) {
       try {
         await addToCart(userId, id, quantity);

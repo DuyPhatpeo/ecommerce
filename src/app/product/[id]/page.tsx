@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import Loader from "@/components/layout/Loader";
 import FavoriteSportsSection from "@/components/home/FavoriteSportsSection";
 import ServicesBanner from "@/components/home/ServicesBanner";
+import ProductCard from "@/components/shared/ProductCard";
 
 const productsCatalog: Record<string, any> = {
   "prod-lebron-tr1": {
@@ -70,21 +71,33 @@ const relatedProducts = [
     id: "prod-nike-free-metcon-6",
     title: "Nike Free Metcon 6",
     img: "/images/hero_ultraboost.png",
+    salePrice: 2890000,
+    regularPrice: 3200000,
+    stock: 10,
   },
   {
     id: "prod-nike-metcon-10",
     title: "Nike Metcon 10",
     img: "/images/hero_ultraboost.png",
+    salePrice: 3500000,
+    regularPrice: 3500000,
+    stock: 5,
   },
   {
     id: "prod-nike-flex-train",
     title: "Nike Flex Train",
     img: "/images/hero_ultraboost.png",
+    salePrice: 2100000,
+    regularPrice: 2500000,
+    stock: 20,
   },
   {
     id: "prod-nike-af1-retro",
     title: "Nike Air Force 1 Retro",
     img: "/images/hero_ultraboost.png",
+    salePrice: 2950000,
+    regularPrice: 2950000,
+    stock: 8,
   },
 ];
 
@@ -136,7 +149,6 @@ function ProductDetailContent() {
       images: [selectedImg || product.images[0]],
       quantity,
     });
-    toast.success(`Đã thêm ${quantity}x ${product.title} vào giỏ hàng!`);
   };
 
   const handleBuyNow = () => {
@@ -328,22 +340,9 @@ function ProductDetailContent() {
         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight mb-8">
           Sản phẩm liên quan
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {relatedProducts.map((p) => (
-            <Link
-              key={p.id}
-              href={`/product/${p.id}`}
-              className="group relative bg-[#f5f5f5] rounded-none overflow-hidden aspect-[3/4] flex items-center justify-center p-6 border border-gray-100 hover:shadow-lg transition-all"
-            >
-              <div className="relative w-full h-full flex items-center justify-center">
-                <Image
-                  src={p.img}
-                  alt={p.title}
-                  fill
-                  className="object-contain p-4"
-                />
-              </div>
-            </Link>
+            <ProductCard key={p.id} data={p} />
           ))}
         </div>
       </section>

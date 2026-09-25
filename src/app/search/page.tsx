@@ -97,7 +97,6 @@ function SearchContent() {
       stock: 10,
       images: [product.img],
     });
-    toast.success(`Đã thêm ${product.title} vào giỏ hàng!`);
   };
 
   const trendingTags = ["Ultraboost", "Nike", "Adidas", "Metcon", "Air Force", "Chạy Bộ"];

@@ -1,7 +1,7 @@
 import React from "react";
 import HeroSection from "@/components/home/HeroSection";
 import SubBannerGrid from "@/components/home/SubBannerGrid";
-import SaleTetSection from "@/components/home/SaleTetSection";
+import SpecialOfferSection from "@/components/home/SpecialOfferSection";
 import BrandShowcase from "@/components/home/BrandShowcase";
 import MiddleBanner from "@/components/home/MiddleBanner";
 import FlashDealSection from "@/components/home/FlashDealSection";
@@ -19,8 +19,8 @@ export default function HomePage() {
       {/* 2. Sub-Banners Grid (Nike Zoom Fly 6, Men/Women, Couple Sneaker) */}
       <SubBannerGrid />
 
-      {/* 3. Giày Sale Tết – Ưu Đãi Bùng Nổ Đón Xuân (Red deal banner + 6 shoes) */}
-      <SaleTetSection />
+      {/* 3. Ưu Đãi Đặc Quyền (Dark deal banner + 6 shoes) */}
+      <SpecialOfferSection />
 
       {/* 4. Thương Hiệu Nổi Bật (12 Brand Cards) */}
       <BrandShowcase />

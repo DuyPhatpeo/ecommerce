@@ -109,11 +109,11 @@ export default function HeroSection() {
           <div className="w-full sm:w-auto self-end">
             <Link
               href="/shop"
-              className="block p-[3px] bg-black/60 backdrop-blur-md border border-white/40 shadow-2xl transition-all duration-300 hover:border-white/70 group"
+              className="block bg-gray-500/20 backdrop-blur-md border border-white/40 shadow-2xl transition-all duration-300 hover:border-white/70 group rounded-sm"
             >
-              <div className="border border-white/70 px-5 py-3.5 sm:px-6 sm:py-4 flex items-center gap-5 sm:gap-6">
-                {/* Floating sneaker thumbnail without dark background box */}
-                <div className="relative w-28 h-20 sm:w-36 sm:h-24 flex-shrink-0 drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">
+              <div className="px-6 py-5 sm:px-8 sm:py-6 flex items-center gap-6 sm:gap-8">
+                {/* Floating sneaker thumbnail */}
+                <div className="relative w-32 h-24 sm:w-48 sm:h-32 flex-shrink-0 drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">
                   <Image
                     src="/images/hero_ultraboost.png"
                     alt="Adidas Ultraboost Thumbnail"
@@ -124,18 +124,18 @@ export default function HeroSection() {
 
                 {/* Details */}
                 <div className="text-left pr-2">
-                  <h4 className="text-white font-black text-sm sm:text-base tracking-wider uppercase leading-snug">
+                  <h4 className="text-white font-black text-base sm:text-lg tracking-wider uppercase leading-snug">
                     ADIDAS ULTRABOOST
                   </h4>
-                  <p className="text-gray-300 text-xs sm:text-[13px] font-bold mt-0.5 mb-1.5 tracking-wide">
+                  <p className="text-gray-300 text-sm sm:text-[15px] font-bold mt-1 mb-2 tracking-wide">
                     (3 MÀU)
                   </p>
-                  <div className="flex items-center gap-1.5 mb-2 text-yellow-400">
+                  <div className="flex items-center gap-1.5 mb-3 text-yellow-400">
                     {[...Array(5)].map((_, i) => (
-                      <FiStar key={i} className="w-4 h-4 fill-current stroke-none" />
+                      <FiStar key={i} className="w-5 h-5 fill-current stroke-none" />
                     ))}
                   </div>
-                  <p className="text-xl sm:text-2xl font-black text-white tracking-wide leading-none">
+                  <p className="text-2xl sm:text-3xl font-black text-white tracking-wide leading-none">
                     2.400.000
                   </p>
                 </div>

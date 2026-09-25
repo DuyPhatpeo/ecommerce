@@ -154,7 +154,7 @@ export default function NewsPage() {
           <div className="mt-8 mb-12">
             <Link
               href={`/news/${featured.id}`}
-              className="group block bg-dark rounded-none overflow-hidden shadow-xl border border-dark-border"
+              className="group block bg-[#f8f9fa] rounded-none overflow-hidden shadow-md border border-gray-100"
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
                 <div className="lg:col-span-7 relative min-h-[300px] sm:min-h-[420px]">
@@ -166,7 +166,7 @@ export default function NewsPage() {
                     className="object-cover object-center"
                   />
                 </div>
-                <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between text-white">
+                <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between bg-white text-gray-900">
                   <div>
                     <div className="flex items-center gap-3 mb-4">
                       <span className="bg-primary text-black text-[11px] font-black uppercase px-3 py-1 rounded-none tracking-wider">
@@ -181,17 +181,17 @@ export default function NewsPage() {
                     <h2 className="text-2xl sm:text-3xl font-black leading-snug group-hover:text-primary transition-colors mb-4">
                       {featured.title}
                     </h2>
-                    <p className="text-gray-300 text-xs sm:text-sm leading-relaxed line-clamp-3">
+                    <p className="text-gray-500 text-xs sm:text-sm leading-relaxed line-clamp-3">
                       {featured.excerpt}
                     </p>
                   </div>
 
-                  <div className="pt-6 border-t border-dark-border flex items-center justify-between text-xs font-bold text-gray-300">
+                  <div className="pt-6 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-gray-500">
                     <span className="flex items-center gap-1.5">
                       <FiClock className="w-3.5 h-3.5 text-primary" />
                       {featured.readTime}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-white group-hover:text-primary transition-colors">
+                    <span className="inline-flex items-center gap-1.5 text-gray-900 group-hover:text-primary transition-colors">
                       <span>Đọc tiếp</span>
                       <FiArrowRight className="w-4 h-4" />
                     </span>

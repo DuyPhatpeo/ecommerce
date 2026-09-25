@@ -194,7 +194,6 @@ export default function HangMoiPage() {
       stock: 10,
       images: [product.img],
     });
-    toast.success(`Đã thêm ${product.title} vào giỏ hàng!`);
   };
 
   const formatPrice = (p: number) => {
