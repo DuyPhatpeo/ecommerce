@@ -47,7 +47,7 @@ export default function CategoryDiscovery() {
           Ngay lúc này
         </span>
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tight">
-          BẠN TÌM GÌ <span className="text-[#78e000]">HÔM NAY?</span>
+          BẠN TÌM GÌ <span className="text-[#78e000]">HÔM NAY ?</span>
         </h2>
       </div>
 

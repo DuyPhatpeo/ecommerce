@@ -97,7 +97,7 @@ export default function Footer() {
       </div>
 
       {/* 2. Middle Footer: Background Image footer-flex.png + 3 Columns of Links */}
-      <div className="relative w-full min-h-[460px] md:min-h-[500px] flex items-center">
+      <div className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center">
         {/* Full-width Background Image: footer-flex.png */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -110,7 +110,7 @@ export default function Footer() {
         </div>
 
         {/* Content Container on top of background */}
-        <div className="relative z-10 max-w-[1440px] mx-auto w-full px-6 sm:px-8 lg:px-12 py-16">
+        <div className="relative z-10 max-w-[1440px] mx-auto w-full px-6 sm:px-8 lg:px-12 py-20 md:py-24">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:w-[60%] gap-8 sm:gap-12">
             {/* Column 1: SHOP */}
             <div>

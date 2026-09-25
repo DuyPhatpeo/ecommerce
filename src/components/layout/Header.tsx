@@ -3,8 +3,9 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FiSearch, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiShoppingBag, FiMenu, FiX, FiUser } from "react-icons/fi";
 import { useCartStore } from "@/stores/cartStore";
+import AuthModal from "@/components/auth/AuthModal";
 
 interface NavItem {
   label: string;
@@ -62,10 +63,10 @@ function DesktopNavLinks() {
             href={item.href}
             className={`relative py-2 transition-all duration-200 ${
               isActive
-                ? "text-[#78e000] font-black after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#78e000] after:shadow-[0_0_8px_#78e000]"
+                ? "text-[#78e000] font-black"
                 : item.isSpecial
-                ? "text-[#38bdf8] hover:text-[#78e000] font-extrabold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#78e000] after:transition-all after:duration-200"
-                : "text-white hover:text-[#78e000] font-extrabold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#78e000] after:transition-all after:duration-200"
+                ? "text-[#38bdf8] hover:text-[#78e000] font-extrabold"
+                : "text-white hover:text-[#78e000] font-extrabold"
             }`}
           >
             {item.label}
@@ -111,6 +112,7 @@ export default function Header() {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const cartCount = useCartStore((state) => state.cartCount) || 0;
 
@@ -211,15 +213,14 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Vietnam Flag Badge */}
-          <div className="flex items-center pl-1 select-none">
-            <div
-              className="w-6 h-4 bg-[#da251d] relative flex items-center justify-center shadow overflow-hidden"
-              title="Việt Nam"
-            >
-              <span className="text-yellow-400 text-xs leading-none">★</span>
-            </div>
-          </div>
+          {/* User Account */}
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            className="transition-colors p-1.5 hover:text-[#78e000]"
+            title="Đăng nhập / Đăng ký"
+          >
+            <FiUser className="w-5 h-5" />
+          </button>
 
           {/* Mobile menu toggle */}
           <button
@@ -283,6 +284,8 @@ export default function Header() {
           </Suspense>
         </div>
       )}
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </header>
   );
 }
